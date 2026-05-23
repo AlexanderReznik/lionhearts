@@ -1,0 +1,60 @@
+---
+// src/pages/teams.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TeamCard from '../components/TeamCard.astro';
+import { teams } from '../data/teams';
+
+const womensTeams = teams.filter(t => t.gender === "Women's");
+const mensTeams   = teams.filter(t => t.gender === "Men's");
+---
+
+<BaseLayout
+  title="Our Teams · London Lionhearts VBC"
+  description="9 teams competing across the NVL Super League and LVA — Women's: Vinarius, Cats, Fury, Beats. Men's: Alpha, Predators, Pride, Roar, Leo. East London's most competitive volleyball club."
+>
+  <div class="page-hero">
+    <p class="page-hero__eyebrow">9 Teams · NVL & LVA</p>
+    <h1 class="page-hero__title">Meet Our<br /><em>Teams</em></h1>
+    <p class="page-hero__sub">
+      From the NVL Super League to Division 4 — 9 competitive teams, one club identity.
+    </p>
+  </div>
+
+  <div class="page-content">
+
+    <h2 class="eyebrow section-eyebrow">Women's Teams</h2>
+    <div class="teams-grid teams-grid--womens">
+      {womensTeams.map(team => <TeamCard team={team} />)}
+    </div>
+
+    <h2 class="eyebrow section-eyebrow section-eyebrow--spaced">Men's Teams</h2>
+    <div class="teams-grid">
+      {mensTeams.map(team => <TeamCard team={team} />)}
+    </div>
+
+    <p class="teams-note">
+      * Divisions are placeholders — confirm with club before launch.
+      Team photos to be provided by client.
+    </p>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .section-eyebrow { margin-bottom: 1.5rem; }
+  .section-eyebrow--spaced { margin-top: 2.5rem; }
+
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .teams-grid--womens { margin-bottom: 0; }
+
+  .teams-note {
+    font-size: 0.625rem;
+    color: rgba(255,255,255,0.2);
+    margin-top: 20px;
+  }
+</style>
