@@ -69,7 +69,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
         <div class:list={['contact-card', { 'contact-card--featured': c.featured }]}>
           <div class="contact-card__icon" aria-hidden="true">{c.icon}</div>
           <span class="contact-card__tag">{c.tag}</span>
-          <h2 class="contact-card__title">{c.title}</h2>
+          <h3 class="contact-card__title">{c.title}</h3>
           <p class="contact-card__body">{c.body}</p>
           <a
             href={c.link.href}
@@ -149,9 +149,13 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     margin-bottom: 32px;
   }
 
-  @media (max-width: 768px) {
-    .contact-cards { grid-template-columns: 1fr; }
+  @media (max-width: 920px) {
+    .contact-cards { grid-template-columns: repeat(2, 1fr); }
     .location-block { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    .contact-cards { grid-template-columns: 1fr; }
     .social-row { flex-direction: column; }
   }
 
@@ -167,6 +171,13 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
   }
 
   .contact-card:hover { border-color: rgba(0,120,255,0.3); }
+
+  .contact-card__link:focus-visible,
+  .social-card:focus-visible,
+  .location-map__btn:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 3px;
+  }
 
   .contact-card--featured {
     background: linear-gradient(135deg, rgba(0,60,180,0.1), rgba(0,120,255,0.05));
