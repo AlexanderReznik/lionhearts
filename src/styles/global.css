@@ -1,0 +1,148 @@
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img, video { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: inherit; }
+a { color: inherit; }
+
+/* ── Design tokens ── */
+:root {
+  /* Colours */
+  --color-bg:           #050d1a;
+  --color-surface:      #0a0e1a;
+  --color-surface-2:    #0a1628;
+  --color-surface-3:    #030810;
+  --color-accent-from:  #0050e0;
+  --color-accent-to:    #0090ff;
+  --color-text:         #ffffff;
+  --color-text-muted:   rgba(255, 255, 255, 0.5);
+  --color-text-faint:   rgba(255, 255, 255, 0.25);
+  --color-highlight-1:  #4da8ff;
+  --color-highlight-2:  #00c2ff;
+  --color-border:       rgba(255, 255, 255, 0.07);
+  --color-border-blue:  rgba(0, 100, 220, 0.2);
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Spacing */
+  --space-xs:  0.5rem;
+  --space-sm:  1rem;
+  --space-md:  2rem;
+  --space-lg:  4rem;
+  --space-xl:  6rem;
+
+  /* Layout */
+  --max-width:  1120px;
+  --nav-height: 68px;
+  --page-px:    48px;
+}
+
+/* ── Base ── */
+html { scroll-behavior: smooth; }
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Gradient utility ── */
+.gradient-text {
+  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.gradient-bg {
+  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  transition: opacity 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.98); }
+
+.btn--primary { background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to)); color: #fff; }
+.btn--primary:hover { opacity: 0.88; }
+
+.btn--ghost { background: transparent; color: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.2); }
+.btn--ghost:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+
+.btn--white { background: #fff; color: #0040c0; }
+.btn--white:hover { opacity: 0.9; }
+
+.btn--outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.4); }
+.btn--outline-white:hover { border-color: rgba(255,255,255,0.7); }
+
+/* ── Section eyebrow ── */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-accent-to);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--color-accent-to);
+  flex-shrink: 0;
+}
+
+/* ── Container ── */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-px);
+}
+
+/* ── Page hero (inner pages) ── */
+.page-hero {
+  background: linear-gradient(160deg, var(--color-bg), var(--color-surface-2));
+  padding: 64px var(--page-px) 52px;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; width: 40%;
+  background: radial-gradient(ellipse at 80% 50%, rgba(0,80,220,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.page-hero__eyebrow { color: var(--color-accent-to); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-to); }
+.page-hero__title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; line-height: 0.95; }
+.page-hero__title em { color: var(--color-accent-to); font-style: normal; }
+.page-hero__sub { color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 12px; max-width: 520px; line-height: 1.65; }
+
+/* ── Page content wrapper ── */
+.page-content { padding: 52px var(--page-px); }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  :root {
+    --page-px: 20px;
+    --nav-height: 60px;
+  }
+}
