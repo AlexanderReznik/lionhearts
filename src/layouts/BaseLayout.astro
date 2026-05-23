@@ -1,6 +1,7 @@
 ---
 // src/layouts/BaseLayout.astro
 import BaseHead from '../components/BaseHead.astro';
+import Nav from '../components/Nav.astro';
 
 interface Props {
   title: string;
@@ -23,7 +24,7 @@ const { title, description, ogImage, jsonLd } = Astro.props;
     />
   </head>
   <body>
-    <slot name="nav" />
+    <Nav />
     <main>
       <slot />
     </main>

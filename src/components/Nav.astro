@@ -1,0 +1,149 @@
+---
+// src/components/Nav.astro
+const navLinks = [
+  { label: 'Home',      href: '/' },
+  { label: 'About',     href: '/about' },
+  { label: 'Events',    href: '/events' },
+  { label: 'Teams',     href: '/teams' },
+  { label: 'Sponsors',  href: '/sponsorship' },
+  { label: 'Contact',   href: '/contact' },
+];
+
+const current = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? current === '/' : current.startsWith(href);
+---
+
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="/" class="nav__logo">
+      <div class="nav__crest" aria-hidden="true">
+        <!-- Replace SVG content with actual club crest when available -->
+        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="22" cy="22" r="22" fill="url(#crest-grad)"/>
+          <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="22" fill="white">🦁</text>
+          <defs>
+            <radialGradient id="crest-grad" cx="40%" cy="35%">
+              <stop offset="0%" stop-color="#0a2a6e"/>
+              <stop offset="100%" stop-color="#0d1f4d"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="nav__name">
+        <strong>Lionhearts</strong>
+        <span>Volleyball Club</span>
+      </div>
+      <div class="nav__e2-badge">Shoreditch · E2</div>
+    </a>
+
+    <ul class="nav__links" role="list">
+      {navLinks.map(link => (
+        <li>
+          <a href={link.href} class:list={['nav__link', { 'nav__link--active': isActive(link.href) }]}>
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <a href="/join" class="btn btn--primary nav__cta">Join Us</a>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--nav-height);
+    background: rgba(5, 10, 22, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .nav__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--page-px);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .nav__logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--color-text);
+    flex-shrink: 0;
+  }
+
+  .nav__crest {
+    border-radius: 50%;
+    border: 2px solid rgba(0, 120, 255, 0.4);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .nav__name strong {
+    display: block;
+    font-weight: 900;
+    font-size: 0.875rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .nav__name span {
+    display: block;
+    font-size: 0.5625rem;
+    color: var(--color-text-faint);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .nav__e2-badge {
+    background: rgba(0, 80, 220, 0.15);
+    border: 1px solid rgba(0, 120, 255, 0.25);
+    color: var(--color-highlight-1);
+    font-size: 0.5625rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 3px 9px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .nav__links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .nav__link {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: color 0.15s;
+    padding: 4px 0;
+  }
+
+  .nav__link:hover,
+  .nav__link--active {
+    color: var(--color-text);
+  }
+
+  .nav__cta {
+    flex-shrink: 0;
+    font-size: 0.6875rem;
+  }
+</style>
