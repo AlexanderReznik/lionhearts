@@ -16,7 +16,7 @@ export function parseSessionsCSV(csv: string): Session[] {
 
   return lines.slice(1).map(line => {
     const values = splitCSVLine(line);
-    return Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()])) as Session;
+    return Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()])) as unknown as Session;
   });
 }
 
