@@ -7,7 +7,8 @@ Website for [London Lionhearts VBC](https://lionheartsvolleyball.com) — East L
 - **[Astro 6](https://astro.build)** — static site generator, zero JS by default
 - **TypeScript** (strict)
 - **Vitest** — unit tests for data utilities
-- **Netlify** — hosting, Forms, environment variables
+- **Vercel** — hosting and environment variables
+- **[Formspree](https://formspree.io)** — sign-up form submissions
 - **Vanilla CSS** with custom properties (no framework)
 
 ## Pages
@@ -19,7 +20,7 @@ Website for [London Lionhearts VBC](https://lionheartsvolleyball.com) — East L
 | `/events` | Open sessions (Google Sheets or fallback), Volleyzone fixture links per team |
 | `/teams` | 9-team grid — Women's: Vinarius, Cats, Fury, Beats · Men's: Alpha, Predators, Pride, Roar, Leo |
 | `/sponsorship` | Title sponsor, partnership CTA, sponsorship perks |
-| `/join` | 3 join pathways + Netlify sign-up form |
+| `/join` | 3 join pathways + Formspree sign-up form |
 | `/contact` | Contact cards, location block, social links |
 
 ---
@@ -84,34 +85,46 @@ cp .env.example .env
 | `GOOGLE_SHEET_ID` | Optional | Google Sheet ID for live session data. The sheet must be published as CSV (File → Share → Publish to web → CSV). Without it, hardcoded fallback sessions are used. |
 | `BEHOLD_FEED_ID` | Optional | [Behold.so](https://behold.so) feed widget ID for the Instagram embed on the homepage. Without it, a placeholder grid is shown. |
 
-On Netlify, set these under **Site settings → Environment variables**.
+On Vercel, set these under **Project Settings → Environment Variables**.
 
 ---
 
 ## Deploy
 
-The site deploys to Netlify. `netlify.toml` configures the build automatically:
+The site deploys to Vercel. Vercel auto-detects Astro — no config file needed.
 
-- **Build command:** `npm run build`
-- **Publish directory:** `dist`
-- **Node version:** 20
-- **404 handling:** unmatched routes return `/404` with HTTP 404 status
+- **Build command:** `npm run build` (auto-detected)
+- **Output directory:** `dist` (auto-detected)
+- **404 handling:** Vercel automatically serves `dist/404.html` for unmatched routes
 
-To deploy:
+### Formspree setup
+
+The join form (`/join`) submits to Formspree:
+
+1. Create a free account at [formspree.io](https://formspree.io)
+2. Create a new form and copy the form ID
+3. In `src/pages/join.astro`, replace `REPLACE_WITH_FORM_ID` in the form `action` with your ID:
+   ```html
+   action="https://formspree.io/f/YOUR_FORM_ID"
+   ```
+
+Formspree emails submissions to the address on the account and provides a dashboard. The free tier allows 50 submissions/month.
+
+### Deploy steps
 
 1. Push the repo to GitHub
-2. Connect the repo in the Netlify dashboard (Add new site → Import from GitHub)
-3. Build settings are auto-detected from `netlify.toml`
-4. Add environment variables in Netlify dashboard
-5. Click **Deploy site**
+2. Import the project at [vercel.com/new](https://vercel.com/new)
+3. Add environment variables under **Project Settings → Environment Variables**
+4. Click **Deploy**
 
-For the custom domain (`lionheartsvolleyball.com`), add it under **Domain management** in Netlify and update DNS to point to Netlify's nameservers.
+For the custom domain (`lionheartsvolleyball.com`), add it under **Project Settings → Domains** in Vercel and follow the DNS instructions.
 
 ---
 
 ## Pre-launch checklist
 
-- [ ] Set `GOOGLE_SHEET_ID` in Netlify env vars and publish the Google Sheet as CSV
+- [ ] Set up Formspree account and replace `REPLACE_WITH_FORM_ID` in `src/pages/join.astro`
+- [ ] Set `GOOGLE_SHEET_ID` in Vercel env vars and publish the Google Sheet as CSV
 - [ ] Set `BEHOLD_FEED_ID` from the Behold.so dashboard (linked to `@lionhearts_volleyball`)
 - [ ] Verify Volleyzone team URL slugs in `src/data/teams.ts` (current values are unverified guesses)
 - [ ] Replace sponsor placeholder data in `src/pages/sponsorship.astro`

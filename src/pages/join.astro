@@ -84,16 +84,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <form
       class="join-form"
-      name="join-us"
       method="POST"
-      data-netlify="true"
-      netlify-honeypot="bot-field"
-      action="/join-success"
+      action="https://formspree.io/f/REPLACE_WITH_FORM_ID"
     >
-      <input type="hidden" name="form-name" value="join-us" />
-      <p class="join-form__honeypot" aria-hidden="true">
-        <label>Don't fill this in: <input name="bot-field" tabindex="-1" /></label>
-      </p>
 
       <div class="join-form__grid">
         <div class="join-form__field">
@@ -292,13 +285,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border: 1px solid var(--color-border);
     border-radius: 14px;
     padding: 36px;
-  }
-
-  .join-form__honeypot {
-    position: absolute;
-    left: -9999px;
-    width: 1px;
-    overflow: hidden;
   }
 
   .join-form__grid {
