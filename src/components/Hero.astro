@@ -241,6 +241,15 @@ const { slides } = Astro.props;
     border-radius: 3px;
     background: var(--color-accent-to);
   }
+
+  .hero__dot:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__slide { transition: none; }
+  }
 </style>
 
 <script>
@@ -252,40 +261,43 @@ const { slides } = Astro.props;
   const rawLabels = section?.getAttribute('data-labels') ?? '';
   const slideLabels = rawLabels ? rawLabels.split('||') : [];
 
-  let current = 0;
-  let timer: ReturnType<typeof setInterval>;
+  if (slides.length > 0) {
+    let current = 0;
+    let timer: ReturnType<typeof setInterval>;
 
-  function goTo(n: number) {
-    slides[current].classList.remove('hero__slide--active');
-    dots[current].classList.remove('hero__dot--active');
-    dots[current].setAttribute('aria-selected', 'false');
+    function goTo(n: number) {
+      slides[current].classList.remove('hero__slide--active');
+      dots[current].classList.remove('hero__dot--active');
+      dots[current].setAttribute('aria-selected', 'false');
 
-    current = (n + slides.length) % slides.length;
+      current = (n + slides.length) % slides.length;
 
-    slides[current].classList.add('hero__slide--active');
-    dots[current].classList.add('hero__dot--active');
-    dots[current].setAttribute('aria-selected', 'true');
+      slides[current].classList.add('hero__slide--active');
+      dots[current].classList.add('hero__dot--active');
+      dots[current].setAttribute('aria-selected', 'true');
 
-    if (label && slideLabels[current]) {
-      label.textContent = `${String(current + 1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')} · ${slideLabels[current]}`;
+      if (label && slideLabels[current]) {
+        label.textContent = `${String(current + 1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')} · ${slideLabels[current]}`;
+      }
     }
+
+    function startTimer() {
+      timer = setInterval(() => goTo(current + 1), 5000);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      startTimer();
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => { goTo(i); resetTimer(); });
+    });
+
+    section?.addEventListener('mouseenter', () => clearInterval(timer));
+    section?.addEventListener('mouseleave', resetTimer);
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (slides.length > 1 && !prefersReduced) startTimer();
   }
-
-  function startTimer() {
-    timer = setInterval(() => goTo(current + 1), 5000);
-  }
-
-  function resetTimer() {
-    clearInterval(timer);
-    startTimer();
-  }
-
-  dots.forEach((dot, i) => {
-    dot.addEventListener('click', () => { goTo(i); resetTimer(); });
-  });
-
-  section?.addEventListener('mouseenter', () => clearInterval(timer));
-  section?.addEventListener('mouseleave', startTimer);
-
-  if (slides.length > 1) startTimer();
 </script>
