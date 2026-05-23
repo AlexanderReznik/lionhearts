@@ -115,21 +115,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="join-form__field">
           <label for="position">Playing Position</label>
           <select id="position" name="position">
-            <option>Not sure yet</option>
-            <option>Setter</option>
-            <option>Outside Hitter</option>
-            <option>Middle Blocker</option>
-            <option>Libero</option>
-            <option>Opposite</option>
+            <option value="not_sure">Not sure yet</option>
+            <option value="setter">Setter</option>
+            <option value="outside_hitter">Outside Hitter</option>
+            <option value="middle_blocker">Middle Blocker</option>
+            <option value="libero">Libero</option>
+            <option value="opposite">Opposite</option>
           </select>
         </div>
         <div class="join-form__field">
           <label for="level">Experience Level</label>
           <select id="level" name="experience_level">
-            <option>Total Beginner</option>
-            <option>Some Experience</option>
-            <option>Intermediate</option>
-            <option>Advanced / Competitive</option>
+            <option value="beginner">Total Beginner</option>
+            <option value="some_experience">Some Experience</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced / Competitive</option>
           </select>
         </div>
         <div class="join-form__field join-form__field--full">
@@ -294,7 +294,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding: 36px;
   }
 
-  .join-form__honeypot { display: none; }
+  .join-form__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    overflow: hidden;
+  }
 
   .join-form__grid {
     display: grid;
@@ -334,10 +339,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     transition: border-color 0.15s;
   }
 
-  .join-form__field input:focus,
-  .join-form__field select:focus,
-  .join-form__field textarea:focus {
-    outline: none;
+  .join-form__field input:focus-visible,
+  .join-form__field select:focus-visible,
+  .join-form__field textarea:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 2px;
     border-color: var(--color-accent-to);
   }
 

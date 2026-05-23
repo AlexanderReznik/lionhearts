@@ -75,6 +75,11 @@ body {
 }
 .btn:active { transform: scale(0.98); }
 
+.btn:focus-visible {
+  outline: 2px solid var(--color-accent-to);
+  outline-offset: 3px;
+}
+
 .btn--primary { background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to)); color: #fff; }
 .btn--primary:hover { opacity: 0.88; }
 
