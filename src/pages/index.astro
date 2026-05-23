@@ -1,11 +1,81 @@
 ---
 // src/pages/index.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import StatsBar from '../components/StatsBar.astro';
+import AboutIntro from '../components/AboutIntro.astro';
+import CommunitySection from '../components/CommunitySection.astro';
+import JoinCTA from '../components/JoinCTA.astro';
+import SponsorsSection from '../components/SponsorsSection.astro';
+import InstagramFeed from '../components/InstagramFeed.astro';
+
+const heroSlides = [
+  {
+    image: '/images/placeholder-hero.jpg',
+    label: 'SUPER LEAGUE 2025/26',
+    alt: 'Lionhearts players in action at the NVL Super League',
+  },
+  {
+    image: '/images/placeholder-hero.jpg',
+    label: 'LVA PREMIER LEAGUE',
+    alt: 'Lionhearts women celebrating a win',
+  },
+  {
+    image: '/images/placeholder-hero.jpg',
+    label: 'OPEN SESSIONS · SHOREDITCH E2',
+    alt: 'Open session at Mulberry Academy Shoreditch',
+  },
+  {
+    image: '/images/placeholder-hero.jpg',
+    label: 'TOGETHER WE ROAR',
+    alt: 'Lionhearts club community',
+  },
+];
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SportsOrganization',
+  name: 'London Lionhearts Volleyball Club',
+  url: 'https://lionheartsvolleyball.com',
+  logo: 'https://lionheartsvolleyball.com/images/og-default.jpg',
+  sameAs: [
+    'https://www.instagram.com/lionhearts_volleyball/',
+    'https://www.facebook.com/lionheartsvolleyball',
+    'https://www.youtube.com/@londonlionheartsvolleyball5826',
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Gosset Street',
+    addressLocality: 'London',
+    postalCode: 'E2 6NW',
+    addressCountry: 'GB',
+  },
+  sport: 'Volleyball',
+  foundingDate: '1998',
+  location: {
+    '@type': 'Place',
+    name: 'Mulberry Academy Shoreditch',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Gosset Street',
+      addressLocality: 'London',
+      postalCode: 'E2 6NW',
+      addressCountry: 'GB',
+    },
+  },
+};
 ---
 
 <BaseLayout
   title="London Lionhearts Volleyball Club — Shoreditch, East London"
   description="East London's volleyball club — competing from the NVL Super League to your first ever session. Open sessions 3× a week at Mulberry Academy, Shoreditch E2."
+  jsonLd={orgSchema}
 >
-  <p style="color:white;padding:2rem;">Setup complete — homepage coming in sub-plan 03.</p>
+  <Hero slides={heroSlides} />
+  <StatsBar />
+  <AboutIntro />
+  <CommunitySection />
+  <JoinCTA />
+  <SponsorsSection />
+  <InstagramFeed />
 </BaseLayout>
