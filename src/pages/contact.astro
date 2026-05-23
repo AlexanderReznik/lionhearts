@@ -1,0 +1,356 @@
+---
+// src/pages/contact.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const contactMethods = [
+  {
+    icon: '✉️',
+    tag: 'Email',
+    title: 'Drop Us a Message',
+    body: 'For general enquiries, sponsorship, or anything else.',
+    link: { label: 'allanzelion@gmail.com', href: 'mailto:allanzelion@gmail.com' },
+  },
+  {
+    icon: '📷',
+    tag: 'Fastest Response',
+    title: 'Instagram DM',
+    body: 'We check our DMs regularly — fastest way to get a reply from us.',
+    link: { label: '@lionhearts_volleyball', href: 'https://instagram.com/lionhearts_volleyball' },
+    featured: true,
+  },
+  {
+    icon: '🏐',
+    tag: 'In Person',
+    title: 'Come to a Session',
+    body: 'The best way to meet us — join an open session and say hello on court.',
+    link: { label: 'View Schedule →', href: '/events' },
+  },
+];
+
+const socials = [
+  {
+    icon: '📷',
+    name: 'Instagram',
+    handle: '@lionhearts_volleyball · 2,104 followers',
+    href: 'https://instagram.com/lionhearts_volleyball',
+  },
+  {
+    icon: '👍',
+    name: 'Facebook',
+    handle: 'londonlionhearts.volleyball',
+    href: 'https://facebook.com/lionheartsvolleyball',
+  },
+  {
+    icon: '▶',
+    name: 'YouTube',
+    handle: '@londonlionheartsvolleyball5826',
+    href: 'https://youtube.com/@londonlionheartsvolleyball5826',
+  },
+];
+
+const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+Street+E2+6NW';
+---
+
+<BaseLayout
+  title="Contact · London Lionhearts VBC"
+  description="Get in touch with London Lionhearts Volleyball Club. Email, Instagram DM, or come to an open session at Mulberry Academy, Gosset Street, Shoreditch E2 6NW."
+>
+  <div class="page-hero">
+    <p class="page-hero__eyebrow">Get in Touch</p>
+    <h1 class="page-hero__title">We'd Love<br />to <em>Hear</em> From You</h1>
+    <p class="page-hero__sub">Questions, sponsorship enquiries, media requests — we're easy to reach.</p>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Contact method cards -->
+    <div class="contact-cards">
+      {contactMethods.map(c => (
+        <div class:list={['contact-card', { 'contact-card--featured': c.featured }]}>
+          <div class="contact-card__icon" aria-hidden="true">{c.icon}</div>
+          <span class="contact-card__tag">{c.tag}</span>
+          <h2 class="contact-card__title">{c.title}</h2>
+          <p class="contact-card__body">{c.body}</p>
+          <a
+            href={c.link.href}
+            class="contact-card__link"
+            {...(c.link.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >{c.link.label}</a>
+        </div>
+      ))}
+    </div>
+
+    <!-- Location block -->
+    <div class="location-block">
+      <div class="location-info">
+        <div>
+          <h2 class="location-info__headline">Find <em>Us</em></h2>
+          <address class="location-info__address">
+            Mulberry Academy Shoreditch<br />
+            Gosset Street<br />
+            London, E2 6NW
+          </address>
+        </div>
+        <div>
+          <h3 class="eyebrow section-eyebrow section-eyebrow--tight">Open Sessions</h3>
+          <div class="location-sessions">
+            <div class="session-pill">
+              <span class="session-pill__day">Mon & Thu</span>
+              <span class="session-pill__time">7:00 – 9:00pm</span>
+              <span class="session-pill__level">All Levels</span>
+            </div>
+            <div class="session-pill">
+              <span class="session-pill__day">Friday</span>
+              <span class="session-pill__time">8:00 – 10:00pm</span>
+              <span class="session-pill__level">Int / Adv</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="location-map">
+        <div class="location-map__pin" aria-hidden="true">📍</div>
+        <div class="location-map__label">
+          <strong>Mulberry Academy</strong>
+          <span>Shoreditch, E2 6NW</span>
+        </div>
+        <a href={MAPS_URL} class="location-map__btn" target="_blank" rel="noopener noreferrer">
+          Open in Google Maps ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- Social row -->
+    <h2 class="eyebrow section-eyebrow">Follow Us</h2>
+    <div class="social-row">
+      {socials.map(s => (
+        <a href={s.href} class="social-card" target="_blank" rel="noopener noreferrer">
+          <span class="social-card__icon" aria-hidden="true">{s.icon}</span>
+          <div>
+            <h3 class="social-card__name">{s.name}</h3>
+            <p class="social-card__handle">{s.handle}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .section-eyebrow { margin-bottom: 1rem; }
+  .section-eyebrow--tight { margin-bottom: 0.75rem; }
+
+  /* ── Contact cards ── */
+  .contact-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 768px) {
+    .contact-cards { grid-template-columns: 1fr; }
+    .location-block { grid-template-columns: 1fr; }
+    .social-row { flex-direction: column; }
+  }
+
+  .contact-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s;
+  }
+
+  .contact-card:hover { border-color: rgba(0,120,255,0.3); }
+
+  .contact-card--featured {
+    background: linear-gradient(135deg, rgba(0,60,180,0.1), rgba(0,120,255,0.05));
+    border-color: var(--color-border-blue);
+  }
+
+  .contact-card__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--color-accent-from), var(--color-accent-to));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+  .contact-card__tag {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-accent-to);
+  }
+
+  .contact-card__title { font-size: 0.875rem; font-weight: 700; }
+
+  .contact-card__body {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .contact-card__link {
+    color: var(--color-highlight-1);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    word-break: break-all;
+  }
+
+  .contact-card__link:hover { text-decoration: underline; }
+
+  /* ── Location block ── */
+  .location-block {
+    background: linear-gradient(160deg, #070f22, #0a1628);
+    border: 1px solid rgba(0,100,220,0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    margin-bottom: 32px;
+  }
+
+  .location-info {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .location-info__headline {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .location-info__headline em { color: var(--color-accent-to); font-style: normal; }
+
+  .location-info__address {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.8;
+    font-style: normal;
+  }
+
+  .location-sessions { display: flex; flex-direction: column; gap: 8px; }
+
+  .session-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,80,220,0.1);
+    border: 1px solid rgba(0,100,220,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .session-pill__day { font-size: 0.75rem; font-weight: 700; }
+  .session-pill__time { font-size: 0.6875rem; color: var(--color-text-muted); }
+  .session-pill__level { font-size: 0.5625rem; color: var(--color-highlight-1); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* Map area */
+  .location-map {
+    background: linear-gradient(160deg, rgba(0,40,140,0.3), rgba(0,20,80,0.4));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .location-map::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background:
+      repeating-linear-gradient(0deg, #fff 0, #fff 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(90deg, #fff 0, #fff 1px, transparent 1px, transparent 40px);
+  }
+
+  .location-map__pin {
+    position: relative;
+    z-index: 1;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent-from), var(--color-accent-to));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    box-shadow: 0 0 0 12px rgba(0,80,220,0.15), 0 0 0 24px rgba(0,80,220,0.07);
+  }
+
+  .location-map__label {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .location-map__label strong { display: block; font-size: 0.9375rem; font-weight: 700; margin-bottom: 4px; }
+  .location-map__label span { font-size: 0.75rem; color: var(--color-text-muted); }
+
+  .location-map__btn {
+    position: relative;
+    z-index: 1;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+
+  .location-map__btn:hover { background: rgba(255,255,255,0.14); }
+
+  /* ── Social row ── */
+  .social-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .social-card {
+    flex: 1;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: border-color 0.2s;
+  }
+
+  .social-card:hover { border-color: rgba(0,120,255,0.3); }
+
+  .social-card__icon { font-size: 1.5rem; flex-shrink: 0; }
+  .social-card__name { font-size: 0.8125rem; font-weight: 700; margin-bottom: 2px; }
+  .social-card__handle { font-size: 0.6875rem; color: rgba(255,255,255,0.35); }
+</style>
