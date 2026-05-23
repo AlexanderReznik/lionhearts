@@ -1,0 +1,91 @@
+---
+// src/components/JoinCTA.astro
+---
+
+<section class="join-cta" aria-label="Join the club">
+  <div class="join-cta__inner">
+    <div class="join-cta__copy">
+      <p class="join-cta__kicker">Shoreditch · All Levels · All Backgrounds</p>
+      <h2 class="join-cta__headline">Ready<br />to play?</h2>
+      <p class="join-cta__sub">Open sessions 3× a week. No experience needed. New to London? You'll fit right in.</p>
+      <p class="join-cta__location">
+        📍 <span>Mulberry Academy, Shoreditch E2</span>
+        · Short walk from Bethnal Green, Shoreditch High Street or Hoxton stations
+      </p>
+    </div>
+    <div class="join-cta__actions">
+      <a href="/join" class="btn btn--white">Join the Club</a>
+      <a href="/events" class="btn btn--outline-white">Open Sessions</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .join-cta { background: var(--color-bg); padding: 0 var(--page-px) var(--space-xl); }
+
+  .join-cta__inner {
+    background: linear-gradient(135deg, #0030a0 0%, #0050d0 50%, #0070e8 100%);
+    border-radius: 14px;
+    padding: 64px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .join-cta__inner::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    pointer-events: none;
+  }
+
+  .join-cta__copy { position: relative; }
+
+  .join-cta__kicker {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+  }
+
+  .join-cta__headline {
+    font-size: 2.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    line-height: 0.9;
+    margin-bottom: 10px;
+  }
+
+  .join-cta__sub {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+  }
+
+  .join-cta__location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.6875rem;
+    flex-wrap: wrap;
+  }
+
+  .join-cta__location span { color: #80c8ff; font-weight: 600; }
+
+  .join-cta__actions {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    flex-shrink: 0;
+  }
+</style>

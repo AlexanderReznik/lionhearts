@@ -1,0 +1,102 @@
+---
+// src/components/SponsorsSection.astro
+// TODO: Replace placeholder values with actual sponsor data from client
+const sponsor = {
+  name:        'Title Sponsor',
+  description: 'Sponsor description',
+  url:         '#',
+  logo:        null,
+};
+---
+
+<section class="sponsors" aria-labelledby="sponsors-heading">
+  <p id="sponsors-heading" class="sponsors__eyebrow">Proudly supported by</p>
+
+  <div class="sponsors__title-card">
+    <div>
+      <span class="sponsors__badge">Title Sponsor</span>
+      <div class="sponsors__logo" aria-label={`${sponsor.name} logo`}>
+        {sponsor.logo
+          ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
+          : <span class="sponsors__logo-placeholder">Logo placeholder</span>
+        }
+      </div>
+    </div>
+    <div class="sponsors__meta">
+      <p>Proudly supporting<br />Lionhearts VBC</p>
+      <a href={sponsor.url} class="sponsors__link" target="_blank" rel="noopener noreferrer">
+        View sponsor page →
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sponsors {
+    padding: 64px var(--page-px);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .sponsors__eyebrow {
+    text-align: center;
+    color: rgba(255,255,255,0.2);
+    font-size: 0.5625rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .sponsors__title-card {
+    max-width: 520px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(0,70,200,0.12), rgba(0,140,255,0.06));
+    border: 1px solid rgba(0,100,220,0.25);
+    border-radius: 12px;
+    padding: 28px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .sponsors__badge {
+    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    color: #fff;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .sponsors__logo { width: 120px; height: 36px; }
+  .sponsors__logo img { width: 100%; height: 100%; object-fit: contain; }
+
+  .sponsors__logo-placeholder {
+    display: flex;
+    width: 120px;
+    height: 36px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.625rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .sponsors__meta { color: rgba(255,255,255,0.3); font-size: 0.6875rem; text-align: right; line-height: 1.6; }
+
+  .sponsors__link {
+    color: var(--color-accent-to);
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: block;
+    margin-top: 4px;
+  }
+</style>
