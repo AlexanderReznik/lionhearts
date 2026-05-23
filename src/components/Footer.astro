@@ -1,0 +1,208 @@
+---
+// src/components/Footer.astro
+const year = new Date().getFullYear();
+
+const clubLinks = [
+  { label: 'About Us',          href: '/about' },
+  { label: 'Meet Our Teams',    href: '/teams' },
+  { label: 'Events & Fixtures', href: '/events' },
+];
+
+const involvedLinks = [
+  { label: 'Join Us',        href: '/join' },
+  { label: 'Open Sessions',  href: '/events' },
+  { label: 'Sponsorship',    href: '/sponsorship' },
+];
+
+const contactLinks = [
+  { label: 'allanzelion@gmail.com',  href: 'mailto:allanzelion@gmail.com' },
+  { label: '@lionhearts_volleyball', href: 'https://instagram.com/lionhearts_volleyball' },
+  { label: 'Shoreditch, E2 6NW',     href: 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch' },
+];
+---
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <div class="footer__crest">
+        <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="22" cy="22" r="22" fill="url(#footer-crest-grad)"/>
+          <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="20" fill="white">🦁</text>
+          <defs>
+            <radialGradient id="footer-crest-grad" cx="40%" cy="35%">
+              <stop offset="0%" stop-color="#0a2a6e"/>
+              <stop offset="100%" stop-color="#0d1f4d"/>
+            </radialGradient>
+          </defs>
+        </svg>
+        <strong>London Lionhearts VBC</strong>
+      </div>
+      <p class="footer__tagline">"Together We Roar."</p>
+      <p class="footer__location">📍 <strong>Shoreditch, East London</strong></p>
+      <address class="footer__address">
+        Mulberry Academy Shoreditch<br />
+        Gosset Street, E2 6NW
+      </address>
+      <div class="footer__socials">
+        <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill" target="_blank" rel="noopener">📷 Instagram</a>
+        <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill" target="_blank" rel="noopener">👍 Facebook</a>
+        <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill" target="_blank" rel="noopener">▶ YouTube</a>
+      </div>
+    </div>
+
+    <div class="footer__col">
+      <h4>Club</h4>
+      <ul role="list">
+        {clubLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Get Involved</h4>
+      <ul role="list">
+        {involvedLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <ul role="list">
+        {contactLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p>© {year} London Lionhearts Volleyball Club. All rights reserved.</p>
+    <p class="footer__bottom-tagline">Together We Roar.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: #03060f;
+    border-top: 1px solid var(--color-border);
+    padding: 52px var(--page-px) 28px;
+  }
+
+  .footer__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    gap: 48px;
+    margin-bottom: 40px;
+  }
+
+  .footer__brand { flex: 1.4; }
+
+  .footer__crest {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .footer__crest strong {
+    font-weight: 900;
+    font-size: 0.8125rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .footer__tagline {
+    color: var(--color-text-faint);
+    font-size: 0.8125rem;
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+
+  .footer__location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-faint);
+    font-size: 0.6875rem;
+    margin-bottom: 10px;
+  }
+
+  .footer__location strong { color: rgba(255,255,255,0.4); }
+
+  .footer__address {
+    color: rgba(255,255,255,0.2);
+    font-size: 0.6875rem;
+    line-height: 1.7;
+    font-style: normal;
+    margin-bottom: 16px;
+  }
+
+  .footer__socials {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .footer__social-pill {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.625rem;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .footer__social-pill:hover {
+    border-color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+  }
+
+  .footer__col { flex: 1; }
+
+  .footer__col h4 {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 14px;
+  }
+
+  .footer__col ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .footer__col a {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.75rem;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer__col a:hover { color: rgba(255,255,255,0.75); }
+
+  .footer__bottom {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer__bottom p {
+    color: rgba(255,255,255,0.15);
+    font-size: 0.6875rem;
+  }
+
+  .footer__bottom-tagline {
+    font-style: italic;
+  }
+</style>
