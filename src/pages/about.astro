@@ -1,0 +1,200 @@
+---
+// src/pages/about.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SportsOrganization',
+  name: 'London Lionhearts Volleyball Club',
+  url: 'https://lionheartsvolleyball.com',
+  foundingDate: '1998',
+  founder: { '@type': 'Person', name: 'Alvin Spencer' },
+  sport: 'Volleyball',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Gosset Street',
+    addressLocality: 'London',
+    postalCode: 'E2 6NW',
+    addressCountry: 'GB',
+  },
+};
+
+const values = [
+  {
+    icon: '🤝',
+    title: 'Inclusive',
+    body: 'From your first ever open session to the NVL Super League — there\'s a team and a level for everyone. No experience, no problem.',
+  },
+  {
+    icon: '🏆',
+    title: 'Competitive',
+    body: '9 teams. NVL Super League. 9× LVA Champions. We\'re here to win — at every division, not just the top.',
+    featured: true,
+  },
+  {
+    icon: '🌍',
+    title: 'Community',
+    body: 'Players from all over the world call Lionhearts home. If you\'re new to London, you\'ll feel it within your first session.',
+  },
+];
+---
+
+<BaseLayout
+  title="About Us · London Lionhearts VBC"
+  description="Founded in 1998 by Alvin Spencer, London Lionhearts Volleyball Club has been Shoreditch's home for volleyball for over 25 years. 9× LVA Champions, NVL Super League club."
+  jsonLd={orgSchema}
+>
+  <!-- Page hero -->
+  <div class="page-hero">
+    <p class="page-hero__eyebrow">London Lionhearts · Since 1998</p>
+    <h1 class="page-hero__title">About <em>Us</em></h1>
+    <p class="page-hero__sub">
+      The story of Shoreditch's volleyball club — 25+ years of community, competition,
+      and players from every corner of the world.
+    </p>
+  </div>
+
+  <!-- History section -->
+  <section class="about-history page-content">
+    <div class="about-history__inner">
+      <div class="about-history__photo" aria-label="Team photo — to be provided">
+        <span>Team photo</span>
+      </div>
+
+      <div class="about-history__story">
+        <p class="eyebrow">Est. 1998 · Shoreditch, East London</p>
+        <h2 class="about-history__headline">
+          The heartbeat of <em>East London</em> volleyball.
+        </h2>
+
+        <div class="about-history__chips">
+          <div class="about-history__chip">
+            <strong>Alvin Spencer</strong>
+            <span>Founder, 1998</span>
+          </div>
+          <div class="about-history__chip">
+            <strong>Allan Mungroo</strong>
+            <span>Club Director, since 2008</span>
+          </div>
+        </div>
+
+        <p>
+          Founded in 1998 by Alvin Spencer, Lionhearts began as a small community club in
+          Shoreditch. Over 25 years it has grown into one of East London's most celebrated
+          volleyball clubs — 9× LVA Women's Premier Champions, an NVL Super League club,
+          and a community that draws players from every corner of the world.
+        </p>
+        <p>
+          Since 2008, Allan Mungroo has led the club through its most successful era, building
+          not just competitive teams but a place where newcomers to London find their footing,
+          expats find community, and beginners find their sport.
+        </p>
+
+        <a href="/join" class="btn btn--primary" style="margin-top: 1.5rem; display: inline-flex;">
+          Join the community →
+        </a>
+      </div>
+    </div>
+
+    <!-- Values row -->
+    <div class="values-row">
+      {values.map(v => (
+        <div class:list={['value-card', { 'value-card--featured': v.featured }]}>
+          <div class="value-card__icon" aria-hidden="true">{v.icon}</div>
+          <h3 class="value-card__title">{v.title}</h3>
+          <p class="value-card__body">{v.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-history { max-width: var(--max-width); margin: 0 auto; }
+
+  .about-history__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+    margin-bottom: 52px;
+  }
+
+  .about-history__photo {
+    aspect-ratio: 4/3;
+    background: linear-gradient(160deg, var(--color-surface-2), var(--color-surface));
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-faint);
+    font-size: 0.6875rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .about-history__headline {
+    font-size: clamp(1.5rem, 3vw, 1.75rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    line-height: 1;
+  }
+
+  .about-history__headline em { color: var(--color-accent-to); font-style: normal; }
+
+  .about-history__chips {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .about-history__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,80,220,0.1);
+    border: 1px solid var(--color-border-blue);
+    border-radius: 6px;
+    padding: 7px 14px;
+  }
+
+  .about-history__chip strong { font-size: 0.75rem; font-weight: 700; }
+  .about-history__chip span { font-size: 0.625rem; color: var(--color-text-muted); }
+
+  .about-history__story p {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+
+  /* Values */
+  .values-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .value-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.2s;
+  }
+
+  .value-card:hover { border-color: rgba(0,120,255,0.25); }
+
+  .value-card--featured {
+    background: linear-gradient(135deg, rgba(0,60,180,0.08), rgba(0,120,255,0.04));
+    border-color: var(--color-border-blue);
+  }
+
+  .value-card__icon { font-size: 1.75rem; margin-bottom: 14px; }
+  .value-card__title { font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .value-card__body { font-size: 0.8125rem; color: var(--color-text-muted); line-height: 1.65; }
+</style>
