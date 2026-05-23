@@ -8,6 +8,7 @@ interface Props {
   canonicalURL?: string;
   ogImage?: string;
   jsonLd?: object | object[];
+  noindex?: boolean;
 }
 
 const {
@@ -16,6 +17,7 @@ const {
   canonicalURL,
   ogImage,
   jsonLd,
+  noindex = false,
 } = Astro.props;
 
 const SITE = 'https://lionheartsvolleyball.com';
@@ -31,6 +33,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 <link rel="canonical" href={canonical} />
 
 <!-- Open Graph -->

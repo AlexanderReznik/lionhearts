@@ -9,9 +9,10 @@ interface Props {
   description: string;
   ogImage?: string;
   jsonLd?: object | object[];
+  noindex?: boolean;
 }
 
-const { title, description, ogImage, jsonLd } = Astro.props;
+const { title, description, ogImage, jsonLd, noindex } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -22,6 +23,7 @@ const { title, description, ogImage, jsonLd } = Astro.props;
       description={description}
       ogImage={ogImage}
       jsonLd={jsonLd}
+      noindex={noindex}
     />
   </head>
   <body>
