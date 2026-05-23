@@ -1,0 +1,355 @@
+---
+// src/pages/join.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Join London Lionhearts Volleyball Club"
+  description="Come play volleyball in Shoreditch, East London. Open sessions Mon, Thu & Fri at Mulberry Academy — no experience needed, no booking required. Or DM us on Instagram."
+>
+  <div class="page-hero">
+    <p class="page-hero__eyebrow">All levels welcome</p>
+    <h1 class="page-hero__title">Come <em>Play</em><br />With Us</h1>
+    <p class="page-hero__sub">
+      Whether you're a seasoned competitor or picking up a volleyball for the first time —
+      there's a place for you at Lionhearts. Get involved however feels right.
+    </p>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Three pathways -->
+    <div class="pathways">
+
+      <!-- 1: Open session -->
+      <div class="pathway pathway--featured">
+        <div class="pathway__num">1</div>
+        <div class="pathway__icon" aria-hidden="true">🏐</div>
+        <h2 class="pathway__title">Come to an Open Session</h2>
+        <p class="pathway__body">
+          The easiest way in — just show up and play. No booking, no commitment, no experience
+          needed. Meet the community and see if it's for you.
+        </p>
+        <div class="pathway__schedule">
+          <div class="pathway__schedule-row">
+            <strong>Mon & Thu · 7–9pm</strong>
+            <span>All levels · Mixed</span>
+          </div>
+          <div class="pathway__schedule-row">
+            <strong>Fri · 8–10pm</strong>
+            <span>Intermediate / Advanced</span>
+          </div>
+          <div class="pathway__schedule-venue">
+            📍 Mulberry Academy, Shoreditch E2
+          </div>
+        </div>
+        <a href="/events" class="btn btn--white pathway__cta">See Full Schedule</a>
+      </div>
+
+      <!-- 2: Instagram -->
+      <div class="pathway">
+        <div class="pathway__num">2</div>
+        <div class="pathway__icon" aria-hidden="true">📷</div>
+        <h2 class="pathway__title">Say Hi on Instagram</h2>
+        <p class="pathway__body">
+          Drop us a DM — we love hearing from new people. Ask us anything: which team might
+          suit you, what level you need to be, how to get started.
+        </p>
+        <a
+          href="https://instagram.com/lionhearts_volleyball"
+          class="pathway__insta-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          📷 &nbsp;@lionhearts_volleyball
+        </a>
+      </div>
+
+      <!-- 3: Form -->
+      <div class="pathway">
+        <div class="pathway__num">3</div>
+        <div class="pathway__icon" aria-hidden="true">✉️</div>
+        <h2 class="pathway__title">Tell Us About Yourself</h2>
+        <p class="pathway__body">
+          Want us to find the right fit for you? Fill in the short form below and we'll reach
+          out to match you with the right team or session.
+        </p>
+        <a href="#join-form" class="btn btn--ghost pathway__form-link">Fill in the Form ↓</a>
+      </div>
+
+    </div>
+
+    <!-- Join form -->
+    <h2 class="eyebrow section-eyebrow" id="join-form">Tell us about yourself</h2>
+
+    <form
+      class="join-form"
+      name="join-us"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      action="/join-success"
+    >
+      <input type="hidden" name="form-name" value="join-us" />
+      <p class="join-form__honeypot" aria-hidden="true">
+        <label>Don't fill this in: <input name="bot-field" tabindex="-1" /></label>
+      </p>
+
+      <div class="join-form__grid">
+        <div class="join-form__field">
+          <label for="first-name">First Name</label>
+          <input id="first-name" type="text" name="first_name" placeholder="Your name" required />
+        </div>
+        <div class="join-form__field">
+          <label for="last-name">Last Name</label>
+          <input id="last-name" type="text" name="last_name" placeholder="Your surname" required />
+        </div>
+        <div class="join-form__field">
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" placeholder="your@email.com" required />
+        </div>
+        <div class="join-form__field">
+          <label for="phone">Phone <span class="join-form__optional">(optional)</span></label>
+          <input id="phone" type="tel" name="phone" placeholder="+44..." />
+        </div>
+        <div class="join-form__field">
+          <label for="position">Playing Position</label>
+          <select id="position" name="position">
+            <option>Not sure yet</option>
+            <option>Setter</option>
+            <option>Outside Hitter</option>
+            <option>Middle Blocker</option>
+            <option>Libero</option>
+            <option>Opposite</option>
+          </select>
+        </div>
+        <div class="join-form__field">
+          <label for="level">Experience Level</label>
+          <select id="level" name="experience_level">
+            <option>Total Beginner</option>
+            <option>Some Experience</option>
+            <option>Intermediate</option>
+            <option>Advanced / Competitive</option>
+          </select>
+        </div>
+        <div class="join-form__field join-form__field--full">
+          <label for="message">Anything else you'd like us to know? <span class="join-form__optional">(optional)</span></label>
+          <textarea
+            id="message"
+            name="message"
+            rows="4"
+            placeholder="Tell us about yourself, your volleyball background, what you're looking for..."
+          ></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn--primary join-form__submit">Send →</button>
+      <p class="join-form__note">
+        We'll get back to you within a few days. In a rush?
+        <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer">
+          DM us on Instagram
+        </a>
+        for a faster response.
+      </p>
+    </form>
+
+  </div>
+</BaseLayout>
+
+<style>
+  .section-eyebrow { margin-bottom: 1.5rem; }
+
+  /* ── Pathways ── */
+  .pathways {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 52px;
+  }
+
+  @media (max-width: 768px) {
+    .pathways { grid-template-columns: 1fr; }
+  }
+
+  .pathway {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pathway--featured {
+    background: linear-gradient(135deg, #0038b8, #0060d8);
+    border-color: rgba(0,150,255,0.3);
+  }
+
+  .pathway--featured::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    pointer-events: none;
+  }
+
+  .pathway__num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    flex-shrink: 0;
+  }
+
+  .pathway--featured .pathway__num {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.35);
+    color: #fff;
+  }
+
+  .pathway__icon { font-size: 2.25rem; }
+
+  .pathway__title {
+    font-size: 1.125rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+  }
+
+  .pathway__body {
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.6);
+    flex: 1;
+  }
+
+  .pathway--featured .pathway__body { color: rgba(255,255,255,0.8); }
+
+  .pathway__schedule {
+    background: rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pathway__schedule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.6875rem;
+  }
+
+  .pathway__schedule-row strong { color: #fff; }
+  .pathway__schedule-row span { color: rgba(255,255,255,0.5); }
+
+  .pathway__schedule-venue {
+    font-size: 0.625rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 4px;
+  }
+
+  .pathway__cta { align-self: flex-start; }
+
+  .pathway__insta-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.04);
+    margin-top: auto;
+    transition: border-color 0.15s;
+  }
+
+  .pathway__insta-link:hover { border-color: rgba(255,255,255,0.35); }
+
+  .pathway__form-link { margin-top: auto; text-align: center; width: 100%; }
+
+  /* ── Join form ── */
+  .join-form {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 36px;
+  }
+
+  .join-form__honeypot { display: none; }
+
+  .join-form__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .join-form__grid { grid-template-columns: 1fr; }
+    .join-form__field--full { grid-column: span 1; }
+  }
+
+  .join-form__field { display: flex; flex-direction: column; gap: 8px; }
+  .join-form__field--full { grid-column: span 2; }
+
+  .join-form__field label {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .join-form__optional { font-weight: 400; color: rgba(255,255,255,0.2); text-transform: none; letter-spacing: 0; }
+
+  .join-form__field input,
+  .join-form__field select,
+  .join-form__field textarea {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 7px;
+    padding: 11px 14px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8125rem;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .join-form__field input:focus,
+  .join-form__field select:focus,
+  .join-form__field textarea:focus {
+    outline: none;
+    border-color: var(--color-accent-to);
+  }
+
+  .join-form__field select option { background: var(--color-surface); }
+
+  .join-form__submit { margin-bottom: 14px; padding: 13px 40px; }
+
+  .join-form__note {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.6875rem;
+    line-height: 1.6;
+  }
+
+  .join-form__note a { color: var(--color-accent-to); }
+</style>
