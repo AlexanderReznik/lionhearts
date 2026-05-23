@@ -1,0 +1,291 @@
+---
+// src/components/Hero.astro
+interface Slide {
+  image: string;
+  label: string;
+  alt: string;
+}
+
+interface Props {
+  slides: Slide[];
+}
+
+const { slides } = Astro.props;
+---
+
+<section
+  class="hero"
+  aria-label="Club highlights carousel"
+  data-labels={slides.map(s => s.label).join('||')}
+>
+  <!-- Slides -->
+  <div class="hero__slides">
+    {slides.map((slide, i) => (
+      <div
+        class:list={['hero__slide', { 'hero__slide--active': i === 0 }]}
+        style={`background-image: url(${slide.image})`}
+        role="img"
+        aria-label={slide.alt}
+        data-index={i}
+      />
+    ))}
+  </div>
+
+  <!-- Decorative overlays -->
+  <div class="hero__texture" aria-hidden="true"></div>
+  <div class="hero__overlay" aria-hidden="true"></div>
+  <div class="hero__accent" aria-hidden="true"></div>
+
+  <!-- Content -->
+  <div class="hero__content">
+    <div class="hero__location">
+      <span aria-hidden="true">📍</span>
+      <strong>Shoreditch</strong>
+      <span>· East London · Est. 1998</span>
+    </div>
+
+    <div class="hero__tag">NVL Super League · LVA Premier League</div>
+
+    <h1 class="hero__headline">
+      Together<span class="gradient-text">We Roar.</span>
+    </h1>
+
+    <p class="hero__sub">
+      East London's volleyball club — competing from the NVL Super League to your first ever session.
+    </p>
+
+    <div class="hero__flags" aria-label="Players from around the world">
+      <span aria-hidden="true">🇬🇧🇧🇷🇫🇷🇵🇹🇩🇪🇯🇵🇳🇬🇦🇺🇮🇹🇪🇸🇺🇸+</span>
+      <p>Players from all over the world</p>
+    </div>
+
+    <div class="hero__ctas">
+      <a href="/join" class="btn btn--primary">Join the Club</a>
+      <a href="/teams" class="btn btn--ghost">Meet Our Teams →</a>
+    </div>
+  </div>
+
+  <!-- Carousel label + dots -->
+  <div class="hero__carousel-label" id="carousel-label" aria-live="polite">
+    {slides[0] && `01 / ${String(slides.length).padStart(2,'0')} · ${slides[0].label}`}
+  </div>
+
+  <div class="hero__dots" role="tablist" aria-label="Carousel slides">
+    {slides.map((_, i) => (
+      <button
+        class:list={['hero__dot', { 'hero__dot--active': i === 0 }]}
+        role="tab"
+        aria-selected={i === 0}
+        aria-label={`Slide ${i + 1}`}
+        data-slide={i}
+      />
+    ))}
+  </div>
+</section>
+
+<style>
+  .hero {
+    height: 92vh;
+    min-height: 620px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    background: var(--color-bg);
+  }
+
+  /* ── Slides ── */
+  .hero__slides { position: absolute; inset: 0; }
+
+  .hero__slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+    background-color: var(--color-bg);
+  }
+
+  .hero__slide--active { opacity: 1; }
+
+  /* ── Overlays ── */
+  .hero__texture {
+    position: absolute; inset: 0; opacity: 0.025; pointer-events: none;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 18px, rgba(255,255,255,1) 18px, rgba(255,255,255,1) 19px),
+      repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(255,255,255,1) 38px, rgba(255,255,255,1) 39px);
+  }
+
+  .hero__overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, rgba(5,13,26,0.97) 0%, rgba(5,13,26,0.55) 40%, rgba(5,13,26,0.1) 100%);
+  }
+
+  .hero__accent {
+    position: absolute; top: 0; right: 200px; bottom: 0; width: 1px; pointer-events: none;
+    background: linear-gradient(to bottom, transparent, rgba(0,100,255,0.25), transparent);
+    transform: skewX(-12deg);
+  }
+
+  /* ── Content ── */
+  .hero__content {
+    position: relative;
+    z-index: 2;
+    padding: 0 var(--page-px) 72px;
+    max-width: 760px;
+  }
+
+  .hero__location {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    background: rgba(0,80,220,0.1);
+    border: 1px solid rgba(0,120,255,0.2);
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .hero__location strong { color: #fff; }
+  .hero__location span:last-child { color: var(--color-text-muted); }
+
+  .hero__tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 3px;
+    padding: 4px 10px;
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+  }
+
+  .hero__headline {
+    font-size: clamp(3.25rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    letter-spacing: -4px;
+    margin-bottom: 20px;
+  }
+
+  .hero__headline .gradient-text { display: block; }
+
+  .hero__sub {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    margin-bottom: 16px;
+    max-width: 460px;
+  }
+
+  .hero__flags {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+
+  .hero__flags span { font-size: 1rem; letter-spacing: 2px; }
+
+  .hero__flags p {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+    font-style: italic;
+  }
+
+  .hero__ctas { display: flex; gap: 14px; align-items: center; }
+
+  /* ── Carousel controls ── */
+  .hero__carousel-label {
+    position: absolute;
+    bottom: 28px;
+    left: var(--page-px);
+    z-index: 3;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.5625rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .hero__dots {
+    position: absolute;
+    bottom: 28px;
+    right: var(--page-px);
+    z-index: 3;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .hero__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    padding: 0;
+    transition: width 0.25s, background 0.25s, border-radius 0.25s;
+  }
+
+  .hero__dot--active {
+    width: 24px;
+    border-radius: 3px;
+    background: var(--color-accent-to);
+  }
+</style>
+
+<script>
+  const slides = document.querySelectorAll<HTMLElement>('.hero__slide');
+  const dots = document.querySelectorAll<HTMLButtonElement>('.hero__dot');
+  const label = document.getElementById('carousel-label');
+
+  const section = document.querySelector('.hero');
+  const rawLabels = section?.getAttribute('data-labels') ?? '';
+  const slideLabels = rawLabels ? rawLabels.split('||') : [];
+
+  let current = 0;
+  let timer: ReturnType<typeof setInterval>;
+
+  function goTo(n: number) {
+    slides[current].classList.remove('hero__slide--active');
+    dots[current].classList.remove('hero__dot--active');
+    dots[current].setAttribute('aria-selected', 'false');
+
+    current = (n + slides.length) % slides.length;
+
+    slides[current].classList.add('hero__slide--active');
+    dots[current].classList.add('hero__dot--active');
+    dots[current].setAttribute('aria-selected', 'true');
+
+    if (label && slideLabels[current]) {
+      label.textContent = `${String(current + 1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')} · ${slideLabels[current]}`;
+    }
+  }
+
+  function startTimer() {
+    timer = setInterval(() => goTo(current + 1), 5000);
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    startTimer();
+  }
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('click', () => { goTo(i); resetTimer(); });
+  });
+
+  section?.addEventListener('mouseenter', () => clearInterval(timer));
+  section?.addEventListener('mouseleave', startTimer);
+
+  if (slides.length > 1) startTimer();
+</script>
