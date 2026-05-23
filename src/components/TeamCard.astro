@@ -16,9 +16,8 @@ const imagePath = team.image ?? '/images/team-placeholder.jpg';
       src={imagePath}
       alt={`${team.name} team photo`}
       loading="lazy"
-      onerror="this.style.display='none'"
     />
-    <div class="team-card__photo-fallback" aria-hidden="true">Team photo</div>
+    <div class="team-card__photo-fallback">Team photo</div>
   </div>
   <div class="team-card__info">
     <span class="team-card__gender">{team.gender}</span>
@@ -55,6 +54,8 @@ const imagePath = team.image ?? '/images/team-placeholder.jpg';
     height: 100%;
     object-fit: cover;
   }
+
+  .team-card__photo img[data-error] { display: none; }
 
   .team-card__photo-fallback {
     position: absolute;
@@ -107,3 +108,9 @@ const imagePath = team.image ?? '/images/team-placeholder.jpg';
     text-transform: uppercase;
   }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLImageElement>('.team-card__photo img').forEach(img => {
+    img.addEventListener('error', () => img.setAttribute('data-error', ''));
+  });
+</script>

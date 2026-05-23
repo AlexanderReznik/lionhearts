@@ -32,10 +32,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
       {mensTeams.map(team => <TeamCard team={team} />)}
     </div>
 
-    <p class="teams-note">
-      * Divisions are placeholders — confirm with club before launch.
-      Team photos to be provided by client.
-    </p>
+    <!-- TODO before launch: confirm team divisions with club; provide real team photos -->
 
   </div>
 </BaseLayout>
@@ -50,11 +47,11 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     gap: 16px;
   }
 
-  .teams-grid--womens { margin-bottom: 0; }
+  @media (max-width: 768px) {
+    .teams-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 
-  .teams-note {
-    font-size: 0.625rem;
-    color: rgba(255,255,255,0.2);
-    margin-top: 20px;
+  @media (max-width: 480px) {
+    .teams-grid { grid-template-columns: 1fr; }
   }
 </style>
