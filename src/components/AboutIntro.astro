@@ -1,0 +1,147 @@
+---
+// src/components/AboutIntro.astro
+import { flags } from '../data/flags';
+const cardFlags = flags.slice(0, 15);
+---
+
+<section class="about-intro">
+  <div class="about-intro__inner container">
+
+    <div class="about-intro__text">
+      <p class="eyebrow">Est. 1998 · Shoreditch</p>
+      <h2 class="about-intro__headline">
+        The heartbeat<br />of <em>East London</em><br />volleyball.
+      </h2>
+      <p class="about-intro__body">
+        Rooted in Shoreditch since 1998, Lionhearts has grown into one of London's most celebrated
+        volleyball clubs — with 9 teams and a community of players from every corner of the world.
+      </p>
+      <a href="/about" class="about-intro__link">Our full story →</a>
+    </div>
+
+    <div class="about-intro__cards">
+      <!-- Shoreditch location card -->
+      <div class="about-intro__location-card">
+        <div class="about-intro__pin" aria-hidden="true">📍</div>
+        <div>
+          <h3>Shoreditch, <span class="about-intro__postcode">E2</span></h3>
+          <p>Mulberry Academy · East London<br />No other club owns this postcode.</p>
+        </div>
+      </div>
+
+      <!-- International community card -->
+      <div class="about-intro__intl-card">
+        <h3>An international community</h3>
+        <div class="about-intro__flags" aria-label="Flags of player nationalities">
+          {cardFlags.map(f => (
+            <span title={f.country} aria-label={f.country}>{f.emoji}</span>
+          ))}
+          <span aria-hidden="true">+</span>
+        </div>
+        <p>Players from all over the world — if you're new to London, you'll feel at home here.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .about-intro {
+    background: var(--color-bg);
+    padding: var(--space-xl) var(--page-px);
+  }
+
+  .about-intro__inner {
+    display: flex;
+    gap: 64px;
+    align-items: flex-start;
+  }
+
+  .about-intro__text { flex: 1; }
+
+  .about-intro__headline {
+    font-size: clamp(2rem, 4vw, 2.375rem);
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: -1.5px;
+    margin-bottom: 18px;
+  }
+
+  .about-intro__headline em { color: var(--color-accent-to); font-style: normal; }
+
+  .about-intro__body {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    margin-bottom: 24px;
+  }
+
+  .about-intro__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-accent-to);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .about-intro__link:hover { text-decoration: underline; }
+
+  .about-intro__cards {
+    width: 340px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .about-intro__location-card {
+    background: linear-gradient(135deg, rgba(0,60,180,0.15), rgba(0,120,255,0.07));
+    border: 1px solid var(--color-border-blue);
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .about-intro__pin {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--color-accent-from), var(--color-accent-to));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+  }
+
+  .about-intro__location-card h3 { font-size: 0.875rem; font-weight: 800; margin-bottom: 2px; }
+  .about-intro__location-card p { font-size: 0.6875rem; color: var(--color-text-muted); line-height: 1.5; }
+  .about-intro__postcode { color: var(--color-highlight-1); font-weight: 700; }
+
+  .about-intro__intl-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+
+  .about-intro__intl-card h3 { font-size: 0.8125rem; font-weight: 700; margin-bottom: 10px; }
+
+  .about-intro__flags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .about-intro__intl-card p { font-size: 0.6875rem; color: rgba(255,255,255,0.35); line-height: 1.5; }
+</style>
