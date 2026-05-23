@@ -1,0 +1,183 @@
+---
+// src/components/CommunitySection.astro
+import { flags } from '../data/flags';
+---
+
+<section class="community">
+  <div class="community__inner container">
+
+    <div class="community__header">
+      <div>
+        <p class="eyebrow">Our Community</p>
+        <h2 class="community__headline">
+          Volleyball brings<br />the <em>world</em> to E2.
+        </h2>
+      </div>
+      <p class="community__sub">
+        New to London? Looking for your people? You've found us.<br />
+        Every flag below was added by a club member.
+      </p>
+    </div>
+
+    <!-- Flag mosaic -->
+    <div class="community__mosaic" aria-label="Flags representing club member nationalities">
+      {flags.map(f => (
+        <span class="community__flag" title={f.country} aria-label={f.country}>{f.emoji}</span>
+      ))}
+      <!-- Phase 2 placeholder -->
+      <div class="community__add-flag" title="Coming soon: submit your flag" aria-hidden="true">+</div>
+    </div>
+
+    <div class="community__divider" aria-hidden="true">
+      <div></div>
+      <span>Every flag added by a club member</span>
+      <div></div>
+    </div>
+
+    <!-- Member quote -->
+    <blockquote class="community__quote">
+      <p>
+        "I just heard 3 lightning strikes and was stuck in the shed cause of hail storms,
+        I'm not going beach"
+      </p>
+      <footer>
+        — <cite>Babatope Oscar Alabi</cite>
+        <span class="community__quote-note">(placeholder — replace before launch)</span>
+      </footer>
+    </blockquote>
+
+  </div>
+</section>
+
+<style>
+  .community {
+    background: var(--color-surface-3);
+    padding: var(--space-xl) var(--page-px);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .community::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,70,200,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .community__inner { position: relative; }
+
+  .community__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    gap: 32px;
+  }
+
+  .community__headline {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-top: 8px;
+  }
+
+  .community__headline em { color: var(--color-accent-to); font-style: normal; }
+
+  .community__sub {
+    color: var(--color-text-faint);
+    font-size: 0.8125rem;
+    max-width: 280px;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  .community__mosaic {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 28px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+  }
+
+  .community__flag {
+    font-size: 1.875rem;
+    line-height: 1;
+    cursor: default;
+    transition: transform 0.15s;
+  }
+
+  .community__flag:hover { transform: scale(1.15); }
+
+  .community__add-flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    border: 2px dashed rgba(0,120,255,0.3);
+    background: rgba(0,80,220,0.06);
+    color: rgba(0,150,255,0.5);
+    font-size: 1.25rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-left: 6px;
+  }
+
+  .community__divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .community__divider div {
+    height: 1px;
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .community__divider span {
+    font-size: 0.5625rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .community__quote {
+    background: linear-gradient(135deg, rgba(0,60,180,0.1), rgba(0,120,255,0.05));
+    border-left: 3px solid #0070ff;
+    border-radius: 0 12px 12px 0;
+    padding: 24px 28px;
+  }
+
+  .community__quote p {
+    font-size: 1.0625rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+
+  .community__quote footer {
+    font-size: 0.6875rem;
+    color: var(--color-text-faint);
+    font-weight: 600;
+  }
+
+  .community__quote-note {
+    color: rgba(255,255,255,0.15);
+    font-style: italic;
+    margin-left: 8px;
+  }
+</style>
