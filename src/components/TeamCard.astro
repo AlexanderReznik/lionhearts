@@ -1,0 +1,109 @@
+---
+// src/components/TeamCard.astro
+import type { Team } from '../data/teams';
+
+interface Props {
+  team: Team;
+}
+
+const { team } = Astro.props;
+const imagePath = team.image ?? '/images/team-placeholder.jpg';
+---
+
+<article class="team-card">
+  <div class="team-card__photo">
+    <img
+      src={imagePath}
+      alt={`${team.name} team photo`}
+      loading="lazy"
+      onerror="this.style.display='none'"
+    />
+    <div class="team-card__photo-fallback" aria-hidden="true">Team photo</div>
+  </div>
+  <div class="team-card__info">
+    <span class="team-card__gender">{team.gender}</span>
+    <h2 class="team-card__name">{team.name}</h2>
+    <p class="team-card__division">{team.division}</p>
+    {team.badge && <span class="team-card__badge">{team.badge}</span>}
+  </div>
+</article>
+
+<style>
+  .team-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .team-card:hover {
+    border-color: rgba(0,120,255,0.3);
+    transform: translateY(-2px);
+  }
+
+  .team-card__photo {
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(160deg, var(--color-surface-2), var(--color-surface));
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .team-card__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .team-card__photo-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-faint);
+    font-size: 0.625rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .team-card__info { padding: 18px 20px; }
+
+  .team-card__gender {
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-highlight-1);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .team-card__name {
+    font-size: 1.25rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .team-card__division {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+  }
+
+  .team-card__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    border-radius: 3px;
+    padding: 3px 10px;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+</style>
