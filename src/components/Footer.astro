@@ -25,7 +25,7 @@ const contactLinks = [
   <div class="footer__inner">
     <div class="footer__brand">
       <div class="footer__crest">
-        <svg width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg aria-hidden="true" width="40" height="40" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="22" cy="22" r="22" fill="url(#footer-crest-grad)"/>
           <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="20" fill="white">🦁</text>
           <defs>
@@ -44,9 +44,9 @@ const contactLinks = [
         Gosset Street, E2 6NW
       </address>
       <div class="footer__socials">
-        <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill" target="_blank" rel="noopener">📷 Instagram</a>
-        <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill" target="_blank" rel="noopener">👍 Facebook</a>
-        <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill" target="_blank" rel="noopener">▶ YouTube</a>
+        <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill" target="_blank" rel="noopener noreferrer">📷 Instagram</a>
+        <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill" target="_blank" rel="noopener noreferrer">👍 Facebook</a>
+        <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill" target="_blank" rel="noopener noreferrer">▶ YouTube</a>
       </div>
     </div>
 
@@ -67,7 +67,14 @@ const contactLinks = [
     <div class="footer__col">
       <h4>Contact</h4>
       <ul role="list">
-        {contactLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
+        {contactLinks.map(l => (
+          <li>
+            <a
+              href={l.href}
+              {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >{l.label}</a>
+          </li>
+        ))}
       </ul>
     </div>
   </div>
@@ -80,7 +87,7 @@ const contactLinks = [
 
 <style>
   .footer {
-    background: #03060f;
+    background: var(--color-surface-3);
     border-top: 1px solid var(--color-border);
     padding: 52px var(--page-px) 28px;
   }
