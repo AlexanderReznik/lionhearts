@@ -39,7 +39,7 @@ if (SHEET_ID) {
 // values in src/data/teams.ts after verification.
 function volleyzoneUrl(slug?: string): string {
   if (!slug) return VOLLEYZONE_BASE;
-  return `${VOLLEYZONE_BASE}?team=${slug}`;
+  return `${VOLLEYZONE_BASE}?team=${encodeURIComponent(slug)}`;
 }
 
 // ── JSON-LD: Recurring events with Schedule type ───────────────────────────
@@ -162,14 +162,18 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     <!-- Filter pills (visual only in Phase 1 — no JS filtering) -->
     <div class="filter-pills" role="group" aria-label="Filter by team type">
       {['All Teams', "Women's", "Men's", 'NVL', 'LVA'].map((pill, i) => (
-        <button class:list={['filter-pill', { 'filter-pill--active': i === 0 }]}>
+        <button
+          type="button"
+          aria-pressed={i === 0 ? "true" : "false"}
+          class:list={['filter-pill', { 'filter-pill--active': i === 0 }]}
+        >
           {pill}
         </button>
       ))}
     </div>
 
     <!-- Women's teams -->
-    <p class="eyebrow" style="margin-bottom: 1rem;">Women's Teams</p>
+    <h2 class="eyebrow section-eyebrow">Women's Teams</h2>
     {womensTeams.map(team => (
       <div class="team-fixture-section">
         <div class="team-fixture-section__header">
@@ -191,13 +195,12 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
         </div>
         <p class="team-fixture-section__note">
           Fixtures and results for {team.name} on Volleyzone.
-          Link opens the Volleyzone schedule pre-filtered for this team.
         </p>
       </div>
     ))}
 
     <!-- Men's teams -->
-    <p class="eyebrow" style="margin-top: 2.5rem; margin-bottom: 1rem;">Men's Teams</p>
+    <h2 class="eyebrow section-eyebrow section-eyebrow--spaced">Men's Teams</h2>
     {mensTeams.map(team => (
       <div class="team-fixture-section">
         <div class="team-fixture-section__header">
@@ -374,4 +377,8 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     font-size: 0.75rem;
     line-height: 1.6;
   }
+
+  /* ── Section eyebrow headers ── */
+  .section-eyebrow { margin-bottom: 1rem; }
+  .section-eyebrow--spaced { margin-top: 2.5rem; }
 </style>
