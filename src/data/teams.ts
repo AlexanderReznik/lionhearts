@@ -23,3 +23,7 @@ export const teams: Team[] = [
   { name: 'Roar',       gender: "Men's",   division: 'LVA Division 3',     volleyzoneSlug: 'lionhearts-roar' },
   { name: 'Leo',        gender: "Men's",   division: 'LVA Division 4',     volleyzoneSlug: 'lionhearts-leo' },
 ];
+
+// NOTE: volleyzoneSlug values are guesses. Before launch, visit
+// https://competitions.volleyzone.co.uk/fixture-and-results/lva/,
+// select each team, copy the URL, and update the slugs here.

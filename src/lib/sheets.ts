@@ -40,7 +40,7 @@ function splitCSVLine(line: string): string[] {
 }
 
 export async function fetchSessions(sheetId: string): Promise<Session[]> {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
+  const url = `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/export?format=csv&gid=0`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Google Sheets fetch failed: ${res.status}`);
   const csv = await res.text();
