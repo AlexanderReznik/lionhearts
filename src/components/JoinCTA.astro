@@ -88,4 +88,22 @@
     position: relative;
     flex-shrink: 0;
   }
+
+  @media (max-width: 768px) {
+    .join-cta__inner {
+      flex-direction: column;
+      gap: 24px;
+      padding: 36px 24px;
+    }
+
+    .join-cta__actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .join-cta__actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
 </style>
