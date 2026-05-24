@@ -52,8 +52,46 @@ const isActive = (href: string) =>
     </ul>
 
     <a href="/join" class="btn btn--primary nav__cta">Join Us</a>
+    <button
+      class="nav__hamburger"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="nav-overlay"
+    >
+      <span aria-hidden="true">☰</span>
+    </button>
   </div>
 </nav>
+
+<div
+  class="nav__overlay"
+  id="nav-overlay"
+  role="dialog"
+  aria-label="Navigation menu"
+  aria-modal="true"
+  hidden
+>
+  <button class="nav__overlay-close" type="button" aria-label="Close menu">
+    <span aria-hidden="true">✕</span>
+  </button>
+  <ul class="nav__overlay-links" role="list">
+    {navLinks.map(link => (
+      <li>
+        <a
+          href={link.href}
+          class:list={['nav__overlay-link', { 'nav__overlay-link--active': isActive(link.href) }]}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+  <div class="nav__overlay-footer">
+    <a href="/join" class="btn btn--primary nav__overlay-cta">Join the Club</a>
+  </div>
+</div>
 
 <style>
   .nav {
@@ -150,4 +188,148 @@ const isActive = (href: string) =>
     flex-shrink: 0;
     font-size: 0.6875rem;
   }
+
+  /* ── Hamburger (hidden on desktop) ── */
+  .nav__hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    font-size: 1.375rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .nav__hamburger:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ── Full-screen overlay ── */
+  .nav__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    background: rgba(5, 13, 26, 0.97);
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--nav-height);
+    overflow-y: auto;
+  }
+
+  .nav__overlay[hidden] { display: none; }
+
+  .nav__overlay-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: var(--nav-height);
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    font-size: 1.375rem;
+    cursor: pointer;
+  }
+
+  .nav__overlay-close:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 3px;
+  }
+
+  .nav__overlay-links {
+    list-style: none;
+    padding: 2rem var(--page-px);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    flex: 1;
+  }
+
+  .nav__overlay-link {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .nav__overlay-link:hover { color: var(--color-text); }
+  .nav__overlay-link--active { color: var(--color-accent-to); }
+
+  .nav__overlay-link:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 3px;
+  }
+
+  .nav__overlay-footer {
+    padding: 1.5rem var(--page-px);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .nav__overlay-cta { width: 100%; justify-content: center; }
+
+  /* ── Mobile breakpoint ── */
+  @media (max-width: 768px) {
+    .nav__links  { display: none; }
+    .nav__e2-badge { display: none; }
+    .nav__hamburger { display: flex; }
+    .nav__cta { margin-left: auto; }
+  }
 </style>
+
+<script>
+  const hamburger = document.querySelector<HTMLButtonElement>('.nav__hamburger');
+  const overlay   = document.getElementById('nav-overlay') as HTMLElement | null;
+  const closeBtn  = overlay?.querySelector<HTMLButtonElement>('.nav__overlay-close');
+
+  function openMenu(): void {
+    overlay?.removeAttribute('hidden');
+    hamburger?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    closeBtn?.focus();
+  }
+
+  function closeMenu(): void {
+    overlay?.setAttribute('hidden', '');
+    hamburger?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    hamburger?.focus();
+  }
+
+  hamburger?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && !overlay?.hasAttribute('hidden')) closeMenu();
+  });
+
+  overlay?.querySelectorAll<HTMLAnchorElement>('.nav__overlay-link').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Focus trap
+  overlay?.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key !== 'Tab') return;
+    const focusable = Array.from(
+      overlay.querySelectorAll<HTMLElement>('a[href], button')
+    );
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  });
+</script>
