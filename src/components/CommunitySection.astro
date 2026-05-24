@@ -180,4 +180,17 @@ import { flags } from '../data/flags';
     font-style: italic;
     margin-left: 8px;
   }
+
+  @media (max-width: 768px) {
+    .community__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .community__sub {
+      text-align: left;
+      max-width: 100%;
+    }
+  }
 </style>
