@@ -38,11 +38,6 @@ const contactLinks = [
         <strong>London Lionhearts VBC</strong>
       </div>
       <p class="footer__tagline">"Together We Roar."</p>
-      <p class="footer__location">📍 <strong>Shoreditch, East London</strong></p>
-      <address class="footer__address">
-        Mulberry Academy Shoreditch<br />
-        Gosset Street, E2 6NW
-      </address>
       <div class="footer__socials">
         <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill" target="_blank" rel="noopener noreferrer">📷 Instagram</a>
         <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill" target="_blank" rel="noopener noreferrer">👍 Facebook</a>
@@ -77,6 +72,10 @@ const contactLinks = [
             </li>
           ))}
         </ul>
+        <address class="footer__address">
+          Mulberry Academy Shoreditch<br />
+          Gosset Street, E2 6NW
+        </address>
       </div>
     </div>
   </div>
@@ -125,23 +124,12 @@ const contactLinks = [
     margin-bottom: 6px;
   }
 
-  .footer__location {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--color-text-muted);
-    font-size: 0.6875rem;
-    margin-bottom: 10px;
-  }
-
-  .footer__location strong { color: rgba(255,255,255,0.7); }
-
   .footer__address {
     color: rgba(255,255,255,0.5);
     font-size: 0.6875rem;
     line-height: 1.7;
     font-style: normal;
-    margin-bottom: 16px;
+    margin-top: 14px;
   }
 
   .footer__socials {
