@@ -23,32 +23,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <!-- 1: Open session -->
       <div class="pathway pathway--featured">
-        <div class="pathway__num">1</div>
         <div class="pathway__icon" aria-hidden="true">🏐</div>
         <h2 class="pathway__title">Come to an Open Session</h2>
         <p class="pathway__body">
           The easiest way in — just show up and play. No booking, no commitment, no experience
           needed. Meet the community and see if it's for you.
         </p>
-        <div class="pathway__schedule">
-          <div class="pathway__schedule-row">
-            <strong>Mon & Thu · 7–9pm</strong>
-            <span>All levels · Mixed</span>
-          </div>
-          <div class="pathway__schedule-row">
-            <strong>Fri · 8–10pm</strong>
-            <span>Intermediate / Advanced</span>
-          </div>
-          <div class="pathway__schedule-venue">
-            📍 Mulberry Academy, Shoreditch E2
-          </div>
-        </div>
         <a href="/events" class="btn btn--white pathway__cta">See Full Schedule</a>
       </div>
 
       <!-- 2: Instagram -->
       <div class="pathway">
-        <div class="pathway__num">2</div>
         <div class="pathway__icon" aria-hidden="true">📷</div>
         <h2 class="pathway__title">Say Hi on Instagram</h2>
         <p class="pathway__body">
@@ -67,7 +52,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <!-- 3: Form -->
       <div class="pathway">
-        <div class="pathway__num">3</div>
         <div class="pathway__icon" aria-hidden="true">✉️</div>
         <h2 class="pathway__title">Tell Us About Yourself</h2>
         <p class="pathway__body">
@@ -191,27 +175,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     pointer-events: none;
   }
 
-  .pathway__num {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.6);
-    flex-shrink: 0;
-  }
-
-  .pathway--featured .pathway__num {
-    background: rgba(255,255,255,0.2);
-    border-color: rgba(255,255,255,0.35);
-    color: #fff;
-  }
-
   .pathway__icon { font-size: 2.25rem; }
 
   .pathway__title {
@@ -229,32 +192,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .pathway--featured .pathway__body { color: rgba(255,255,255,0.8); }
-
-  .pathway__schedule {
-    background: rgba(0,0,0,0.15);
-    border-radius: 8px;
-    padding: 12px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .pathway__schedule-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-    font-size: 0.6875rem;
-  }
-
-  .pathway__schedule-row strong { color: #fff; }
-  .pathway__schedule-row span { color: rgba(255,255,255,0.5); }
-
-  .pathway__schedule-venue {
-    font-size: 0.625rem;
-    color: rgba(255,255,255,0.4);
-    margin-top: 4px;
-  }
 
   .pathway__cta { align-self: flex-start; }
 
