@@ -54,4 +54,34 @@ const stats = [
     text-transform: uppercase;
     margin-top: 5px;
   }
+
+  @media (max-width: 768px) {
+    .stats-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .stats-bar__stat {
+      border-right: none;
+      border-bottom: none;
+    }
+
+    /* Row 1: stats 1 and 2 */
+    .stats-bar__stat:nth-child(1),
+    .stats-bar__stat:nth-child(2) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* Col 1 items get a right border */
+    .stats-bar__stat:nth-child(1),
+    .stats-bar__stat:nth-child(3) {
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    /* 5th stat spans both columns */
+    .stats-bar__stat:nth-child(5) {
+      grid-column: span 2;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+  }
 </style>
