@@ -159,23 +159,29 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
       </div>
     </section>
 
-    <!-- Filter pills (visual only in Phase 1 — no JS filtering) -->
     <div class="filter-pills" role="group" aria-label="Filter by team type">
-      {['All Teams', "Women's", "Men's", 'NVL', 'LVA'].map((pill, i) => (
+      {([
+        { label: 'All Teams', filter: 'all' },
+        { label: "Women's",   filter: 'womens' },
+        { label: "Men's",     filter: 'mens' },
+        { label: 'NVL',       filter: 'nvl' },
+        { label: 'LVA',       filter: 'lva' },
+      ] as const).map(({ label, filter }, i) => (
         <button
           type="button"
+          data-filter={filter}
           aria-pressed={i === 0 ? "true" : "false"}
           class:list={['filter-pill', { 'filter-pill--active': i === 0 }]}
         >
-          {pill}
+          {label}
         </button>
       ))}
     </div>
 
     <!-- Women's teams -->
-    <h2 class="eyebrow section-eyebrow">Women's Teams</h2>
+    <h2 class="eyebrow section-eyebrow" data-section="womens">Women's Teams</h2>
     {womensTeams.map(team => (
-      <div class="team-fixture-section">
+      <div class="team-fixture-section" data-gender="womens" data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}>
         <div class="team-fixture-section__header">
           <div>
             <span class="team-fixture-section__name">{team.name}</span>
@@ -200,9 +206,9 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     ))}
 
     <!-- Men's teams -->
-    <h2 class="eyebrow section-eyebrow section-eyebrow--spaced">Men's Teams</h2>
+    <h2 class="eyebrow section-eyebrow section-eyebrow--spaced" data-section="mens">Men's Teams</h2>
     {mensTeams.map(team => (
-      <div class="team-fixture-section">
+      <div class="team-fixture-section" data-gender="mens" data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}>
         <div class="team-fixture-section__header">
           <div>
             <span class="team-fixture-section__name">{team.name}</span>
@@ -228,6 +234,40 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
 
   </div>
 </BaseLayout>
+
+<script>
+  const pills    = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const rows     = document.querySelectorAll<HTMLElement>('.team-fixture-section');
+  const headers  = document.querySelectorAll<HTMLElement>('[data-section]');
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const filter = pill.dataset.filter!;
+
+      pills.forEach(p => {
+        p.classList.remove('filter-pill--active');
+        p.setAttribute('aria-pressed', 'false');
+      });
+      pill.classList.add('filter-pill--active');
+      pill.setAttribute('aria-pressed', 'true');
+
+      rows.forEach(row => {
+        const show = filter === 'all'
+          || filter === row.dataset.gender
+          || filter === row.dataset.league;
+        row.hidden = !show;
+      });
+
+      headers.forEach(header => {
+        const gender = header.dataset.section!;
+        const anyVisible = Array.from(rows).some(
+          r => r.dataset.gender === gender && !r.hidden
+        );
+        header.hidden = !anyVisible;
+      });
+    });
+  });
+</script>
 
 <style>
   /* ── Sessions box ── */
@@ -300,7 +340,18 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     border: 1px solid rgba(255,255,255,0.12);
     color: rgba(255,255,255,0.6);
     background: transparent;
-    cursor: default;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .filter-pill:hover:not(.filter-pill--active) {
+    border-color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.9);
+  }
+
+  .filter-pill:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 3px;
   }
 
   .filter-pill--active {
