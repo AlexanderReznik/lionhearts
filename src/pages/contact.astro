@@ -84,40 +84,25 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     <!-- Location block -->
     <div class="location-block">
       <div class="location-info">
-        <div>
-          <h2 class="location-info__headline">Find <em>Us</em></h2>
-          <address class="location-info__address">
-            Mulberry Academy Shoreditch<br />
-            Gosset Street<br />
-            London, E2 6NW
-          </address>
-        </div>
-        <div>
-          <h3 class="eyebrow section-eyebrow section-eyebrow--tight">Open Sessions</h3>
-          <div class="location-sessions">
-            <div class="session-pill">
-              <span class="session-pill__day">Mon & Thu</span>
-              <span class="session-pill__time">7:00 – 9:00pm</span>
-              <span class="session-pill__level">All Levels</span>
-            </div>
-            <div class="session-pill">
-              <span class="session-pill__day">Friday</span>
-              <span class="session-pill__time">8:00 – 10:00pm</span>
-              <span class="session-pill__level">Int / Adv</span>
-            </div>
-          </div>
-        </div>
+        <h2 class="location-info__headline">Find <em>Us</em></h2>
+        <address class="location-info__address">
+          Mulberry Academy Shoreditch<br />
+          Gosset Street<br />
+          London, E2 6NW
+        </address>
+        <a href={MAPS_URL} class="location-info__directions" target="_blank" rel="noopener noreferrer">
+          Open in Google Maps ↗
+        </a>
       </div>
 
       <div class="location-map">
-        <div class="location-map__pin" aria-hidden="true">📍</div>
-        <div class="location-map__label">
-          <strong>Mulberry Academy</strong>
-          <span>Shoreditch, E2 6NW</span>
-        </div>
-        <a href={MAPS_URL} class="location-map__btn" target="_blank" rel="noopener noreferrer">
-          Open in Google Maps ↗
-        </a>
+        <iframe
+          src="https://maps.google.com/maps?q=Mulberry+Academy+Shoreditch+Gosset+Street+London+E2+6NW&output=embed&z=16"
+          title="Mulberry Academy Shoreditch on Google Maps"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          class="location-map__iframe"
+        ></iframe>
       </div>
     </div>
 
@@ -240,8 +225,8 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     padding: 40px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    gap: 32px;
+    gap: 16px;
+    justify-content: center;
   }
 
   .location-info__headline {
@@ -249,7 +234,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: -0.5px;
-    margin-bottom: 8px;
+    margin-bottom: 0;
   }
 
   .location-info__headline em { color: var(--color-accent-to); font-style: normal; }
@@ -261,86 +246,32 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     font-style: normal;
   }
 
-  .location-sessions { display: flex; flex-direction: column; gap: 8px; }
-
-  .session-pill {
-    display: flex;
+  .location-info__directions {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    background: rgba(0,80,220,0.1);
-    border: 1px solid rgba(0,100,220,0.2);
-    border-radius: 8px;
-    padding: 10px 14px;
-    gap: 8px;
+    color: var(--color-accent-to);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    margin-top: 4px;
   }
 
-  .session-pill__day { font-size: 0.75rem; font-weight: 700; }
-  .session-pill__time { font-size: 0.6875rem; color: var(--color-text-muted); }
-  .session-pill__level { font-size: 0.5625rem; color: var(--color-highlight-1); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+  .location-info__directions:hover { text-decoration: underline; }
 
   /* Map area */
   .location-map {
-    background: linear-gradient(160deg, rgba(0,40,140,0.3), rgba(0,20,80,0.4));
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    gap: 16px;
-    position: relative;
     overflow: hidden;
+    min-height: 280px;
   }
 
-  .location-map::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0.06;
-    background:
-      repeating-linear-gradient(0deg, #fff 0, #fff 1px, transparent 1px, transparent 40px),
-      repeating-linear-gradient(90deg, #fff 0, #fff 1px, transparent 1px, transparent 40px);
+  .location-map__iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    border: 0;
+    display: block;
   }
-
-  .location-map__pin {
-    position: relative;
-    z-index: 1;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--color-accent-from), var(--color-accent-to));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.75rem;
-    box-shadow: 0 0 0 12px rgba(0,80,220,0.15), 0 0 0 24px rgba(0,80,220,0.07);
-  }
-
-  .location-map__label {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-  }
-
-  .location-map__label strong { display: block; font-size: 0.9375rem; font-weight: 700; margin-bottom: 4px; }
-  .location-map__label span { font-size: 0.75rem; color: var(--color-text-muted); }
-
-  .location-map__btn {
-    position: relative;
-    z-index: 1;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7);
-    padding: 9px 20px;
-    border-radius: 6px;
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.15s;
-  }
-
-  .location-map__btn:hover { background: rgba(255,255,255,0.14); }
 
   /* ── Social row ── */
   .social-row {
