@@ -199,4 +199,15 @@ const values = [
   .value-card__icon { font-size: 1.75rem; margin-bottom: 14px; }
   .value-card__title { font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin-bottom: 8px; }
   .value-card__body { font-size: 0.8125rem; color: var(--color-text-muted); line-height: 1.65; }
+
+  @media (max-width: 768px) {
+    .about-history__inner {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .values-row {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
