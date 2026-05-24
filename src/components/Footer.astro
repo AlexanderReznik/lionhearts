@@ -88,40 +88,45 @@ const contactLinks = [
 
 <style>
   .footer {
-    background: var(--color-surface-3);
-    border-top: 1px solid var(--color-border);
-    padding: 52px var(--page-px) 28px;
+    background: #020609;
+    border-top: 1px solid rgba(0, 80, 220, 0.25);
+    padding: 52px 0 28px;
   }
 
   .footer__inner {
     max-width: var(--max-width);
     margin: 0 auto;
+    padding: 0 var(--page-px);
     display: flex;
     gap: 48px;
     margin-bottom: 40px;
   }
 
-  .footer__brand { flex: 1.4; }
+  .footer__brand {
+    flex: 1.4;
+    display: flex;
+    flex-direction: column;
+  }
 
   .footer__crest {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .footer__crest strong {
     font-weight: 900;
-    font-size: 0.8125rem;
-    letter-spacing: 2px;
+    font-size: 0.875rem;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
   }
 
   .footer__tagline {
-    color: var(--color-text-faint);
-    font-size: 0.8125rem;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.875rem;
     font-style: italic;
-    margin-bottom: 6px;
+    margin-bottom: 20px;
   }
 
   .footer__address {
@@ -164,7 +169,7 @@ const contactLinks = [
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
+    color: var(--color-accent-to);
     margin-bottom: 14px;
   }
 
@@ -187,8 +192,8 @@ const contactLinks = [
   .footer__bottom {
     max-width: var(--max-width);
     margin: 0 auto;
+    padding: 22px var(--page-px) 0;
     border-top: 1px solid rgba(255,255,255,0.05);
-    padding-top: 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
