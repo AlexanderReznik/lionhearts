@@ -13,7 +13,7 @@ export const VOLLEYZONE_BASE =
 
 export const teams: Team[] = [
   // Women's
-  { name: 'Vinarius',   gender: "Women's", division: 'LVA Premier League', badge: '⚡ Super League', volleyzoneSlug: 'lionhearts-vinarius' },
+  { name: 'Vinarius',   gender: "Women's", division: 'NVL Super League',   badge: '⚡ Super League', volleyzoneSlug: 'lionhearts-vinarius' },
   { name: 'Cats',       gender: "Women's", division: 'LVA Division 1',     volleyzoneSlug: 'lionhearts-cats' },
   { name: 'Fury',       gender: "Women's", division: 'LVA Division 2',     volleyzoneSlug: 'lionhearts-fury' },
   { name: 'Beats',      gender: "Women's", division: 'LVA Division 3',     volleyzoneSlug: 'lionhearts-beats' },
@@ -22,7 +22,7 @@ export const teams: Team[] = [
   { name: 'Predators',  gender: "Men's",   division: 'LVA Division 1',     volleyzoneSlug: 'lionhearts-predators' },
   { name: 'Pride',      gender: "Men's",   division: 'LVA Division 2',     volleyzoneSlug: 'lionhearts-pride' },
   { name: 'Roar',       gender: "Men's",   division: 'LVA Division 3',     volleyzoneSlug: 'lionhearts-roar' },
-  { name: 'Leo',        gender: "Men's",   division: 'LVA Division 4',     volleyzoneSlug: 'lionhearts-leo' },
+  { name: 'Leo',        gender: "Men's",   division: 'NVL Division 2',     volleyzoneSlug: 'lionhearts-leo' },
 ];
 
 // NOTE: volleyzoneSlug values are guesses. Before launch, visit

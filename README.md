@@ -18,7 +18,7 @@ Website for [London Lionhearts VBC](https://lionheartsvolleyball.com) — East L
 | `/` | Home — hero carousel, stats, about intro, community, sponsors, Instagram feed, join CTA |
 | `/about` | Club history, founders, values |
 | `/events` | Open sessions (Google Sheets or fallback), Volleyzone fixture links per team |
-| `/teams` | 9-team grid — Women's: Vinarius, Cats, Fury, Beats · Men's: Alpha, Predators, Pride, Roar, Leo |
+| `/teams` | 9-team grid — NVL: Vinarius (W), Alpha (M), Leo (M) · LVA: Cats, Fury, Beats (W), Predators, Pride, Roar (M) |
 | `/sponsorship` | Title sponsor, partnership CTA, sponsorship perks |
 | `/join` | 3 join pathways + Formspree sign-up form |
 | `/contact` | Contact cards, location block, social links |
