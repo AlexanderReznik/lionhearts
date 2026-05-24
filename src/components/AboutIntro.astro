@@ -144,4 +144,19 @@ const cardFlags = flags.slice(0, 15);
   }
 
   .about-intro__intl-card p { font-size: 0.6875rem; color: rgba(255,255,255,0.35); line-height: 1.5; }
+
+  @media (max-width: 768px) {
+    .about-intro {
+      padding: var(--space-lg) var(--page-px);
+    }
+
+    .about-intro__inner {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .about-intro__cards {
+      width: 100%;
+    }
+  }
 </style>
