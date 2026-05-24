@@ -381,4 +381,18 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
   /* ── Section eyebrow headers ── */
   .section-eyebrow { margin-bottom: 1rem; }
   .section-eyebrow--spaced { margin-top: 2.5rem; }
+
+  @media (max-width: 640px) {
+    .team-fixture-section__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .team-fixture-section__right {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
 </style>
