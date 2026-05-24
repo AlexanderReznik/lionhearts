@@ -137,7 +137,8 @@ const { slides } = Astro.props;
   }
 
   .hero__location {
-    display: inline-flex;
+    display: flex;
+    width: fit-content;
     align-items: center;
     gap: 8px;
     margin-bottom: 16px;
@@ -155,7 +156,8 @@ const { slides } = Astro.props;
   .hero__location span:last-child { color: var(--color-text-muted); }
 
   .hero__tag {
-    display: inline-block;
+    display: block;
+    width: fit-content;
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 3px;
