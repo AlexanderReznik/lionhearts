@@ -15,7 +15,7 @@ a { color: inherit; }
   --color-accent-to:    #0090ff;
   --color-text:         #ffffff;
   --color-text-muted:   rgba(255, 255, 255, 0.5);
-  --color-text-faint:   rgba(255, 255, 255, 0.25);
+  --color-text-faint:   rgba(255, 255, 255, 0.45);
   --color-highlight-1:  #4da8ff;
   --color-highlight-2:  #00c2ff;
   --color-border:       rgba(255, 255, 255, 0.07);
