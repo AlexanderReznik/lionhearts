@@ -122,7 +122,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
 
     <!-- Open Sessions -->
     <section class="sessions-box" aria-labelledby="sessions-heading">
-      <p class="eyebrow" id="sessions-heading">Open Sessions</p>
+      <h2 class="eyebrow" id="sessions-heading">Open Sessions</h2>
 
       {usingFallback && (
         <p class="sessions-box__notice">
@@ -268,7 +268,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
   .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
   .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: #fff; }
   .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-highlight-1); }
-  .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.35); line-height: 1.5; margin-top: 4px; }
+  .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.55); line-height: 1.5; margin-top: 4px; }
 
   .session-card--venue {
     background: rgba(255,255,255,0.03);
@@ -276,9 +276,9 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     justify-content: center;
   }
 
-  .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
   .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; }
-  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.4); }
+  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.55); }
   .session-card__map-link { color: var(--color-highlight-1); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
   .session-card__transport { font-size: 0.625rem; color: var(--color-highlight-1); opacity: 0.7; margin-top: 4px; line-height: 1.5; }
 
@@ -298,7 +298,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     letter-spacing: 1px;
     text-transform: uppercase;
     border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.6);
     background: transparent;
     cursor: default;
   }
@@ -360,7 +360,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
   }
 
   .team-fixture-section__volleyzone {
-    color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.55);
     font-size: 0.625rem;
     font-weight: 700;
     letter-spacing: 1px;
@@ -373,7 +373,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
 
   .team-fixture-section__note {
     padding: 12px 20px;
-    color: rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.5);
     font-size: 0.75rem;
     line-height: 1.6;
   }
