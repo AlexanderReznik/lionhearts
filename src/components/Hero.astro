@@ -44,8 +44,6 @@ const { slides } = Astro.props;
       <span>· East London · Est. 1998</span>
     </div>
 
-    <div class="hero__tag">NVL Super League · LVA</div>
-
     <h1 class="hero__headline">
       Together<span class="gradient-text">We Roar.</span>
     </h1>
@@ -53,11 +51,6 @@ const { slides } = Astro.props;
     <p class="hero__sub">
       East London's volleyball club — competing from the NVL Super League to your first ever session.
     </p>
-
-    <div class="hero__flags" aria-label="Players from around the world">
-      <span aria-hidden="true">🇬🇧🇧🇷🇫🇷🇵🇹🇩🇪🇯🇵🇳🇬🇦🇺🇮🇹🇪🇸🇺🇸+</span>
-      <p>Players from all over the world</p>
-    </div>
 
     <div class="hero__ctas">
       <a href="/join" class="btn btn--primary">Join the Club</a>
@@ -155,21 +148,6 @@ const { slides } = Astro.props;
   .hero__location strong { color: #fff; }
   .hero__location span:last-child { color: var(--color-text-muted); }
 
-  .hero__tag {
-    display: block;
-    width: fit-content;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 3px;
-    padding: 4px 10px;
-    font-size: 0.5625rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    margin-bottom: 16px;
-  }
-
   .hero__headline {
     font-size: clamp(3.25rem, 8vw, 6rem);
     font-weight: 900;
@@ -185,23 +163,8 @@ const { slides } = Astro.props;
     color: var(--color-text-muted);
     font-size: 0.9375rem;
     line-height: 1.65;
-    margin-bottom: 16px;
+    margin-bottom: 32px;
     max-width: 460px;
-  }
-
-  .hero__flags {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 30px;
-  }
-
-  .hero__flags span { font-size: 1rem; letter-spacing: 2px; }
-
-  .hero__flags p {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.55);
-    font-style: italic;
   }
 
   .hero__ctas { display: flex; gap: 14px; align-items: center; }
