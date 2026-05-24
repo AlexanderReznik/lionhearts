@@ -72,6 +72,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       action="https://formspree.io/f/REPLACE_WITH_FORM_ID"
     >
 
+      <!-- Section 1: Your details -->
+      <p class="join-form__section-label">Your Details</p>
       <div class="join-form__grid">
         <div class="join-form__field">
           <label for="first-name">First Name</label>
@@ -89,6 +91,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <label for="phone">Phone <span class="join-form__optional">(optional)</span></label>
           <input id="phone" type="tel" name="phone" placeholder="+44..." />
         </div>
+      </div>
+
+      <div class="join-form__divider" aria-hidden="true"></div>
+
+      <!-- Section 2: Your volleyball -->
+      <p class="join-form__section-label">Your Volleyball</p>
+      <div class="join-form__grid">
         <div class="join-form__field">
           <label for="position">Playing Position</label>
           <select id="position" name="position">
@@ -218,17 +227,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   /* ── Join form ── */
   .join-form {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--color-border);
+    background: linear-gradient(160deg, rgba(0,40,140,0.18), rgba(0,20,80,0.12));
+    border: 1px solid rgba(0,100,220,0.25);
     border-radius: 14px;
-    padding: 36px;
+    padding: 40px;
+  }
+
+  .join-form__section-label {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--color-accent-to);
+    margin-bottom: 16px;
+  }
+
+  .join-form__divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 28px 0;
   }
 
   .join-form__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-    margin-bottom: 20px;
   }
 
   @media (max-width: 640px) {
@@ -252,11 +275,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .join-form__field input,
   .join-form__field select,
   .join-form__field textarea {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 7px;
     padding: 11px 14px;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.9);
     font-size: 0.8125rem;
     font-family: inherit;
     transition: border-color 0.15s;
@@ -272,12 +295,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .join-form__field select option { background: var(--color-surface); }
 
-  .join-form__submit { margin-bottom: 14px; padding: 13px 40px; }
+  .join-form__submit {
+    width: 100%;
+    justify-content: center;
+    margin-top: 28px;
+    margin-bottom: 16px;
+    padding: 14px;
+  }
 
   .join-form__note {
     color: rgba(255,255,255,0.5);
     font-size: 0.6875rem;
     line-height: 1.6;
+    text-align: center;
   }
 
   .join-form__note a { color: var(--color-accent-to); }
