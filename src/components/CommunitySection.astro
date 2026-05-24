@@ -7,15 +7,12 @@ import { flags } from '../data/flags';
   <div class="community__inner container">
 
     <div class="community__header">
-      <div>
-        <p class="eyebrow">Our Community</p>
-        <h2 class="community__headline">
-          Volleyball brings<br />the <em>world</em> to E2.
-        </h2>
-      </div>
+      <p class="eyebrow">Our Community</p>
+      <h2 class="community__headline">
+        Volleyball brings<br />the <em>world</em> to E2.
+      </h2>
       <p class="community__sub">
-        New to London? Looking for your people? You've found us.<br />
-        Every flag below was added by a club member.
+        New to London? Looking for your people? You've found us.
       </p>
     </div>
 
@@ -70,11 +67,7 @@ import { flags } from '../data/flags';
   .community__inner { position: relative; }
 
   .community__header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
     margin-bottom: 40px;
-    gap: 32px;
   }
 
   .community__headline {
@@ -90,9 +83,8 @@ import { flags } from '../data/flags';
 
   .community__sub {
     color: var(--color-text-muted);
-    font-size: 0.8125rem;
-    max-width: 280px;
-    text-align: right;
+    font-size: 0.9375rem;
+    margin-top: 12px;
     line-height: 1.6;
   }
 
@@ -181,16 +173,4 @@ import { flags } from '../data/flags';
     margin-left: 8px;
   }
 
-  @media (max-width: 768px) {
-    .community__header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .community__sub {
-      text-align: left;
-      max-width: 100%;
-    }
-  }
 </style>
