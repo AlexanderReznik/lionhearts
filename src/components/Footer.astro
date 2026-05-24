@@ -17,7 +17,6 @@ const involvedLinks = [
 const contactLinks = [
   { label: 'allanzelion@gmail.com',  href: 'mailto:allanzelion@gmail.com' },
   { label: '@lionhearts_volleyball', href: 'https://instagram.com/lionhearts_volleyball' },
-  { label: 'Shoreditch, E2 6NW',     href: 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch' },
 ];
 ---
 
@@ -72,10 +71,17 @@ const contactLinks = [
             </li>
           ))}
         </ul>
-        <address class="footer__address">
-          Mulberry Academy Shoreditch<br />
-          Gosset Street, E2 6NW
-        </address>
+        <a
+          href="https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+Street+E2+6NW"
+          class="footer__address"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <address>
+            Mulberry Academy Shoreditch<br />
+            Gosset Street, E2 6NW
+          </address>
+        </a>
       </div>
     </div>
   </div>
@@ -130,12 +136,18 @@ const contactLinks = [
   }
 
   .footer__address {
+    display: block;
     color: rgba(255,255,255,0.5);
     font-size: 0.6875rem;
     line-height: 1.7;
     font-style: normal;
+    text-decoration: none;
     margin-top: 14px;
+    transition: color 0.15s;
   }
+
+  .footer__address:hover { color: rgba(255,255,255,0.7); }
+  .footer__address address { font-style: normal; }
 
   .footer__socials {
     display: flex;
