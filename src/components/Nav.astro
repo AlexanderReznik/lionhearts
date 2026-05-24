@@ -34,7 +34,6 @@ const isActive = (href: string) =>
         <strong>Lionhearts</strong>
         <span>Volleyball Club</span>
       </div>
-      <div class="nav__e2-badge">Shoreditch · E2</div>
     </a>
 
     <ul class="nav__links" role="list">
@@ -145,18 +144,6 @@ const isActive = (href: string) =>
     font-size: 0.5625rem;
     color: var(--color-text-faint);
     letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .nav__e2-badge {
-    background: rgba(0, 80, 220, 0.15);
-    border: 1px solid rgba(0, 120, 255, 0.25);
-    color: var(--color-highlight-1);
-    font-size: 0.5625rem;
-    font-weight: 800;
-    letter-spacing: 2px;
-    padding: 3px 9px;
-    border-radius: 3px;
     text-transform: uppercase;
   }
 
@@ -282,7 +269,6 @@ const isActive = (href: string) =>
   /* ── Mobile breakpoint ── */
   @media (max-width: 768px) {
     .nav__links  { display: none; }
-    .nav__e2-badge { display: none; }
     .nav__hamburger { display: flex; }
     .nav__cta { margin-left: auto; }
   }
