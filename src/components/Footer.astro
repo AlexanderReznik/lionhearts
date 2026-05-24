@@ -50,32 +50,34 @@ const contactLinks = [
       </div>
     </div>
 
-    <div class="footer__col">
-      <h4>Club</h4>
-      <ul role="list">
-        {clubLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
-      </ul>
-    </div>
+    <div class="footer__cols">
+      <div class="footer__col">
+        <h4>Club</h4>
+        <ul role="list">
+          {clubLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </div>
 
-    <div class="footer__col">
-      <h4>Get Involved</h4>
-      <ul role="list">
-        {involvedLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
-      </ul>
-    </div>
+      <div class="footer__col">
+        <h4>Get Involved</h4>
+        <ul role="list">
+          {involvedLinks.map(l => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </div>
 
-    <div class="footer__col">
-      <h4>Contact</h4>
-      <ul role="list">
-        {contactLinks.map(l => (
-          <li>
-            <a
-              href={l.href}
-              {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            >{l.label}</a>
-          </li>
-        ))}
-      </ul>
+      <div class="footer__col">
+        <h4>Contact</h4>
+        <ul role="list">
+          {contactLinks.map(l => (
+            <li>
+              <a
+                href={l.href}
+                {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </div>
 
@@ -211,5 +213,29 @@ const contactLinks = [
 
   .footer__bottom-tagline {
     font-style: italic;
+  }
+
+  /* Make wrapper transparent to desktop flex layout */
+  .footer__cols { display: contents; }
+
+  @media (max-width: 768px) {
+    .footer__inner {
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .footer__cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px 32px;
+    }
+
+    .footer__bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+
+    .footer__bottom-tagline { display: none; }
   }
 </style>
