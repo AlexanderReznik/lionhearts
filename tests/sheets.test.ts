@@ -5,6 +5,8 @@ import {
   abbreviateDay,
   abbreviateTime,
   getSessions,
+  getQuotes,
+  FALLBACK_QUOTES,
   type Session,
 } from '../src/lib/sheets';
 
@@ -191,5 +193,47 @@ describe('parseQuotesCSV', () => {
 
     const result = parseQuotesCSV(csv);
     expect(result[0].quote).toBe('It was raining, snowing, and hailing at once');
+  });
+});
+
+describe('getQuotes', () => {
+  const realFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+    vi.restoreAllMocks();
+  });
+
+  it('returns fallback when no sheet ID is provided', async () => {
+    const { quotes, usingFallback } = await getQuotes();
+    expect(usingFallback).toBe(true);
+    expect(quotes).toEqual(FALLBACK_QUOTES);
+  });
+
+  it('returns fallback when no gid is provided', async () => {
+    const { quotes, usingFallback } = await getQuotes('sheet-id');
+    expect(usingFallback).toBe(true);
+    expect(quotes).toEqual(FALLBACK_QUOTES);
+  });
+
+  it('returns live data when the fetch succeeds', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => `quote,name,team\n"A live one",Sara,Women's Cats`,
+    } as Response);
+
+    const { quotes, usingFallback } = await getQuotes('sheet-id', '123');
+    expect(usingFallback).toBe(false);
+    expect(quotes).toHaveLength(1);
+    expect(quotes[0].name).toBe('Sara');
+  });
+
+  it('falls back when the fetch fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response);
+
+    const { quotes, usingFallback } = await getQuotes('sheet-id', '123');
+    expect(usingFallback).toBe(true);
+    expect(quotes).toEqual(FALLBACK_QUOTES);
   });
 });

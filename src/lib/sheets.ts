@@ -147,3 +147,26 @@ export function parseQuotesCSV(csv: string): Quote[] {
     })
     .filter(q => q.quote.length > 0);
 }
+
+/**
+ * Returns quotes from the Overheard tab if both sheetId and gid are set,
+ * otherwise from FALLBACK_QUOTES. Resolves `usingFallback` so callers can
+ * surface a notice if needed (currently no UI for this — the component
+ * just renders whatever it gets).
+ */
+export async function getQuotes(sheetId?: string, gid?: string): Promise<{ quotes: Quote[]; usingFallback: boolean }> {
+  if (!sheetId || !gid) {
+    return { quotes: FALLBACK_QUOTES, usingFallback: true };
+  }
+  try {
+    const csv = await fetchSheetCSV(sheetId, gid);
+    const parsed = parseQuotesCSV(csv);
+    if (parsed.length === 0) {
+      return { quotes: FALLBACK_QUOTES, usingFallback: true };
+    }
+    return { quotes: parsed, usingFallback: false };
+  } catch (e) {
+    console.warn('Google Sheets fetch failed for quotes, using fallback:', e);
+    return { quotes: FALLBACK_QUOTES, usingFallback: true };
+  }
+}
