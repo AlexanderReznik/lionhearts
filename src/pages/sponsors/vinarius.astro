@@ -661,5 +661,23 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     .vin-quote { padding: 64px var(--page-px); }
     .vin-visit { padding: 64px var(--page-px); }
     .vin-about__facts { grid-template-columns: 1fr 1fr; }
+
+    /* Badge: shorten to fit one line */
+    .vin-hero__badge { white-space: nowrap; font-size: 0.4375rem; letter-spacing: 1.5px; }
+
+    /* Sub: drop uppercase so two lines read comfortably */
+    .vin-hero__sub { text-transform: none; font-size: 0.9375rem; letter-spacing: 0; }
+
+    /* Bridge: switch stats to a tighter grid so 3 stats don't crowd */
+    .vin-bridge__stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .vin-bridge__stat strong { font-size: 1.25rem; }
+
+    /* Bridge label smaller on very narrow */
+    .vin-bridge__label { font-size: 1.375rem; }
   }
 </style>
