@@ -111,15 +111,22 @@ Both `/events` and the homepage "open sessions" strip read from a single Google 
 
 ### 8a. Create the sheet
 
-1. Create a Google Sheet with **exactly** these column headers in row 1:
-   `day`, `time`, `level`, `venue`, `price`
-2. One session per row. Example:
+1. Create a Google Sheet with these column headers in row 1:
+   - **Required:** `day`, `time`, `level`
+   - **Optional:** `venue`, `price` (leave blank to inherit the club defaults in `src/data/club.ts`)
+2. One session per row. The common case is just 3 columns:
+
+   | day | time | level |
+   |---|---|---|
+   | Monday | 7:00pm–9:00pm | All Levels |
+   | Thursday | 7:00pm–9:00pm | All Levels |
+   | Friday | 8:00pm–10:00pm | Intermediate / Advanced |
+
+   Only fill the venue/price cells for one-offs that differ from the defaults, e.g. a summer beach session:
 
    | day | time | level | venue | price |
    |---|---|---|---|---|
-   | Monday | 7:00pm–9:00pm | All Levels | Mulberry Academy | £8 cash / £10 card |
-   | Thursday | 7:00pm–9:00pm | All Levels | Mulberry Academy | £8 cash / £10 card |
-   | Friday | 8:00pm–10:00pm | Intermediate / Advanced | Mulberry Academy | £8 cash / £10 card |
+   | Saturday | 10:00am–12:00pm | Beach | Hyde Park Beach Courts | £12 |
 
    - Use a real en-dash `–` in times (option-hyphen on Mac), not a plain `-` — Sheets sometimes auto-formats `-` as a date.
    - First tab only — only the leftmost tab is read.

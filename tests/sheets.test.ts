@@ -50,6 +50,33 @@ Monday,7:00pm–9:00pm,All Levels,"Mulberry Academy, Shoreditch",£8`;
     expect(result[0].day).toBe('Monday');
     expect(result[0].price).toBe('£8');
   });
+
+  it('defaults venue and price when columns are absent', () => {
+    const csv = `day,time,level
+Monday,7:00pm–9:00pm,All Levels`;
+
+    const result = parseSessionsCSV(csv);
+    expect(result[0].venue).toBe('Mulberry Academy');
+    expect(result[0].price).toBe('£8 cash / £10 card');
+  });
+
+  it('defaults venue and price when cells are blank', () => {
+    const csv = `day,time,level,venue,price
+Monday,7:00pm–9:00pm,All Levels,,`;
+
+    const result = parseSessionsCSV(csv);
+    expect(result[0].venue).toBe('Mulberry Academy');
+    expect(result[0].price).toBe('£8 cash / £10 card');
+  });
+
+  it('uses per-row override when venue or price is filled', () => {
+    const csv = `day,time,level,venue,price
+Saturday,10:00am–12:00pm,Beach,Hyde Park Beach Courts,£12`;
+
+    const result = parseSessionsCSV(csv);
+    expect(result[0].venue).toBe('Hyde Park Beach Courts');
+    expect(result[0].price).toBe('£12');
+  });
 });
 
 describe('abbreviateDay', () => {

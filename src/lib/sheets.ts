@@ -1,3 +1,5 @@
+import { DEFAULT_VENUE, DEFAULT_PRICE } from '../data/club.ts';
+
 export interface Session {
   day: string;
   time: string;
@@ -8,12 +10,13 @@ export interface Session {
 
 /**
  * Hardcoded fallback used when GOOGLE_SHEET_ID is unset or the fetch fails.
- * Edit this when the recurring schedule changes if the sheet isn't live yet.
+ * Only day/time/level are needed — venue and price default to the club
+ * constants in src/data/club.ts.
  */
-export const FALLBACK_CSV = `day,time,level,venue,price
-Monday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
-Thursday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
-Friday,8:00pm–10:00pm,Intermediate / Advanced,Mulberry Academy,£8 cash / £10 card`;
+export const FALLBACK_CSV = `day,time,level
+Monday,7:00pm–9:00pm,All Levels
+Thursday,7:00pm–9:00pm,All Levels
+Friday,8:00pm–10:00pm,Intermediate / Advanced`;
 
 export function parseSessionsCSV(csv: string): Session[] {
   if (!csv.trim()) return [];
@@ -30,8 +33,8 @@ export function parseSessionsCSV(csv: string): Session[] {
       day:   raw['day']   ?? '',
       time:  raw['time']  ?? '',
       level: raw['level'] ?? '',
-      venue: raw['venue'] ?? '',
-      price: raw['price'] ?? '',
+      venue: raw['venue'] || DEFAULT_VENUE,
+      price: raw['price'] || DEFAULT_PRICE,
     } satisfies Session;
   });
 }
