@@ -27,10 +27,12 @@ const contactLinks = [
   <div class="footer__inner">
     <div class="footer__brand">
       <div class="footer__crest">
-        <img src="/images/logo.png" alt="London Lionhearts VBC crest" width="40" height="40" />
-        <strong>London Lionhearts VBC</strong>
+        <img src="/images/logo.png" alt="London Lionhearts VBC crest" class="footer__logo" width="88" height="88" />
+        <div class="footer__crest-text">
+          <strong>London Lionhearts VBC</strong>
+          <p class="footer__tagline">"Together We Roar."</p>
+        </div>
       </div>
-      <p class="footer__tagline">"Together We Roar."</p>
       <div class="footer__socials">
         <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
           <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={IG_PATH} /></svg>Instagram
@@ -117,8 +119,20 @@ const contactLinks = [
   .footer__crest {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .footer__logo {
+    flex-shrink: 0;
+    width: 88px;
+    height: 88px;
+  }
+
+  .footer__crest-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
   }
 
   .footer__crest strong {
@@ -130,9 +144,8 @@ const contactLinks = [
 
   .footer__tagline {
     color: rgba(255,255,255,0.55);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-style: italic;
-    margin-bottom: 20px;
   }
 
   .footer__address {
