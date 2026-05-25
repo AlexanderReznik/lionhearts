@@ -273,13 +273,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: 16px;
   }
 
+  .join-form__field { display: flex; flex-direction: column; gap: 8px; }
+  .join-form__field--full { grid-column: span 2; }
+
   @media (max-width: 640px) {
     .join-form__grid { grid-template-columns: 1fr; }
     .join-form__field--full { grid-column: span 1; }
   }
-
-  .join-form__field { display: flex; flex-direction: column; gap: 8px; }
-  .join-form__field--full { grid-column: span 2; }
 
   .join-form__field label {
     font-size: 0.5625rem;
@@ -294,6 +294,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .join-form__field input,
   .join-form__field select,
   .join-form__field textarea {
+    width: 100%;
+    box-sizing: border-box;
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 7px;
