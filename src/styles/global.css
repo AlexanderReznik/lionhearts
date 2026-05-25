@@ -113,11 +113,12 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Container ── */
+/* ── Container ──
+   Max-width + centering only. Edge padding belongs to the section
+   wrapper so we don't double-pad when nested. */
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 var(--page-px);
 }
 
 /* ── Page hero (inner pages) ── */
