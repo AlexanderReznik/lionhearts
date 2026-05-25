@@ -16,7 +16,14 @@ export function parseSessionsCSV(csv: string): Session[] {
 
   return lines.slice(1).map(line => {
     const values = splitCSVLine(line);
-    return Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()])) as unknown as Session;
+    const raw: Record<string, string> = Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
+    return {
+      day:   raw['day']   ?? '',
+      time:  raw['time']  ?? '',
+      level: raw['level'] ?? '',
+      venue: raw['venue'] ?? '',
+      price: raw['price'] ?? '',
+    } satisfies Session;
   });
 }
 

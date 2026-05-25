@@ -128,19 +128,17 @@ const hasBehold = BEHOLD_FEED_ID !== 'REPLACE_WITH_BEHOLD_FEED_ID';
   .instagram__follow-btn:focus-visible { outline: 2px solid var(--color-accent-to); outline-offset: 3px; }
 
   @media (max-width: 640px) {
+    .instagram__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
     .instagram__follow-panel {
       flex-direction: column;
       align-items: flex-start;
       gap: 20px;
       padding: 28px 24px;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .instagram__header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
     }
   }
 </style>
