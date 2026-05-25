@@ -1,0 +1,195 @@
+---
+// src/components/SessionsStrip.astro
+const sessions = [
+  { day: 'Mon', time: '7–9pm',  level: 'All Levels' },
+  { day: 'Thu', time: '7–9pm',  level: 'All Levels' },
+  { day: 'Fri', time: '8–10pm', level: 'Intermediate / Advanced' },
+];
+---
+
+<aside class="sessions-strip" aria-label="Weekly open sessions">
+  <div class="sessions-strip__inner container">
+    <div class="sessions-strip__lead">
+      <span class="sessions-strip__dot" aria-hidden="true"></span>
+      <span class="sessions-strip__lead-text">
+        <strong>Open sessions every week.</strong>
+        <span>No booking · no experience needed · Mulberry Academy, E2</span>
+      </span>
+    </div>
+
+    <ul class="sessions-strip__list" role="list">
+      {sessions.map(s => (
+        <li class="sessions-strip__item">
+          <span class="sessions-strip__day">{s.day}</span>
+          <span class="sessions-strip__time">{s.time}</span>
+          <span class="sessions-strip__level">{s.level}</span>
+        </li>
+      ))}
+    </ul>
+
+    <a href="/events" class="sessions-strip__link">Full schedule →</a>
+  </div>
+</aside>
+
+<style>
+  .sessions-strip {
+    background:
+      linear-gradient(180deg, rgba(0, 60, 180, 0.10), rgba(0, 60, 180, 0.04)),
+      var(--color-surface);
+    border-top: 1px solid rgba(0, 100, 220, 0.18);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sessions-strip__inner {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 18px var(--page-px);
+    min-height: 72px;
+  }
+
+  .sessions-strip__lead {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .sessions-strip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2bd47a;
+    box-shadow: 0 0 0 4px rgba(43, 212, 122, 0.18);
+    flex-shrink: 0;
+  }
+
+  .sessions-strip__lead-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+  }
+
+  .sessions-strip__lead-text strong {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #fff;
+  }
+
+  .sessions-strip__lead-text span {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+  }
+
+  .sessions-strip__list {
+    list-style: none;
+    display: flex;
+    gap: 0;
+    flex: 1;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sessions-strip__item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 0 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+  }
+
+  .sessions-strip__item:first-child { border-left: none; }
+
+  .sessions-strip__day {
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-highlight-1);
+    white-space: nowrap;
+  }
+
+  .sessions-strip__time {
+    font-size: 0.9375rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  .sessions-strip__level {
+    font-size: 0.625rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .sessions-strip__link {
+    flex-shrink: 0;
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-accent-to);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .sessions-strip__link:hover { text-decoration: underline; }
+
+  @media (max-width: 960px) {
+    .sessions-strip__inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 14px;
+      padding: 18px var(--page-px);
+    }
+
+    .sessions-strip__lead { align-self: flex-start; }
+
+    .sessions-strip__list {
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px 0;
+    }
+
+    .sessions-strip__item {
+      flex: 1 1 auto;
+      padding: 0 16px;
+    }
+
+    .sessions-strip__item:first-child { padding-left: 0; }
+
+    .sessions-strip__link {
+      align-self: flex-end;
+      margin-top: 2px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .sessions-strip__list {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .sessions-strip__item {
+      padding: 8px 0;
+      border-left: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      gap: 10px;
+    }
+
+    .sessions-strip__item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .sessions-strip__day { min-width: 32px; }
+    .sessions-strip__time { flex: 0 0 auto; }
+    .sessions-strip__level { margin-left: auto; text-align: right; }
+  }
+</style>

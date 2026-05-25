@@ -1,30 +1,30 @@
 // src/data/flags.ts
 export interface Flag {
-  emoji: string;
+  iso: string;       // ISO 3166-1 alpha-2, lowercase — used for flagcdn.com SVG
   country: string;
 }
 
 export const flags: Flag[] = [
-  { emoji: '🇬🇧', country: 'United Kingdom' },
-  { emoji: '🇧🇷', country: 'Brazil' },
-  { emoji: '🇫🇷', country: 'France' },
-  { emoji: '🇵🇹', country: 'Portugal' },
-  { emoji: '🇩🇪', country: 'Germany' },
-  { emoji: '🇯🇵', country: 'Japan' },
-  { emoji: '🇳🇬', country: 'Nigeria' },
-  { emoji: '🇦🇺', country: 'Australia' },
-  { emoji: '🇮🇹', country: 'Italy' },
-  { emoji: '🇪🇸', country: 'Spain' },
-  { emoji: '🇺🇸', country: 'United States' },
-  { emoji: '🇿🇦', country: 'South Africa' },
-  { emoji: '🇵🇱', country: 'Poland' },
-  { emoji: '🇷🇴', country: 'Romania' },
-  { emoji: '🇸🇪', country: 'Sweden' },
-  { emoji: '🇨🇦', country: 'Canada' },
-  { emoji: '🇦🇷', country: 'Argentina' },
-  { emoji: '🇬🇷', country: 'Greece' },
-  { emoji: '🇳🇱', country: 'Netherlands' },
-  { emoji: '🇹🇷', country: 'Turkey' },
-  { emoji: '🇰🇷', country: 'South Korea' },
-  { emoji: '🇨🇳', country: 'China' },
+  { iso: 'gb', country: 'United Kingdom' },
+  { iso: 'br', country: 'Brazil' },
+  { iso: 'fr', country: 'France' },
+  { iso: 'pt', country: 'Portugal' },
+  { iso: 'de', country: 'Germany' },
+  { iso: 'jp', country: 'Japan' },
+  { iso: 'ng', country: 'Nigeria' },
+  { iso: 'au', country: 'Australia' },
+  { iso: 'it', country: 'Italy' },
+  { iso: 'es', country: 'Spain' },
+  { iso: 'us', country: 'United States' },
+  { iso: 'za', country: 'South Africa' },
+  { iso: 'pl', country: 'Poland' },
+  { iso: 'ro', country: 'Romania' },
+  { iso: 'se', country: 'Sweden' },
+  { iso: 'ca', country: 'Canada' },
+  { iso: 'ar', country: 'Argentina' },
+  { iso: 'gr', country: 'Greece' },
+  { iso: 'nl', country: 'Netherlands' },
+  { iso: 'tr', country: 'Turkey' },
+  { iso: 'kr', country: 'South Korea' },
+  { iso: 'cn', country: 'China' },
 ];

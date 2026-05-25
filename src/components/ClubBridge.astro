@@ -1,0 +1,189 @@
+---
+// src/components/ClubBridge.astro
+// Two halves of the club, side by side: competitive cred + open community.
+---
+
+<section class="bridge" aria-label="The club in two halves">
+  <p class="bridge__numeral" aria-hidden="true">03</p>
+
+  <div class="bridge__col bridge__col--compete">
+    <p class="bridge__eyebrow">On the Court</p>
+    <h2 class="bridge__label">Compete</h2>
+    <ul class="bridge__points" role="list">
+      <li>NVL Super League</li>
+      <li>9× LVA Women's Champions</li>
+      <li>9 teams across the leagues</li>
+    </ul>
+    <a href="/teams" class="bridge__link">See our teams →</a>
+  </div>
+
+  <div class="bridge__divider" aria-hidden="true">
+    <span>&amp;</span>
+  </div>
+
+  <div class="bridge__col bridge__col--connect">
+    <p class="bridge__eyebrow">Off the Court</p>
+    <h2 class="bridge__label">Connect</h2>
+    <ul class="bridge__points" role="list">
+      <li>3 open sessions every week</li>
+      <li>No experience, no booking</li>
+      <li>Players from every continent</li>
+    </ul>
+    <a href="/events" class="bridge__link">See sessions →</a>
+  </div>
+</section>
+
+<style>
+  .bridge {
+    display: grid;
+    grid-template-columns: 1fr 72px 1fr;
+    min-height: 340px;
+    position: relative;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bridge__numeral {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(8rem, 18vw, 14rem);
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+    z-index: 0;
+  }
+
+  .bridge__col {
+    padding: 56px clamp(28px, 5vw, 64px);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+  }
+
+  .bridge__col--compete {
+    background: linear-gradient(140deg, #001a55 0%, #002fa8 60%, #0050d8 100%);
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .bridge__col--connect {
+    background: linear-gradient(140deg, #050d1a 0%, #0a1e3c 60%, #0d2a55 100%);
+  }
+
+  .bridge__eyebrow {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 14px;
+  }
+
+  .bridge__label {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+
+  .bridge__col--connect .bridge__label {
+    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bridge__points {
+    list-style: none;
+    margin: 0 0 28px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bridge__points li {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+  }
+
+  .bridge__col--connect .bridge__points li {
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .bridge__link {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #fff;
+    margin-top: auto;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+    align-self: flex-start;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .bridge__col--compete .bridge__link { align-self: flex-end; }
+
+  .bridge__col--connect .bridge__link {
+    color: var(--color-highlight-2);
+    border-color: rgba(0, 194, 255, 0.4);
+  }
+
+  .bridge__link:hover { border-color: currentColor; }
+
+  .bridge__divider {
+    background: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 1.75rem;
+    font-weight: 900;
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  @media (max-width: 768px) {
+    .bridge {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 56px auto;
+    }
+
+    .bridge__col--compete {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .bridge__col--compete .bridge__link { align-self: flex-start; }
+
+    .bridge__col--connect {
+      background: linear-gradient(140deg, #050d1a 0%, #0a1e3c 100%);
+      border-top: 1px solid rgba(0, 100, 220, 0.18);
+    }
+
+    .bridge__divider {
+      border-left: none;
+      border-right: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 1.5rem;
+    }
+
+    .bridge__numeral { top: -12px; }
+
+    .bridge__col { padding: 44px var(--page-px); }
+  }
+</style>

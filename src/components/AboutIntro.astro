@@ -1,10 +1,15 @@
 ---
 // src/components/AboutIntro.astro
-import { flags } from '../data/flags';
-const cardFlags = flags.slice(0, 15);
+const stats = [
+  { value: '9×',    label: 'LVA Champions' },
+  { value: '9',     label: 'Teams' },
+  { value: '200+',  label: 'Members' },
+  { value: '1998',  label: 'Founded' },
+];
 ---
 
 <section class="about-intro">
+  <p class="about-intro__numeral" aria-hidden="true">01</p>
   <div class="about-intro__inner container">
 
     <div class="about-intro__text">
@@ -29,16 +34,14 @@ const cardFlags = flags.slice(0, 15);
         </div>
       </div>
 
-      <!-- International community card -->
-      <div class="about-intro__intl-card">
-        <h3>An international community</h3>
-        <div class="about-intro__flags" aria-label="Flags of player nationalities">
-          {cardFlags.map(f => (
-            <span title={f.country} aria-label={f.country}>{f.emoji}</span>
-          ))}
-          <span aria-hidden="true">+</span>
-        </div>
-        <p>Players from all over the world — if you're new to London, you'll feel at home here.</p>
+      <!-- By the numbers -->
+      <div class="about-intro__numbers" aria-label="Club by the numbers">
+        {stats.map(s => (
+          <div class="about-intro__stat">
+            <strong>{s.value}</strong>
+            <span>{s.label}</span>
+          </div>
+        ))}
       </div>
     </div>
 
@@ -49,9 +52,25 @@ const cardFlags = flags.slice(0, 15);
   .about-intro {
     background: var(--color-bg);
     padding: var(--space-xl) var(--page-px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-intro__numeral {
+    position: absolute;
+    top: -32px;
+    left: 4vw;
+    font-size: clamp(8rem, 18vw, 16rem);
+    font-weight: 900;
+    color: rgba(0, 80, 220, 0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
   }
 
   .about-intro__inner {
+    position: relative;
     display: flex;
     gap: 64px;
     align-items: flex-start;
@@ -60,11 +79,11 @@ const cardFlags = flags.slice(0, 15);
   .about-intro__text { flex: 1; }
 
   .about-intro__headline {
-    font-size: clamp(2rem, 4vw, 2.375rem);
+    font-size: clamp(2rem, 4vw, 2.5rem);
     font-weight: 900;
     line-height: 1;
     text-transform: uppercase;
-    letter-spacing: -1.5px;
+    letter-spacing: -0.04em;
     margin-bottom: 18px;
   }
 
@@ -92,7 +111,7 @@ const cardFlags = flags.slice(0, 15);
   .about-intro__link:hover { text-decoration: underline; }
 
   .about-intro__cards {
-    width: 340px;
+    width: 360px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
@@ -125,25 +144,40 @@ const cardFlags = flags.slice(0, 15);
   .about-intro__location-card p { font-size: 0.6875rem; color: var(--color-text-muted); line-height: 1.5; }
   .about-intro__postcode { color: var(--color-highlight-1); font-weight: 700; }
 
-  .about-intro__intl-card {
-    background: rgba(255,255,255,0.03);
+  /* ── By the numbers ── */
+  .about-intro__numbers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(255,255,255,0.06);
     border: 1px solid var(--color-border);
     border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .about-intro__stat {
+    background: var(--color-surface);
     padding: 20px 22px;
-  }
-
-  .about-intro__intl-card h3 { font-size: 0.8125rem; font-weight: 700; margin-bottom: 10px; }
-
-  .about-intro__flags {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 10px;
-    font-size: 1.25rem;
-    line-height: 1;
+    flex-direction: column;
+    gap: 4px;
   }
 
-  .about-intro__intl-card p { font-size: 0.6875rem; color: rgba(255,255,255,0.55); line-height: 1.5; }
+  .about-intro__stat strong {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .about-intro__stat span {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
 
   @media (max-width: 768px) {
     .about-intro {

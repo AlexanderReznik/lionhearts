@@ -4,6 +4,7 @@ import { flags } from '../data/flags';
 ---
 
 <section class="community">
+  <p class="community__numeral" aria-hidden="true">02</p>
   <div class="community__inner container">
 
     <div class="community__header">
@@ -19,7 +20,15 @@ import { flags } from '../data/flags';
     <!-- Flag mosaic -->
     <div class="community__mosaic" aria-label="Flags representing club member nationalities">
       {flags.map(f => (
-        <span class="community__flag" title={f.country} aria-label={f.country}>{f.emoji}</span>
+        <img
+          class="community__flag"
+          src={`https://flagcdn.com/${f.iso}.svg`}
+          alt={f.country}
+          title={f.country}
+          width="44"
+          height="32"
+          loading="lazy"
+        />
       ))}
     </div>
 
@@ -62,6 +71,19 @@ import { flags } from '../data/flags';
     pointer-events: none;
   }
 
+  .community__numeral {
+    position: absolute;
+    top: -28px;
+    right: 4vw;
+    font-size: clamp(8rem, 18vw, 16rem);
+    font-weight: 900;
+    color: rgba(0, 80, 220, 0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+  }
+
   .community__inner { position: relative; }
 
   .community__header {
@@ -89,7 +111,7 @@ import { flags } from '../data/flags';
   .community__mosaic {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
     margin-bottom: 32px;
     padding: 28px;
@@ -99,13 +121,15 @@ import { flags } from '../data/flags';
   }
 
   .community__flag {
-    font-size: 1.875rem;
-    line-height: 1;
-    cursor: default;
+    width: 44px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
     transition: transform 0.15s;
   }
 
-  .community__flag:hover { transform: scale(1.15); }
+  .community__flag:hover { transform: scale(1.12); }
 
   .community__divider {
     display: flex;
