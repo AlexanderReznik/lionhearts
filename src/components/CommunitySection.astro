@@ -21,8 +21,6 @@ import { flags } from '../data/flags';
       {flags.map(f => (
         <span class="community__flag" title={f.country} aria-label={f.country}>{f.emoji}</span>
       ))}
-      <!-- Phase 2 placeholder -->
-      <div class="community__add-flag" title="Coming soon: submit your flag" aria-hidden="true">+</div>
     </div>
 
     <div class="community__divider" aria-hidden="true">
@@ -108,22 +106,6 @@ import { flags } from '../data/flags';
   }
 
   .community__flag:hover { transform: scale(1.15); }
-
-  .community__add-flag {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 10px;
-    border: 2px dashed rgba(0,120,255,0.3);
-    background: rgba(0,80,220,0.06);
-    color: rgba(0,150,255,0.5);
-    font-size: 1.25rem;
-    cursor: pointer;
-    flex-shrink: 0;
-    margin-left: 6px;
-  }
 
   .community__divider {
     display: flex;

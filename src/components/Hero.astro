@@ -16,20 +16,22 @@ const { slides } = Astro.props;
 <section
   class="hero"
   aria-label="Club highlights carousel"
-  data-labels={slides.map(s => s.label).join('||')}
 >
   <!-- Slides -->
   <div class="hero__slides">
     {slides.map((slide, i) => (
       <div
         class:list={['hero__slide', { 'hero__slide--active': i === 0 }]}
-        style={`background-image: url(${slide.image})`}
+        style={{ '--hero-slide-bg': `url(${slide.image})` }}
         role="img"
         aria-label={slide.alt}
         data-index={i}
       />
     ))}
   </div>
+
+  <script type="application/json" data-hero-labels set:html={JSON.stringify(slides.map(s => s.label))} />
+
 
   <!-- Decorative overlays -->
   <div class="hero__texture" aria-hidden="true"></div>
@@ -92,6 +94,7 @@ const { slides } = Astro.props;
   .hero__slide {
     position: absolute;
     inset: 0;
+    background-image: var(--hero-slide-bg);
     background-size: cover;
     background-position: center;
     opacity: 0;
@@ -152,7 +155,7 @@ const { slides } = Astro.props;
     font-weight: 900;
     line-height: 0.9;
     text-transform: uppercase;
-    letter-spacing: -4px;
+    letter-spacing: -0.04em;
     margin-bottom: 20px;
   }
 
@@ -232,14 +235,14 @@ const { slides } = Astro.props;
   const slides = document.querySelectorAll<HTMLElement>('.hero__slide');
   const dots = document.querySelectorAll<HTMLButtonElement>('.hero__dot');
   const label = document.getElementById('carousel-label');
-
   const section = document.querySelector('.hero');
-  const rawLabels = section?.getAttribute('data-labels') ?? '';
-  const slideLabels = rawLabels ? rawLabels.split('||') : [];
+
+  const labelsScript = document.querySelector<HTMLScriptElement>('script[data-hero-labels]');
+  const slideLabels: string[] = labelsScript ? JSON.parse(labelsScript.textContent ?? '[]') : [];
 
   if (slides.length > 0) {
     let current = 0;
-    let timer: ReturnType<typeof setInterval>;
+    let timer: ReturnType<typeof setInterval> | undefined;
 
     function goTo(n: number) {
       slides[current].classList.remove('hero__slide--active');
@@ -261,8 +264,12 @@ const { slides } = Astro.props;
       timer = setInterval(() => goTo(current + 1), 5000);
     }
 
+    function stopTimer() {
+      if (timer) { clearInterval(timer); timer = undefined; }
+    }
+
     function resetTimer() {
-      clearInterval(timer);
+      stopTimer();
       startTimer();
     }
 
@@ -270,8 +277,12 @@ const { slides } = Astro.props;
       dot.addEventListener('click', () => { goTo(i); resetTimer(); });
     });
 
-    section?.addEventListener('mouseenter', () => clearInterval(timer));
+    section?.addEventListener('mouseenter', stopTimer);
     section?.addEventListener('mouseleave', resetTimer);
+    section?.addEventListener('focusin', stopTimer);
+    section?.addEventListener('focusout', (e) => {
+      if (!section.contains(e.relatedTarget as Node)) resetTimer();
+    });
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (slides.length > 1 && !prefersReduced) startTimer();

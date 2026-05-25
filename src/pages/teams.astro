@@ -23,7 +23,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
   <div class="page-content">
 
     <h2 class="eyebrow section-eyebrow">Women's Teams</h2>
-    <div class="teams-grid teams-grid--womens">
+    <div class="teams-grid teams-grid--4col">
       {womensTeams.map(team => <TeamCard team={team} />)}
     </div>
 
@@ -47,11 +47,21 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
     gap: 16px;
   }
 
+  .teams-grid--4col {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (max-width: 900px) {
+    .teams-grid--4col { grid-template-columns: repeat(3, 1fr); }
+  }
+
   @media (max-width: 768px) {
-    .teams-grid { grid-template-columns: repeat(2, 1fr); }
+    .teams-grid,
+    .teams-grid--4col { grid-template-columns: repeat(2, 1fr); }
   }
 
   @media (max-width: 480px) {
-    .teams-grid { grid-template-columns: 1fr; }
+    .teams-grid,
+    .teams-grid--4col { grid-template-columns: 1fr; }
   }
 </style>

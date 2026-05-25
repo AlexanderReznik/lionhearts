@@ -8,7 +8,7 @@ const { instagram: IG_PATH, facebook: FB_PATH, youtube: YT_PATH } = SOCIAL_ICON_
 const clubLinks = [
   { label: 'About Us',          href: '/about' },
   { label: 'Meet Our Teams',    href: '/teams' },
-  { label: 'Events & Fixtures', href: '/events' },
+  { label: 'Sessions',          href: '/events' },
 ];
 
 const involvedLinks = [
@@ -90,7 +90,6 @@ const contactLinks = [
 
   <div class="footer__bottom">
     <p>© {year} London Lionhearts Volleyball Club. All rights reserved.</p>
-    <p class="footer__bottom-tagline">Together We Roar.</p>
   </div>
 </footer>
 
@@ -243,10 +242,6 @@ const contactLinks = [
     font-size: 0.6875rem;
   }
 
-  .footer__bottom-tagline {
-    font-style: italic;
-  }
-
   /* Make wrapper transparent to desktop flex layout */
   .footer__cols { display: contents; }
 
@@ -267,7 +262,5 @@ const contactLinks = [
       align-items: flex-start;
       gap: 4px;
     }
-
-    .footer__bottom-tagline { display: none; }
   }
 </style>
