@@ -4,10 +4,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 // TODO: Replace with actual sponsor data supplied by client
 const sponsor = {
-  name:        'Title Sponsor',
-  description: 'Sponsor description — who they are, what they do, and why they support Lionhearts. Provided by client.',
-  url:         '#',       // ← replace with actual URL
-  logo:        null,      // ← replace with '/images/sponsor-logo.svg'
+  name:        'Vinarius London',
+  description: 'East London\'s independent wine merchant — curating small-production wines from 15+ countries, hosting tastings and supper clubs in Shoreditch.',
+  url:         '/sponsors/vinarius',
+  logo:        null,
 };
 
 const perks = [
@@ -50,11 +50,9 @@ const perks = [
       <div class="sponsor-hero__details">
         <h3 class="sponsor-hero__name">{sponsor.name}</h3>
         <p class="sponsor-hero__desc">{sponsor.description}</p>
-        {sponsor.url !== '#' && (
-          <a href={sponsor.url} class="sponsor-hero__link" target="_blank" rel="noopener noreferrer">
-            Visit their website →
-          </a>
-        )}
+        <a href={sponsor.url} class="sponsor-hero__link">
+          View Vinarius page →
+        </a>
       </div>
     </div>
 
