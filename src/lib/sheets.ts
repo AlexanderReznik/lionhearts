@@ -106,3 +106,23 @@ export function abbreviateTime(time: string): string {
     ? `${start}–${end}${mer2.toLowerCase()}`
     : `${start}${mer1.toLowerCase()}–${end}${mer2.toLowerCase()}`;
 }
+
+// ── Overheard quotes ──────────────────────────────────────────────────────
+
+export interface Quote {
+  quote: string;
+  name: string;
+  team: string;   // empty string when absent
+}
+
+/**
+ * Hardcoded fallback used when the Overheard tab is unreachable.
+ * One entry is enough to keep the section non-empty in dev.
+ */
+export const FALLBACK_QUOTES: Quote[] = [
+  {
+    quote: "I just heard 3 lightning strikes and was stuck in the shed cause of hail storms, I'm not going beach",
+    name: 'Tope',
+    team: "Men's Pride",
+  },
+];
