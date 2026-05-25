@@ -10,12 +10,11 @@ export interface Session {
 
 /**
  * Hardcoded fallback used when GOOGLE_SHEET_ID is unset or the fetch fails.
- * Only day/time/level are needed — venue and price default to the club
- * constants in src/data/club.ts.
+ * Minimal — the Google Sheet is the canonical source; this exists so the
+ * pages never render an empty schedule. Only day/time/level are needed —
+ * venue and price default to the club constants in src/data/club.ts.
  */
 export const FALLBACK_CSV = `day,time,level
-Monday,7:00pm–9:00pm,All Levels
-Thursday,7:00pm–9:00pm,All Levels
 Friday,8:00pm–10:00pm,Intermediate / Advanced`;
 
 export function parseSessionsCSV(csv: string): Session[] {

@@ -119,8 +119,8 @@ describe('getSessions', () => {
   it('returns fallback when no sheet ID is provided', async () => {
     const { sessions, usingFallback } = await getSessions();
     expect(usingFallback).toBe(true);
-    expect(sessions.length).toBe(3);
-    expect(sessions[0].day).toBe('Monday');
+    expect(sessions).toHaveLength(1);
+    expect(sessions[0].day).toBe('Friday');
   });
 
   it('returns live data when the fetch succeeds', async () => {
@@ -141,6 +141,6 @@ describe('getSessions', () => {
 
     const { sessions, usingFallback } = await getSessions('test-sheet-id');
     expect(usingFallback).toBe(true);
-    expect(sessions.length).toBe(3);
+    expect(sessions).toHaveLength(1);
   });
 });
