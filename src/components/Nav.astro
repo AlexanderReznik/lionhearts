@@ -255,7 +255,19 @@ const isActive = (href: string) =>
   @media (max-width: 768px) {
     .nav__links  { display: none; }
     .nav__hamburger { display: flex; }
-    .nav__cta { margin-left: auto; }
+    .nav__inner { gap: 12px; }
+    .nav__cta {
+      margin-left: auto;
+      padding: 0.5rem 1rem;
+      font-size: 0.625rem;
+      letter-spacing: 1px;
+    }
+    .nav__hamburger { width: 36px; height: 36px; font-size: 1.25rem; }
+  }
+
+  /* ── Very narrow: drop the logo wordmark, keep just the crest ── */
+  @media (max-width: 380px) {
+    .nav__name { display: none; }
   }
 </style>
 
