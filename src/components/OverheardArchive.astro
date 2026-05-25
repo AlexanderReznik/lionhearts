@@ -1,0 +1,197 @@
+---
+// src/components/OverheardArchive.astro
+// "Overheard at Training" — sheet-driven, one-at-a-time quote archive.
+// Spec: docs/superpowers/specs/2026-05-25-overheard-quotes-design.md
+import { getQuotes } from '../lib/sheets';
+
+const { quotes } = await getQuotes(
+  import.meta.env.GOOGLE_SHEET_ID,
+  import.meta.env.GOOGLE_SHEET_GID_QUOTES,
+);
+
+// Don't render the section at all if there are zero quotes.
+const showSection = quotes.length > 0;
+const total = quotes.length;
+const showPagination = total > 1;
+const first = quotes[0];
+---
+
+{showSection && (
+  <section class="overheard" aria-labelledby="overheard-heading">
+    <div class="overheard__header">
+      <p class="eyebrow overheard__eyebrow">Overheard at Training</p>
+      <h2 id="overheard-heading" class="overheard__title">
+        Out of context.<br />Mostly on <em>purpose</em>.
+      </h2>
+      <p class="overheard__sub">
+        A growing collection of things our players have actually said.
+        <strong>Use them as ice-breakers</strong> when you meet someone new at a session —
+        ask whoever said it what on earth was going on.
+      </p>
+    </div>
+
+    <div class="overheard__card">
+      <blockquote
+        class="overheard__quote"
+        aria-live="polite"
+        data-overheard-quote
+      >
+        <p data-overheard-text>"{first.quote}"</p>
+        <footer class="overheard__attrib" data-overheard-attrib>
+          <strong>{first.name}</strong>{first.team ? <> · {first.team}</> : null}
+        </footer>
+      </blockquote>
+
+      {showPagination && (
+        <div class="overheard__pagination">
+          <span
+            class="overheard__counter"
+            data-overheard-counter
+            aria-label={`Quote 1 of ${total}`}
+          >№ 01 / {String(total).padStart(2, '0')}</span>
+          <div class="overheard__nav">
+            <button
+              type="button"
+              class="overheard__nav-btn"
+              data-overheard-prev
+              aria-label="Previous quote"
+            >←</button>
+            <button
+              type="button"
+              class="overheard__nav-btn"
+              data-overheard-next
+              aria-label="Next quote"
+            >→</button>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <script type="application/json" data-overheard-data set:html={JSON.stringify(quotes)} />
+  </section>
+)}
+
+<style>
+  .overheard {
+    margin-top: 36px;
+  }
+
+  .overheard__header {
+    margin-bottom: 24px;
+  }
+
+  .overheard__eyebrow {
+    margin-bottom: 12px;
+  }
+
+  .overheard__title {
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+
+  .overheard__title em {
+    color: var(--color-accent-to);
+    font-style: normal;
+  }
+
+  .overheard__sub {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    max-width: 540px;
+  }
+
+  .overheard__sub strong {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+  }
+
+  .overheard__card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(0, 100, 220, 0.18);
+    border-radius: 14px;
+    padding: 32px 32px 20px;
+    position: relative;
+  }
+
+  .overheard__quote {
+    margin: 0 0 18px;
+    transition: opacity 0.25s ease;
+  }
+
+  .overheard__quote p {
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    line-height: 1.4;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 16px;
+  }
+
+  .overheard__attrib {
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .overheard__attrib strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .overheard__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .overheard__counter {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .overheard__nav {
+    display: flex;
+    gap: 6px;
+  }
+
+  .overheard__nav-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    min-width: 44px;
+    min-height: 44px;
+    font: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .overheard__nav-btn:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+  }
+
+  .overheard__nav-btn:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .overheard__quote { transition: none; }
+  }
+
+  @media (max-width: 640px) {
+    .overheard__card { padding: 24px 22px 16px; }
+  }
+</style>
