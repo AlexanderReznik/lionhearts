@@ -57,11 +57,19 @@ function splitCSVLine(line: string): string[] {
   return values;
 }
 
-export async function fetchSessions(sheetId: string): Promise<Session[]> {
-  const url = `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/export?format=csv&gid=0`;
+/**
+ * Generic fetch — pulls any tab of a published Google Sheet as CSV.
+ * gid defaults to '0' (leftmost tab).
+ */
+export async function fetchSheetCSV(sheetId: string, gid: string = '0'): Promise<string> {
+  const url = `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/export?format=csv&gid=${encodeURIComponent(gid)}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Google Sheets fetch failed: ${res.status}`);
-  const csv = await res.text();
+  return res.text();
+}
+
+export async function fetchSessions(sheetId: string): Promise<Session[]> {
+  const csv = await fetchSheetCSV(sheetId, '0');
   return parseSessionsCSV(csv);
 }
 
