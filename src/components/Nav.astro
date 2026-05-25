@@ -17,19 +17,7 @@ const isActive = (href: string) =>
 <nav class="nav" aria-label="Main">
   <div class="nav__inner">
     <a href="/" class="nav__logo">
-      <div class="nav__crest" aria-hidden="true">
-        <!-- Replace SVG content with actual club crest when available -->
-        <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="22" cy="22" r="22" fill="url(#crest-grad)"/>
-          <text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-size="22" fill="white">🦁</text>
-          <defs>
-            <radialGradient id="crest-grad" cx="40%" cy="35%">
-              <stop offset="0%" stop-color="#0a2a6e"/>
-              <stop offset="100%" stop-color="#0d1f4d"/>
-            </radialGradient>
-          </defs>
-        </svg>
-      </div>
+      <img src="/images/logo.png" alt="London Lionhearts VBC crest" class="nav__crest" width="44" height="44" />
       <div class="nav__name">
         <strong>Lionhearts</strong>
         <span>Volleyball Club</span>
@@ -124,9 +112,6 @@ const isActive = (href: string) =>
   }
 
   .nav__crest {
-    border-radius: 50%;
-    border: 2px solid rgba(0, 120, 255, 0.4);
-    overflow: hidden;
     flex-shrink: 0;
   }
 
