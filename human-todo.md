@@ -187,6 +187,42 @@ The Contact page hardcodes `@lionhearts_volleyball · 2,104 followers`. Update t
 
 ---
 
+## 10. Overheard at Training tab (Google Sheet)
+
+The "Overheard at Training" archive on the homepage reads from a second tab on the same Google Sheet you set up in item 8. Skip this and the section shows a single hardcoded fallback quote — fine for launch, easy to add later.
+
+### 10a. Create the tab
+
+1. Open the existing schedule sheet.
+2. Click the `+` at the bottom-left to add a new tab. Rename it to **Overheard**.
+3. In row 1 add these headers (case-insensitive):
+   - `quote` (required) — the line itself, no surrounding quote marks (the site adds them)
+   - `name` (required) — first name or however the person wants to be credited
+   - `team` (optional) — e.g. "Men's Pride"; leave blank to show just the name
+4. Add one row per quote. Rows where `quote` is blank are skipped silently, so you can leave gaps for organisation.
+
+Example:
+
+| quote | name | team |
+|---|---|---|
+| I just heard 3 lightning strikes and was stuck in the shed cause of hail storms, I'm not going beach | Tope | Men's Pride |
+| Probably my favourite hummus | Sara | Women's Cats |
+
+### 10b. Wire the tab's gid into the site
+
+The "gid" is the numeric ID of the tab. Find it by clicking the Overheard tab and looking at the URL: `...#gid=987654321` — that number is the gid.
+
+1. Locally: add to `.env.local`:
+   ```
+   GOOGLE_SHEET_GID_QUOTES=987654321
+   ```
+2. In Netlify/Vercel: add `GOOGLE_SHEET_GID_QUOTES` as an env var with the same value.
+3. Trigger a redeploy.
+
+The webhook from item 8c already covers this tab — onChange fires for edits to any tab in the sheet.
+
+---
+
 ## Image folder structure (for reference)
 
 ```
