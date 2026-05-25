@@ -195,3 +195,112 @@ const first = quotes[0];
     .overheard__card { padding: 24px 22px 16px; }
   }
 </style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('.overheard');
+  if (section) {
+    const data = section.querySelector<HTMLScriptElement>('script[data-overheard-data]');
+    type Quote = { quote: string; name: string; team: string };
+    const quotes: Quote[] = data ? JSON.parse(data.textContent ?? '[]') : [];
+
+    if (quotes.length > 1) {
+      const textEl    = section.querySelector<HTMLElement>('[data-overheard-text]')!;
+      const attribEl  = section.querySelector<HTMLElement>('[data-overheard-attrib]')!;
+      const counterEl = section.querySelector<HTMLElement>('[data-overheard-counter]')!;
+      const quoteEl   = section.querySelector<HTMLElement>('[data-overheard-quote]')!;
+      const prevBtn   = section.querySelector<HTMLButtonElement>('[data-overheard-prev]')!;
+      const nextBtn   = section.querySelector<HTMLButtonElement>('[data-overheard-next]')!;
+
+      let current = 0;
+      let timer: number | undefined;
+      const ROTATE_MS = 7000;
+      const SWIPE_THRESHOLD = 50;
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function render(idx: number) {
+        const q = quotes[idx];
+        const update = () => {
+          textEl.textContent = `"${q.quote}"`;
+          attribEl.innerHTML = q.team
+            ? `<strong>${escapeHtml(q.name)}</strong> · ${escapeHtml(q.team)}`
+            : `<strong>${escapeHtml(q.name)}</strong>`;
+          counterEl.textContent = `№ ${String(idx + 1).padStart(2, '0')} / ${String(quotes.length).padStart(2, '0')}`;
+          counterEl.setAttribute('aria-label', `Quote ${idx + 1} of ${quotes.length}`);
+        };
+
+        if (prefersReduced) {
+          update();
+        } else {
+          quoteEl.style.opacity = '0';
+          window.setTimeout(() => {
+            update();
+            quoteEl.style.opacity = '1';
+          }, 200);
+        }
+      }
+
+      function escapeHtml(s: string): string {
+        return s.replace(/[&<>"']/g, c => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+        }[c] as string));
+      }
+
+      function goTo(n: number) {
+        current = (n + quotes.length) % quotes.length;
+        render(current);
+      }
+
+      function startTimer() {
+        if (prefersReduced) return;
+        timer = window.setInterval(() => goTo(current + 1), ROTATE_MS);
+      }
+
+      function stopTimer() {
+        if (timer !== undefined) {
+          clearInterval(timer);
+          timer = undefined;
+        }
+      }
+
+      function resetTimer() {
+        stopTimer();
+        startTimer();
+      }
+
+      // Buttons
+      prevBtn.addEventListener('click', () => { goTo(current - 1); resetTimer(); });
+      nextBtn.addEventListener('click', () => { goTo(current + 1); resetTimer(); });
+
+      // Pause on hover / focus
+      section.addEventListener('mouseenter', stopTimer);
+      section.addEventListener('mouseleave', startTimer);
+      section.addEventListener('focusin', stopTimer);
+      section.addEventListener('focusout', (e) => {
+        if (!section.contains(e.relatedTarget as Node)) startTimer();
+      });
+
+      // Keyboard
+      section.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1); resetTimer(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); resetTimer(); }
+      });
+
+      // Swipe (mobile)
+      let touchStartX = 0;
+      let touchStartY = 0;
+      section.addEventListener('touchstart', (e: TouchEvent) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      section.addEventListener('touchend', (e: TouchEvent) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
+        if (dx < 0) goTo(current + 1); else goTo(current - 1);
+        resetTimer();
+      });
+
+      startTimer();
+    }
+  }
+</script>
