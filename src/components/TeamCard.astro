@@ -9,7 +9,11 @@ interface Props {
 const { team } = Astro.props;
 ---
 
-<article class:list={['team-card', { 'team-card--featured': !!team.badge }]}>
+<article
+  class:list={['team-card', { 'team-card--featured': !!team.badge }]}
+  data-gender={team.gender === "Women's" ? 'womens' : 'mens'}
+  data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}
+>
   <div class="team-card__photo">
     {team.image && (
       <img
