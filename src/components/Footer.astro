@@ -38,9 +38,15 @@ const contactLinks = [
       </div>
       <p class="footer__tagline">"Together We Roar."</p>
       <div class="footer__socials">
-        <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill" target="_blank" rel="noopener noreferrer">📷 Instagram</a>
-        <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill" target="_blank" rel="noopener noreferrer">👍 Facebook</a>
-        <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill" target="_blank" rel="noopener noreferrer">▶ YouTube</a>
+        <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
+          <span class="footer__social-dot" aria-hidden="true"></span>Instagram
+        </a>
+        <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill footer__social-pill--facebook" target="_blank" rel="noopener noreferrer">
+          <span class="footer__social-dot" aria-hidden="true"></span>Facebook
+        </a>
+        <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill footer__social-pill--youtube" target="_blank" rel="noopener noreferrer">
+          <span class="footer__social-dot" aria-hidden="true"></span>YouTube
+        </a>
       </div>
     </div>
 
@@ -173,6 +179,23 @@ const contactLinks = [
     border-color: rgba(255,255,255,0.2);
     color: rgba(255,255,255,0.7);
   }
+
+  .footer__social-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: currentColor;
+    opacity: 0.7;
+  }
+
+  .footer__social-pill--instagram { color: rgba(225,48,108,0.75); }
+  .footer__social-pill--facebook  { color: rgba(74,158,245,0.75); }
+  .footer__social-pill--youtube   { color: rgba(255,68,68,0.75); }
+
+  .footer__social-pill--instagram:hover { color: #e1306c; border-color: rgba(225,48,108,0.3); }
+  .footer__social-pill--facebook:hover  { color: #4a9ef5; border-color: rgba(74,158,245,0.3); }
+  .footer__social-pill--youtube:hover   { color: #ff4444; border-color: rgba(255,68,68,0.3); }
 
   .footer__col { flex: 1; }
 
