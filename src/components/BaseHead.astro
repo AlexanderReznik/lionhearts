@@ -23,7 +23,9 @@ const {
 const SITE = 'https://lionheartsvolleyball.com';
 const canonical = canonicalURL ?? SITE + Astro.url.pathname;
 const image = ogImage ?? `${SITE}/images/og-default.jpg`;
-const fullTitle = `${title} | London Lionhearts Volleyball Club`;
+const fullTitle = title.includes('London Lionhearts')
+  ? title
+  : `${title} | London Lionhearts VBC`;
 const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 
