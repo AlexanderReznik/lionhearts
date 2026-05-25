@@ -38,21 +38,16 @@ const perks = [
     <h2 class="eyebrow section-eyebrow">Title Sponsor</h2>
 
     <div class="sponsor-hero">
-      <div class="sponsor-hero__logo-wrap">
-        <span class="sponsor-hero__badge">Title Sponsor</span>
-        <div class="sponsor-hero__logo">
-          {sponsor.logo
-            ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
-            : <span class="sponsor-hero__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
-          }
-        </div>
+      <span class="sponsor-hero__badge">Title Sponsor</span>
+      <div class="sponsor-hero__logo">
+        {sponsor.logo
+          ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
+          : <span class="sponsor-hero__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
+        }
       </div>
       <div class="sponsor-hero__details">
-        <h3 class="sponsor-hero__name">{sponsor.name}</h3>
         <p class="sponsor-hero__desc">{sponsor.description}</p>
-        <a href={sponsor.url} class="sponsor-hero__link">
-          View Vinarius page →
-        </a>
+        <a href={sponsor.url} class="sponsor-hero__link">View Vinarius page →</a>
       </div>
     </div>
 
@@ -94,11 +89,13 @@ const perks = [
     background: linear-gradient(135deg, rgba(0,60,180,0.15), rgba(0,120,255,0.07));
     border: 1px solid var(--color-border-blue);
     border-radius: 16px;
-    padding: 48px;
+    padding: 56px 48px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 48px;
+    gap: 28px;
     margin-bottom: 48px;
+    text-align: center;
   }
 
   .sponsor-hero__badge {
@@ -108,50 +105,33 @@ const perks = [
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 3px 10px;
+    padding: 4px 14px;
     border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 12px;
   }
 
-  .sponsor-hero__logo {
-    width: 200px;
-    height: 64px;
-    background: #fff;
-    border-radius: 8px;
-    padding: 8px 16px;
-    display: flex;
-    align-items: center;
+  .sponsor-hero__logo { width: 400px; max-width: 100%; }
+  .sponsor-hero__logo img {
+    width: 100%;
+    height: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
   }
-  .sponsor-hero__logo img { width: 100%; height: 100%; object-fit: contain; }
 
   .sponsor-hero__logo-placeholder {
-    display: flex;
-    width: 200px;
-    height: 64px;
-    background: rgba(255,255,255,0.1);
+    width: 400px;
+    max-width: 100%;
+    height: 100px;
+    background: rgba(255,255,255,0.08);
     border-radius: 8px;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.6875rem;
-    color: rgba(255,255,255,0.5);
   }
 
-  .sponsor-hero__details { flex: 1; }
-
-  .sponsor-hero__name {
-    font-size: 1.375rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.5px;
-    margin-bottom: 10px;
-  }
+  .sponsor-hero__details { max-width: 560px; }
 
   .sponsor-hero__desc {
     color: var(--color-text-muted);
-    font-size: 0.875rem;
-    line-height: 1.7;
-    margin-bottom: 16px;
+    font-size: 0.9375rem;
+    line-height: 1.75;
+    margin-bottom: 20px;
   }
 
   .sponsor-hero__link {

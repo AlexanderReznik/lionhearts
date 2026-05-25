@@ -13,21 +13,14 @@ const sponsor = {
   <p id="sponsors-heading" class="sponsors__eyebrow">Proudly supported by</p>
 
   <div class="sponsors__title-card">
-    <div>
-      <span class="sponsors__badge">Title Sponsor</span>
-      <div class="sponsors__logo" aria-label={`${sponsor.name} logo`}>
-        {sponsor.logo
-          ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
-          : <span class="sponsors__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
-        }
-      </div>
+    <span class="sponsors__badge">Title Sponsor</span>
+    <div class="sponsors__logo">
+      {sponsor.logo
+        ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
+        : <span class="sponsors__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
+      }
     </div>
-    <div class="sponsors__meta">
-      <p>Proudly supporting<br />Lionhearts VBC</p>
-      <a href={sponsor.url} class="sponsors__link">
-        View sponsor page →
-      </a>
-    </div>
+    <a href={sponsor.url} class="sponsors__link">View sponsor page →</a>
   </div>
 </section>
 
@@ -50,11 +43,11 @@ const sponsor = {
     background: linear-gradient(135deg, rgba(0,70,200,0.12), rgba(0,140,255,0.06));
     border: 1px solid rgba(0,100,220,0.25);
     border-radius: 14px;
-    padding: 40px 56px;
+    padding: 48px 56px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 32px;
+    gap: 24px;
   }
 
   .sponsors__badge {
@@ -66,34 +59,22 @@ const sponsor = {
     text-transform: uppercase;
     padding: 4px 12px;
     border-radius: 20px;
-    margin-bottom: 14px;
-    display: inline-block;
   }
 
-  .sponsors__logo {
-    width: 180px;
-    height: 52px;
-    background: #fff;
-    border-radius: 6px;
-    padding: 6px 12px;
-    display: flex;
-    align-items: center;
+  .sponsors__logo { width: 320px; max-width: 100%; }
+  .sponsors__logo img {
+    width: 100%;
+    height: auto;
+    filter: brightness(0) invert(1);
+    opacity: 0.88;
   }
-  .sponsors__logo img { width: 100%; height: 100%; object-fit: contain; }
 
   .sponsors__logo-placeholder {
-    display: flex;
-    width: 180px;
-    height: 52px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 6px;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.5);
+    width: 320px;
+    height: 80px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 8px;
   }
-
-  .sponsors__meta { color: rgba(255,255,255,0.6); font-size: 0.875rem; text-align: right; line-height: 1.6; }
 
   .sponsors__link {
     color: var(--color-accent-to);
@@ -102,19 +83,5 @@ const sponsor = {
     letter-spacing: 1px;
     text-transform: uppercase;
     text-decoration: none;
-    display: block;
-    margin-top: 6px;
-  }
-
-  @media (max-width: 640px) {
-    .sponsors__title-card {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
-    }
-
-    .sponsors__meta {
-      text-align: left;
-    }
   }
 </style>
