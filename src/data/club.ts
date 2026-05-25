@@ -5,5 +5,5 @@
 // (page descriptions, address blocks, JSON-LD schemas) — those are kept
 // inline because they often appear inside larger sentences.
 
-export const DEFAULT_VENUE = 'Mulberry Academy';
+export const DEFAULT_VENUE = 'Mulberry Academy Shoreditch';
 export const DEFAULT_PRICE = '£8 cash / £10 card';

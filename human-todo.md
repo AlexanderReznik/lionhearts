@@ -113,7 +113,7 @@ Both `/events` and the homepage "open sessions" strip read from a single Google 
 
 1. Create a Google Sheet with these column headers in row 1:
    - **Required:** `day`, `time`, `level`
-   - **Optional:** `venue`, `price` (leave blank to inherit the club defaults in `src/data/club.ts`)
+   - **Optional:** `venue`, `price` (leave blank to inherit the club defaults: "Mulberry Academy Shoreditch" / "£8 cash / £10 card", set in `src/data/club.ts`)
 2. One session per row. The common case is just 3 columns:
 
    | day | time | level |

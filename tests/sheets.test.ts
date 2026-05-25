@@ -56,7 +56,7 @@ Monday,7:00pm–9:00pm,All Levels,"Mulberry Academy, Shoreditch",£8`;
 Monday,7:00pm–9:00pm,All Levels`;
 
     const result = parseSessionsCSV(csv);
-    expect(result[0].venue).toBe('Mulberry Academy');
+    expect(result[0].venue).toBe('Mulberry Academy Shoreditch');
     expect(result[0].price).toBe('£8 cash / £10 card');
   });
 
@@ -65,7 +65,7 @@ Monday,7:00pm–9:00pm,All Levels`;
 Monday,7:00pm–9:00pm,All Levels,,`;
 
     const result = parseSessionsCSV(csv);
-    expect(result[0].venue).toBe('Mulberry Academy');
+    expect(result[0].venue).toBe('Mulberry Academy Shoreditch');
     expect(result[0].price).toBe('£8 cash / £10 card');
   });
 
