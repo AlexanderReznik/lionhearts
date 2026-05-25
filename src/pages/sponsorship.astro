@@ -21,7 +21,7 @@ const perks = [
 ---
 
 <BaseLayout
-  title="Sponsor London Lionhearts VBC"
+  title="Sponsorship · London Lionhearts VBC"
   description="Partner with London Lionhearts Volleyball Club — 9× LVA Champions, NVL Super League, 200+ members in Shoreditch E2. Social media, kit branding, event presence and more."
 >
   <div class="page-hero">
@@ -43,7 +43,7 @@ const perks = [
         <div class="sponsor-hero__logo">
           {sponsor.logo
             ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
-            : <span class="sponsor-hero__logo-placeholder">Logo placeholder</span>
+            : <span class="sponsor-hero__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
           }
         </div>
       </div>

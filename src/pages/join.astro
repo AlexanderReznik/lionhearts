@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Join London Lionhearts Volleyball Club"
+  title="Join Us · London Lionhearts VBC"
   description="Come play volleyball in Shoreditch, East London. Open sessions Mon, Thu & Fri at Mulberry Academy — no experience needed, no booking required. Or DM us on Instagram."
 >
   <div class="page-hero">
@@ -23,6 +23,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
       <!-- 1: Open session -->
       <div class="pathway pathway--featured">
+        <p class="pathway__rec">Best way in</p>
         <div class="pathway__icon" aria-hidden="true">🏐</div>
         <h2 class="pathway__title">Come to an Open Session</h2>
         <p class="pathway__body">
@@ -65,6 +66,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <!-- Join form -->
     <h2 class="eyebrow section-eyebrow" id="join-form">Tell us about yourself</h2>
+    <p class="form-intro">Can't make a session? Fill in the short form and we'll match you to the right team or level.</p>
 
     <form
       class="join-form"
@@ -129,7 +131,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <button type="submit" class="btn btn--primary join-form__submit">Send →</button>
+      <button type="submit" class="btn btn--primary join-form__submit">Send Enquiry →</button>
       <p class="join-form__note">
         We'll get back to you within a few days. In a rush?
         <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer">
@@ -172,6 +174,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .pathway--featured {
     background: linear-gradient(135deg, #0038b8, #0060d8);
     border-color: rgba(0,150,255,0.3);
+  }
+
+  .pathway__rec {
+    font-size: 0.4375rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .form-intro {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.65;
+    margin-top: -12px;
+    margin-bottom: 28px;
+    max-width: 520px;
   }
 
   .pathway--featured::before {

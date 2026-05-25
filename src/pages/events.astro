@@ -126,8 +126,7 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
 
       {usingFallback && (
         <p class="sessions-box__notice">
-          ⚠️ Live schedule unavailable — showing confirmed schedule.
-          Set <code>GOOGLE_SHEET_ID</code> to enable Google Sheets sync.
+          ℹ️ Schedule confirmed — check our Instagram for any last-minute changes.
         </p>
       )}
 
@@ -199,9 +198,6 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
             </a>
           </div>
         </div>
-        <p class="team-fixture-section__note">
-          Fixtures and results for {team.name} on Volleyzone.
-        </p>
       </div>
     ))}
 
@@ -226,9 +222,6 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
             </a>
           </div>
         </div>
-        <p class="team-fixture-section__note">
-          Fixtures and results for {team.name} on Volleyzone.
-        </p>
       </div>
     ))}
 
@@ -281,9 +274,9 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
 
   .sessions-box__notice {
     font-size: 0.75rem;
-    color: rgba(255,200,0,0.7);
-    background: rgba(255,200,0,0.06);
-    border: 1px solid rgba(255,200,0,0.2);
+    color: rgba(120,180,255,0.9);
+    background: rgba(0,80,220,0.06);
+    border: 1px solid rgba(0,100,220,0.2);
     border-radius: 6px;
     padding: 10px 14px;
     margin-bottom: 20px;
@@ -422,12 +415,6 @@ const mensTeams   = teams.filter(t => t.gender === "Men's");
 
   .team-fixture-section__volleyzone:hover { color: var(--color-highlight-1); }
 
-  .team-fixture-section__note {
-    padding: 12px 20px;
-    color: rgba(255,255,255,0.5);
-    font-size: 0.75rem;
-    line-height: 1.6;
-  }
 
   /* ── Section eyebrow headers ── */
   .section-eyebrow { margin-bottom: 1rem; }

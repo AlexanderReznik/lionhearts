@@ -163,13 +163,13 @@ const isActive = (href: string) =>
     letter-spacing: 1.5px;
     text-transform: uppercase;
     transition: color 0.15s;
-    padding: 4px 0;
+    padding: 4px 0 2px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
   }
 
-  .nav__link:hover,
-  .nav__link--active {
-    color: var(--color-text);
-  }
+  .nav__link:hover { color: var(--color-text); border-bottom-color: rgba(255,255,255,0.2); }
+  .nav__link--active { color: var(--color-text); border-bottom-color: var(--color-accent-to); }
 
   .nav__cta {
     flex-shrink: 0;

@@ -18,7 +18,7 @@ const sponsor = {
       <div class="sponsors__logo" aria-label={`${sponsor.name} logo`}>
         {sponsor.logo
           ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
-          : <span class="sponsors__logo-placeholder">Logo placeholder</span>
+          : <span class="sponsors__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
         }
       </div>
     </div>
