@@ -1,6 +1,7 @@
 ---
 // src/components/CommunitySection.astro
 import { flags } from '../data/flags';
+import OverheardArchive from './OverheardArchive.astro';
 ---
 
 <section class="community">
@@ -38,17 +39,7 @@ import { flags } from '../data/flags';
       <div></div>
     </div>
 
-    <!-- Member quote -->
-    <blockquote class="community__quote">
-      <p>
-        "I just heard 3 lightning strikes and was stuck in the shed cause of hail storms,
-        I'm not going beach"
-      </p>
-      <footer>
-        — <cite>Babatope Oscar Alabi</cite>
-        <span class="community__quote-note">(placeholder — replace before launch)</span>
-      </footer>
-    </blockquote>
+    <OverheardArchive />
 
   </div>
 </section>
@@ -152,31 +143,5 @@ import { flags } from '../data/flags';
     white-space: nowrap;
   }
 
-  .community__quote {
-    background: linear-gradient(135deg, rgba(0,60,180,0.1), rgba(0,120,255,0.05));
-    border-left: 3px solid #0070ff;
-    border-radius: 0 12px 12px 0;
-    padding: 24px 28px;
-  }
-
-  .community__quote p {
-    font-size: 1.0625rem;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.6;
-    font-style: italic;
-    margin-bottom: 12px;
-  }
-
-  .community__quote footer {
-    font-size: 0.6875rem;
-    color: var(--color-text-muted);
-    font-weight: 600;
-  }
-
-  .community__quote-note {
-    color: rgba(255,255,255,0.5);
-    font-style: italic;
-    margin-left: 8px;
-  }
 
 </style>
