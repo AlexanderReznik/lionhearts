@@ -126,3 +126,24 @@ export const FALLBACK_QUOTES: Quote[] = [
     team: "Men's Pride",
   },
 ];
+
+export function parseQuotesCSV(csv: string): Quote[] {
+  if (!csv.trim()) return [];
+
+  const lines = csv.trim().split('\n');
+  if (lines.length < 2) return [];
+
+  const keys = lines[0].split(',').map(k => k.trim().toLowerCase());
+
+  return lines.slice(1)
+    .map(line => {
+      const values = splitCSVLine(line);
+      const raw: Record<string, string> = Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
+      return {
+        quote: raw['quote'] ?? '',
+        name:  raw['name']  ?? '',
+        team:  raw['team']  ?? '',
+      } satisfies Quote;
+    })
+    .filter(q => q.quote.length > 0);
+}

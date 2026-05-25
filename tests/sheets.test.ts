@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   parseSessionsCSV,
+  parseQuotesCSV,
   abbreviateDay,
   abbreviateTime,
   getSessions,
@@ -142,5 +143,53 @@ describe('getSessions', () => {
     const { sessions, usingFallback } = await getSessions('test-sheet-id');
     expect(usingFallback).toBe(true);
     expect(sessions).toHaveLength(1);
+  });
+});
+
+describe('parseQuotesCSV', () => {
+  it('parses required + optional columns', () => {
+    const csv = `quote,name,team
+"Some weird thing",Tope,Men's Pride
+"Another one",Sara,Women's Cats`;
+
+    const result = parseQuotesCSV(csv);
+    expect(result).toHaveLength(2);
+    expect(result[0]).toEqual({ quote: 'Some weird thing', name: 'Tope', team: "Men's Pride" });
+    expect(result[1].name).toBe('Sara');
+  });
+
+  it('defaults team to empty string when column is absent', () => {
+    const csv = `quote,name
+"Hello",Tope`;
+
+    const result = parseQuotesCSV(csv);
+    expect(result[0].team).toBe('');
+  });
+
+  it('defaults team to empty string when cell is blank', () => {
+    const csv = `quote,name,team
+"Hello",Tope,`;
+
+    const result = parseQuotesCSV(csv);
+    expect(result[0].team).toBe('');
+  });
+
+  it('skips rows where quote is blank', () => {
+    const csv = `quote,name,team
+"First one",Tope,Men's Pride
+,Sara,Women's Cats
+"Third one",Alex,Men's Roar`;
+
+    const result = parseQuotesCSV(csv);
+    expect(result).toHaveLength(2);
+    expect(result.map(q => q.name)).toEqual(['Tope', 'Alex']);
+  });
+
+  it('handles quoted fields containing commas', () => {
+    const csv = `quote,name,team
+"It was raining, snowing, and hailing at once",Tope,Men's Pride`;
+
+    const result = parseQuotesCSV(csv);
+    expect(result[0].quote).toBe('It was raining, snowing, and hailing at once');
   });
 });
