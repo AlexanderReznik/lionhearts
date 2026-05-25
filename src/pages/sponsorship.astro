@@ -7,7 +7,7 @@ const sponsor = {
   name:        'Vinarius London',
   description: 'East London\'s independent wine merchant — curating small-production wines from 15+ countries, hosting tastings and supper clubs in Shoreditch.',
   url:         '/sponsors/vinarius',
-  logo:        null,
+  logo:        '/images/sponsors/vinarius.png',
 };
 
 const perks = [
@@ -114,7 +114,15 @@ const perks = [
     margin-bottom: 12px;
   }
 
-  .sponsor-hero__logo { width: 200px; height: 64px; }
+  .sponsor-hero__logo {
+    width: 200px;
+    height: 64px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+  }
   .sponsor-hero__logo img { width: 100%; height: 100%; object-fit: contain; }
 
   .sponsor-hero__logo-placeholder {
