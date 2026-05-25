@@ -1,10 +1,16 @@
 ---
 // src/components/SessionsStrip.astro
-const sessions = [
-  { day: 'Mon', time: '7–9pm',  level: 'All Levels' },
-  { day: 'Thu', time: '7–9pm',  level: 'All Levels' },
-  { day: 'Fri', time: '8–10pm', level: 'Intermediate / Advanced' },
-];
+// Reads from the same Google Sheet as /events (single source of truth).
+// Falls back to the hardcoded schedule in lib/sheets.ts if the sheet is
+// unavailable. Day + time are abbreviated for the compact strip layout.
+import { getSessions, abbreviateDay, abbreviateTime } from '../lib/sheets';
+
+const { sessions: raw } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
+const sessions = raw.map(s => ({
+  day:   abbreviateDay(s.day),
+  time:  abbreviateTime(s.time),
+  level: s.level,
+}));
 ---
 
 <aside class="sessions-strip" aria-label="Weekly open sessions">

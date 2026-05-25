@@ -1,37 +1,17 @@
 ---
 // src/pages/events.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { fetchSessions, parseSessionsCSV, type Session } from '../lib/sheets';
+import { getSessions } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE } from '../data/teams';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
-// Set GOOGLE_SHEET_ID in your environment or Netlify env vars.
+// Set GOOGLE_SHEET_ID in your environment or Netlify/Vercel env vars.
 // The sheet must be published (File → Share → Publish to web → CSV).
-// Columns: day, time, level, venue, price
+// Columns: day, time, level, venue, price.
+// See human-todo.md item 8 for the full webhook setup that triggers a
+// rebuild whenever the sheet is edited.
 // ─────────────────────────────────────────────────────────────────────────
-const SHEET_ID = import.meta.env.GOOGLE_SHEET_ID;
-
-// Hardcoded fallback — used when SHEET_ID is unset or fetch fails.
-const FALLBACK_CSV = `day,time,level,venue,price
-Monday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
-Thursday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
-Friday,8:00pm–10:00pm,Intermediate / Advanced,Mulberry Academy,£8 cash / £10 card`;
-
-let sessions: Session[] = [];
-let usingFallback = false;
-
-if (SHEET_ID) {
-  try {
-    sessions = await fetchSessions(SHEET_ID);
-  } catch (e) {
-    console.warn('Google Sheets fetch failed, using fallback session data:', e);
-    sessions = parseSessionsCSV(FALLBACK_CSV);
-    usingFallback = true;
-  }
-} else {
-  sessions = parseSessionsCSV(FALLBACK_CSV);
-  usingFallback = true;
-}
+const { sessions, usingFallback } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 
 // ── Volleyzone URL builder ─────────────────────────────────────────────────
 // NOTE: The ?team= parameter format must be verified by visiting Volleyzone,

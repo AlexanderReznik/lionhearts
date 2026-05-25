@@ -6,6 +6,15 @@ export interface Session {
   price: string;
 }
 
+/**
+ * Hardcoded fallback used when GOOGLE_SHEET_ID is unset or the fetch fails.
+ * Edit this when the recurring schedule changes if the sheet isn't live yet.
+ */
+export const FALLBACK_CSV = `day,time,level,venue,price
+Monday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
+Thursday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
+Friday,8:00pm–10:00pm,Intermediate / Advanced,Mulberry Academy,£8 cash / £10 card`;
+
 export function parseSessionsCSV(csv: string): Session[] {
   if (!csv.trim()) return [];
 
@@ -52,4 +61,38 @@ export async function fetchSessions(sheetId: string): Promise<Session[]> {
   if (!res.ok) throw new Error(`Google Sheets fetch failed: ${res.status}`);
   const csv = await res.text();
   return parseSessionsCSV(csv);
+}
+
+/**
+ * Returns sessions from the live Google Sheet if GOOGLE_SHEET_ID is set,
+ * otherwise from the hardcoded fallback. Resolves the `usingFallback` flag
+ * so callers can show a notice when the live data isn't loaded.
+ */
+export async function getSessions(sheetId?: string): Promise<{ sessions: Session[]; usingFallback: boolean }> {
+  if (!sheetId) {
+    return { sessions: parseSessionsCSV(FALLBACK_CSV), usingFallback: true };
+  }
+  try {
+    return { sessions: await fetchSessions(sheetId), usingFallback: false };
+  } catch (e) {
+    console.warn('Google Sheets fetch failed, using fallback session data:', e);
+    return { sessions: parseSessionsCSV(FALLBACK_CSV), usingFallback: true };
+  }
+}
+
+/** "Monday" → "Mon" */
+export function abbreviateDay(day: string): string {
+  return day.slice(0, 3);
+}
+
+/** "7:00pm–9:00pm" → "7–9pm" (collapses :00 and dedupes the meridiem when both ends share it). */
+export function abbreviateTime(time: string): string {
+  const match = time.match(/^(\d+)(?::(\d+))?(am|pm)\s*[–-]\s*(\d+)(?::(\d+))?(am|pm)$/i);
+  if (!match) return time.replace(/:00/g, '');
+  const [, h1, m1, mer1, h2, m2, mer2] = match;
+  const start = m1 && m1 !== '00' ? `${h1}:${m1}` : h1;
+  const end = m2 && m2 !== '00' ? `${h2}:${m2}` : h2;
+  return mer1.toLowerCase() === mer2.toLowerCase()
+    ? `${start}–${end}${mer2.toLowerCase()}`
+    : `${start}${mer1.toLowerCase()}–${end}${mer2.toLowerCase()}`;
 }
