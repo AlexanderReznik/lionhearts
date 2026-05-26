@@ -10,24 +10,34 @@ import JoinCTA from '../components/JoinCTA.astro';
 import SponsorsSection from '../components/SponsorsSection.astro';
 import InstagramFeed from '../components/InstagramFeed.astro';
 
+// Hero images are processed at build time by Astro's <Picture> component,
+// which generates AVIF + WebP + JPEG variants at 640/960/1280/1920/2560 widths.
+// Drop your real photos into src/assets/hero/ and swap the imports below.
+// See human-todo.md § 11 for size/format guidance.
+import heroPlaceholder from '../assets/hero/placeholder.jpg';
+// import heroSuperLeague from '../assets/hero/01-super-league.jpg';
+// import heroLvaPremier from '../assets/hero/02-lva-premier.jpg';
+// import heroOpenSession from '../assets/hero/03-open-session.jpg';
+// import heroCommunity   from '../assets/hero/04-community.jpg';
+
 const heroSlides = [
   {
-    image: '/images/placeholder-hero.jpg',
+    image: heroPlaceholder, // swap to heroSuperLeague
     label: 'SUPER LEAGUE 2025/26',
     alt: 'Lionhearts players in action at the NVL Super League',
   },
   {
-    image: '/images/placeholder-hero.jpg',
+    image: heroPlaceholder, // swap to heroLvaPremier
     label: 'LVA PREMIER LEAGUE',
     alt: 'Lionhearts women celebrating a win',
   },
   {
-    image: '/images/placeholder-hero.jpg',
+    image: heroPlaceholder, // swap to heroOpenSession
     label: 'OPEN SESSIONS · SHOREDITCH E2',
     alt: 'Open session at Mulberry Academy Shoreditch',
   },
   {
-    image: '/images/placeholder-hero.jpg',
+    image: heroPlaceholder, // swap to heroCommunity
     label: 'TOGETHER WE ROAR',
     alt: 'Lionhearts club community',
   },

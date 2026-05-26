@@ -229,37 +229,52 @@ The webhook from item 8c already covers this tab — onChange fires for edits to
 
 ## 11. Homepage hero carousel images (4 photos needed)
 
-The hero on the homepage cycles through 4 background images (currently all pointing at a placeholder). These are the most important photos on the site — they're the first thing every visitor sees.
+The hero on the homepage cycles through 4 background images (currently all pointing at the same placeholder). These are the most important photos on the site — they're the first thing every visitor sees.
+
+The hero uses Astro's `<Picture>` component, which means: **you supply one big source per slide and the build generates a responsive srcset** (AVIF + WebP + JPEG, at 640 / 960 / 1280 / 1920 / 2560 widths). The browser downloads only the size + format it actually needs. So you don't need to compress yourself — give it the original.
 
 ### Where to put them
 
-Drop files into `public/images/hero/`. Use these exact filenames:
+Drop the source files into **`src/assets/hero/`** (NOT `public/`). Suggested filenames:
 
 | # | Slide label              | Filename                |
 |---|--------------------------|-------------------------|
-| 1 | SUPER LEAGUE 2025/26     | `01-super-league.webp`  |
-| 2 | LVA PREMIER LEAGUE       | `02-lva-premier.webp`   |
-| 3 | OPEN SESSIONS · SHOREDITCH E2 | `03-open-session.webp` |
-| 4 | TOGETHER WE ROAR         | `04-community.webp`     |
-
-(If you use JPEG, change extensions to `.jpg` and update the `image:` paths in `src/pages/index.astro` lines 14, 19, 24, 29 to match.)
+| 1 | SUPER LEAGUE 2025/26     | `01-super-league.jpg`   |
+| 2 | LVA PREMIER LEAGUE       | `02-lva-premier.jpg`    |
+| 3 | OPEN SESSIONS · SHOREDITCH E2 | `03-open-session.jpg`   |
+| 4 | TOGETHER WE ROAR         | `04-community.jpg`      |
 
 ### How they plug in
 
-Open `src/pages/index.astro` and update the `image:` field for each slide:
+Open `src/pages/index.astro`. Near the top you'll see commented-out import lines — uncomment them and remove the placeholder import:
+
+```ts
+// import heroPlaceholder from '../assets/hero/placeholder.jpg';   ← delete this
+import heroSuperLeague from '../assets/hero/01-super-league.jpg';
+import heroLvaPremier from '../assets/hero/02-lva-premier.jpg';
+import heroOpenSession from '../assets/hero/03-open-session.jpg';
+import heroCommunity   from '../assets/hero/04-community.jpg';
+```
+
+Then update each slide's `image:` field to point at the right import (the line comments already say which goes where):
 
 ```ts
 const heroSlides = [
-  { image: '/images/hero/01-super-league.webp', label: 'SUPER LEAGUE 2025/26', alt: '…' },
+  { image: heroSuperLeague, label: 'SUPER LEAGUE 2025/26', alt: '…' },
+  { image: heroLvaPremier,  label: 'LVA PREMIER LEAGUE',    alt: '…' },
   …
 ];
 ```
 
+Build will fail loudly if a path is wrong — that's a feature, not a bug.
+
 ### Photo specs
 
-- **Size:** **1920×1200 px** (16:10 landscape) recommended. Bigger sources are fine if you've got them — Squoosh will resize.
-- **Format:** **WebP** preferred at quality ~80. JPEG fine. (Don't use PNG — photos in PNG are huge.)
-- **File size:** **under 400 KB each** is the target. At 1920×1200 WebP-80 this is comfortable for sports photos; if you can't get there, push the source down (1600×1000 is still plenty sharp) before lowering quality below ~75. Use [squoosh.app](https://squoosh.app) to compare.
+- **Source size:** **2400–3840 px wide** is ideal. Astro generates smaller variants automatically; it won't upscale, so the source should be at least as wide as your largest expected display.
+- **Aspect:** **16:10 landscape** preferred (e.g. 3200×2000). Composition matters more than exact ratio.
+- **Format:** **JPEG** at quality 85–95 is best as a source — Astro re-encodes it into WebP/AVIF at build time anyway.
+- **File size of the source:** doesn't matter much. The source is processed at build time and never served. Don't waste time compressing the original.
+- **What users actually download:** Astro emits 1 file per (format × width) combination — usually 5 widths × 3 formats = 15 generated files per slide. Browsers pick the smallest variant that meets their device's pixel density. On a typical phone that's ~80–120 KB; on a laptop ~200–350 KB; on 4K ~400–600 KB.
 - **Composition:**
   - The headline **"TOGETHER WE ROAR"** sits **bottom-left**. Don't put key subjects there — they'll get hidden behind text.
   - The bottom 40% is **darkened by a gradient overlay** for headline contrast. Don't worry about exposure at the bottom, just don't put the key action there.
@@ -272,22 +287,26 @@ const heroSlides = [
 
 ### What's there now
 
-A single placeholder file (`/images/placeholder-hero.jpg`). Until real photos are added, the hero shows that same image on all 4 slides — fine for dev, not for launch.
+A single placeholder file at `src/assets/hero/placeholder.jpg` (a subtle blue grid texture). Until real photos are added, all 4 slides use it — fine for dev, not for launch.
 
 ---
 
 ## Image folder structure (for reference)
 
 ```
+src/
+  assets/
+    hero/                          ← Astro processes these (responsive)
+      01-super-league.jpg
+      02-lva-premier.jpg
+      03-open-session.jpg
+      04-community.jpg
+      placeholder.jpg              ← delete once all 4 are added
+
 public/
-  images/
-    hero/
-      01-super-league.webp
-      02-lva-premier.webp
-      03-open-session.webp
-      04-community.webp
+  images/                          ← served as-is (no responsive)
     teams/
-      vinarius.jpg
+      vinarius.jpg                 (or .webp)
       cats.jpg
       fury.jpg
       beats.jpg
