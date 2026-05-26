@@ -14,8 +14,8 @@ export const VOLLEYZONE_BASE =
 export const teams: Team[] = [
   // Women's
   { name: 'Vinarius',   gender: "Women's", division: 'NVL Super League',   badge: '⚡ Super League', volleyzoneSlug: 'lionhearts-vinarius' },
-  { name: 'Cats',       gender: "Women's", division: 'LVA Division 1',     volleyzoneSlug: 'lionhearts-cats' },
   { name: 'Fury',       gender: "Women's", division: 'LVA Premier League', volleyzoneSlug: 'lionhearts-fury' },
+  { name: 'Cats',       gender: "Women's", division: 'LVA Division 1',     volleyzoneSlug: 'lionhearts-cats' },
   { name: 'Beats',      gender: "Women's", division: 'LVA Division 1',     volleyzoneSlug: 'lionhearts-beats' },
   // Men's
   { name: 'Alpha',      gender: "Men's",   division: 'LVA Premier League', volleyzoneSlug: 'lionhearts-alpha' },
