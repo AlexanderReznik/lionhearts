@@ -44,10 +44,14 @@ Open `src/data/teams.ts` and set the `image` field for each team:
 The team cards will automatically show the photo once the path is set.
 
 ### Photo specs
-- **Size:** 800×600px (landscape)
-- **Format:** JPEG or WebP (WebP preferred — ~30% smaller)
-- **File size:** aim for under 200 KB each
-- Photos from a phone are fine — just resize before dropping in
+- **Size:** 1280×720 px (16:9 landscape) recommended. 960×540 minimum.
+- **Aspect:** **16:9** — the team card uses `aspect-ratio: 16/9` with `object-fit: cover`, so 4:3 photos will get the top + bottom cropped. Shoot or crop wide.
+- **Format:** WebP preferred (~30% smaller). JPEG fine.
+- **File size:** under 150 KB each.
+- **Composition:** whole team visible, faces roughly centered, a little headroom — anything at the very top/bottom may get clipped by the card crop.
+- Photos from a phone are fine — just resize and re-crop to 16:9 before dropping in.
+
+> If you use WebP, change the file extensions to `.webp` and update the `image:` paths in `src/data/teams.ts` to match.
 
 ---
 
@@ -223,11 +227,65 @@ The webhook from item 8c already covers this tab — onChange fires for edits to
 
 ---
 
+## 11. Homepage hero carousel images (4 photos needed)
+
+The hero on the homepage cycles through 4 background images (currently all pointing at a placeholder). These are the most important photos on the site — they're the first thing every visitor sees.
+
+### Where to put them
+
+Drop files into `public/images/hero/`. Use these exact filenames:
+
+| # | Slide label              | Filename                |
+|---|--------------------------|-------------------------|
+| 1 | SUPER LEAGUE 2025/26     | `01-super-league.webp`  |
+| 2 | LVA PREMIER LEAGUE       | `02-lva-premier.webp`   |
+| 3 | OPEN SESSIONS · SHOREDITCH E2 | `03-open-session.webp` |
+| 4 | TOGETHER WE ROAR         | `04-community.webp`     |
+
+(If you use JPEG, change extensions to `.jpg` and update the `image:` paths in `src/pages/index.astro` lines 14, 19, 24, 29 to match.)
+
+### How they plug in
+
+Open `src/pages/index.astro` and update the `image:` field for each slide:
+
+```ts
+const heroSlides = [
+  { image: '/images/hero/01-super-league.webp', label: 'SUPER LEAGUE 2025/26', alt: '…' },
+  …
+];
+```
+
+### Photo specs
+
+- **Size:** **2560×1600 px** (16:10 landscape) ideal. **1920×1200 px** minimum.
+- **Format:** **WebP** preferred. JPEG fine. (Don't use PNG — photos in PNG are huge.)
+- **File size:** under **400 KB** each. With 4 slides, that's a ~1.6 MB budget — keeps the page snappy. Use [squoosh.app](https://squoosh.app) to compress.
+- **Composition:**
+  - The headline **"TOGETHER WE ROAR"** sits **bottom-left**. Don't put key subjects there — they'll get hidden behind text.
+  - The bottom 40% is **darkened by a gradient overlay** for headline contrast. Don't worry about exposure at the bottom, just don't put the key action there.
+  - The image gets **cropped differently on mobile vs desktop** (wide on desktop, tall on mobile). Subject should sit roughly **centered or upper-right** so neither crop loses them.
+- **Content suggestions per slide** (match the labels above):
+  1. Action shot of an NVL team playing — a hit, a block, a celebration
+  2. The LVA Premier women's team — a moment from a match
+  3. An open session at Mulberry — wide angle showing the gym, lots of people
+  4. The whole club / a community moment — players hugging, lining up, mid-laugh
+
+### What's there now
+
+A single placeholder file (`/images/placeholder-hero.jpg`). Until real photos are added, the hero shows that same image on all 4 slides — fine for dev, not for launch.
+
+---
+
 ## Image folder structure (for reference)
 
 ```
 public/
   images/
+    hero/
+      01-super-league.webp
+      02-lva-premier.webp
+      03-open-session.webp
+      04-community.webp
     teams/
       vinarius.jpg
       cats.jpg
