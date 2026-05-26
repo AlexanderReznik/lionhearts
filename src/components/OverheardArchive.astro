@@ -67,7 +67,7 @@ const first = quotes[0];
       )}
     </div>
 
-    <script type="application/json" data-overheard-data set:html={JSON.stringify(quotes)} />
+    <script type="application/json" data-overheard-data set:html={JSON.stringify(quotes).replace(/<\//g, '<\\/')} />
   </section>
 )}
 
@@ -252,6 +252,7 @@ const first = quotes[0];
 
       function startTimer() {
         if (prefersReduced) return;
+        stopTimer();
         timer = window.setInterval(() => goTo(current + 1), ROTATE_MS);
       }
 

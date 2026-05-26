@@ -236,4 +236,15 @@ describe('getQuotes', () => {
     expect(usingFallback).toBe(true);
     expect(quotes).toEqual(FALLBACK_QUOTES);
   });
+
+  it('falls back when fetch succeeds but returns no parseable rows', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => `quote,name,team\n,Anonymous,`,
+    } as Response);
+
+    const { quotes, usingFallback } = await getQuotes('sheet-id', '123');
+    expect(usingFallback).toBe(true);
+    expect(quotes).toEqual(FALLBACK_QUOTES);
+  });
 });
