@@ -257,9 +257,9 @@ const heroSlides = [
 
 ### Photo specs
 
-- **Size:** **2560×1600 px** (16:10 landscape) ideal. **1920×1200 px** minimum.
-- **Format:** **WebP** preferred. JPEG fine. (Don't use PNG — photos in PNG are huge.)
-- **File size:** under **400 KB** each. With 4 slides, that's a ~1.6 MB budget — keeps the page snappy. Use [squoosh.app](https://squoosh.app) to compress.
+- **Size:** **1920×1200 px** (16:10 landscape) recommended. Bigger sources are fine if you've got them — Squoosh will resize.
+- **Format:** **WebP** preferred at quality ~80. JPEG fine. (Don't use PNG — photos in PNG are huge.)
+- **File size:** **under 400 KB each** is the target. At 1920×1200 WebP-80 this is comfortable for sports photos; if you can't get there, push the source down (1600×1000 is still plenty sharp) before lowering quality below ~75. Use [squoosh.app](https://squoosh.app) to compare.
 - **Composition:**
   - The headline **"TOGETHER WE ROAR"** sits **bottom-left**. Don't put key subjects there — they'll get hidden behind text.
   - The bottom 40% is **darkened by a gradient overlay** for headline contrast. Don't worry about exposure at the bottom, just don't put the key action there.
