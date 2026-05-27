@@ -75,59 +75,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     >
 
       <!-- Section 1: Your details -->
-      <p class="join-form__section-label">Your Details</p>
-      <div class="join-form__grid">
-        <div class="join-form__field">
-          <label for="first-name">First Name</label>
-          <input id="first-name" type="text" name="first_name" placeholder="Your name" required />
-        </div>
-        <div class="join-form__field">
-          <label for="last-name">Last Name</label>
-          <input id="last-name" type="text" name="last_name" placeholder="Your surname" required />
-        </div>
-        <div class="join-form__field">
-          <label for="email">Email</label>
-          <input id="email" type="email" name="email" placeholder="your@email.com" required />
-        </div>
-        <div class="join-form__field">
-          <label for="phone">Phone <span class="join-form__optional">(optional)</span></label>
-          <input id="phone" type="tel" name="phone" placeholder="+44..." />
+      <div class="join-form__section">
+        <p class="join-form__section-label">Your Details</p>
+        <div class="join-form__grid">
+          <div class="join-form__field">
+            <label for="first-name">First Name</label>
+            <input id="first-name" type="text" name="first_name" placeholder="Your name" required />
+          </div>
+          <div class="join-form__field">
+            <label for="last-name">Last Name</label>
+            <input id="last-name" type="text" name="last_name" placeholder="Your surname" required />
+          </div>
+          <div class="join-form__field">
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" placeholder="your@email.com" required />
+          </div>
+          <div class="join-form__field">
+            <label for="phone">Phone <span class="join-form__optional">(optional)</span></label>
+            <input id="phone" type="tel" name="phone" placeholder="+44..." />
+          </div>
         </div>
       </div>
 
-      <div class="join-form__divider" aria-hidden="true"></div>
-
       <!-- Section 2: Your volleyball -->
-      <p class="join-form__section-label">Your Volleyball</p>
-      <div class="join-form__grid">
-        <div class="join-form__field">
-          <label for="position">Playing Position</label>
-          <select id="position" name="position">
-            <option value="not_sure">Not sure yet</option>
-            <option value="setter">Setter</option>
-            <option value="outside_hitter">Outside Hitter</option>
-            <option value="middle_blocker">Middle Blocker</option>
-            <option value="libero">Libero</option>
-            <option value="opposite">Opposite</option>
-          </select>
-        </div>
-        <div class="join-form__field">
-          <label for="level">Experience Level</label>
-          <select id="level" name="experience_level">
-            <option value="beginner">Total Beginner</option>
-            <option value="some_experience">Some Experience</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced / Competitive</option>
-          </select>
-        </div>
-        <div class="join-form__field join-form__field--full">
-          <label for="message">Anything else you'd like us to know? <span class="join-form__optional">(optional)</span></label>
-          <textarea
-            id="message"
-            name="message"
-            rows="4"
-            placeholder="Tell us about yourself, your volleyball background, what you're looking for..."
-          ></textarea>
+      <div class="join-form__section">
+        <p class="join-form__section-label">Your Volleyball</p>
+        <div class="join-form__grid">
+          <div class="join-form__field">
+            <label for="position">Playing Position</label>
+            <select id="position" name="position">
+              <option value="not_sure">Not sure yet</option>
+              <option value="setter">Setter</option>
+              <option value="outside_hitter">Outside Hitter</option>
+              <option value="middle_blocker">Middle Blocker</option>
+              <option value="libero">Libero</option>
+              <option value="opposite">Opposite</option>
+            </select>
+          </div>
+          <div class="join-form__field">
+            <label for="level">Experience Level</label>
+            <select id="level" name="experience_level">
+              <option value="beginner">Total Beginner</option>
+              <option value="some_experience">Some Experience</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced / Competitive</option>
+            </select>
+          </div>
+          <div class="join-form__field join-form__field--full">
+            <label for="message">Anything else you'd like us to know? <span class="join-form__optional">(optional)</span></label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              placeholder="Tell us about yourself, your volleyball background, what you're looking for..."
+            ></textarea>
+          </div>
         </div>
       </div>
 
@@ -252,34 +254,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   /* ── Join form ── */
   .join-form {
-    background: linear-gradient(160deg, rgba(0,40,140,0.18), rgba(0,20,80,0.12));
-    border: 1px solid rgba(0,100,220,0.25);
-    border-radius: 14px;
-    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .join-form__section {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 28px;
   }
 
   .join-form__section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 0.5625rem;
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--color-accent-to);
-    margin-bottom: 16px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 20px;
   }
 
-  .join-form__divider {
-    height: 1px;
-    background: rgba(255,255,255,0.07);
-    margin: 28px 0;
+  .join-form__section-label::before {
+    content: '';
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    flex-shrink: 0;
   }
 
   .join-form__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 20px;
   }
 
-  .join-form__field { display: flex; flex-direction: column; gap: 8px; }
+  .join-form__field { display: flex; flex-direction: column; gap: 7px; }
   .join-form__field--full { grid-column: span 2; }
 
   @media (max-width: 640px) {
@@ -290,62 +304,81 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .join-form__field label {
     font-size: 0.5625rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.65);
+    color: rgba(255,255,255,0.5);
   }
 
-  .join-form__optional { font-weight: 400; color: rgba(255,255,255,0.45); text-transform: none; letter-spacing: 0; }
+  .join-form__optional { font-weight: 400; color: rgba(255,255,255,0.35); text-transform: none; letter-spacing: 0; }
 
   .join-form__field input,
   .join-form__field select,
   .join-form__field textarea {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 7px;
-    padding: 11px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 12px 16px;
     color: rgba(255,255,255,0.9);
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     font-family: inherit;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .join-form__field input:hover,
+  .join-form__field select:hover,
+  .join-form__field textarea:hover {
+    border-color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.09);
   }
 
   .join-form__field input:focus-visible,
   .join-form__field select:focus-visible,
   .join-form__field textarea:focus-visible {
-    outline: 2px solid var(--color-accent-to);
-    outline-offset: 2px;
+    outline: none;
     border-color: var(--color-accent-to);
+    background: rgba(0,100,255,0.08);
+    box-shadow: 0 0 0 3px rgba(0,144,255,0.15);
   }
+
+  .join-form__field textarea { resize: vertical; min-height: 100px; }
 
   .join-form__field select option { background: var(--color-surface); }
 
-  .join-form__consent { margin-top: 8px; }
+  .join-form__consent {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+
   .join-form__consent-label {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
     font-size: 0.6875rem;
-    color: rgba(255,255,255,0.55);
-    line-height: 1.5;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
     cursor: pointer;
   }
+
   .join-form__consent-label input[type="checkbox"] {
     flex-shrink: 0;
     margin-top: 2px;
     accent-color: var(--color-accent-from);
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
   }
 
   .join-form__submit {
     width: 100%;
     justify-content: center;
-    margin-top: 28px;
-    margin-bottom: 16px;
-    padding: 14px;
+    margin-top: 8px;
+    padding: 15px;
+    font-size: 0.875rem;
+    letter-spacing: 1px;
   }
 
   .join-form__note {
