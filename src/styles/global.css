@@ -158,6 +158,50 @@ body {
   border: 0;
 }
 
+/* ── Section eyebrow heading ── */
+.section-eyebrow { margin-bottom: 1.5rem; }
+.section-eyebrow--spaced { margin-top: 2.5rem; }
+.section-eyebrow--compact { margin-bottom: 1rem; }
+.section-eyebrow--tight { margin-bottom: 0.75rem; }
+
+/* ── Filter pills ── */
+.filter-pills {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.filter-pill:hover:not(.filter-pill--active) {
+  border-color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.9);
+}
+
+.filter-pill:focus-visible {
+  outline: 2px solid var(--color-accent-to);
+  outline-offset: 3px;
+}
+
+.filter-pill--active {
+  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  border-color: transparent;
+  color: #fff;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   :root {

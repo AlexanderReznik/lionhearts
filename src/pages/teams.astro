@@ -2,6 +2,7 @@
 // src/pages/teams.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TeamCard from '../components/TeamCard.astro';
+import FilterPills from '../components/FilterPills.astro';
 import { teams } from '../data/teams';
 
 // All 9 teams, women's first then men's (per club convention).
@@ -25,26 +26,7 @@ const sortedTeams = [
 
   <div class="page-content">
 
-    <p class="sr-only" aria-live="polite" id="teams-filter-status"></p>
-
-    <div class="filter-pills" role="group" aria-label="Filter teams">
-      {([
-        { label: 'All Teams', filter: 'all' },
-        { label: "Women's",   filter: 'womens' },
-        { label: "Men's",     filter: 'mens' },
-        { label: 'NVL',       filter: 'nvl' },
-        { label: 'LVA',       filter: 'lva' },
-      ] as const).map(({ label, filter }, i) => (
-        <button
-          type="button"
-          data-teams-filter={filter}
-          aria-pressed={i === 0 ? "true" : "false"}
-          class:list={['filter-pill', { 'filter-pill--active': i === 0 }]}
-        >
-          {label}
-        </button>
-      ))}
-    </div>
+    <FilterPills statusId="teams-filter-status" label="Filter teams" />
 
     <div class="teams-grid">
       {sortedTeams.map(team => <TeamCard team={team} />)}
@@ -56,13 +38,13 @@ const sortedTeams = [
 </BaseLayout>
 
 <script>
-  const pills  = document.querySelectorAll<HTMLButtonElement>('[data-teams-filter]');
+  const pills  = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
   const cards  = document.querySelectorAll<HTMLElement>('.team-card');
   const status = document.getElementById('teams-filter-status')!;
 
   pills.forEach(pill => {
     pill.addEventListener('click', () => {
-      const filter = pill.dataset.teamsFilter!;
+      const filter = pill.dataset.filter!;
 
       pills.forEach(p => {
         p.classList.remove('filter-pill--active');
@@ -85,44 +67,6 @@ const sortedTeams = [
 </script>
 
 <style>
-  /* ── Filter pills (mirrors /events) ── */
-  .filter-pills {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-
-  .filter-pill {
-    padding: 7px 16px;
-    border-radius: 20px;
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.6);
-    background: transparent;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-
-  .filter-pill:hover:not(.filter-pill--active) {
-    border-color: rgba(255,255,255,0.3);
-    color: rgba(255,255,255,0.9);
-  }
-
-  .filter-pill:focus-visible {
-    outline: 2px solid var(--color-accent-to);
-    outline-offset: 3px;
-  }
-
-  .filter-pill--active {
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
-    border-color: transparent;
-    color: #fff;
-  }
-
   /* ── 3×3 teams grid ── */
   .teams-grid {
     display: grid;

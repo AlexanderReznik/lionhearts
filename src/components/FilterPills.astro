@@ -1,0 +1,29 @@
+---
+interface Props {
+  statusId: string;
+  label?: string;
+}
+const { statusId, label = 'Filter by team type' } = Astro.props;
+
+const PILLS = [
+  { label: 'All Teams', value: 'all' },
+  { label: "Women's",   value: 'womens' },
+  { label: "Men's",     value: 'mens' },
+  { label: 'NVL',       value: 'nvl' },
+  { label: 'LVA',       value: 'lva' },
+] as const;
+---
+
+<p class="sr-only" aria-live="polite" id={statusId}></p>
+<div class="filter-pills" role="group" aria-label={label}>
+  {PILLS.map(({ label, value }, i) => (
+    <button
+      type="button"
+      data-filter={value}
+      aria-pressed={i === 0 ? "true" : "false"}
+      class:list={['filter-pill', { 'filter-pill--active': i === 0 }]}
+    >
+      {label}
+    </button>
+  ))}
+</div>
