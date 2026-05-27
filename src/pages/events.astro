@@ -503,7 +503,10 @@ const teamSections = [
     }
   }
 
-  /* ── Fixture timeline ── */
+</style>
+
+<style is:global>
+  /* ── Fixture timeline (is:global — injected via innerHTML, scoped attr won't match) ── */
   .team-fixtures { font-size: 0.75rem; }
 
   .tl-section-label {
