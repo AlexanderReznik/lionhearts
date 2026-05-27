@@ -63,7 +63,14 @@ function splitCSVLine(line: string): string[] {
  */
 export async function fetchSheetCSV(sheetId: string, gid: string = '0'): Promise<string> {
   const url = `https://docs.google.com/spreadsheets/d/${encodeURIComponent(sheetId)}/export?format=csv&gid=${encodeURIComponent(gid)}`;
-  const res = await fetch(url);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+  let res: Response;
+  try {
+    res = await fetch(url, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!res.ok) throw new Error(`Google Sheets fetch failed: ${res.status}`);
   return res.text();
 }
