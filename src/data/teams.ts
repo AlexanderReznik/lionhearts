@@ -12,8 +12,14 @@ export interface Team {
   volleyzoneSegment?: 'lva' | 'nvl';
 }
 
-export const VOLLEYZONE_BASE =
+export const VOLLEYZONE_BASE_LVA =
   'https://competitions.volleyzone.co.uk/fixture-and-results/lva/';
+
+export const VOLLEYZONE_BASE_NVL =
+  'https://competitions.volleyzone.co.uk/fixture-and-results/nvl/';
+
+/** @deprecated use VOLLEYZONE_BASE_LVA */
+export const VOLLEYZONE_BASE = VOLLEYZONE_BASE_LVA;
 
 export const teams: Team[] = [
   // Women's

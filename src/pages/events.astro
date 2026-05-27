@@ -3,7 +3,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
 import { getSessions } from '../lib/sheets';
-import { teams, VOLLEYZONE_BASE } from '../data/teams';
+import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
@@ -42,9 +42,10 @@ function slimFixtures(tf: { teamName: string; matches: import('../lib/volleyzone
 // NOTE: The ?team= parameter format must be verified by visiting Volleyzone,
 // selecting a team, and inspecting the resulting URL. Update volleyzoneSlug
 // values in src/data/teams.ts after verification.
-function volleyzoneUrl(slug?: string): string {
-  if (!slug) return VOLLEYZONE_BASE;
-  return `${VOLLEYZONE_BASE}?team=${encodeURIComponent(slug)}`;
+function volleyzoneUrl(slug?: string, segment?: 'lva' | 'nvl'): string {
+  const base = segment === 'nvl' ? VOLLEYZONE_BASE_NVL : VOLLEYZONE_BASE_LVA;
+  if (!slug) return base;
+  return `${base}?team=${encodeURIComponent(slug)}`;
 }
 
 // ── JSON-LD: Recurring events with Schedule type ───────────────────────────
@@ -176,7 +177,7 @@ const teamSections = [
             data-gender={section}
             data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}
             data-updated={buildTimestamp}
-            data-volleyzone-url={volleyzoneUrl(team.volleyzoneSlug)}
+            data-volleyzone-url={volleyzoneUrl(team.volleyzoneSlug, team.volleyzoneSegment)}
           >
             <div class="team-fixture-section__header">
               <div>
