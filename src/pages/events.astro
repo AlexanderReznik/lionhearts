@@ -28,7 +28,10 @@ function slimFixtures(tf: { teamName: string; matches: import('../lib/volleyzone
     teamName: tf.teamName,
     error: tf.error,
     matches: tf.matches
-      .filter(m => m.fixtureStatus === 'result' || m.fixtureStatus === 'fixture')
+      .filter(m =>
+        (m.fixtureStatus === 'result' || m.fixtureStatus === 'fixture') &&
+        (m.homeTeam.includes('Lionhearts') || m.awayTeam.includes('Lionhearts'))
+      )
       .map(({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue }) =>
         ({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue })
       ),
@@ -228,17 +231,21 @@ const teamSections = [
       const today = new Date();
       today.setUTCHours(0, 0, 0, 0);
 
-      const results = data.matches
+      const teamMatches = data.matches.filter(
+        (m: Match) => m.homeTeam.includes('Lionhearts') || m.awayTeam.includes('Lionhearts')
+      );
+
+      const results = teamMatches
         .filter((m: Match) => m.fixtureStatus === 'result')
         .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate)
         .slice(0, 3);
 
-      const upcoming = data.matches
+      const upcoming = teamMatches
         .filter((m: Match) => m.fixtureStatus === 'fixture' && m.fixtureDate * 1000 >= today.getTime())
         .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate)
         .slice(0, 3);
 
-      if (data.matches.length > 0 && results.length === 0 && upcoming.length === 0) {
+      if (teamMatches.length > 0 && results.length === 0 && upcoming.length === 0) {
         target.innerHTML = `<div class="tl-error">Season complete — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">full schedule on Volleyzone →</a></div>`;
         return;
       }
