@@ -96,4 +96,10 @@ describe('formatMatchResult', () => {
     const m = { ...BASE_MATCH, homeScore: '3;', awayScore: '1;', homeResult: 'win' as const, awayResult: 'lose' as const };
     expect(formatMatchResult(m, 'Away')).toBe('L 1–3');
   });
+
+  it('returns D score for a draw', () => {
+    const m = { ...BASE_MATCH, homeScore: '2;', awayScore: '2;', homeResult: 'draw' as const, awayResult: 'draw' as const };
+    expect(formatMatchResult(m, 'Home')).toBe('D 2–2');
+    expect(formatMatchResult(m, 'Away')).toBe('D 2–2');
+  });
 });

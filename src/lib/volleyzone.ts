@@ -54,10 +54,10 @@ export function formatFixtureTime(timestamp: number): string | null {
 export function formatMatchResult(match: Match, perspective: 'Home' | 'Away'): string {
   const { home, away } = parseScore(match.homeScore, match.awayScore);
   if (perspective === 'Home') {
-    const label = match.homeResult === 'win' ? 'W' : 'L';
+    const label = match.homeResult === 'win' ? 'W' : match.homeResult === 'lose' ? 'L' : 'D';
     return `${label} ${home}–${away}`;
   } else {
-    const label = match.awayResult === 'win' ? 'W' : 'L';
+    const label = match.awayResult === 'win' ? 'W' : match.awayResult === 'lose' ? 'L' : 'D';
     return `${label} ${away}–${home}`;
   }
 }
