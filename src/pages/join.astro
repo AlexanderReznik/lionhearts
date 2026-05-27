@@ -71,9 +71,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <form
       class="join-form"
       method="POST"
-      action="https://formspree.io/f/xkoekqok"
+      action="https://api.web3forms.com/submit"
     >
-      <input type="hidden" name="_next" value="https://lionheartsvolleyball.com/join-success/" />
+      <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_ACCESS_KEY" />
+      <input type="hidden" name="subject" value="New enquiry — London Lionhearts VBC" />
+      <input type="hidden" name="from_name" value="Lionhearts Website" />
+      <input type="hidden" name="redirect" value="https://lionheartsvolleyball.com/join-success/" />
+      <input type="checkbox" name="botcheck" style="display:none" />
 
       <!-- Section 1: Your details -->
       <div class="join-form__section">
