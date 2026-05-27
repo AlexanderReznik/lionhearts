@@ -1,4 +1,5 @@
 // src/lib/volleyzone.ts
+import { teams } from '../data/teams';
 import type { Team } from '../data/teams';
 
 const ENDPOINT =
@@ -91,4 +92,27 @@ export async function fetchTeamFixtures(
   const outer = await res.json();
   const inner = JSON.parse(outer.debug) as { data: { fixtures: Match[] } };
   return inner.data.fixtures;
+}
+
+export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Record<string, TeamFixtures>> {
+  const eligible = teamsData.filter(
+    t => t.compId && t.seasonId && t.volleyzoneUserId && t.volleyzoneSegment,
+  );
+
+  const settled = await Promise.allSettled(
+    eligible.map(t => fetchTeamFixtures(t.compId!, t.seasonId!, t.volleyzoneUserId!, t.volleyzoneSegment!)),
+  );
+
+  const map: Record<string, TeamFixtures> = {};
+  eligible.forEach((team, i) => {
+    const result = settled[i];
+    if (result.status === 'fulfilled') {
+      map[team.name] = { teamName: team.name, matches: result.value, error: false };
+    } else {
+      console.warn(`[volleyzone] Failed to fetch fixtures for ${team.name}:`, result.reason);
+      map[team.name] = { teamName: team.name, matches: [], error: true };
+    }
+  });
+
+  return map;
 }

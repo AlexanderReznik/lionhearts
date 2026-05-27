@@ -104,6 +104,75 @@ describe('formatMatchResult', () => {
   });
 });
 
+describe('fetchAllFixtures', () => {
+  const realFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  it('returns a map keyed by team name with successful fetches', async () => {
+    const makeResponse = (teamName: string) => {
+      const fixture = {
+        fixtureId: '1', fixtureDate: 1746277200, fixtureStatus: 'fixture',
+        homeTeam: teamName, awayTeam: 'Rivals', homeScore: ';', awayScore: ';',
+        homeResult: '', awayResult: '', venue: 'Gym',
+      };
+      return { ok: true, json: async () => ({ debug: JSON.stringify({ data: { fixtures: [fixture] } }) }) };
+    };
+
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce(makeResponse('Lionhearts Alpha'))
+      .mockResolvedValueOnce(makeResponse('Lionhearts Predators'));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const fakeTeams = [
+      { name: 'Alpha', gender: "Men's", division: 'LVA Premier League',
+        compId: '209508', seasonId: '3881', volleyzoneUserId: '298568', volleyzoneSegment: 'lva' },
+      { name: 'Predators', gender: "Men's", division: 'LVA Division 1',
+        compId: '209510', seasonId: '3881', volleyzoneUserId: '298568', volleyzoneSegment: 'lva' },
+    ] as import('../src/data/teams').Team[];
+
+    const result = await fetchAllFixtures(fakeTeams);
+
+    expect(result['Alpha'].error).toBe(false);
+    expect(result['Alpha'].matches).toHaveLength(1);
+    expect(result['Predators'].error).toBe(false);
+  });
+
+  it('marks a team as error when its fetch fails', async () => {
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce({ ok: false, status: 500 } as Response);
+
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const fakeTeams = [
+      { name: 'Alpha', gender: "Men's", division: 'LVA Premier League',
+        compId: '209508', seasonId: '3881', volleyzoneUserId: '298568', volleyzoneSegment: 'lva' },
+    ] as import('../src/data/teams').Team[];
+
+    const result = await fetchAllFixtures(fakeTeams);
+
+    expect(result['Alpha'].error).toBe(true);
+    expect(result['Alpha'].matches).toEqual([]);
+  });
+
+  it('skips teams without compId', async () => {
+    globalThis.fetch = vi.fn();
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const fakeTeams = [
+      { name: 'NoId', gender: "Men's", division: 'LVA Division 1' },
+    ] as import('../src/data/teams').Team[];
+
+    const result = await fetchAllFixtures(fakeTeams);
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(result['NoId']).toBeUndefined();
+  });
+});
+
 describe('fetchTeamFixtures', () => {
   const realFetch = globalThis.fetch;
 
