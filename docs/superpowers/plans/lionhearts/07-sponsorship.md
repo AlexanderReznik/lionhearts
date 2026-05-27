@@ -1,0 +1,263 @@
+# Sub-Plan 07 — Sponsorship Page
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement task-by-task.
+
+**Goal:** Build `/sponsorship` — title sponsor hero, "Become a Sponsor" CTA, and six-perk grid.
+
+**Visual reference:** `mockup-final.html` → Sponsorship tab.
+
+**Prerequisite:** Sub-plans 01–03 complete.
+
+---
+
+### Task 1: Sponsorship page
+
+**Files:**
+- Create: `src/pages/sponsorship.astro`
+
+- [ ] **Step 1: Create sponsorship.astro**
+
+```astro
+---
+// src/pages/sponsorship.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// TODO: Replace with actual sponsor data supplied by client
+const sponsor = {
+  name:        'Title Sponsor',
+  description: 'Sponsor description — who they are, what they do, and why they support Lionhearts. Provided by client.',
+  url:         '#',       // ← replace with actual URL
+  logo:        null,      // ← replace with '/images/sponsor-logo.svg'
+};
+
+const perks = [
+  { icon: '📱', title: 'Social Media Exposure',   body: 'Featured across our Instagram, Facebook, and YouTube — reaching 2,000+ engaged followers and growing.' },
+  { icon: '🌐', title: 'Website Presence',         body: 'Logo and profile on the Sponsorship page, linked from our homepage. Permanent backlink.' },
+  { icon: '👕', title: 'Kit Branding',             body: 'Your logo on team kit — visible at every match, training session, and event throughout the season.' },
+  { icon: '🎉', title: 'Event Presence',           body: 'Banners and branding at club events, tournaments, and open sessions at Mulberry Academy.' },
+  { icon: '🏆', title: 'Champion Association',     body: 'Align your brand with 9× LVA Champions and an NVL Super League club — elite sport, East London.' },
+  { icon: '🤝', title: 'Community Reach',          body: 'Connect directly with an international community of 200+ players and their networks in Shoreditch, E2.' },
+];
+---
+
+<BaseLayout
+  title="Sponsor London Lionhearts VBC"
+  description="Partner with London Lionhearts Volleyball Club — 9× LVA Champions, NVL Super League, 200+ members in Shoreditch E2. Social media, kit branding, event presence and more."
+>
+  <div class="page-hero">
+    <p class="page-hero__eyebrow">Partners & Sponsors</p>
+    <h1 class="page-hero__title">Our<br /><em>Sponsors</em></h1>
+    <p class="page-hero__sub">
+      Proudly partnered with brands who share our belief in sport, community, and East London.
+    </p>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Title sponsor -->
+    <p class="eyebrow" style="margin-bottom: 1.5rem;">Title Sponsor</p>
+
+    <div class="sponsor-hero">
+      <div class="sponsor-hero__logo-wrap">
+        <span class="sponsor-hero__badge">Title Sponsor</span>
+        <div class="sponsor-hero__logo">
+          {sponsor.logo
+            ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
+            : <span class="sponsor-hero__logo-placeholder">Logo placeholder</span>
+          }
+        </div>
+      </div>
+      <div class="sponsor-hero__details">
+        <h2 class="sponsor-hero__name">{sponsor.name}</h2>
+        <p class="sponsor-hero__desc">{sponsor.description}</p>
+        <a href={sponsor.url} class="sponsor-hero__link" target="_blank" rel="noopener">
+          Visit their website →
+        </a>
+      </div>
+    </div>
+
+    <!-- Become a Sponsor CTA -->
+    <div class="become-sponsor">
+      <div class="become-sponsor__copy">
+        <h2 class="become-sponsor__headline">Partner With<br />Lionhearts</h2>
+        <p class="become-sponsor__sub">
+          Reach East London's most passionate volleyball community — 200+ members, active social
+          media, and growing. Sponsorship puts your brand at the heart of Shoreditch sport.
+        </p>
+      </div>
+      <a href="mailto:allanzelion@gmail.com?subject=Sponsorship%20Enquiry" class="btn btn--white">
+        Get in Touch
+      </a>
+    </div>
+
+    <!-- Perks grid -->
+    <p class="eyebrow" style="margin-bottom: 1.5rem;">What Sponsorship Includes</p>
+    <div class="perks-grid">
+      {perks.map(p => (
+        <div class="perk-card">
+          <div class="perk-card__icon" aria-hidden="true">{p.icon}</div>
+          <h3 class="perk-card__title">{p.title}</h3>
+          <p class="perk-card__body">{p.body}</p>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</BaseLayout>
+
+<style>
+  /* ── Title sponsor hero ── */
+  .sponsor-hero {
+    background: linear-gradient(135deg, rgba(0,60,180,0.15), rgba(0,120,255,0.07));
+    border: 1px solid var(--color-border-blue);
+    border-radius: 16px;
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+
+  .sponsor-hero__badge {
+    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    color: #fff;
+    font-size: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+
+  .sponsor-hero__logo { width: 200px; height: 64px; }
+  .sponsor-hero__logo img { width: 100%; height: 100%; object-fit: contain; }
+
+  .sponsor-hero__logo-placeholder {
+    display: flex;
+    width: 200px;
+    height: 64px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6875rem;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .sponsor-hero__details { flex: 1; }
+
+  .sponsor-hero__name {
+    font-size: 1.375rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px;
+  }
+
+  .sponsor-hero__desc {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .sponsor-hero__link {
+    color: var(--color-highlight-1);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  /* ── Become a Sponsor ── */
+  .become-sponsor {
+    background: linear-gradient(135deg, #0030a0, #0060d8);
+    border-radius: 14px;
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 48px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .become-sponsor::after {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+
+  .become-sponsor__copy { position: relative; }
+
+  .become-sponsor__headline {
+    font-size: 1.875rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+
+  .become-sponsor__sub {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.875rem;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  /* ── Perks grid ── */
+  .perks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .perk-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .perk-card:hover { border-color: rgba(0,120,255,0.25); }
+
+  .perk-card__icon { font-size: 1.5rem; margin-bottom: 12px; }
+  .perk-card__title { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .perk-card__body { font-size: 0.75rem; color: var(--color-text-muted); line-height: 1.65; }
+</style>
+```
+
+- [ ] **Step 2: Verify in browser**
+
+```bash
+npm run dev
+```
+
+Navigate to `http://localhost:4321/sponsorship`:
+- [ ] Page hero renders correctly
+- [ ] Title sponsor card: badge, logo placeholder, description, link
+- [ ] "Partner With Lionhearts" CTA banner
+- [ ] 6 perk cards in 3×2 grid
+
+- [ ] **Step 3: Build check + commit**
+
+```bash
+npm run build
+git add src/pages/sponsorship.astro
+git commit -m "feat: add Sponsorship page with title sponsor, CTA, and perks grid"
+```
+
+---
+
+### ✅ Sub-plan 07 complete
+
+**Next:** `plans/lionhearts/08-join.md`

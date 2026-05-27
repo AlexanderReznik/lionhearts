@@ -1,0 +1,447 @@
+# Sub-Plan 05 — Events & Fixtures Page
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement task-by-task.
+
+**Goal:** Build `/events` — open sessions (from Google Sheets or fallback data), filter pills, and Volleyzone deep-link sections per team. Includes Event+Schedule JSON-LD structured data for recurring sessions.
+
+**Visual reference:** `mockup-final.html` → Events tab.
+
+**Prerequisite:** Sub-plans 01–03 complete. `src/lib/sheets.ts` and `src/data/teams.ts` exist.
+
+---
+
+### Task 1: Events page
+
+**Files:**
+- Create: `src/pages/events.astro`
+
+- [ ] **Step 1: Write events.astro**
+
+```astro
+---
+// src/pages/events.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { fetchSessions, parseSessionsCSV, type Session } from '../lib/sheets';
+import { teams, VOLLEYZONE_BASE } from '../data/teams';
+
+// ── Google Sheets integration ──────────────────────────────────────────────
+// Set GOOGLE_SHEET_ID in your environment or Netlify env vars.
+// The sheet must be published (File → Share → Publish to web → CSV).
+// Columns: day, time, level, venue, price
+// ─────────────────────────────────────────────────────────────────────────
+const SHEET_ID = import.meta.env.GOOGLE_SHEET_ID;
+
+// Hardcoded fallback — used when SHEET_ID is unset or fetch fails.
+const FALLBACK_CSV = `day,time,level,venue,price
+Monday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
+Thursday,7:00pm–9:00pm,All Levels,Mulberry Academy,£8 cash / £10 card
+Friday,8:00pm–10:00pm,Intermediate / Advanced,Mulberry Academy,£8 cash / £10 card`;
+
+let sessions: Session[] = [];
+let usingFallback = false;
+
+if (SHEET_ID) {
+  try {
+    sessions = await fetchSessions(SHEET_ID);
+  } catch (e) {
+    console.warn('Google Sheets fetch failed, using fallback session data:', e);
+    sessions = parseSessionsCSV(FALLBACK_CSV);
+    usingFallback = true;
+  }
+} else {
+  sessions = parseSessionsCSV(FALLBACK_CSV);
+  usingFallback = true;
+}
+
+// ── Volleyzone URL builder ─────────────────────────────────────────────────
+// NOTE: The ?team= parameter format must be verified by visiting Volleyzone,
+// selecting a team, and inspecting the resulting URL. Update volleyzoneSlug
+// values in src/data/teams.ts after verification.
+function volleyzoneUrl(slug?: string): string {
+  if (!slug) return VOLLEYZONE_BASE;
+  return `${VOLLEYZONE_BASE}?team=${slug}`;
+}
+
+// ── JSON-LD: Recurring events with Schedule type ───────────────────────────
+const VENUE = {
+  '@type': 'Place',
+  name: 'Mulberry Academy Shoreditch',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Gosset Street',
+    addressLocality: 'London',
+    postalCode: 'E2 6NW',
+    addressCountry: 'GB',
+  },
+};
+
+const ORGANIZER = {
+  '@type': 'SportsOrganization',
+  name: 'London Lionhearts Volleyball Club',
+  url: 'https://lionheartsvolleyball.com',
+};
+
+const sessionSchemas = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'London Lionhearts — Open Training (All Levels)',
+    description: 'Open volleyball session at Mulberry Academy Shoreditch. All levels welcome, no booking required.',
+    location: VENUE,
+    organizer: ORGANIZER,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventSchedule: {
+      '@type': 'Schedule',
+      byDay: ['https://schema.org/Monday', 'https://schema.org/Thursday'],
+      startTime: '19:00',
+      endTime: '21:00',
+      repeatFrequency: 'P1W',
+      scheduleTimezone: 'Europe/London',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'London Lionhearts — Open Training (Intermediate / Advanced)',
+    description: 'Open volleyball session at Mulberry Academy Shoreditch for intermediate and advanced players.',
+    location: VENUE,
+    organizer: ORGANIZER,
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventSchedule: {
+      '@type': 'Schedule',
+      byDay: ['https://schema.org/Friday'],
+      startTime: '20:00',
+      endTime: '22:00',
+      repeatFrequency: 'P1W',
+      scheduleTimezone: 'Europe/London',
+    },
+  },
+];
+
+const womensTeams = teams.filter(t => t.gender === "Women's");
+const mensTeams   = teams.filter(t => t.gender === "Men's");
+---
+
+<BaseLayout
+  title="Sessions & Fixtures · London Lionhearts VBC"
+  description="Open volleyball sessions Mon, Thu & Fri at Mulberry Academy, Shoreditch E2. Plus league fixtures for all 9 Lionhearts teams — NVL Super League and LVA."
+  jsonLd={sessionSchemas}
+>
+  <!-- Page hero -->
+  <div class="page-hero">
+    <p class="page-hero__eyebrow">Mulberry Academy · Shoreditch E2</p>
+    <h1 class="page-hero__title">Sessions &<br /><em>Fixtures</em></h1>
+    <p class="page-hero__sub">
+      Open sessions every week — no booking, no commitment. League fixtures and results for all 9 Lionhearts teams.
+    </p>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Open Sessions -->
+    <section class="sessions-box" aria-labelledby="sessions-heading">
+      <p class="eyebrow" id="sessions-heading">Open Sessions</p>
+
+      {usingFallback && (
+        <p class="sessions-box__notice">
+          ⚠️ Live schedule unavailable — showing confirmed schedule.
+          Set <code>GOOGLE_SHEET_ID</code> to enable Google Sheets sync.
+        </p>
+      )}
+
+      <div class="session-cards">
+        {sessions.map(s => (
+          <div class="session-card">
+            <div class="session-card__day">{s.day}</div>
+            <div class="session-card__time">{s.time}</div>
+            <div class="session-card__level">{s.level}</div>
+            <div class="session-card__venue">📍 {s.venue}<br />{s.price}</div>
+          </div>
+        ))}
+        <div class="session-card session-card--venue">
+          <div class="session-card__venue-label">Venue</div>
+          <strong>Mulberry Academy Shoreditch</strong>
+          <span>Gosset Street, E2 6NW</span>
+          <a
+            href="https://maps.google.com/?q=Mulberry+Academy+Shoreditch"
+            target="_blank"
+            rel="noopener"
+            class="session-card__map-link"
+          >
+            Open in Maps ↗
+          </a>
+          <span class="session-card__transport">
+            Short walk from Bethnal Green,<br />Shoreditch High Street or Hoxton
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter pills (visual only in Phase 1 — no JS filtering) -->
+    <div class="filter-pills" role="group" aria-label="Filter by team type">
+      {['All Teams', "Women's", "Men's", 'NVL', 'LVA'].map((pill, i) => (
+        <button class:list={['filter-pill', { 'filter-pill--active': i === 0 }]}>
+          {pill}
+        </button>
+      ))}
+    </div>
+
+    <!-- Women's teams -->
+    <p class="eyebrow" style="margin-bottom: 1rem;">Women's Teams</p>
+    {womensTeams.map(team => (
+      <div class="team-fixture-section">
+        <div class="team-fixture-section__header">
+          <div>
+            <span class="team-fixture-section__name">{team.name}</span>
+            {team.badge && <span class="team-fixture-section__badge">{team.badge}</span>}
+          </div>
+          <div class="team-fixture-section__right">
+            <span class="team-fixture-section__division">{team.division}</span>
+            <a
+              href={volleyzoneUrl(team.volleyzoneSlug)}
+              class="team-fixture-section__volleyzone"
+              target="_blank"
+              rel="noopener"
+            >
+              View on Volleyzone →
+            </a>
+          </div>
+        </div>
+        <p class="team-fixture-section__note">
+          Fixtures and results for {team.name} on Volleyzone.
+          Link opens the Volleyzone schedule pre-filtered for this team.
+        </p>
+      </div>
+    ))}
+
+    <!-- Men's teams -->
+    <p class="eyebrow" style="margin-top: 2.5rem; margin-bottom: 1rem;">Men's Teams</p>
+    {mensTeams.map(team => (
+      <div class="team-fixture-section">
+        <div class="team-fixture-section__header">
+          <div>
+            <span class="team-fixture-section__name">{team.name}</span>
+            {team.badge && <span class="team-fixture-section__badge">{team.badge}</span>}
+          </div>
+          <div class="team-fixture-section__right">
+            <span class="team-fixture-section__division">{team.division}</span>
+            <a
+              href={volleyzoneUrl(team.volleyzoneSlug)}
+              class="team-fixture-section__volleyzone"
+              target="_blank"
+              rel="noopener"
+            >
+              View on Volleyzone →
+            </a>
+          </div>
+        </div>
+        <p class="team-fixture-section__note">
+          Fixtures and results for {team.name} on Volleyzone.
+        </p>
+      </div>
+    ))}
+
+  </div>
+</BaseLayout>
+
+<style>
+  /* ── Sessions box ── */
+  .sessions-box {
+    background: linear-gradient(135deg, rgba(0,60,180,0.12), rgba(0,120,255,0.06));
+    border: 1px solid var(--color-border-blue);
+    border-radius: 14px;
+    padding: 32px;
+    margin-bottom: 36px;
+  }
+
+  .sessions-box__notice {
+    font-size: 0.75rem;
+    color: rgba(255,200,0,0.7);
+    background: rgba(255,200,0,0.06);
+    border: 1px solid rgba(255,200,0,0.2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+
+  .session-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .session-card {
+    background: rgba(0,50,150,0.15);
+    border: 1px solid rgba(0,100,220,0.2);
+    border-radius: 10px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
+  .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: #fff; }
+  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-highlight-1); }
+  .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.35); line-height: 1.5; margin-top: 4px; }
+
+  .session-card--venue {
+    background: rgba(255,255,255,0.03);
+    border-color: var(--color-border);
+    justify-content: center;
+  }
+
+  .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; }
+  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.4); }
+  .session-card__map-link { color: var(--color-highlight-1); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
+  .session-card__transport { font-size: 0.625rem; color: var(--color-highlight-1); opacity: 0.7; margin-top: 4px; line-height: 1.5; }
+
+  /* ── Filter pills ── */
+  .filter-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .filter-pill {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.45);
+    background: transparent;
+    cursor: default;
+  }
+
+  .filter-pill--active {
+    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    border-color: transparent;
+    color: #fff;
+  }
+
+  /* ── Team fixture sections ── */
+  .team-fixture-section {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .team-fixture-section__header {
+    background: rgba(255,255,255,0.03);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--color-border);
+    gap: 16px;
+  }
+
+  .team-fixture-section__name {
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .team-fixture-section__badge {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-highlight-1);
+    background: rgba(0,100,220,0.15);
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-left: 10px;
+  }
+
+  .team-fixture-section__right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .team-fixture-section__division {
+    font-size: 0.625rem;
+    color: var(--color-text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .team-fixture-section__volleyzone {
+    color: rgba(255,255,255,0.3);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .team-fixture-section__volleyzone:hover { color: var(--color-highlight-1); }
+
+  .team-fixture-section__note {
+    padding: 12px 20px;
+    color: rgba(255,255,255,0.25);
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+</style>
+```
+
+- [ ] **Step 2: Add GOOGLE_SHEET_ID to environment**
+
+Create `.env.example` (commit this) and `.env` (do NOT commit):
+
+`.env.example`:
+```
+GOOGLE_SHEET_ID=your_google_sheet_id_here
+```
+
+`.env`:
+```
+GOOGLE_SHEET_ID=
+```
+
+Update `.gitignore` to ensure `.env` is ignored (already added in sub-plan 01).
+
+- [ ] **Step 3: Verify in browser**
+
+```bash
+npm run dev
+```
+
+Navigate to `http://localhost:4321/events`:
+- [ ] Open sessions show (fallback data if no Sheet ID set)
+- [ ] Filter pills render (non-functional in Phase 1)
+- [ ] 4 women's team sections with Volleyzone links
+- [ ] 5 men's team sections with Volleyzone links
+
+- [ ] **Step 4: Build check**
+
+```bash
+npm run build
+```
+
+Expected: clean build.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add src/pages/events.astro .env.example
+git commit -m "feat: add Events page with session cards, Volleyzone links, and Event+Schedule JSON-LD"
+```
+
+---
+
+### ✅ Sub-plan 05 complete
+
+**Next:** `plans/lionhearts/06-teams.md`
