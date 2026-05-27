@@ -61,19 +61,25 @@ describe('formatFixtureDate', () => {
 });
 
 describe('formatFixtureTime', () => {
-  it('returns HH:MM for a non-midnight UTC timestamp', () => {
-    // 2026-05-03T14:00:00Z
-    const ts = Math.floor(new Date('2026-05-03T14:00:00Z').getTime() / 1000);
+  it('returns HH:MM in London time (winter — GMT = UTC)', () => {
+    // 2026-01-03T14:00:00Z — winter, GMT = UTC, London = 14:00
+    const ts = Math.floor(new Date('2026-01-03T14:00:00Z').getTime() / 1000);
     expect(formatFixtureTime(ts)).toBe('14:00');
   });
 
-  it('returns null for a midnight UTC timestamp (time TBD)', () => {
-    const ts = Math.floor(new Date('2026-05-03T00:00:00Z').getTime() / 1000);
+  it('returns null for a midnight UTC timestamp (time TBD sentinel)', () => {
+    const ts = Math.floor(new Date('2026-01-03T00:00:00Z').getTime() / 1000);
     expect(formatFixtureTime(ts)).toBeNull();
   });
 
+  it('converts UTC to BST in summer (UTC+1)', () => {
+    // 2026-05-03T13:00:00Z — BST, London = 14:00
+    const ts = Math.floor(new Date('2026-05-03T13:00:00Z').getTime() / 1000);
+    expect(formatFixtureTime(ts)).toBe('14:00');
+  });
+
   it('pads single-digit hours', () => {
-    const ts = Math.floor(new Date('2026-05-03T09:30:00Z').getTime() / 1000);
+    const ts = Math.floor(new Date('2026-01-03T09:30:00Z').getTime() / 1000);
     expect(formatFixtureTime(ts)).toBe('09:30');
   });
 });

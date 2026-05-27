@@ -46,10 +46,11 @@ export function formatFixtureDate(timestamp: number): string {
 
 export function formatFixtureTime(timestamp: number): string | null {
   const dt = new Date(timestamp * 1000);
-  const h = dt.getUTCHours();
-  const m = dt.getUTCMinutes();
-  if (h === 0 && m === 0) return null;
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  // Volleyzone uses midnight UTC as "time TBD" sentinel
+  if (dt.getUTCHours() === 0 && dt.getUTCMinutes() === 0) return null;
+  return dt.toLocaleTimeString('en-GB', {
+    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/London',
+  });
 }
 
 export function formatMatchResult(match: Match, perspective: 'Home' | 'Away'): string {
