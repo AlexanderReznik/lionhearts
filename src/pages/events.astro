@@ -20,6 +20,21 @@ const buildTimestamp = new Date().toLocaleDateString('en-GB', {
   day: 'numeric', month: 'short', year: 'numeric',
 });
 
+// Trim match objects to only the fields the client uses before embedding as
+// JSON data islands. Full Volleyzone responses include set scores, referee
+// names, club logos, etc. — trimming cuts the page from ~1 MB to ~20 KB.
+function slimFixtures(tf: { teamName: string; matches: import('../lib/volleyzone').Match[]; error: boolean }) {
+  return {
+    teamName: tf.teamName,
+    error: tf.error,
+    matches: tf.matches
+      .filter(m => m.fixtureStatus === 'result' || m.fixtureStatus === 'fixture')
+      .map(({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue }) =>
+        ({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue })
+      ),
+  };
+}
+
 // ── Volleyzone URL builder ─────────────────────────────────────────────────
 // NOTE: The ?team= parameter format must be verified by visiting Volleyzone,
 // selecting a team, and inspecting the resulting URL. Update volleyzoneSlug
@@ -173,7 +188,7 @@ const teamSections = [
               type="application/json"
               data-fixtures
               set:html={JSON.stringify(
-                fixturesMap[team.name] ?? { teamName: team.name, matches: [], error: true }
+                slimFixtures(fixturesMap[team.name] ?? { teamName: team.name, matches: [], error: true })
               ).replace(/<\//g, '<\\/')}
             />
             <div class="team-fixtures"></div>
