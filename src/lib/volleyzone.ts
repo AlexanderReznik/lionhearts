@@ -31,8 +31,8 @@ export function parseHomeAway(match: Pick<Match, 'homeTeam'>): 'Home' | 'Away' {
 
 export function parseScore(homeScore: string, awayScore: string): { home: number; away: number } {
   return {
-    home: parseInt(homeScore.replace(';', ''), 10),
-    away: parseInt(awayScore.replace(';', ''), 10),
+    home: parseInt(homeScore.replace(';', ''), 10) || 0,
+    away: parseInt(awayScore.replace(';', ''), 10) || 0,
   };
 }
 

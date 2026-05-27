@@ -4,7 +4,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSessions } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
-import type { TeamFixtures } from '../lib/volleyzone';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
 // Set GOOGLE_SHEET_ID in your environment or Netlify/Vercel env vars.
@@ -204,6 +203,7 @@ const teamSections = [
   </div>
 
   <script>
+    import { parseScore, parseHomeAway, formatFixtureDate, formatFixtureTime } from '../lib/volleyzone';
     import type { Match, TeamFixtures } from '../lib/volleyzone';
 
     function esc(s: string): string {
@@ -251,13 +251,13 @@ const teamSections = [
       if (results.length > 0) {
         html += `<div class="tl-section-label">Recent Results</div>`;
         for (const m of results) {
-          const isHome = m.homeTeam.includes('Lionhearts');
+          const isHome = parseHomeAway(m) === 'Home';
           const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
           const { home, away } = parseScore(m.homeScore, m.awayScore);
           const resultLabel = isHome ? m.homeResult : m.awayResult;
           const w = resultLabel === 'win';
           const score = isHome ? `${home}–${away}` : `${away}–${home}`;
-          const date = formatDate(m.fixtureDate);
+          const date = formatFixtureDate(m.fixtureDate);
           html += `
             <div class="tl-row">
               <span class="tl-date">${date}</span>
@@ -270,11 +270,11 @@ const teamSections = [
       if (upcoming.length > 0) {
         html += `<div class="tl-section-label">Upcoming Fixtures</div>`;
         upcoming.forEach((m: Match, i: number) => {
-          const isHome = m.homeTeam.includes('Lionhearts');
+          const isHome = parseHomeAway(m) === 'Home';
           const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
           const venue = esc(m.venue ?? '');
-          const date = formatDate(m.fixtureDate);
-          const time = formatTime(m.fixtureDate);
+          const date = formatFixtureDate(m.fixtureDate);
+          const time = formatFixtureTime(m.fixtureDate);
           const venueStr = venue ? `📍 ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
           const ha = isHome ? 'Home' : 'Away';
           const isNext = i === 0;
@@ -300,27 +300,6 @@ const teamSections = [
         </div>`;
 
       target.innerHTML = html;
-    }
-
-    function parseScore(homeScore: string, awayScore: string): { home: number; away: number } {
-      return {
-        home: parseInt(homeScore.replace(';', ''), 10) || 0,
-        away: parseInt(awayScore.replace(';', ''), 10) || 0,
-      };
-    }
-
-    function formatDate(timestamp: number): string {
-      return new Date(timestamp * 1000).toLocaleDateString('en-GB', {
-        day: 'numeric', month: 'short', timeZone: 'Europe/London',
-      });
-    }
-
-    function formatTime(timestamp: number): string | null {
-      const dt = new Date(timestamp * 1000);
-      const h = dt.getUTCHours();
-      const m = dt.getUTCMinutes();
-      if (h === 0 && m === 0) return null;
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
     }
 
     document.querySelectorAll<HTMLElement>('.team-fixture-section').forEach(renderFixtures);

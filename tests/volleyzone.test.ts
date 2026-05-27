@@ -41,6 +41,10 @@ describe('parseScore', () => {
   it('handles scores without trailing semicolons', () => {
     expect(parseScore('1', '3')).toEqual({ home: 1, away: 3 });
   });
+
+  it('returns 0 for empty or unparseable score strings', () => {
+    expect(parseScore('', '')).toEqual({ home: 0, away: 0 });
+  });
 });
 
 describe('formatFixtureDate', () => {
