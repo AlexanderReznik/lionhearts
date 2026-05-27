@@ -79,7 +79,7 @@ export async function fetchTeamFixtures(
   });
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
+  const timeout = setTimeout(() => controller.abort(), 30_000);
 
   let res: Response;
   try {
