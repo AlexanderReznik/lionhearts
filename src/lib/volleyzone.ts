@@ -61,3 +61,34 @@ export function formatMatchResult(match: Match, perspective: 'Home' | 'Away'): s
     return `${label} ${away}–${home}`;
   }
 }
+
+export async function fetchTeamFixtures(
+  compId: string,
+  seasonId: string,
+  userId: string,
+  lastSegment: string,
+): Promise<Match[]> {
+  const body = new URLSearchParams({
+    seasonidgrp: seasonId,
+    fix_compID: compId,
+    pageTitle: 'Fixture+and+Results',
+    userId,
+    lastSegment,
+  });
+
+  const res = await fetch(ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-Requested-With': 'XMLHttpRequest',
+      Origin: 'https://competitions.volleyzone.co.uk',
+    },
+    body,
+  });
+
+  if (!res.ok) throw new Error(`Volleyzone HTTP ${res.status}`);
+
+  const outer = await res.json();
+  const inner = JSON.parse(outer.debug) as { data: { fixtures: Match[] } };
+  return inner.data.fixtures;
+}

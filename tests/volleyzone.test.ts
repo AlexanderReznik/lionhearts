@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
   parseHomeAway,
   parseScore,
@@ -101,5 +101,68 @@ describe('formatMatchResult', () => {
     const m = { ...BASE_MATCH, homeScore: '2;', awayScore: '2;', homeResult: 'draw' as const, awayResult: 'draw' as const };
     expect(formatMatchResult(m, 'Home')).toBe('D 2–2');
     expect(formatMatchResult(m, 'Away')).toBe('D 2–2');
+  });
+});
+
+describe('fetchTeamFixtures', () => {
+  const realFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  it('parses the double-encoded response and returns fixtures array', async () => {
+    const fixture: Partial<Match> = {
+      fixtureId: '99',
+      fixtureDate: 1746277200,
+      fixtureStatus: 'fixture',
+      homeTeam: 'Lionhearts Alpha',
+      awayTeam: 'Rival FC',
+      homeScore: ';',
+      awayScore: ';',
+      homeResult: '',
+      awayResult: '',
+      venue: 'Some Gym',
+    };
+    const inner = { data: { fixtures: [fixture] } };
+    const outer = { debug: JSON.stringify(inner) };
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => outer,
+    } as Response);
+
+    const { fetchTeamFixtures } = await import('../src/lib/volleyzone');
+    const result = await fetchTeamFixtures('209508', '3881', '298568', 'lva');
+
+    expect(result).toHaveLength(1);
+    expect(result[0].fixtureId).toBe('99');
+    expect(result[0].homeTeam).toBe('Lionhearts Alpha');
+  });
+
+  it('throws when the response is not ok', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response);
+
+    const { fetchTeamFixtures } = await import('../src/lib/volleyzone');
+    await expect(fetchTeamFixtures('209508', '3881', '298568', 'lva')).rejects.toThrow('500');
+  });
+
+  it('sends correct POST params and headers', async () => {
+    const inner = { data: { fixtures: [] } };
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ debug: JSON.stringify(inner) }),
+    } as Response);
+
+    const { fetchTeamFixtures } = await import('../src/lib/volleyzone');
+    await fetchTeamFixtures('209502', '3881', '298568', 'lva');
+
+    const [url, init] = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(url).toContain('fetch_fixture_by_competition');
+    expect(init.method).toBe('POST');
+    expect(init.headers['X-Requested-With']).toBe('XMLHttpRequest');
+    const body = new URLSearchParams(init.body as string);
+    expect(body.get('fix_compID')).toBe('209502');
+    expect(body.get('seasonidgrp')).toBe('3881');
   });
 });
