@@ -131,6 +131,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </div>
 
+      <div class="join-form__field join-form__field--full join-form__consent">
+        <label class="join-form__consent-label">
+          <input type="checkbox" name="consent" required />
+          I agree that London Lionhearts VBC may contact me about my enquiry.
+          Your information is handled in accordance with UK&nbsp;GDPR and will not be shared with third parties.
+        </label>
+      </div>
+
       <button type="submit" class="btn btn--primary join-form__submit">Send Enquiry →</button>
       <p class="join-form__note">
         We'll get back to you within a few days. In a rush?
@@ -315,6 +323,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .join-form__field select option { background: var(--color-surface); }
+
+  .join-form__consent { margin-top: 8px; }
+  .join-form__consent-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.6875rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  .join-form__consent-label input[type="checkbox"] {
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--color-accent-from);
+    width: 15px;
+    height: 15px;
+  }
 
   .join-form__submit {
     width: 100%;
