@@ -202,6 +202,129 @@ const teamSections = [
     ))}
 
   </div>
+
+  <script>
+    import type { Match, TeamFixtures } from '../lib/volleyzone';
+
+    function esc(s: string): string {
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderFixtures(section: HTMLElement): void {
+      const island = section.querySelector<HTMLScriptElement>('script[data-fixtures]');
+      const target = section.querySelector<HTMLElement>('.team-fixtures');
+      if (!island || !target) return;
+
+      const data = JSON.parse(island.textContent ?? '{}') as TeamFixtures;
+      const vzUrl = section.dataset.volleyzoneUrl ?? '#';
+      const updated = section.dataset.updated ?? '';
+
+      if (data.error && data.matches.length === 0) {
+        target.innerHTML = `<div class="tl-error">Fixtures unavailable — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">view on Volleyzone →</a></div>`;
+        return;
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const results = data.matches
+        .filter((m: Match) => m.fixtureStatus === 'result')
+        .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate)
+        .slice(0, 3);
+
+      const upcoming = data.matches
+        .filter((m: Match) => m.fixtureStatus === 'fixture' && m.fixtureDate * 1000 >= today.getTime())
+        .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate)
+        .slice(0, 3);
+
+      if (data.matches.length > 0 && results.length === 0 && upcoming.length === 0) {
+        target.innerHTML = `<div class="tl-error">Season complete — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">full schedule on Volleyzone →</a></div>`;
+        return;
+      }
+
+      let html = '';
+
+      if (results.length > 0) {
+        html += `<div class="tl-section-label">Recent Results</div>`;
+        for (const m of results) {
+          const isHome = m.homeTeam.includes('Lionhearts');
+          const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
+          const { home, away } = parseScore(m.homeScore, m.awayScore);
+          const resultLabel = isHome ? m.homeResult : m.awayResult;
+          const w = resultLabel === 'win';
+          const score = isHome ? `${home}–${away}` : `${away}–${home}`;
+          const date = formatDate(m.fixtureDate);
+          html += `
+            <div class="tl-row">
+              <span class="tl-date">${date}</span>
+              <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}</span>
+              <span class="${w ? 'badge-w' : 'badge-l'}">${w ? 'W' : 'L'} ${score}</span>
+            </div>`;
+        }
+      }
+
+      if (upcoming.length > 0) {
+        html += `<div class="tl-section-label">Upcoming Fixtures</div>`;
+        upcoming.forEach((m: Match, i: number) => {
+          const isHome = m.homeTeam.includes('Lionhearts');
+          const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
+          const venue = esc(m.venue ?? '');
+          const date = formatDate(m.fixtureDate);
+          const time = formatTime(m.fixtureDate);
+          const venueStr = venue ? `📍 ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
+          const ha = isHome ? 'Home' : 'Away';
+          const isNext = i === 0;
+          html += `
+            <div class="tl-row-up${isNext ? ' tl-row-up--next' : ''}">
+              <span class="tl-date">${date}</span>
+              <div class="tl-up-meta">
+                <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}</span>
+                ${venueStr ? `<span class="tl-up-venue">${venueStr}</span>` : ''}
+              </div>
+              <div class="tl-right">
+                ${isNext ? '<span class="next-pill">Next</span>' : ''}
+                <span class="home-away">${ha}</span>
+              </div>
+            </div>`;
+        });
+      }
+
+      html += `
+        <div class="tl-footer">
+          <span class="tl-updated">${updated ? `Updated ${esc(updated)}` : ''}</span>
+          <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full schedule on Volleyzone →</a>
+        </div>`;
+
+      target.innerHTML = html;
+    }
+
+    function parseScore(homeScore: string, awayScore: string): { home: number; away: number } {
+      return {
+        home: parseInt(homeScore.replace(';', ''), 10) || 0,
+        away: parseInt(awayScore.replace(';', ''), 10) || 0,
+      };
+    }
+
+    function formatDate(timestamp: number): string {
+      return new Date(timestamp * 1000).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'short', timeZone: 'Europe/London',
+      });
+    }
+
+    function formatTime(timestamp: number): string | null {
+      const dt = new Date(timestamp * 1000);
+      const h = dt.getUTCHours();
+      const m = dt.getUTCMinutes();
+      if (h === 0 && m === 0) return null;
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    }
+
+    document.querySelectorAll<HTMLElement>('.team-fixture-section').forEach(renderFixtures);
+  </script>
 </BaseLayout>
 
 <script>
