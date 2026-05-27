@@ -3,6 +3,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSessions } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE } from '../data/teams';
+import { fetchAllFixtures } from '../lib/volleyzone';
+import type { TeamFixtures } from '../lib/volleyzone';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
 // Set GOOGLE_SHEET_ID in your environment or Netlify/Vercel env vars.
@@ -12,6 +14,11 @@ import { teams, VOLLEYZONE_BASE } from '../data/teams';
 // rebuild whenever the sheet is edited.
 // ─────────────────────────────────────────────────────────────────────────
 const { sessions, usingFallback } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
+
+const fixturesMap = await fetchAllFixtures();
+const buildTimestamp = new Date().toLocaleDateString('en-GB', {
+  day: 'numeric', month: 'short', year: 'numeric',
+});
 
 // ── Volleyzone URL builder ─────────────────────────────────────────────────
 // NOTE: The ?team= parameter format must be verified by visiting Volleyzone,
@@ -165,7 +172,13 @@ const teamSections = [
       <>
         <h2 class:list={['eyebrow section-eyebrow', { 'section-eyebrow--spaced': spaced }]} data-section={section}>{label}</h2>
         {sectionTeams.map(team => (
-          <div class="team-fixture-section" data-gender={section} data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}>
+          <div
+            class="team-fixture-section"
+            data-gender={section}
+            data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}
+            data-updated={buildTimestamp}
+            data-volleyzone-url={volleyzoneUrl(team.volleyzoneSlug)}
+          >
             <div class="team-fixture-section__header">
               <div>
                 <span class="team-fixture-section__name">{team.name}</span>
@@ -173,16 +186,16 @@ const teamSections = [
               </div>
               <div class="team-fixture-section__right">
                 <span class="team-fixture-section__division">{team.division}</span>
-                <a
-                  href={volleyzoneUrl(team.volleyzoneSlug)}
-                  class="team-fixture-section__volleyzone"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View on Volleyzone →
-                </a>
               </div>
             </div>
+            <script
+              type="application/json"
+              data-fixtures
+              set:html={JSON.stringify(
+                fixturesMap[team.name] ?? { teamName: team.name, matches: [], error: true }
+              ).replace(/<\//g, '<\\/')}
+            />
+            <div class="team-fixtures"></div>
           </div>
         ))}
       </>
@@ -369,19 +382,6 @@ const teamSections = [
     letter-spacing: 1px;
     text-transform: uppercase;
   }
-
-  .team-fixture-section__volleyzone {
-    color: rgba(255,255,255,0.55);
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .team-fixture-section__volleyzone:hover { color: var(--color-highlight-1); }
-
 
   /* ── Section eyebrow headers ── */
   .section-eyebrow { margin-bottom: 1rem; }
