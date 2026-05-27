@@ -161,8 +161,11 @@ describe('fetchTeamFixtures', () => {
     expect(url).toContain('fetch_fixture_by_competition');
     expect(init.method).toBe('POST');
     expect(init.headers['X-Requested-With']).toBe('XMLHttpRequest');
-    const body = new URLSearchParams(init.body as string);
+    const body = init.body as URLSearchParams;
     expect(body.get('fix_compID')).toBe('209502');
     expect(body.get('seasonidgrp')).toBe('3881');
+    expect(body.get('pageTitle')).toBe('Fixture and Results');
+    expect(body.get('userId')).toBe('298568');
+    expect(body.get('lastSegment')).toBe('lva');
   });
 });

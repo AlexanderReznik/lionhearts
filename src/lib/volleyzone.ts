@@ -71,7 +71,7 @@ export async function fetchTeamFixtures(
   const body = new URLSearchParams({
     seasonidgrp: seasonId,
     fix_compID: compId,
-    pageTitle: 'Fixture+and+Results',
+    pageTitle: 'Fixture and Results',
     userId,
     lastSegment,
   });
