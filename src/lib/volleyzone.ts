@@ -104,14 +104,7 @@ export async function fetchTeamFixtures(
   return inner.data.fixtures;
 }
 
-// Module-level cache: dev server keeps the process alive across requests,
-// so this avoids re-fetching 9 Volleyzone endpoints on every hot reload.
-// Build-time runs are single-pass and ignore the cache entirely.
-let _cache: Record<string, TeamFixtures> | null = null;
-
 export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Record<string, TeamFixtures>> {
-  const useCache = teamsData === teams;
-  if (useCache && _cache) return _cache;
 
   const eligible = teamsData.filter(
     t => t.compId && t.seasonId && t.volleyzoneUserId && t.volleyzoneSegment,
@@ -132,6 +125,5 @@ export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Recor
     }
   });
 
-  if (useCache) _cache = map;
   return map;
 }
