@@ -352,7 +352,7 @@ const teamSections = [
 <style>
   /* ── Sessions box ── */
   .sessions-box {
-    background: linear-gradient(135deg, rgba(0,60,180,0.12), rgba(0,120,255,0.06));
+    background: linear-gradient(135deg, rgba(84,164,247,0.12), rgba(84,164,247,0.06));
     border: 1px solid var(--color-border-blue);
     border-radius: 14px;
     padding: 32px;
@@ -362,8 +362,8 @@ const teamSections = [
   .sessions-box__notice {
     font-size: 0.75rem;
     color: rgba(120,180,255,0.9);
-    background: rgba(0,80,220,0.06);
-    border: 1px solid rgba(0,100,220,0.2);
+    background: rgba(84,164,247,0.06);
+    border: 1px solid rgba(84,164,247,0.2);
     border-radius: 6px;
     padding: 10px 14px;
     margin-bottom: 20px;
@@ -376,8 +376,8 @@ const teamSections = [
   }
 
   .session-card {
-    background: rgba(0,50,150,0.15);
-    border: 1px solid rgba(0,100,220,0.2);
+    background: rgba(84,164,247,0.08);
+    border: 1px solid rgba(84,164,247,0.2);
     border-radius: 10px;
     padding: 18px;
     display: flex;
@@ -387,7 +387,7 @@ const teamSections = [
 
   .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
   .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: #fff; }
-  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-highlight-1); }
+  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent); }
   .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.55); line-height: 1.5; margin-top: 4px; }
 
   .session-card--venue {
@@ -399,8 +399,8 @@ const teamSections = [
   .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
   .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; }
   .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.55); }
-  .session-card__map-link { color: var(--color-highlight-1); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
-  .session-card__transport { font-size: 0.625rem; color: var(--color-highlight-1); opacity: 0.7; margin-top: 4px; line-height: 1.5; }
+  .session-card__map-link { color: var(--color-accent); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
+  .session-card__transport { font-size: 0.625rem; color: var(--color-accent); opacity: 0.7; margin-top: 4px; line-height: 1.5; }
 
   /* ── Team fixture sections ──*/
   .team-fixture-section {
@@ -432,8 +432,8 @@ const teamSections = [
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-highlight-1);
-    background: rgba(0,100,220,0.15);
+    color: var(--color-accent);
+    background: rgba(84,164,247,0.15);
     padding: 3px 10px;
     border-radius: 3px;
     margin-left: 10px;
@@ -505,13 +505,13 @@ const teamSections = [
   }
 
   .tl-row-up--next {
-    background: linear-gradient(90deg, rgba(0,60,200,0.12) 0%, rgba(0,80,220,0.06) 100%);
-    border-left: 3px solid #0060e0;
-    border-bottom-color: rgba(0,100,220,0.2);
+    background: linear-gradient(90deg, rgba(84,164,247,0.12) 0%, rgba(84,164,247,0.06) 100%);
+    border-left: 3px solid var(--color-accent);
+    border-bottom-color: rgba(84,164,247,0.2);
   }
 
   .tl-date { color: rgba(255,255,255,0.4); font-size: 0.65rem; white-space: nowrap; }
-  .tl-row-up--next .tl-date { color: #60b0ff; font-weight: 700; }
+  .tl-row-up--next .tl-date { color: var(--color-accent); font-weight: 700; }
 
   .tl-vs { color: rgba(255,255,255,0.3); font-size: 0.6rem; margin-right: 4px; }
 
@@ -528,9 +528,9 @@ const teamSections = [
     font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #60b0ff;
-    background: rgba(0,100,220,0.2);
-    border: 1px solid rgba(0,130,255,0.35);
+    color: var(--color-accent);
+    background: rgba(84,164,247,0.2);
+    border: 1px solid rgba(84,164,247,0.35);
     border-radius: 4px;
     padding: 2px 8px;
     white-space: nowrap;

@@ -7,22 +7,31 @@ a { color: inherit; }
 /* ── Design tokens ── */
 :root {
   /* Colours */
-  --color-bg:           #050d1a;
-  --color-surface:      #0a0e1a;
-  --color-surface-2:    #0a1628;
-  --color-surface-3:    #030810;
-  --color-accent-from:  #0050e0;
-  --color-accent-to:    #0090ff;
-  --color-text:         #ffffff;
-  --color-text-muted:   rgba(255, 255, 255, 0.5);
-  --color-text-faint:   rgba(255, 255, 255, 0.45);
-  --color-highlight-1:  #4da8ff;
-  --color-highlight-2:  #00c2ff;
-  --color-border:       rgba(255, 255, 255, 0.07);
-  --color-border-blue:  rgba(0, 100, 220, 0.2);
+  --color-navy:        #11234B;
+  --color-white:       #ffffff;
+
+  --color-bg:          #11234B;
+  --color-surface:     #1a2d5c;
+  --color-surface-2:   #243570;
+  --color-surface-3:   #0e1e3d;
+
+  --color-accent:      #54A4F7;
+
+  --color-red:         #C44128;
+  --color-pink:        #D75EB1;
+  --color-green:       #76CD54;
+  --color-black:       #05122B;
+
+  --color-text:        #ffffff;
+  --color-text-muted:  rgba(255, 255, 255, 0.65);
+  --color-text-faint:  rgba(255, 255, 255, 0.45);
+
+  --color-border:      rgba(255, 255, 255, 0.1);
+  --color-border-blue: rgba(84, 164, 247, 0.25);
 
   /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:      'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-condensed: 'Barlow Condensed', 'Barlow', sans-serif;
 
   /* Spacing */
   --space-xs:  0.5rem;
@@ -48,13 +57,12 @@ body {
 
 /* ── Gradient utility ── */
 .gradient-text {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent);
+  background: none;
+  -webkit-text-fill-color: unset;
 }
 .gradient-bg {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  background: var(--color-accent);
 }
 
 /* ── Buttons ── */
@@ -64,6 +72,7 @@ body {
   gap: 0.5rem;
   padding: 0.75rem 1.75rem;
   border-radius: 4px;
+  font-family: var(--font-condensed);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -76,17 +85,17 @@ body {
 .btn:active { transform: scale(0.98); }
 
 .btn:focus-visible {
-  outline: 2px solid var(--color-accent-to);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
-.btn--primary { background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to)); color: #fff; }
+.btn--primary { background: var(--color-accent); color: var(--color-navy); }
 .btn--primary:hover { opacity: 0.88; }
 
 .btn--ghost { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.28); }
 .btn--ghost:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
 
-.btn--white { background: #fff; color: #0040c0; }
+.btn--white { background: #fff; color: var(--color-navy); }
 .btn--white:hover { opacity: 0.9; }
 
 .btn--outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.4); }
@@ -97,7 +106,8 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--color-accent-to);
+  color: var(--color-accent);
+  font-family: var(--font-condensed);
   font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 3px;
@@ -109,7 +119,7 @@ body {
   display: block;
   width: 20px;
   height: 2px;
-  background: var(--color-accent-to);
+  background: var(--color-accent);
   flex-shrink: 0;
 }
 
@@ -133,13 +143,13 @@ body {
   content: '';
   position: absolute;
   top: 0; right: 0; bottom: 0; width: 40%;
-  background: radial-gradient(ellipse at 80% 50%, rgba(0,80,220,0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 80% 50%, rgba(84,164,247,0.1) 0%, transparent 70%);
   pointer-events: none;
 }
-.page-hero__eyebrow { color: var(--color-accent-to); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-to); }
+.page-hero__eyebrow { color: var(--color-accent); font-family: var(--font-condensed); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent); }
 .page-hero__title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; line-height: 0.95; }
-.page-hero__title em { color: var(--color-accent-to); font-style: normal; }
+.page-hero__title em { color: var(--color-accent); font-style: normal; }
 .page-hero__sub { color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 12px; max-width: 520px; line-height: 1.65; }
 
 /* ── Page content wrapper ── */
@@ -175,6 +185,7 @@ body {
 .filter-pill {
   padding: 7px 16px;
   border-radius: 20px;
+  font-family: var(--font-condensed);
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -192,14 +203,14 @@ body {
 }
 
 .filter-pill:focus-visible {
-  outline: 2px solid var(--color-accent-to);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
 .filter-pill--active {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  background: var(--color-accent);
   border-color: transparent;
-  color: #fff;
+  color: var(--color-navy);
 }
 
 /* ── Responsive ── */

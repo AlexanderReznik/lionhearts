@@ -148,16 +148,16 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     transition: border-color 0.2s;
   }
 
-  .contact-card:hover { border-color: rgba(0,120,255,0.3); }
+  .contact-card:hover { border-color: rgba(84,164,247,0.3); }
 
   .contact-card__link:focus-visible,
   .social-card:focus-visible {
-    outline: 2px solid var(--color-accent-to);
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
   }
 
   .contact-card--featured {
-    background: linear-gradient(135deg, rgba(0,60,180,0.1), rgba(0,120,255,0.05));
+    background: linear-gradient(135deg, rgba(84,164,247,0.1), rgba(84,164,247,0.05));
     border-color: var(--color-border-blue);
   }
 
@@ -165,7 +165,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     width: 48px;
     height: 48px;
     border-radius: 10px;
-    background: linear-gradient(135deg, var(--color-accent-from), var(--color-accent-to));
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,13 +186,13 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-accent-to);
+    color: var(--color-accent);
   }
 
   .contact-card__title { font-size: 0.875rem; font-weight: 700; }
 
   .contact-card__link {
-    color: var(--color-highlight-1);
+    color: var(--color-accent);
     font-size: 0.75rem;
     font-weight: 600;
     text-decoration: none;
@@ -203,8 +203,8 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
 
   /* ── Location block ── */
   .location-block {
-    background: linear-gradient(160deg, #070f22, #0a1628);
-    border: 1px solid rgba(0,100,220,0.15);
+    background: linear-gradient(160deg, var(--color-surface-3), var(--color-surface-2));
+    border: 1px solid rgba(84,164,247,0.15);
     border-radius: 16px;
     overflow: hidden;
     display: grid;
@@ -228,7 +228,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     margin-bottom: 0;
   }
 
-  .location-info__headline em { color: var(--color-accent-to); font-style: normal; }
+  .location-info__headline em { color: var(--color-accent); font-style: normal; }
 
   .location-info__address {
     color: var(--color-text-muted);
@@ -240,7 +240,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
   .location-info__directions {
     display: inline-flex;
     align-items: center;
-    color: var(--color-accent-to);
+    color: var(--color-accent);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -284,7 +284,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     transition: border-color 0.2s;
   }
 
-  .social-card:hover { border-color: rgba(0,120,255,0.3); }
+  .social-card:hover { border-color: rgba(84,164,247,0.3); }
 
   .social-card__icon {
     width: 36px;

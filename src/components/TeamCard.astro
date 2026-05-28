@@ -44,11 +44,11 @@ const { team } = Astro.props;
 
   .team-card--featured {
     border-color: var(--color-border-blue);
-    background: linear-gradient(135deg, rgba(0,60,180,0.07), rgba(0,120,255,0.02));
+    background: linear-gradient(135deg, rgba(84,164,247,0.07), rgba(84,164,247,0.02));
   }
 
   .team-card:hover {
-    border-color: rgba(0,120,255,0.3);
+    border-color: rgba(84,164,247,0.3);
     transform: translateY(-2px);
   }
 
@@ -87,7 +87,7 @@ const { team } = Astro.props;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--color-highlight-1);
+    color: var(--color-accent);
     display: block;
     margin-bottom: 6px;
   }
@@ -110,7 +110,7 @@ const { team } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent));
     border-radius: 3px;
     padding: 3px 10px;
     font-size: 0.5rem;

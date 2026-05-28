@@ -6,3 +6,10 @@ dist/
 !.env.example
 .superpowers/
 .review-screens/
+
+# OS
+.DS_Store
+
+# Brand source assets (not needed in repo — processed versions live in public/)
+PNG/
+*.pdf
