@@ -1,6 +1,7 @@
 ---
 // src/pages/sponsorship.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ClawMarks from '../components/ClawMarks.astro';
 
 // TODO: Replace with actual sponsor data supplied by client
 const sponsor = {
@@ -53,6 +54,7 @@ const perks = [
 
     <!-- Become a Sponsor CTA -->
     <div class="become-sponsor">
+      <ClawMarks variant="bar" position="bottom-right" opacity={0.16} size="300px" />
       <div class="become-sponsor__copy">
         <p class="become-sponsor__headline">Partner With<br />Lionhearts</p>
         <p class="become-sponsor__sub">
@@ -60,7 +62,7 @@ const perks = [
           media, and growing. Sponsorship puts your brand at the heart of Shoreditch sport.
         </p>
       </div>
-      <a href="mailto:allanzelion@gmail.com?subject=Sponsorship%20Enquiry" class="btn btn--white">
+      <a href="mailto:allanzelion@gmail.com?subject=Sponsorship%20Enquiry" class="btn btn--white become-sponsor__cta">
         Get in Touch
       </a>
     </div>
@@ -154,17 +156,8 @@ const perks = [
     overflow: hidden;
   }
 
-  .become-sponsor::after {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 300px; height: 300px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.06);
-    pointer-events: none;
-  }
-
-  .become-sponsor__copy { position: relative; }
+  .become-sponsor__copy { position: relative; z-index: 1; }
+  .become-sponsor__cta { position: relative; z-index: 1; }
 
   .become-sponsor__headline {
     font-size: 1.875rem;
