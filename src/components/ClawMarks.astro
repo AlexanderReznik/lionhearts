@@ -1,0 +1,63 @@
+---
+// src/components/ClawMarks.astro
+// Brand motif — Claw Marks. Energy / competition / heritage.
+// variant="slash" (default, Claw Marks #2 — diagonal speed-lines)
+// variant="bar"   (Claw Marks #1 — thick parallel bars)
+// Decorative only (aria-hidden). Parent must be position:relative; overflow:hidden.
+interface Props {
+  variant?: 'slash' | 'bar';
+  position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
+  color?: string;
+  opacity?: number;
+  size?: string;
+  class?: string;
+}
+const {
+  variant = 'slash',
+  position = 'top-right',
+  color = 'var(--color-accent)',
+  opacity = 0.4,
+  size = '320px',
+  class: className = '',
+} = Astro.props;
+---
+
+<div
+  class:list={['claw', `claw--${position}`, `claw--${variant}`, className]}
+  aria-hidden="true"
+  style={`--claw-color:${color};--claw-opacity:${opacity};--claw-size:${size};`}
+>
+  {variant === 'slash' ? (
+    <svg viewBox="0 0 200 260" fill="currentColor" preserveAspectRatio="xMidYMid meet">
+      <g transform="rotate(18 100 130)">
+        <path d="M26 6 L46 6 L40 252 Z" />
+        <path d="M78 6 L98 6 L90 252 Z" />
+        <path d="M130 6 L150 6 L140 252 Z" />
+      </g>
+    </svg>
+  ) : (
+    <svg viewBox="0 0 260 200" fill="currentColor" preserveAspectRatio="xMidYMid meet">
+      <rect x="0"   y="22" width="260" height="20" rx="2" />
+      <rect x="40"  y="90" width="220" height="20" rx="2" />
+      <rect x="100" y="158" width="160" height="20" rx="2" />
+    </svg>
+  )}
+</div>
+
+<style>
+  .claw {
+    position: absolute;
+    width: var(--claw-size);
+    max-width: 60%;
+    color: var(--claw-color);
+    opacity: var(--claw-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .claw svg { width: 100%; height: auto; display: block; }
+
+  .claw--top-right    { top: 0;    right: 0; }
+  .claw--bottom-right { bottom: 0; right: 0; }
+  .claw--top-left     { top: 0;    left: 0;  transform: scaleX(-1); }
+  .claw--bottom-left  { bottom: 0; left: 0;  transform: scaleX(-1); }
+</style>

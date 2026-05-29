@@ -213,6 +213,19 @@ body {
   color: var(--color-navy);
 }
 
+/* ── Style #2 "Friendly" — inverted palette (lightblue bg, navy ink) ──
+   Opt-in helper for community/welcoming sections (Join, Open Sessions,
+   beginner CTAs). Same two brand colours, foreground/background swapped. */
+.section--friendly {
+  background: var(--color-accent);
+  color: var(--color-navy);
+}
+.section--friendly .eyebrow,
+.section--friendly .page-hero__eyebrow { color: var(--color-navy); }
+.section--friendly .eyebrow::before,
+.section--friendly .page-hero__eyebrow::before { background: var(--color-navy); }
+.section--friendly .page-hero__title em { color: var(--color-white); }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   :root {

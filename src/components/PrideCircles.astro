@@ -1,0 +1,52 @@
+---
+// src/components/PrideCircles.astro
+// Brand motif — Pride Circles. People / community / inclusion.
+// The ONLY place the secondary palette appears. Friendly (Style #2) contexts.
+// Decorative only (aria-hidden). Parent must be position:relative; overflow:hidden.
+interface Props {
+  position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left' | 'inline';
+  colors?: string[];
+  opacity?: number;
+  size?: string;
+  class?: string;
+}
+const {
+  position = 'top-right',
+  colors = ['var(--color-red)', 'var(--color-pink)', 'var(--color-green)', 'var(--color-navy)'],
+  opacity = 1,
+  size = '240px',
+  class: className = '',
+} = Astro.props;
+
+// Four overlapping circles in a row.
+const cx = [44, 90, 136, 182];
+---
+
+<div
+  class:list={['pride', `pride--${position}`, className]}
+  aria-hidden="true"
+  style={`--pride-opacity:${opacity};--pride-size:${size};`}
+>
+  <svg viewBox="0 0 226 88" preserveAspectRatio="xMidYMid meet">
+    {colors.map((c, i) => (
+      <circle cx={cx[i % cx.length]} cy="44" r="44" fill={c} />
+    ))}
+  </svg>
+</div>
+
+<style>
+  .pride {
+    width: var(--pride-size);
+    max-width: 70%;
+    opacity: var(--pride-opacity);
+    pointer-events: none;
+  }
+  .pride:not(.pride--inline) { position: absolute; z-index: 0; }
+  .pride svg { width: 100%; height: auto; display: block; }
+
+  .pride--top-right    { top: -8%;    right: -4%; }
+  .pride--bottom-right { bottom: -8%; right: -4%; }
+  .pride--top-left     { top: -8%;    left: -4%;  }
+  .pride--bottom-left  { bottom: -8%; left: -4%;  }
+  .pride--inline       { position: relative; }
+</style>
