@@ -1,13 +1,20 @@
 ---
 // src/pages/join.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PrideCircles from '../components/PrideCircles.astro';
 ---
 
 <BaseLayout
   title="Join Us"
   description="Come play volleyball in Shoreditch, East London. Open sessions Mon, Thu & Fri at Mulberry Academy — no experience needed, no booking required. Or DM us on Instagram."
 >
-  <div class="page-hero">
+  <div class="page-hero section--friendly join-hero">
+    <PrideCircles
+      position="bottom-right"
+      colors={['var(--color-red)', 'var(--color-pink)', 'var(--color-green)', 'var(--color-navy)']}
+      opacity={0.85}
+      size="300px"
+    />
     <p class="page-hero__eyebrow">All levels welcome</p>
     <h1 class="page-hero__title">Come <em>Play</em><br />With Us</h1>
     <p class="page-hero__sub">
@@ -185,17 +192,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .pathway--featured {
-    background: linear-gradient(135deg, #0e1e3d, #1a2d5c);
-    border-color: rgba(84,164,247,0.3);
+    background: var(--color-accent);
+    border-color: transparent;
   }
 
   .pathway__rec {
+    font-family: var(--font-condensed);
     font-size: 0.4375rem;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.55);
   }
+
+  .pathway--featured .pathway__rec { color: rgba(17,35,75,0.65); }
+  .pathway--featured .pathway__title { color: var(--color-navy); }
 
   .form-intro {
     color: var(--color-text-muted);
@@ -212,7 +223,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     top: -50px; right: -50px;
     width: 200px; height: 200px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.05);
+    background: rgba(17,35,75,0.07);
     pointer-events: none;
   }
 
@@ -232,7 +243,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     flex: 1;
   }
 
-  .pathway--featured .pathway__body { color: rgba(255,255,255,0.8); }
+  .pathway--featured .pathway__body { color: rgba(17,35,75,0.8); }
+
+  /* Join hero — Style #2 Friendly */
+  .join-hero .page-hero__sub { color: rgba(17,35,75,0.78); }
 
   .pathway__cta { align-self: flex-start; }
 
