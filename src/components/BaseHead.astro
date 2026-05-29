@@ -52,8 +52,13 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image"       content={image} />
 
-<!-- Favicon placeholder — replace with actual SVG crest -->
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="/favicon.png" />
+
+<!-- Brand typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 
 <!-- JSON-LD structured data -->
 {schemas.map(schema => (

@@ -1,6 +1,7 @@
 ---
 // src/components/TeamCard.astro
 import type { Team } from '../data/teams';
+import ClawMarks from './ClawMarks.astro';
 
 interface Props {
   team: Team;
@@ -23,7 +24,10 @@ const { team } = Astro.props;
         onerror="this.dataset.error=''"
       />
     )}
-    <div class="team-card__photo-fallback">Team photo</div>
+    <div class="team-card__photo-fallback" aria-hidden="true">
+      <ClawMarks variant="slash" position="bottom-right" angle={90} opacity={0.12} size="150px" />
+      <img src="/images/logo-mark.png" alt="" class="team-card__watermark" width="72" height="72" />
+    </div>
   </div>
   <div class="team-card__info">
     <span class="team-card__gender">{team.gender}</span>
@@ -44,11 +48,11 @@ const { team } = Astro.props;
 
   .team-card--featured {
     border-color: var(--color-border-blue);
-    background: linear-gradient(135deg, rgba(0,60,180,0.07), rgba(0,120,255,0.02));
+    background: linear-gradient(135deg, rgba(84,164,247,0.07), rgba(84,164,247,0.02));
   }
 
   .team-card:hover {
-    border-color: rgba(0,120,255,0.3);
+    border-color: rgba(84,164,247,0.3);
     transform: translateY(-2px);
   }
 
@@ -60,13 +64,13 @@ const { team } = Astro.props;
     overflow: hidden;
   }
 
-  .team-card__photo img {
+  .team-card__photo > img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .team-card__photo img[data-error] { display: none; }
+  .team-card__photo > img[data-error] { display: none; }
 
   .team-card__photo-fallback {
     position: absolute;
@@ -74,20 +78,25 @@ const { team } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-text-faint);
-    font-size: 0.625rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+  }
+
+  .team-card__watermark {
+    width: 72px;
+    height: 72px;
+    opacity: 0.22;
+    position: relative;
+    z-index: 1;
   }
 
   .team-card__info { padding: 18px 20px; }
 
   .team-card__gender {
+    font-family: var(--font-condensed);
     font-size: 0.5rem;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--color-highlight-1);
+    color: var(--color-accent);
     display: block;
     margin-bottom: 6px;
   }
@@ -110,9 +119,11 @@ const { team } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    background: var(--color-accent);
+    color: var(--color-navy);
     border-radius: 3px;
     padding: 3px 10px;
+    font-family: var(--font-condensed);
     font-size: 0.5rem;
     font-weight: 700;
     letter-spacing: 1px;

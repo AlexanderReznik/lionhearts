@@ -1,13 +1,20 @@
 ---
 // src/pages/join.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PrideCircles from '../components/PrideCircles.astro';
 ---
 
 <BaseLayout
   title="Join Us"
   description="Come play volleyball in Shoreditch, East London. Open sessions Mon, Thu & Fri at Mulberry Academy — no experience needed, no booking required. Or DM us on Instagram."
 >
-  <div class="page-hero">
+  <div class="page-hero section--friendly join-hero">
+    <PrideCircles
+      position="bottom-right"
+      colors={['var(--color-red)', 'var(--color-pink)', 'var(--color-green)', 'var(--color-navy)']}
+      opacity={0.85}
+      size="300px"
+    />
     <p class="page-hero__eyebrow">All levels welcome</p>
     <h1 class="page-hero__title">Come <em>Play</em><br />With Us</h1>
     <p class="page-hero__sub">
@@ -185,17 +192,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .pathway--featured {
-    background: linear-gradient(135deg, #0038b8, #0060d8);
-    border-color: rgba(0,150,255,0.3);
+    background: var(--color-accent);
+    border-color: transparent;
   }
 
   .pathway__rec {
+    font-family: var(--font-condensed);
     font-size: 0.4375rem;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: rgba(255,255,255,0.55);
   }
+
+  .pathway--featured .pathway__rec { color: rgba(17,35,75,0.65); }
+  .pathway--featured .pathway__title { color: var(--color-navy); }
 
   .form-intro {
     color: var(--color-text-muted);
@@ -212,7 +223,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     top: -50px; right: -50px;
     width: 200px; height: 200px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.05);
+    background: rgba(17,35,75,0.07);
     pointer-events: none;
   }
 
@@ -232,7 +243,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     flex: 1;
   }
 
-  .pathway--featured .pathway__body { color: rgba(255,255,255,0.8); }
+  .pathway--featured .pathway__body { color: rgba(17,35,75,0.8); }
+
+  /* Join hero — Style #2 Friendly */
+  .join-hero .page-hero__sub { color: rgba(17,35,75,0.78); }
 
   .pathway__cta { align-self: flex-start; }
 
@@ -288,7 +302,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: block;
     width: 18px;
     height: 2px;
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent));
     flex-shrink: 0;
   }
 
@@ -342,9 +356,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .join-form__field select:focus-visible,
   .join-form__field textarea:focus-visible {
     outline: none;
-    border-color: var(--color-accent-to);
-    background: rgba(0,100,255,0.08);
-    box-shadow: 0 0 0 3px rgba(0,144,255,0.15);
+    border-color: var(--color-accent);
+    background: rgba(84,164,247,0.08);
+    box-shadow: 0 0 0 3px rgba(84,164,247,0.15);
   }
 
   .join-form__field textarea { resize: vertical; min-height: 100px; }
@@ -371,7 +385,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .join-form__consent-label input[type="checkbox"] {
     flex-shrink: 0;
     margin-top: 2px;
-    accent-color: var(--color-accent-from);
+    accent-color: var(--color-accent);
     width: 16px;
     height: 16px;
     cursor: pointer;
@@ -393,5 +407,5 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     text-align: center;
   }
 
-  .join-form__note a { color: var(--color-accent-to); }
+  .join-form__note a { color: var(--color-accent); }
 </style>

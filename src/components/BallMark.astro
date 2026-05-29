@@ -1,0 +1,73 @@
+---
+// src/components/BallMark.astro
+// Brand motif — The Ball. A classic volleyball: coloured panels split by thick
+// seam channels (seams drawn in `seamColor`, matching the surface behind).
+// Three sets of parallel arcs at 0/120/240° create the woven panel look.
+// Decorative only (aria-hidden). Parent must be position:relative; overflow:hidden.
+interface Props {
+  position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left' | 'center';
+  color?: string;      // ball / panel colour
+  seamColor?: string;  // seam channels — usually the surface behind the ball
+  opacity?: number;
+  size?: string;
+  class?: string;
+}
+const {
+  position = 'bottom-right',
+  color = 'var(--color-accent)',
+  seamColor = 'var(--color-navy)',
+  opacity = 1,
+  size = '480px',
+  class: className = '',
+} = Astro.props;
+
+const cid = 'ball-' + Math.random().toString(36).slice(2, 9);
+// Classic volleyball: a curved three-arm seam meeting at the centre (a curved
+// "Mercedes"/pinwheel), and off each arm two more seams branching almost
+// perpendicular toward the rim. One group below, repeated at 0/120/240°.
+const paths = [
+  'M120 120 C 112 84, 110 44, 118 4',    // radial arm (centre → top rim, gentle)
+  'M168 132 C 158 94, 156 48, 164 8',    // parallel seam, offset from the arm
+  'M216 150 C 206 106, 204 54, 212 16',  // parallel seam, offset further
+];
+---
+
+<div
+  class:list={['ball', `ball--${position}`, className]}
+  aria-hidden="true"
+  style={`--ball-opacity:${opacity};--ball-size:${size};`}
+>
+  <svg viewBox="0 0 240 240" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <clipPath id={cid}><circle cx="120" cy="120" r="116" /></clipPath>
+    </defs>
+    <g clip-path={`url(#${cid})`}>
+      <circle cx="120" cy="120" r="116" fill={color} />
+      <g fill="none" stroke={seamColor} stroke-width="8" stroke-linecap="round">
+        {[0, 120, 240].map(deg => (
+          <g transform={`rotate(${deg} 120 120)`}>
+            {paths.map(d => <path d={d} />)}
+          </g>
+        ))}
+      </g>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .ball {
+    position: absolute;
+    width: var(--ball-size);
+    max-width: 80%;
+    opacity: var(--ball-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .ball svg { width: 100%; height: auto; display: block; }
+
+  .ball--top-right    { top: -12%;    right: -8%; }
+  .ball--bottom-right { bottom: -12%; right: -8%; }
+  .ball--top-left     { top: -12%;    left: -8%;  }
+  .ball--bottom-left  { bottom: -12%; left: -8%;  }
+  .ball--center       { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+</style>

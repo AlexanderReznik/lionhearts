@@ -6,7 +6,7 @@
   <div class="join-cta__inner">
     <div class="join-cta__copy">
       <p class="join-cta__kicker">Shoreditch · All Levels · All Backgrounds</p>
-      <h2 class="join-cta__headline">Ready <span class="gradient-text">to play?</span></h2>
+      <h2 class="join-cta__headline">Ready to play?</h2>
       <p class="join-cta__sub">Open sessions 3× a week. No experience needed. New to London? You'll fit right in.</p>
       <p class="join-cta__location">
         <span class="join-cta__pin" aria-hidden="true">📍</span>
@@ -15,7 +15,7 @@
       </p>
     </div>
     <div class="join-cta__actions">
-      <a href="/join" class="btn btn--primary">Join the Club</a>
+      <a href="/join" class="btn btn--white">Join the Club</a>
       <a href="/events" class="join-cta__secondary">or just turn up to an open session →</a>
     </div>
   </div>
@@ -28,7 +28,7 @@
   }
 
   .join-cta__inner {
-    background: #fff;
+    background: var(--color-accent);
     border-radius: 14px;
     padding: 56px 64px;
     overflow: hidden;
@@ -37,7 +37,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 48px;
-    box-shadow: 0 24px 60px -20px rgba(0, 80, 220, 0.35);
+    box-shadow: 0 24px 60px -20px rgba(17, 35, 75, 0.35);
   }
 
   .join-cta__inner::after {
@@ -46,18 +46,19 @@
     top: -80px; right: -80px;
     width: 320px; height: 320px;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(0, 80, 220, 0.06), rgba(0, 144, 255, 0.02));
+    background: linear-gradient(135deg, rgba(84, 164, 247, 0.06), rgba(17, 35, 75, 0.02));
     pointer-events: none;
   }
 
   .join-cta__copy { position: relative; }
 
   .join-cta__kicker {
+    font-family: var(--font-condensed);
     font-size: 0.5625rem;
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--color-accent-from);
+    color: var(--color-navy);
     margin-bottom: 12px;
   }
 
@@ -67,12 +68,12 @@
     text-transform: uppercase;
     letter-spacing: -0.04em;
     line-height: 0.95;
-    color: #0a1628;
+    color: var(--color-navy);
     margin-bottom: 14px;
   }
 
   .join-cta__sub {
-    color: rgba(10, 22, 40, 0.7);
+    color: rgba(17, 35, 75, 0.7);
     font-size: 0.9375rem;
     line-height: 1.6;
     margin-bottom: 10px;
@@ -80,14 +81,14 @@
   }
 
   .join-cta__location {
-    color: rgba(10, 22, 40, 0.5);
+    color: rgba(17, 35, 75, 0.5);
     font-size: 0.6875rem;
     line-height: 1.6;
   }
 
   .join-cta__pin { margin-right: 4px; }
   .join-cta__venue {
-    color: var(--color-accent-from);
+    color: var(--color-navy);
     font-weight: 700;
   }
 
@@ -101,18 +102,19 @@
   }
 
   .join-cta__secondary {
+    font-family: var(--font-condensed);
     font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--color-accent-from);
+    color: var(--color-navy);
     text-decoration: none;
-    border-bottom: 1px solid rgba(0, 80, 220, 0.25);
+    border-bottom: 1px solid rgba(17, 35, 75, 0.3);
     padding-bottom: 2px;
     transition: border-color 0.15s;
   }
 
-  .join-cta__secondary:hover { border-color: var(--color-accent-from); }
+  .join-cta__secondary:hover { border-color: rgba(17, 35, 75, 0.7); }
 
   @media (max-width: 768px) {
     .join-cta { padding: var(--space-md) var(--page-px); }

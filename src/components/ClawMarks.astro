@@ -1,0 +1,79 @@
+---
+// src/components/ClawMarks.astro
+// Brand motif — Claw Marks (Graphic Elements).
+//   variant="slash" — #2: tapered claws. Flat blunt end flush at the edge,
+//   straight side, tapering to a sharp point. Staggered lengths.
+//   variant="bar"   — #1: thick rounded bars. Strong / bold / heritage.
+// White → light-blue gradient (solid at the flush edge → softer at the tip).
+// Decorative only (aria-hidden). Parent must be position:relative; overflow:hidden.
+interface Props {
+  variant?: 'slash' | 'bar';
+  position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
+  color?: string;   // tip colour (gradient runs white → this)
+  opacity?: number;
+  size?: string;
+  angle?: number;   // rotation in degrees; 0 = claws point down from the top edge
+  class?: string;
+}
+const {
+  variant = 'slash',
+  position = 'top-right',
+  color = '#A5C9EB',
+  opacity = 0.6,
+  size = '320px',
+  angle = 0,
+  class: className = '',
+} = Astro.props;
+
+const gid = 'claw-' + Math.random().toString(36).slice(2, 9);
+
+// Each claw: flush flat top (width), straight left edge, right edge tapers to a
+// point at the bottom. Staggered lengths. [leftX, rightX, straightTo, pointY]
+const claws = [
+  { l: 72,  r: 96,  s: 178, p: 250 },
+  { l: 118, r: 142, s: 158, p: 230 },
+  { l: 164, r: 188, s: 138, p: 210 },
+];
+---
+
+<div
+  class:list={['claw', `claw--${position}`, className]}
+  aria-hidden="true"
+  style={`--claw-color:${color};--claw-opacity:${opacity};--claw-size:${size};`}
+>
+  <svg viewBox="0 0 260 260" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#ffffff" />
+        <stop offset="100%" stop-color="var(--claw-color)" />
+      </linearGradient>
+    </defs>
+    <g transform={`rotate(${angle} 130 130)`} fill={`url(#${gid})`}>
+      {variant === 'slash'
+        ? claws.map(c => (
+            <path d={`M${c.l} 0 L${c.r} 0 L${c.r} ${c.s} C${c.r} ${c.s + 34} ${c.l + 12} ${c.p - 24} ${c.l} ${c.p} Z`} />
+          ))
+        : claws.map(c => (
+            <rect x={c.l} y="0" width={c.r - c.l} height={c.p} rx={(c.r - c.l) / 2} />
+          ))
+      }
+    </g>
+  </svg>
+</div>
+
+<style>
+  .claw {
+    position: absolute;
+    width: var(--claw-size);
+    max-width: 60%;
+    opacity: var(--claw-opacity);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .claw svg { width: 100%; height: auto; display: block; }
+
+  .claw--top-right    { top: 0;    right: 0; }
+  .claw--bottom-right { bottom: 0; right: 0; }
+  .claw--top-left     { top: 0;    left: 0;  }
+  .claw--bottom-left  { bottom: 0; left: 0;  }
+</style>

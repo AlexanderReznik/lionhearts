@@ -1,6 +1,7 @@
 ---
 // src/pages/join-success.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PrideCircles from '../components/PrideCircles.astro';
 ---
 
 <BaseLayout
@@ -8,48 +9,105 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Thanks for getting in touch with London Lionhearts Volleyball Club."
   noindex={true}
 >
-  <div class="success-page">
-    <div class="success-page__icon" aria-hidden="true">🏐</div>
-    <h1 class="success-page__title">Thanks for reaching out!</h1>
-    <p class="success-page__body">
-      We'll get back to you within a few days. In a rush?
-      <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer" class="success-page__link">
-        DM us on Instagram
-      </a>
-      for a faster response.
-    </p>
-    <a href="/" class="btn btn--primary success-page__cta">Back to Home</a>
-  </div>
+  <section class="success section--friendly">
+    <PrideCircles
+      position="top-left"
+      colors={['var(--color-red)', 'var(--color-pink)', 'var(--color-green)', 'var(--color-white)']}
+      opacity={0.9}
+      size="300px"
+    />
+    <PrideCircles
+      position="bottom-right"
+      colors={['var(--color-white)', 'var(--color-green)', 'var(--color-pink)', 'var(--color-red)']}
+      opacity={0.9}
+      size="300px"
+    />
+
+    <div class="success__inner">
+      <div class="success__badge">
+        <img src="/images/logo-mark.png" alt="London Lionhearts crest" width="64" height="64" />
+      </div>
+      <p class="success__eyebrow">Together We Roar</p>
+      <h1 class="success__title">Thanks for<br />reaching out!</h1>
+      <p class="success__body">
+        We'll get back to you within a few days. In a rush?
+        <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer" class="success__link">
+          DM us on Instagram
+        </a>
+        for a faster response.
+      </p>
+      <a href="/" class="btn btn--white success__cta">Back to Home</a>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
-  .success-page {
-    min-height: 60vh;
+  .success {
+    position: relative;
+    overflow: hidden;
+    min-height: calc(100vh - var(--nav-height));
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 4rem 2rem;
+    padding: 4rem var(--page-px);
     text-align: center;
   }
 
-  .success-page__icon { font-size: 3rem; }
+  .success__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+    max-width: 440px;
+  }
 
-  .success-page__title {
-    font-size: 2rem;
+  .success__badge {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    background: var(--color-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 16px 40px -12px rgba(17, 35, 75, 0.5);
+  }
+
+  .success__badge img { width: 64px; height: 64px; }
+
+  .success__eyebrow {
+    font-family: var(--font-condensed);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--color-navy);
+    opacity: 0.7;
+  }
+
+  .success__title {
+    font-size: clamp(2rem, 6vw, 3rem);
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: -1px;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    color: var(--color-navy);
   }
 
-  .success-page__body {
-    color: rgba(255,255,255,0.5);
+  .success__body {
+    color: rgba(17, 35, 75, 0.75);
     max-width: 400px;
     line-height: 1.65;
+    font-size: 0.9375rem;
   }
 
-  .success-page__link { color: var(--color-accent-to); }
+  .success__link {
+    color: var(--color-navy);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
 
-  .success-page__cta { margin-top: 1rem; }
+  .success__cta { margin-top: 0.75rem; }
 </style>
