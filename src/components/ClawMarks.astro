@@ -1,8 +1,9 @@
 ---
 // src/components/ClawMarks.astro
-// Brand motif — Claw Marks. Energy / competition / heritage.
-// variant="slash" (default, Claw Marks #2 — diagonal speed-lines)
-// variant="bar"   (Claw Marks #1 — thick parallel bars)
+// Brand motif — Claw Marks (Graphic Elements).
+//   variant="slash" — #2: tapered slivers (blunt end → sharp point). Sharp / forward-moving.
+//   variant="bar"   — #1: thick rounded bars. Strong / bold / heritage.
+// Both fade with a length-wise gradient: SOLID at the blunt/start end → transparent at the tip.
 // Decorative only (aria-hidden). Parent must be position:relative; overflow:hidden.
 interface Props {
   variant?: 'slash' | 'bar';
@@ -10,38 +11,47 @@ interface Props {
   color?: string;
   opacity?: number;
   size?: string;
+  angle?: number; // rotation in degrees; 0 = marks run straight down (solid at top)
   class?: string;
 }
 const {
   variant = 'slash',
   position = 'top-right',
   color = 'var(--color-accent)',
-  opacity = 0.4,
+  opacity = 0.6,
   size = '320px',
+  angle = 0,
   class: className = '',
 } = Astro.props;
+
+const gid = 'claw-' + Math.random().toString(36).slice(2, 9);
+const cols = [80, 130, 180]; // x-centres of the three marks
 ---
 
 <div
-  class:list={['claw', `claw--${position}`, `claw--${variant}`, className]}
+  class:list={['claw', `claw--${position}`, className]}
   aria-hidden="true"
   style={`--claw-color:${color};--claw-opacity:${opacity};--claw-size:${size};`}
 >
-  {variant === 'slash' ? (
-    <svg viewBox="0 0 200 260" fill="currentColor" preserveAspectRatio="xMidYMid meet">
-      <g transform="rotate(18 100 130)">
-        <path d="M26 6 L46 6 L40 252 Z" />
-        <path d="M78 6 L98 6 L90 252 Z" />
-        <path d="M130 6 L150 6 L140 252 Z" />
-      </g>
-    </svg>
-  ) : (
-    <svg viewBox="0 0 260 200" fill="currentColor" preserveAspectRatio="xMidYMid meet">
-      <rect x="0"   y="22" width="260" height="20" rx="2" />
-      <rect x="40"  y="90" width="220" height="20" rx="2" />
-      <rect x="100" y="158" width="160" height="20" rx="2" />
-    </svg>
-  )}
+  <svg viewBox="0 0 260 260" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="currentColor" stop-opacity="1" />
+        <stop offset="65%"  stop-color="currentColor" stop-opacity="0.45" />
+        <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+    <g transform={`rotate(${angle} 130 130)`} fill={`url(#${gid})`}>
+      {variant === 'slash'
+        ? cols.map(cx => (
+            <path d={`M${cx - 9} 0 Q ${cx - 5} 128 ${cx} 250 Q ${cx + 5} 128 ${cx + 9} 0 Z`} />
+          ))
+        : cols.map(cx => (
+            <rect x={cx - 14} y="0" width="28" height="248" rx="14" />
+          ))
+      }
+    </g>
+  </svg>
 </div>
 
 <style>
@@ -58,6 +68,6 @@ const {
 
   .claw--top-right    { top: 0;    right: 0; }
   .claw--bottom-right { bottom: 0; right: 0; }
-  .claw--top-left     { top: 0;    left: 0;  transform: scaleX(-1); }
-  .claw--bottom-left  { bottom: 0; left: 0;  transform: scaleX(-1); }
+  .claw--top-left     { top: 0;    left: 0;  }
+  .claw--bottom-left  { bottom: 0; left: 0;  }
 </style>
