@@ -2,6 +2,7 @@
 // src/pages/events.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
+import PrideCircles from '../components/PrideCircles.astro';
 import { getSessions } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
@@ -128,9 +129,15 @@ const teamSections = [
 
   <div class="page-content">
 
-    <!-- Open Sessions -->
-    <section class="sessions-box" aria-labelledby="sessions-heading">
-      <h2 class="eyebrow" id="sessions-heading">Open Sessions</h2>
+    <!-- Open Sessions — Style #2 Friendly (welcoming, all levels) -->
+    <section class="sessions-box section--friendly" aria-labelledby="sessions-heading">
+      <PrideCircles
+        position="top-right"
+        colors={['var(--color-red)', 'var(--color-pink)', 'var(--color-green)', 'var(--color-navy)']}
+        opacity={0.85}
+        size="220px"
+      />
+      <h2 class="eyebrow sessions-box__eyebrow" id="sessions-heading">Open Sessions</h2>
 
       {usingFallback && (
         <p class="sessions-box__notice">
@@ -350,20 +357,26 @@ const teamSections = [
 </script>
 
 <style>
-  /* ── Sessions box ── */
+  /* ── Open Sessions — Style #2 Friendly (lightblue panel, navy ink) ── */
   .sessions-box {
-    background: linear-gradient(135deg, rgba(84,164,247,0.12), rgba(84,164,247,0.06));
-    border: 1px solid var(--color-border-blue);
+    position: relative;
+    overflow: hidden;
+    background: var(--color-accent);
     border-radius: 14px;
     padding: 32px;
     margin-bottom: 36px;
   }
 
+  /* keep content above the Pride Circles */
+  .sessions-box__eyebrow,
+  .sessions-box__notice,
+  .sessions-box .session-cards { position: relative; z-index: 1; }
+
   .sessions-box__notice {
     font-size: 0.75rem;
-    color: rgba(120,180,255,0.9);
-    background: rgba(84,164,247,0.06);
-    border: 1px solid rgba(84,164,247,0.2);
+    color: var(--color-navy);
+    background: rgba(17,35,75,0.08);
+    border: 1px solid rgba(17,35,75,0.18);
     border-radius: 6px;
     padding: 10px 14px;
     margin-bottom: 20px;
@@ -375,32 +388,36 @@ const teamSections = [
     gap: 12px;
   }
 
+  /* White cards on the lightblue panel */
   .session-card {
-    background: rgba(84,164,247,0.08);
-    border: 1px solid rgba(84,164,247,0.2);
+    background: var(--color-white);
+    border: 1px solid rgba(17,35,75,0.08);
     border-radius: 10px;
     padding: 18px;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    color: var(--color-navy);
   }
 
-  .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
-  .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: #fff; }
-  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent); }
-  .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.55); line-height: 1.5; margin-top: 4px; }
+  .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-navy); }
+  .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: var(--color-navy); }
+  .session-card__level { font-family: var(--font-condensed); font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-red); }
+  .session-card__venue { font-size: 0.625rem; color: rgba(17,35,75,0.6); line-height: 1.5; margin-top: 4px; }
 
+  /* The venue card flips to navy (Style #1) to anchor the row */
   .session-card--venue {
-    background: rgba(255,255,255,0.03);
-    border-color: var(--color-border);
+    background: var(--color-navy);
+    border-color: transparent;
     justify-content: center;
+    color: #fff;
   }
 
-  .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-card__venue-label { font-family: var(--font-condensed); font-size: 0.5625rem; color: rgba(255,255,255,0.6); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
   .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; }
-  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.55); }
+  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.6); }
   .session-card__map-link { color: var(--color-accent); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
-  .session-card__transport { font-size: 0.625rem; color: var(--color-accent); opacity: 0.7; margin-top: 4px; line-height: 1.5; }
+  .session-card__transport { font-size: 0.625rem; color: rgba(255,255,255,0.55); margin-top: 4px; line-height: 1.5; }
 
   /* ── Team fixture sections ──*/
   .team-fixture-section {
