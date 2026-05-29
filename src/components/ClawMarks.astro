@@ -1,23 +1,24 @@
 ---
 // src/components/ClawMarks.astro
 // Brand motif — Claw Marks (Graphic Elements).
-//   variant="slash" — #2: tapered slivers (blunt end → sharp point). Sharp / forward-moving.
+//   variant="slash" — #2: tapered claws. Flat blunt end flush at the edge,
+//   straight side, tapering to a sharp point. Staggered lengths.
 //   variant="bar"   — #1: thick rounded bars. Strong / bold / heritage.
-// Both fade with a length-wise gradient: SOLID at the blunt/start end → transparent at the tip.
+// White → light-blue gradient (solid at the flush edge → softer at the tip).
 // Decorative only (aria-hidden). Parent must be position:relative; overflow:hidden.
 interface Props {
   variant?: 'slash' | 'bar';
   position?: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
-  color?: string;
+  color?: string;   // tip colour (gradient runs white → this)
   opacity?: number;
   size?: string;
-  angle?: number; // rotation in degrees; 0 = marks run straight down (solid at top)
+  angle?: number;   // rotation in degrees; 0 = claws point down from the top edge
   class?: string;
 }
 const {
   variant = 'slash',
   position = 'top-right',
-  color = 'var(--color-accent)',
+  color = '#A5C9EB',
   opacity = 0.6,
   size = '320px',
   angle = 0,
@@ -25,7 +26,14 @@ const {
 } = Astro.props;
 
 const gid = 'claw-' + Math.random().toString(36).slice(2, 9);
-const cols = [80, 130, 180]; // x-centres of the three marks
+
+// Each claw: flush flat top (width), straight left edge, right edge tapers to a
+// point at the bottom. Staggered lengths. [leftX, rightX, straightTo, pointY]
+const claws = [
+  { l: 72,  r: 96,  s: 178, p: 250 },
+  { l: 118, r: 142, s: 158, p: 230 },
+  { l: 164, r: 188, s: 138, p: 210 },
+];
 ---
 
 <div
@@ -36,18 +44,17 @@ const cols = [80, 130, 180]; // x-centres of the three marks
   <svg viewBox="0 0 260 260" preserveAspectRatio="xMidYMid meet">
     <defs>
       <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stop-color="currentColor" stop-opacity="1" />
-        <stop offset="65%"  stop-color="currentColor" stop-opacity="0.45" />
-        <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+        <stop offset="0%"   stop-color="#ffffff" />
+        <stop offset="100%" stop-color="var(--claw-color)" />
       </linearGradient>
     </defs>
     <g transform={`rotate(${angle} 130 130)`} fill={`url(#${gid})`}>
       {variant === 'slash'
-        ? cols.map(cx => (
-            <path d={`M${cx - 9} 0 Q ${cx - 5} 128 ${cx} 250 Q ${cx + 5} 128 ${cx + 9} 0 Z`} />
+        ? claws.map(c => (
+            <path d={`M${c.l} 0 L${c.r} 0 L${c.r} ${c.s} C${c.r} ${c.s + 34} ${c.l + 12} ${c.p - 24} ${c.l} ${c.p} Z`} />
           ))
-        : cols.map(cx => (
-            <rect x={cx - 14} y="0" width="28" height="248" rx="14" />
+        : claws.map(c => (
+            <rect x={c.l} y="0" width={c.r - c.l} height={c.p} rx={(c.r - c.l) / 2} />
           ))
       }
     </g>
@@ -59,7 +66,6 @@ const cols = [80, 130, 180]; // x-centres of the three marks
     position: absolute;
     width: var(--claw-size);
     max-width: 60%;
-    color: var(--claw-color);
     opacity: var(--claw-opacity);
     pointer-events: none;
     z-index: 0;
