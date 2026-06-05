@@ -259,3 +259,25 @@ body {
     --nav-height: 60px;
   }
 }
+
+/* ── Section tones (brand "moods") ──
+   neutral/alt flip with the theme; feature/community are fixed brand
+   surfaces in both themes. */
+.section { background: var(--color-bg); color: var(--color-text); }
+.section--alt { background: var(--color-bg-alt); color: var(--color-text); }
+.section--feature {
+  background: var(--lh-navy);
+  color: var(--lh-white);
+  --color-text: var(--lh-white);
+  --color-text-muted: var(--lh-slate-200);
+}
+.section--community {
+  background: var(--lh-blue);
+  color: var(--lh-white);
+  --color-text: var(--lh-white);
+  --color-text-muted: rgba(255,255,255,0.85);
+}
+.section--feature .eyebrow,
+.section--community .eyebrow { color: var(--lh-white); }
+.section--feature .eyebrow::before,
+.section--community .eyebrow::before { background: var(--lh-white); }

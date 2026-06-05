@@ -1,0 +1,13 @@
+---
+// src/components/Section.astro
+// Brand section wrapper. tone: 'neutral' | 'alt' | 'feature' | 'community'.
+interface Props {
+  tone?: 'neutral' | 'alt' | 'feature' | 'community';
+  class?: string;
+}
+const { tone = 'neutral', class: className } = Astro.props;
+const toneClass = tone === 'neutral' ? 'section' : `section section--${tone}`;
+---
+<section class:list={[toneClass, className]}>
+  <slot />
+</section>
