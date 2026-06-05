@@ -229,16 +229,16 @@ body {
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
   background: transparent;
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s;
 }
 
 .filter-pill:hover:not(.filter-pill--active) {
-  border-color: rgba(255,255,255,0.3);
-  color: rgba(255,255,255,0.9);
+  border-color: var(--color-border-blue);
+  color: var(--color-text);
 }
 
 .filter-pill:focus-visible {
@@ -247,9 +247,9 @@ body {
 }
 
 .filter-pill--active {
-  background: var(--color-accent-to);
+  background: var(--btn-accent-bg);
   border-color: transparent;
-  color: var(--lh-navy);
+  color: var(--btn-accent-text);
 }
 
 /* ── Responsive ── */
