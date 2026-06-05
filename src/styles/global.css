@@ -96,15 +96,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Gradient utility ── */
+/* ── Accent utilities (flat per brand — no gradients) ── */
 .gradient-text {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent-to);
 }
 .gradient-bg {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  background: var(--color-accent-to);
 }
 
 /* ── Buttons ── */
@@ -130,16 +127,19 @@ body {
   outline-offset: 3px;
 }
 
-.btn--primary { background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to)); color: #fff; }
-.btn--primary:hover { opacity: 0.88; }
+.btn--primary { background: var(--btn-primary-bg); color: var(--btn-primary-text); }
+.btn--primary:hover { opacity: 0.9; }
+
+.btn--accent { background: var(--btn-accent-bg); color: var(--btn-accent-text); }
+.btn--accent:hover { opacity: 0.9; }
 
 .btn--ghost { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.28); }
 .btn--ghost:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
 
-.btn--white { background: #fff; color: #0040c0; }
+.btn--white { background: var(--lh-white); color: var(--lh-navy); }
 .btn--white:hover { opacity: 0.9; }
 
-.btn--outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.4); }
+.btn--outline-white { background: transparent; color: var(--lh-white); border: 2px solid rgba(255,255,255,0.4); }
 .btn--outline-white:hover { border-color: rgba(255,255,255,0.7); }
 
 /* ── Section eyebrow ── */
@@ -173,7 +173,7 @@ body {
 
 /* ── Page hero (inner pages) ── */
 .page-hero {
-  background: linear-gradient(160deg, var(--color-bg), var(--color-surface-2));
+  background: var(--color-bg-alt);
   padding: 64px var(--page-px) 52px;
   border-bottom: 1px solid var(--color-border);
   position: relative;
@@ -183,7 +183,7 @@ body {
   content: '';
   position: absolute;
   top: 0; right: 0; bottom: 0; width: 40%;
-  background: radial-gradient(ellipse at 80% 50%, rgba(0,80,220,0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 80% 50%, rgba(84,164,247,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
 .page-hero__eyebrow { color: var(--color-accent-to); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -247,9 +247,9 @@ body {
 }
 
 .filter-pill--active {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  background: var(--color-accent-to);
   border-color: transparent;
-  color: #fff;
+  color: var(--lh-navy);
 }
 
 /* ── Responsive ── */
