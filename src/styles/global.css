@@ -281,3 +281,17 @@ body {
 .section--community .eyebrow { color: var(--lh-white); }
 .section--feature .eyebrow::before,
 .section--community .eyebrow::before { background: var(--lh-white); }
+
+/* ── Decorative brand motifs ── */
+.graphic-accent {
+  position: absolute;
+  width: 220px;
+  max-width: 40%;
+  opacity: 0.12;
+  pointer-events: none;
+  user-select: none;
+}
+.graphic-accent--top-right    { top: 0; right: 0; }
+.graphic-accent--bottom-right { bottom: 0; right: 0; }
+.graphic-accent--bottom-left  { bottom: 0; left: 0; }
+@media (prefers-reduced-motion: reduce) { .graphic-accent { opacity: 0.1; } }
