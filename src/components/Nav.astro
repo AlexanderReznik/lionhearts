@@ -1,5 +1,6 @@
 ---
 // src/components/Nav.astro
+import BrandLogo from './BrandLogo.astro';
 const navLinks = [
   { label: 'Home',      href: '/' },
   { label: 'About',     href: '/about' },
@@ -16,12 +17,8 @@ const isActive = (href: string) =>
 
 <nav class="nav" aria-label="Main">
   <div class="nav__inner">
-    <a href="/" class="nav__logo">
-      <img src="/images/logo.png" alt="London Lionhearts VBC crest" class="nav__crest" width="56" height="56" />
-      <div class="nav__name">
-        <strong>Lionhearts</strong>
-        <span>Volleyball Club</span>
-      </div>
+    <a href="/" class="nav__logo" aria-label="London Lionhearts Volleyball Club — home">
+      <BrandLogo class="nav__brandlogo" width={150} height={36} />
     </a>
 
     <ul class="nav__links" role="list">
@@ -111,26 +108,8 @@ const isActive = (href: string) =>
     flex-shrink: 0;
   }
 
-  .nav__crest {
-    flex-shrink: 0;
-  }
-
-  .nav__name strong {
-    display: block;
-    font-weight: 900;
-    font-size: 0.875rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1.2;
-  }
-
-  .nav__name span {
-    display: block;
-    font-size: 0.5625rem;
-    color: var(--color-text-faint);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
+  .nav__brandlogo { height: 36px; }
+  .nav__brandlogo :global(.brand-logo__img) { height: 36px; width: auto; }
 
   .nav__links {
     display: flex;
@@ -265,10 +244,7 @@ const isActive = (href: string) =>
     .nav__hamburger { width: 36px; height: 36px; font-size: 1.25rem; }
   }
 
-  /* ── Very narrow: drop the logo wordmark, keep just the crest ── */
-  @media (max-width: 380px) {
-    .nav__name { display: none; }
-  }
+
 </style>
 
 <script>

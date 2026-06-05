@@ -1,5 +1,6 @@
 ---
 // src/components/Footer.astro
+import BrandLogo from './BrandLogo.astro';
 const year = new Date().getFullYear();
 
 import { SOCIAL_ICON_PATHS } from '../lib/socialIcons';
@@ -27,11 +28,8 @@ const contactLinks = [
   <div class="footer__inner">
     <div class="footer__brand">
       <div class="footer__crest">
-        <img src="/images/logo.png" alt="London Lionhearts VBC crest" class="footer__logo" width="88" height="88" />
-        <div class="footer__crest-text">
-          <strong>London Lionhearts VBC</strong>
-          <p class="footer__tagline">"Together We Roar."</p>
-        </div>
+        <BrandLogo class="footer__brandlogo" width={180} height={66} />
+        <p class="footer__tagline">"Together We Roar."</p>
       </div>
       <div class="footer__socials">
         <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
@@ -117,29 +115,14 @@ const contactLinks = [
 
   .footer__crest {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
     margin-bottom: 20px;
   }
 
-  .footer__logo {
-    flex-shrink: 0;
-    width: 88px;
-    height: 88px;
-  }
-
-  .footer__crest-text {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .footer__crest strong {
-    font-weight: 900;
-    font-size: 0.875rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
+  .footer__brandlogo { height: 60px; }
+  .footer__brandlogo :global(.brand-logo__img) { height: 60px; width: auto; }
 
   .footer__tagline {
     color: rgba(255,255,255,0.55);
