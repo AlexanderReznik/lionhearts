@@ -78,13 +78,34 @@ a { color: inherit; }
   --color-surface-3:    var(--lh-navy-deep);
   --color-text:         var(--lh-white);
   --color-text-muted:   var(--lh-slate-200);
-  --color-text-faint:   var(--lh-slate-400);
+  --color-text-faint:   #94a1c0;
   --color-highlight-1:  var(--lh-blue-300);
   --color-highlight-2:  var(--lh-blue);
   --color-border:       rgba(255, 255, 255, 0.10);
   --color-border-blue:  rgba(84, 164, 247, 0.30);
   --btn-primary-bg:     var(--lh-blue);
   --btn-primary-text:   var(--lh-navy);
+}
+
+/* No-JS fallback: honour the OS preference when no explicit theme attribute
+   is set. DUPLICATE of the [data-theme="dark"] values above — keep in sync. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:           var(--lh-navy);
+    --color-bg-alt:       var(--lh-navy-deep);
+    --color-surface:      var(--lh-navy-raised);
+    --color-surface-2:    #0c1d40;
+    --color-surface-3:    var(--lh-navy-deep);
+    --color-text:         var(--lh-white);
+    --color-text-muted:   var(--lh-slate-200);
+    --color-text-faint:   #94a1c0;
+    --color-highlight-1:  var(--lh-blue-300);
+    --color-highlight-2:  var(--lh-blue);
+    --color-border:       rgba(255, 255, 255, 0.10);
+    --color-border-blue:  rgba(84, 164, 247, 0.30);
+    --btn-primary-bg:     var(--lh-blue);
+    --btn-primary-text:   var(--lh-navy);
+  }
 }
 
 /* ── Base ── */
@@ -295,3 +316,25 @@ body {
 .graphic-accent--bottom-right { bottom: 0; right: 0; }
 .graphic-accent--bottom-left  { bottom: 0; left: 0; }
 @media (prefers-reduced-motion: reduce) { .graphic-accent { opacity: 0.1; } }
+
+/* ── Force-light subtree ──
+   Re-asserts the light semantic tokens, overriding an ancestor
+   html[data-theme="dark"]. Used by the Vinarius sub-brand page. */
+.force-light {
+  --color-bg:           var(--lh-white);
+  --color-bg-alt:       var(--lh-blue-100);
+  --color-surface:      var(--lh-white);
+  --color-surface-2:    #f4f8fd;
+  --color-surface-3:    #eaf1fb;
+  --color-text:         var(--lh-navy);
+  --color-text-muted:   #5a6b86;
+  --color-text-faint:   var(--lh-slate-400);
+  --color-highlight-1:  var(--lh-blue);
+  --color-highlight-2:  var(--lh-blue-deep);
+  --color-border:       rgba(17, 35, 75, 0.12);
+  --color-border-blue:  rgba(84, 164, 247, 0.35);
+  --btn-primary-bg:     var(--lh-navy);
+  --btn-primary-text:   var(--lh-white);
+  background: var(--color-bg);
+  color: var(--color-text);
+}

@@ -570,6 +570,12 @@ const teamSections = [
     white-space: nowrap;
   }
 
+  /* Dark theme: AA-legible result badges on navy rows.
+     (This is an is:global style block — badges are injected via set:html and
+     carry no scope attribute, so use a plain selector, not :global().) */
+  html[data-theme="dark"] .badge-w { background: rgba(118,205,84,0.22); color: #8bd871; }
+  html[data-theme="dark"] .badge-l { background: rgba(196,65,40,0.22); color: #e3917d; }
+
   .tl-footer {
     display: flex;
     justify-content: space-between;

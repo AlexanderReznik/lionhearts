@@ -1,6 +1,7 @@
 ---
 // src/components/Nav.astro
 import BrandLogo from './BrandLogo.astro';
+import ThemeToggle from './ThemeToggle.astro';
 const navLinks = [
   { label: 'Home',      href: '/' },
   { label: 'About',     href: '/about' },
@@ -35,6 +36,7 @@ const isActive = (href: string) =>
       ))}
     </ul>
 
+    <ThemeToggle class="nav__theme-toggle" />
     <a href="/join" class="btn btn--primary nav__cta">Join Us</a>
     <button
       class="nav__hamburger"
@@ -73,6 +75,10 @@ const isActive = (href: string) =>
     ))}
   </ul>
   <div class="nav__overlay-footer">
+    <div class="nav__overlay-theme">
+      <span>Appearance</span>
+      <ThemeToggle class="nav__overlay-toggle" />
+    </div>
     <a href="/join" class="btn btn--primary nav__overlay-cta">Join the Club</a>
   </div>
 </div>
@@ -242,6 +248,26 @@ const isActive = (href: string) =>
     .nav__hamburger { width: 36px; height: 36px; font-size: 1.25rem; }
   }
 
+  .nav__theme-toggle { margin-left: 0; }
+
+  .nav__overlay-theme {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .nav__overlay-theme span {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  /* Hide the desktop toggle on mobile (it lives in the overlay there) */
+  @media (max-width: 768px) {
+    .nav__theme-toggle { display: none; }
+  }
 
 </style>
 
@@ -288,5 +314,33 @@ const isActive = (href: string) =>
     } else if (!e.shiftKey && document.activeElement === last) {
       e.preventDefault(); first.focus();
     }
+  });
+
+  // ── Theme toggle ──────────────────────────────────────────────
+  const THEME_KEY = 'lh-theme';
+
+  function currentTheme(): 'light' | 'dark' {
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function syncToggles(theme: 'light' | 'dark'): void {
+    document.querySelectorAll<HTMLButtonElement>('.theme-toggle').forEach(btn => {
+      btn.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+    });
+  }
+
+  function applyTheme(theme: 'light' | 'dark'): void {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+    syncToggles(theme);
+  }
+
+  // Sync aria-checked to whatever the boot script already set.
+  syncToggles(currentTheme());
+
+  document.querySelectorAll<HTMLButtonElement>('.theme-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');
+    });
   });
 </script>
