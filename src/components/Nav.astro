@@ -83,10 +83,10 @@ const isActive = (href: string) =>
     top: 0;
     z-index: 100;
     height: var(--nav-height);
-    background: rgba(5, 10, 22, 0.88);
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .nav__inner {
@@ -165,7 +165,7 @@ const isActive = (href: string) =>
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: rgba(5, 13, 26, 0.97);
+    background: color-mix(in srgb, var(--color-bg) 97%, transparent);
     display: flex;
     flex-direction: column;
     padding-top: var(--nav-height);
@@ -209,7 +209,7 @@ const isActive = (href: string) =>
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: -0.5px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: color 0.15s;
   }
