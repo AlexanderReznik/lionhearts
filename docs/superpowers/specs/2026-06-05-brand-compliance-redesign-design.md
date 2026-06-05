@@ -12,7 +12,8 @@ book delivered by the designer (Conway). Today the site is a generic near-black
 fonts, a PNG logo, an emoji favicon, and grey placeholders. Almost none of the
 supplied brand assets are wired in.
 
-We will rebuild the visual system around the brand: **DIN 2014** typography, the
+We will rebuild the visual system around the brand: **Barlow** typography (an
+open-licensed stand-in for the brand's DIN 2014 — see Typography), the
 **Lionhearts navy / white / flat light-blue** palette, official logo + graphic
 elements, and the brand book's **light-led, alternating** layout rhythm. We will
 ship a **light theme first**, but author **both light and dark theme token sets
@@ -25,7 +26,8 @@ project owner; it becomes a later phase once real photos are selected/optimised.
 ## Goals
 
 - Replace the ad-hoc colour system with brand-accurate tokens.
-- Adopt DIN 2014 (and DIN 2014 Condensed) as the typefaces.
+- Adopt Barlow (and Barlow Condensed) as the typefaces now, as an open-licensed
+  substitute for the brand's DIN 2014; structured so DIN can be swapped in later.
 - Use the official logo, submark favicon, team wordmarks, and graphic elements.
 - Implement the brand's **light-led, alternating** section rhythm.
 - Make the site **themeable** (light default, on-brand navy dark) via a single
@@ -54,10 +56,17 @@ project owner; it becomes a later phase once real photos are selected/optimised.
 `#B9C3DD`, `#9BA0AA` `#CDD0D5`.
 
 ### Typography
-**Main:** DIN 2014. **Alternative:** DIN 2014 Condensed.
+**Brand main:** DIN 2014. **Brand alternative:** DIN 2014 Condensed.
 Weights present in the supplied family: Extra Light, Light, Regular, Demi, Bold,
 Extra Bold (+ italics, Narrow, Condensed). Fonts in
 `Lionhearts_Website_Assets/Font/din-2014-font-family.zip`.
+
+**Interim substitute (this build): Barlow.** DIN 2014 is a commercial face and its
+web-embedding licence is unconfirmed, so we ship **Barlow** now — an open-licensed
+(SIL OFL) low-contrast grotesque that closely matches DIN's geometry and athletic
+feel. **Barlow Condensed** covers the condensed alternative. Because all type is
+referenced through the `--font-sans` token, switching to DIN 2014 later (if licensed)
+is a token-level change.
 
 ### Logo
 Official SVGs in `Logos_SVG/`: `Lionhearts_Logo_Main.svg` (white),
@@ -148,17 +157,20 @@ styles**.
 
 ## Typography implementation
 
-- Self-host DIN 2014 via `@font-face` (woff/woff2) from `public/fonts/`. Subset/convert
-  the supplied family to the weights actually used: Extra Bold (display), Bold, Demi,
-  Regular, Light. DIN 2014 Condensed reserved for tight labels/stats.
-- `--font-sans` becomes `'DIN 2014', system-ui, sans-serif`.
-- Type scale mapped to brand hierarchy: display/headings Extra Bold/Bold uppercase;
-  body Regular/Demi. Preserve existing semantic heading levels (h2/h3) per project
+- Self-host **Barlow** via `@font-face` (woff2) from `public/fonts/` — no external
+  Google Fonts request. Ship only the weights used: ExtraBold (display), Bold,
+  SemiBold (the "Demi" role), Regular, Light. **Barlow Condensed** for tight
+  labels/stats.
+- `--font-sans` becomes `'Barlow', system-ui, sans-serif` and `--font-condensed`
+  becomes `'Barlow Condensed', 'Barlow', sans-serif`. Swapping to DIN 2014 later is a
+  change to these two tokens plus the `@font-face` files.
+- Type scale mapped to brand hierarchy: display/headings ExtraBold/Bold uppercase;
+  body Regular/SemiBold. Preserve existing semantic heading levels (h2/h3) per project
   convention — no headings demoted to styled `<p>`.
 
 ## Per-file impact (initial map)
 
-- `src/styles/global.css` — token layers (both themes), `@font-face`, type scale,
+- `src/styles/global.css` — token layers (both themes), Barlow `@font-face`, type scale,
   rewritten `.btn`, `.eyebrow`, `.filter-pill`, `.gradient-*` removed/replaced,
   `.section--{neutral,alt,feature,community}`, `.page-hero`.
 - `src/components/BaseHead.astro` — font preloads, no-flash theme boot script.
@@ -176,7 +188,7 @@ styles**.
 ## Phasing
 
 **Phase 1 — Light-led foundation (ship first)**
-Token layers for **both** themes; DIN 2014; official logo (navy on light) + submark
+Token layers for **both** themes; Barlow typography; official logo (navy on light) + submark
 favicon; section-tone system; re-skin all components/pages to tokens (remove gradient +
 system font + ad-hoc colours); graphic-element accents (claws/pride/ball); team
 wordmarks on cards. Photos remain placeholders.
@@ -212,16 +224,19 @@ across all sections; photography pass once assets are chosen.
 
 ## Open questions / risks
 
-- **Font licensing/size:** DIN 2014 is commercial; confirm the supplied files are
-  licensed for web embedding. Convert to woff2 and subset to control payload.
+- **Font:** shipping Barlow (OFL) avoids the DIN 2014 web-licensing question for now.
+  If/when DIN 2014 is licensed for web, swapping in is a `--font-sans` token + font-file
+  change. Subset Barlow to woff2 to control payload.
 - **Submark favicon legibility** at 16px on both light and dark browser chrome — verify.
 - **Logo "don'ts":** the theme-aware logo must swap *pre-rendered* navy/white SVGs, not
   CSS-recolour the artwork (recolouring violates the brand guidance).
 
 ## Asset index (in repo)
 
-- Fonts: `Lionhearts_Website_Assets/Font/din-2014-font-family.zip`,
-  `Gentona Semi Bold.otf`, `DidotLTPro-Italic.ttf`, `DidotLTPro-BoldItalic.ttf`.
+- Fonts (this build): **Barlow** + **Barlow Condensed** (SIL OFL, self-hosted woff2).
+- Fonts (brand target / later): `Lionhearts_Website_Assets/Font/din-2014-font-family.zip`.
+- Fonts (Vinarius sub-brand): `Gentona Semi Bold.otf`, `DidotLTPro-Italic.ttf`,
+  `DidotLTPro-BoldItalic.ttf`.
 - Logos: `Lionhearts_Website_Assets/Logos_SVG/` (main, submark, team wordmarks, slogan,
   Vinarius), `Logos_PNG/`.
 - Graphic elements: `Lionhearts_Website_Assets/Graphic Elements_SVG/`.
