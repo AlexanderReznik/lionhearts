@@ -87,6 +87,27 @@ a { color: inherit; }
   --btn-primary-text:   var(--lh-navy);
 }
 
+/* No-JS fallback: honour the OS preference when no explicit theme attribute
+   is set. DUPLICATE of the [data-theme="dark"] values above — keep in sync. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:           var(--lh-navy);
+    --color-bg-alt:       var(--lh-navy-deep);
+    --color-surface:      var(--lh-navy-raised);
+    --color-surface-2:    #0c1d40;
+    --color-surface-3:    var(--lh-navy-deep);
+    --color-text:         var(--lh-white);
+    --color-text-muted:   var(--lh-slate-200);
+    --color-text-faint:   var(--lh-slate-400);
+    --color-highlight-1:  var(--lh-blue-300);
+    --color-highlight-2:  var(--lh-blue);
+    --color-border:       rgba(255, 255, 255, 0.10);
+    --color-border-blue:  rgba(84, 164, 247, 0.30);
+    --btn-primary-bg:     var(--lh-blue);
+    --btn-primary-text:   var(--lh-navy);
+  }
+}
+
 /* ── Base ── */
 html { scroll-behavior: smooth; }
 body {
