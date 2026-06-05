@@ -90,7 +90,7 @@ const first = quotes[0];
     line-height: 1;
     letter-spacing: -0.04em;
     text-transform: uppercase;
-    color: #fff;
+    color: var(--color-text);
     margin-bottom: 14px;
   }
 
@@ -107,13 +107,13 @@ const first = quotes[0];
   }
 
   .overheard__sub strong {
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--color-text);
     font-weight: 600;
   }
 
   .overheard__card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(0, 100, 220, 0.18);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 14px;
     padding: 32px 32px 20px;
     position: relative;
@@ -128,7 +128,7 @@ const first = quotes[0];
     font-size: clamp(1rem, 2.5vw, 1.3rem);
     line-height: 1.4;
     font-weight: 600;
-    color: #fff;
+    color: var(--color-text);
     margin: 0 0 16px;
   }
 
@@ -140,7 +140,7 @@ const first = quotes[0];
   }
 
   .overheard__attrib strong {
-    color: #fff;
+    color: var(--color-text);
     font-weight: 700;
   }
 
@@ -149,14 +149,14 @@ const first = quotes[0];
     align-items: center;
     justify-content: space-between;
     padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--color-border);
   }
 
   .overheard__counter {
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
     font-size: 0.65rem;
     letter-spacing: 1.5px;
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--color-text-faint);
   }
 
   .overheard__nav {
@@ -166,8 +166,8 @@ const first = quotes[0];
 
   .overheard__nav-btn {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
     border-radius: 6px;
     min-width: 44px;
     min-height: 44px;
@@ -178,8 +178,8 @@ const first = quotes[0];
   }
 
   .overheard__nav-btn:hover {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: #fff;
+    border-color: var(--color-border-blue);
+    color: var(--color-text);
   }
 
   .overheard__nav-btn:focus-visible {
