@@ -78,7 +78,7 @@ a { color: inherit; }
   --color-surface-3:    var(--lh-navy-deep);
   --color-text:         var(--lh-white);
   --color-text-muted:   var(--lh-slate-200);
-  --color-text-faint:   var(--lh-slate-400);
+  --color-text-faint:   #94a1c0;
   --color-highlight-1:  var(--lh-blue-300);
   --color-highlight-2:  var(--lh-blue);
   --color-border:       rgba(255, 255, 255, 0.10);
@@ -98,7 +98,7 @@ a { color: inherit; }
     --color-surface-3:    var(--lh-navy-deep);
     --color-text:         var(--lh-white);
     --color-text-muted:   var(--lh-slate-200);
-    --color-text-faint:   var(--lh-slate-400);
+    --color-text-faint:   #94a1c0;
     --color-highlight-1:  var(--lh-blue-300);
     --color-highlight-2:  var(--lh-blue);
     --color-border:       rgba(255, 255, 255, 0.10);

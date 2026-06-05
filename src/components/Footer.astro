@@ -182,6 +182,14 @@ const contactLinks = [
   .footer__social-pill--facebook:hover  { color: #4a9ef5; border-color: rgba(74,158,245,0.3); }
   .footer__social-pill--youtube:hover   { color: #ff4444; border-color: rgba(255,68,68,0.3); }
 
+  /* Dark theme: brighten network label colours for AA on the navy footer */
+  :global(html[data-theme="dark"]) .footer__social-pill--instagram,
+  :global(html[data-theme="dark"]) .footer__social-pill--instagram:hover { color: #f48fb1; }
+  :global(html[data-theme="dark"]) .footer__social-pill--facebook,
+  :global(html[data-theme="dark"]) .footer__social-pill--facebook:hover { color: #8fc0ff; }
+  :global(html[data-theme="dark"]) .footer__social-pill--youtube,
+  :global(html[data-theme="dark"]) .footer__social-pill--youtube:hover { color: #ff8a8a; }
+
   .footer__col { flex: 1; }
 
   .footer__col h4 {
