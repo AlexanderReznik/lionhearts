@@ -6,23 +6,51 @@ a { color: inherit; }
 
 /* ── Design tokens ── */
 :root {
-  /* Colours */
-  --color-bg:           #050d1a;
-  --color-surface:      #0a0e1a;
-  --color-surface-2:    #0a1628;
-  --color-surface-3:    #030810;
-  --color-accent-from:  #0050e0;
-  --color-accent-to:    #0090ff;
-  --color-text:         #ffffff;
-  --color-text-muted:   rgba(255, 255, 255, 0.5);
-  --color-text-faint:   rgba(255, 255, 255, 0.45);
-  --color-highlight-1:  #4da8ff;
-  --color-highlight-2:  #00c2ff;
-  --color-border:       rgba(255, 255, 255, 0.07);
-  --color-border-blue:  rgba(0, 100, 220, 0.2);
+  /* Layer 1 — Brand tokens (fixed, never change per theme) */
+  --lh-navy:        #11234B;
+  --lh-navy-deep:   #05122B;
+  --lh-navy-raised: #1b2f5c;
+  --lh-white:       #ffffff;
+  --lh-blue:        #54A4F7;
+  --lh-blue-deep:   #002D72;
+  --lh-blue-300:    #8FC5F7;
+  --lh-blue-100:    #E0EEFB;
+  --lh-red:         #C44128;
+  --lh-pink:        #D75EB1;
+  --lh-green:       #76CD54;
+  --lh-slate:       #374155;
+  --lh-slate-400:   #7587AE;
+  --lh-slate-200:   #B9C3DD;
+  --lh-grey-400:    #9BA0AA;
+  --lh-grey-200:    #CDD0D5;
+
+  /* Layer 2 — Semantic tokens (LIGHT theme = default).
+     NOTE: the legacy --color-* names ARE the semantic layer; components
+     reference these, so re-pointing them re-themes the whole site. */
+  --color-bg:           var(--lh-white);
+  --color-bg-alt:       var(--lh-blue-100);
+  --color-surface:      var(--lh-white);
+  --color-surface-2:    #F4F8FD;
+  --color-surface-3:    #EAF1FB;
+  --color-accent-from:  var(--lh-blue);   /* gradients flatten to one brand blue */
+  --color-accent-to:    var(--lh-blue);
+  --color-text:         var(--lh-navy);
+  --color-text-muted:   #5a6b86;
+  --color-text-faint:   var(--lh-slate-400);
+  --color-highlight-1:  var(--lh-blue);
+  --color-highlight-2:  var(--lh-blue-deep);
+  --color-border:       rgba(17, 35, 75, 0.12);
+  --color-border-blue:  rgba(84, 164, 247, 0.35);
+
+  /* Button semantics */
+  --btn-primary-bg:     var(--lh-navy);
+  --btn-primary-text:   var(--lh-white);
+  --btn-accent-bg:      var(--lh-blue);
+  --btn-accent-text:    var(--lh-navy);
 
   /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:      'Barlow', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-condensed: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
 
   /* Spacing */
   --space-xs:  0.5rem;
@@ -35,6 +63,25 @@ a { color: inherit; }
   --max-width:  1120px;
   --nav-height: 68px;
   --page-px:    48px;
+}
+
+/* Dark theme token set — authored now (dual-ready); activated by the
+   Phase 2 toggle via [data-theme="dark"]. Safe to ship inert. */
+[data-theme="dark"] {
+  --color-bg:           var(--lh-navy);
+  --color-bg-alt:       var(--lh-navy-deep);
+  --color-surface:      var(--lh-navy-raised);
+  --color-surface-2:    #0c1d40;
+  --color-surface-3:    var(--lh-navy-deep);
+  --color-text:         var(--lh-white);
+  --color-text-muted:   var(--lh-slate-200);
+  --color-text-faint:   var(--lh-slate-400);
+  --color-highlight-1:  var(--lh-blue-300);
+  --color-highlight-2:  var(--lh-blue);
+  --color-border:       rgba(255, 255, 255, 0.10);
+  --color-border-blue:  rgba(84, 164, 247, 0.30);
+  --btn-primary-bg:     var(--lh-blue);
+  --btn-primary-text:   var(--lh-navy);
 }
 
 /* ── Base ── */
