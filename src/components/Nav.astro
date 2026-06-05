@@ -1,5 +1,6 @@
 ---
 // src/components/Nav.astro
+import BrandLogo from './BrandLogo.astro';
 const navLinks = [
   { label: 'Home',      href: '/' },
   { label: 'About',     href: '/about' },
@@ -16,12 +17,8 @@ const isActive = (href: string) =>
 
 <nav class="nav" aria-label="Main">
   <div class="nav__inner">
-    <a href="/" class="nav__logo">
-      <img src="/images/logo.png" alt="London Lionhearts VBC crest" class="nav__crest" width="56" height="56" />
-      <div class="nav__name">
-        <strong>Lionhearts</strong>
-        <span>Volleyball Club</span>
-      </div>
+    <a href="/" class="nav__logo" aria-label="London Lionhearts Volleyball Club — home">
+      <BrandLogo class="nav__brandlogo" width={150} height={36} />
     </a>
 
     <ul class="nav__links" role="list">
@@ -86,10 +83,10 @@ const isActive = (href: string) =>
     top: 0;
     z-index: 100;
     height: var(--nav-height);
-    background: rgba(5, 10, 22, 0.88);
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .nav__inner {
@@ -105,32 +102,12 @@ const isActive = (href: string) =>
   .nav__logo {
     display: flex;
     align-items: center;
-    gap: 12px;
     text-decoration: none;
     color: var(--color-text);
     flex-shrink: 0;
   }
 
-  .nav__crest {
-    flex-shrink: 0;
-  }
-
-  .nav__name strong {
-    display: block;
-    font-weight: 900;
-    font-size: 0.875rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    line-height: 1.2;
-  }
-
-  .nav__name span {
-    display: block;
-    font-size: 0.5625rem;
-    color: var(--color-text-faint);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
+  .nav__logo :global(.brand-logo__img) { height: 36px; width: auto; }
 
   .nav__links {
     display: flex;
@@ -187,7 +164,7 @@ const isActive = (href: string) =>
     position: fixed;
     inset: 0;
     z-index: 200;
-    background: rgba(5, 13, 26, 0.97);
+    background: color-mix(in srgb, var(--color-bg) 97%, transparent);
     display: flex;
     flex-direction: column;
     padding-top: var(--nav-height);
@@ -231,7 +208,7 @@ const isActive = (href: string) =>
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: -0.5px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: color 0.15s;
   }
@@ -265,10 +242,7 @@ const isActive = (href: string) =>
     .nav__hamburger { width: 36px; height: 36px; font-size: 1.25rem; }
   }
 
-  /* ── Very narrow: drop the logo wordmark, keep just the crest ── */
-  @media (max-width: 380px) {
-    .nav__name { display: none; }
-  }
+
 </style>
 
 <script>

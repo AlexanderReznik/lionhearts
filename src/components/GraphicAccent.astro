@@ -1,0 +1,14 @@
+---
+// src/components/GraphicAccent.astro
+// Decorative brand motif (claw stripes / pride circles). Purely decorative.
+interface Props {
+  motif?: 'claw' | 'pride';
+  position?: 'top-right' | 'bottom-right' | 'bottom-left';
+  class?: string;
+}
+const { motif = 'claw', position = 'bottom-right', class: className } = Astro.props;
+const src = motif === 'pride' ? '/brand/graphics/pride-1.svg' : '/brand/graphics/claw-1.svg';
+---
+<img
+  class:list={['graphic-accent', `graphic-accent--${position}`, className]}
+  src={src} alt="" aria-hidden="true" loading="lazy" />

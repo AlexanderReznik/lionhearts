@@ -81,10 +81,10 @@ const perks = [
 </BaseLayout>
 
 <style>
-  /* ── Title sponsor hero ── */
+  /* ── Title sponsor hero — intentional brand navy feature surface ── */
   .sponsor-hero {
-    background: linear-gradient(135deg, rgba(0,60,180,0.15), rgba(0,120,255,0.07));
-    border: 1px solid var(--color-border-blue);
+    background: linear-gradient(135deg, var(--lh-navy), var(--lh-navy-raised));
+    border: 1px solid rgba(84,164,247,0.2);
     border-radius: 16px;
     padding: 56px 48px;
     display: flex;
@@ -93,11 +93,12 @@ const perks = [
     gap: 28px;
     margin-bottom: 48px;
     text-align: center;
+    color: #fff;
   }
 
   .sponsor-hero__badge {
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
-    color: #fff;
+    background: var(--lh-blue);
+    color: var(--lh-navy);
     font-size: 0.5rem;
     font-weight: 700;
     letter-spacing: 2px;
@@ -110,7 +111,7 @@ const perks = [
   .sponsor-hero__logo img {
     width: 100%;
     height: auto;
-    filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1); /* logo on navy bg — white version */
     opacity: 0.9;
   }
 
@@ -124,15 +125,16 @@ const perks = [
 
   .sponsor-hero__details { max-width: 560px; }
 
+  /* sponsor-hero is dark navy — use explicit white/blue for legibility */
   .sponsor-hero__desc {
-    color: var(--color-text-muted);
+    color: rgba(255,255,255,0.75);
     font-size: 0.9375rem;
     line-height: 1.75;
     margin-bottom: 20px;
   }
 
   .sponsor-hero__link {
-    color: var(--color-highlight-1);
+    color: var(--lh-blue);
     font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 1px;
@@ -140,9 +142,9 @@ const perks = [
     text-decoration: none;
   }
 
-  /* ── Become a Sponsor ── */
+  /* ── Become a Sponsor — intentional dark navy CTA panel ── */
   .become-sponsor {
-    background: linear-gradient(135deg, #0030a0, #0060d8);
+    background: linear-gradient(135deg, var(--lh-navy-deep), var(--lh-navy));
     border-radius: 14px;
     padding: 48px;
     display: flex;
@@ -199,14 +201,14 @@ const perks = [
   }
 
   .perk-card {
-    background: rgba(255,255,255,0.03);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 24px;
     transition: border-color 0.2s;
   }
 
-  .perk-card:hover { border-color: rgba(0,120,255,0.25); }
+  .perk-card:hover { border-color: var(--color-border-blue); }
 
   .perk-card__icon { font-size: 1.5rem; margin-bottom: 12px; }
   .perk-card__title { font-size: 0.8125rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }

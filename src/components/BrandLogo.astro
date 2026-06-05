@@ -1,0 +1,27 @@
+---
+// src/components/BrandLogo.astro
+// Renders the official wordmark. Navy variant on light theme, white on dark.
+interface Props {
+  class?: string;
+  width?: number;
+  height?: number;
+}
+const { class: className, width = 132, height = 48 } = Astro.props;
+---
+<span class:list={['brand-logo', className]}>
+  <img class="brand-logo__img brand-logo__img--light"
+       src="/brand/logo-main-base.svg" alt="London Lionhearts Volleyball Club"
+       width={width} height={height} />
+  <img class="brand-logo__img brand-logo__img--dark"
+       src="/brand/logo-main.svg" alt="London Lionhearts Volleyball Club" loading="lazy"
+       width={width} height={height} />
+</span>
+
+<style>
+  .brand-logo { display: inline-flex; line-height: 0; }
+  .brand-logo__img { display: block; height: auto; }
+  /* Default (light theme): show navy/base, hide white */
+  .brand-logo__img--dark { display: none; }
+  :global([data-theme="dark"]) .brand-logo__img--light { display: none; }
+  :global([data-theme="dark"]) .brand-logo__img--dark { display: block; }
+</style>

@@ -152,7 +152,7 @@ const values = [
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,80,220,0.1);
+    background: rgba(84,164,247,0.10);
     border: 1px solid var(--color-border-blue);
     border-radius: 6px;
     padding: 7px 14px;
@@ -178,17 +178,17 @@ const values = [
   }
 
   .value-card {
-    background: rgba(255,255,255,0.03);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 28px;
     transition: border-color 0.2s;
   }
 
-  .value-card:hover { border-color: rgba(0,120,255,0.25); }
+  .value-card:hover { border-color: var(--color-border-blue); }
 
   .value-card--featured {
-    background: linear-gradient(135deg, rgba(0,60,180,0.08), rgba(0,120,255,0.04));
+    background: linear-gradient(135deg, rgba(84,164,247,0.08), rgba(84,164,247,0.04));
     border-color: var(--color-border-blue);
   }
 

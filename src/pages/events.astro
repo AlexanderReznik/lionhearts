@@ -352,7 +352,7 @@ const teamSections = [
 <style>
   /* ── Sessions box ── */
   .sessions-box {
-    background: linear-gradient(135deg, rgba(0,60,180,0.12), rgba(0,120,255,0.06));
+    background: linear-gradient(135deg, rgba(84,164,247,0.12), rgba(84,164,247,0.06));
     border: 1px solid var(--color-border-blue);
     border-radius: 14px;
     padding: 32px;
@@ -361,9 +361,9 @@ const teamSections = [
 
   .sessions-box__notice {
     font-size: 0.75rem;
-    color: rgba(120,180,255,0.9);
-    background: rgba(0,80,220,0.06);
-    border: 1px solid rgba(0,100,220,0.2);
+    color: var(--lh-blue);
+    background: rgba(84,164,247,0.08);
+    border: 1px solid rgba(84,164,247,0.25);
     border-radius: 6px;
     padding: 10px 14px;
     margin-bottom: 20px;
@@ -375,9 +375,10 @@ const teamSections = [
     gap: 12px;
   }
 
+  /* Session cards are intentional brand feature surfaces — navy bg, white text */
   .session-card {
-    background: rgba(0,50,150,0.15);
-    border: 1px solid rgba(0,100,220,0.2);
+    background: var(--lh-navy);
+    border: 1px solid rgba(84,164,247,0.2);
     border-radius: 10px;
     padding: 18px;
     display: flex;
@@ -385,22 +386,22 @@ const teamSections = [
     gap: 4px;
   }
 
-  .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
+  .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; color: var(--lh-blue); }
   .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: #fff; }
-  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-highlight-1); }
-  .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.55); line-height: 1.5; margin-top: 4px; }
+  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--lh-blue-300); }
+  .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px; }
 
   .session-card--venue {
-    background: rgba(255,255,255,0.03);
-    border-color: var(--color-border);
+    background: var(--lh-navy-deep);
+    border-color: rgba(84,164,247,0.15);
     justify-content: center;
   }
 
-  .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.55); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-  .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; }
-  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.55); }
-  .session-card__map-link { color: var(--color-highlight-1); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
-  .session-card__transport { font-size: 0.625rem; color: var(--color-highlight-1); opacity: 0.7; margin-top: 4px; line-height: 1.5; }
+  .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.6); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; color: #fff; }
+  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.7); }
+  .session-card__map-link { color: var(--lh-blue); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
+  .session-card__transport { font-size: 0.625rem; color: var(--lh-blue-300); opacity: 0.85; margin-top: 4px; line-height: 1.5; }
 
   /* ── Team fixture sections ──*/
   .team-fixture-section {
@@ -411,7 +412,7 @@ const teamSections = [
   }
 
   .team-fixture-section__header {
-    background: rgba(255,255,255,0.03);
+    background: var(--color-bg-alt);
     padding: 16px 20px;
     display: flex;
     align-items: center;
@@ -433,7 +434,7 @@ const teamSections = [
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--color-highlight-1);
-    background: rgba(0,100,220,0.15);
+    background: rgba(84,164,247,0.15);
     padding: 3px 10px;
     border-radius: 3px;
     margin-left: 10px;
@@ -473,6 +474,7 @@ const teamSections = [
 
 <style is:global>
   /* ── Fixture timeline (is:global — injected via innerHTML, scoped attr won't match) ── */
+  /* Light theme: dark navy text on white/surface background */
   .team-fixtures { font-size: 0.75rem; }
 
   .tl-section-label {
@@ -481,9 +483,9 @@ const teamSections = [
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    background: rgba(255,255,255,0.015);
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--color-text-faint);
+    background: var(--color-bg-alt);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .tl-row {
@@ -492,7 +494,7 @@ const teamSections = [
     align-items: center;
     gap: 12px;
     padding: 10px 18px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .tl-row-up {
@@ -501,25 +503,25 @@ const teamSections = [
     align-items: start;
     gap: 12px;
     padding: 10px 18px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .tl-row-up--next {
-    background: linear-gradient(90deg, rgba(0,60,200,0.12) 0%, rgba(0,80,220,0.06) 100%);
-    border-left: 3px solid #0060e0;
-    border-bottom-color: rgba(0,100,220,0.2);
+    background: linear-gradient(90deg, rgba(84,164,247,0.10) 0%, rgba(84,164,247,0.04) 100%);
+    border-left: 3px solid var(--lh-blue);
+    border-bottom-color: var(--color-border-blue);
   }
 
-  .tl-date { color: rgba(255,255,255,0.4); font-size: 0.65rem; white-space: nowrap; }
-  .tl-row-up--next .tl-date { color: #60b0ff; font-weight: 700; }
+  .tl-date { color: var(--color-text-faint); font-size: 0.65rem; white-space: nowrap; }
+  .tl-row-up--next .tl-date { color: var(--lh-blue); font-weight: 700; }
 
-  .tl-vs { color: rgba(255,255,255,0.3); font-size: 0.6rem; margin-right: 4px; }
+  .tl-vs { color: var(--color-text-faint); font-size: 0.6rem; margin-right: 4px; }
 
   .tl-up-meta { display: flex; flex-direction: column; gap: 3px; }
-  .tl-up-opp { color: rgba(255,255,255,0.85); }
-  .tl-row-up--next .tl-up-opp { color: #fff; font-weight: 700; }
-  .tl-up-venue { color: rgba(255,255,255,0.35); font-size: 0.6rem; }
-  .tl-row-up--next .tl-up-venue { color: rgba(100,170,255,0.55); }
+  .tl-up-opp { color: var(--color-text); }
+  .tl-row-up--next .tl-up-opp { color: var(--lh-navy); font-weight: 700; }
+  .tl-up-venue { color: var(--color-text-faint); font-size: 0.6rem; }
+  .tl-row-up--next .tl-up-venue { color: var(--color-text-muted); }
 
   .tl-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 
@@ -528,9 +530,9 @@ const teamSections = [
     font-weight: 800;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #60b0ff;
-    background: rgba(0,100,220,0.2);
-    border: 1px solid rgba(0,130,255,0.35);
+    color: var(--lh-navy);
+    background: rgba(84,164,247,0.18);
+    border: 1px solid rgba(84,164,247,0.35);
     border-radius: 4px;
     padding: 2px 8px;
     white-space: nowrap;
@@ -538,17 +540,18 @@ const teamSections = [
 
   .home-away {
     font-size: 0.55rem;
-    color: rgba(255,255,255,0.25);
+    color: var(--color-text-faint);
     letter-spacing: 0.5px;
     text-transform: uppercase;
     white-space: nowrap;
   }
-  .tl-row-up--next .home-away { color: rgba(100,170,255,0.4); }
+  .tl-row-up--next .home-away { color: var(--color-text-muted); }
 
+  /* Result badges — intentional brand colour chips; readable on light bg */
   .badge-w {
-    background: rgba(0,180,80,0.15);
-    color: #4dff90;
-    border: 1px solid rgba(0,180,80,0.3);
+    background: rgba(118,205,84,0.15);
+    color: #3a7d1e;
+    border: 1px solid rgba(118,205,84,0.4);
     border-radius: 4px;
     padding: 2px 8px;
     font-size: 0.6rem;
@@ -557,9 +560,9 @@ const teamSections = [
   }
 
   .badge-l {
-    background: rgba(220,40,40,0.12);
-    color: #ff7070;
-    border: 1px solid rgba(220,40,40,0.25);
+    background: rgba(196,65,40,0.10);
+    color: var(--lh-red);
+    border: 1px solid rgba(196,65,40,0.25);
     border-radius: 4px;
     padding: 2px 8px;
     font-size: 0.6rem;
@@ -572,13 +575,13 @@ const teamSections = [
     justify-content: space-between;
     align-items: center;
     padding: 8px 18px;
-    border-top: 1px solid rgba(255,255,255,0.04);
-    background: rgba(255,255,255,0.01);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-alt);
   }
 
   .tl-updated {
     font-size: 0.5rem;
-    color: rgba(255,255,255,0.25);
+    color: var(--color-text-faint);
     letter-spacing: 1px;
     text-transform: uppercase;
   }
@@ -586,7 +589,7 @@ const teamSections = [
   .tl-error {
     padding: 16px 18px;
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.4);
+    color: var(--color-text-muted);
   }
 
   @media (max-width: 640px) {

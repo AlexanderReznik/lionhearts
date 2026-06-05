@@ -6,23 +6,53 @@ a { color: inherit; }
 
 /* ── Design tokens ── */
 :root {
-  /* Colours */
-  --color-bg:           #050d1a;
-  --color-surface:      #0a0e1a;
-  --color-surface-2:    #0a1628;
-  --color-surface-3:    #030810;
-  --color-accent-from:  #0050e0;
-  --color-accent-to:    #0090ff;
-  --color-text:         #ffffff;
-  --color-text-muted:   rgba(255, 255, 255, 0.5);
-  --color-text-faint:   rgba(255, 255, 255, 0.45);
-  --color-highlight-1:  #4da8ff;
-  --color-highlight-2:  #00c2ff;
-  --color-border:       rgba(255, 255, 255, 0.07);
-  --color-border-blue:  rgba(0, 100, 220, 0.2);
+  /* Layer 1 — Brand tokens (fixed, never change per theme) */
+  --lh-navy:        #11234b;
+  --lh-navy-deep:   #05122b;
+  --lh-navy-raised: #1b2f5c;
+  --lh-white:       #ffffff;
+  --lh-blue:        #54a4f7;
+  --lh-blue-deep:   #002d72;
+  --lh-blue-300:    #8fc5f7;
+  --lh-blue-100:    #e0eefb;
+  /* secondary + neutral palette — registered up front; not all consumed in Phase 1 */
+  --lh-red:         #c44128;
+  --lh-pink:        #d75eb1;
+  --lh-green:       #76cd54;
+  --lh-slate:       #374155;
+  --lh-slate-400:   #7587ae;
+  --lh-slate-200:   #b9c3dd;
+  --lh-grey-400:    #9ba0aa;
+  --lh-grey-200:    #cdd0d5;
+
+  /* Layer 2 — Semantic tokens (LIGHT theme = default).
+     NOTE: the legacy --color-* names ARE the semantic layer; components
+     reference these, so re-pointing them re-themes the whole site. */
+  --color-bg:           var(--lh-white);
+  --color-bg-alt:       var(--lh-blue-100);
+  --color-surface:      var(--lh-white);
+  /* (a few intermediate tints below are semantic-only by design — no --lh-* equivalent) */
+  --color-surface-2:    #f4f8fd;
+  --color-surface-3:    #eaf1fb;
+  --color-accent-from:  var(--lh-blue);   /* gradients flatten to one brand blue */
+  --color-accent-to:    var(--lh-blue);
+  --color-text:         var(--lh-navy);
+  --color-text-muted:   #5a6b86;
+  --color-text-faint:   var(--lh-slate-400);
+  --color-highlight-1:  var(--lh-blue);
+  --color-highlight-2:  var(--lh-blue-deep);
+  --color-border:       rgba(17, 35, 75, 0.12);
+  --color-border-blue:  rgba(84, 164, 247, 0.35);
+
+  /* Button semantics */
+  --btn-primary-bg:     var(--lh-navy);
+  --btn-primary-text:   var(--lh-white);
+  --btn-accent-bg:      var(--lh-blue);
+  --btn-accent-text:    var(--lh-navy);
 
   /* Typography */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans:      'Barlow', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-condensed: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
 
   /* Spacing */
   --space-xs:  0.5rem;
@@ -37,6 +67,26 @@ a { color: inherit; }
   --page-px:    48px;
 }
 
+/* Dark theme token set — authored now (dual-ready); activated by the
+   Phase 2 toggle via [data-theme="dark"]. Safe to ship inert. */
+[data-theme="dark"] {
+  /* --color-accent-* and --btn-accent-* intentionally inherit from :root (light-blue works on both themes) */
+  --color-bg:           var(--lh-navy);
+  --color-bg-alt:       var(--lh-navy-deep);
+  --color-surface:      var(--lh-navy-raised);
+  --color-surface-2:    #0c1d40;
+  --color-surface-3:    var(--lh-navy-deep);
+  --color-text:         var(--lh-white);
+  --color-text-muted:   var(--lh-slate-200);
+  --color-text-faint:   var(--lh-slate-400);
+  --color-highlight-1:  var(--lh-blue-300);
+  --color-highlight-2:  var(--lh-blue);
+  --color-border:       rgba(255, 255, 255, 0.10);
+  --color-border-blue:  rgba(84, 164, 247, 0.30);
+  --btn-primary-bg:     var(--lh-blue);
+  --btn-primary-text:   var(--lh-navy);
+}
+
 /* ── Base ── */
 html { scroll-behavior: smooth; }
 body {
@@ -46,15 +96,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Gradient utility ── */
+/* ── Accent utilities (flat per brand — no gradients) ── */
 .gradient-text {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-accent-to);
 }
 .gradient-bg {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  background: var(--color-accent-to);
 }
 
 /* ── Buttons ── */
@@ -80,16 +127,19 @@ body {
   outline-offset: 3px;
 }
 
-.btn--primary { background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to)); color: #fff; }
-.btn--primary:hover { opacity: 0.88; }
+.btn--primary { background: var(--btn-primary-bg); color: var(--btn-primary-text); }
+.btn--primary:hover { opacity: 0.9; }
+
+.btn--accent { background: var(--btn-accent-bg); color: var(--btn-accent-text); }
+.btn--accent:hover { opacity: 0.9; }
 
 .btn--ghost { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.28); }
 .btn--ghost:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
 
-.btn--white { background: #fff; color: #0040c0; }
+.btn--white { background: var(--lh-white); color: var(--lh-navy); }
 .btn--white:hover { opacity: 0.9; }
 
-.btn--outline-white { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.4); }
+.btn--outline-white { background: transparent; color: var(--lh-white); border: 2px solid rgba(255,255,255,0.4); }
 .btn--outline-white:hover { border-color: rgba(255,255,255,0.7); }
 
 /* ── Section eyebrow ── */
@@ -123,7 +173,7 @@ body {
 
 /* ── Page hero (inner pages) ── */
 .page-hero {
-  background: linear-gradient(160deg, var(--color-bg), var(--color-surface-2));
+  background: var(--color-bg-alt);
   padding: 64px var(--page-px) 52px;
   border-bottom: 1px solid var(--color-border);
   position: relative;
@@ -133,7 +183,7 @@ body {
   content: '';
   position: absolute;
   top: 0; right: 0; bottom: 0; width: 40%;
-  background: radial-gradient(ellipse at 80% 50%, rgba(0,80,220,0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse at 80% 50%, rgba(84,164,247,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
 .page-hero__eyebrow { color: var(--color-accent-to); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -179,16 +229,16 @@ body {
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.6);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
   background: transparent;
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s;
 }
 
 .filter-pill:hover:not(.filter-pill--active) {
-  border-color: rgba(255,255,255,0.3);
-  color: rgba(255,255,255,0.9);
+  border-color: var(--color-border-blue);
+  color: var(--color-text);
 }
 
 .filter-pill:focus-visible {
@@ -197,9 +247,9 @@ body {
 }
 
 .filter-pill--active {
-  background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+  background: var(--btn-accent-bg);
   border-color: transparent;
-  color: #fff;
+  color: var(--btn-accent-text);
 }
 
 /* ── Responsive ── */
@@ -209,3 +259,39 @@ body {
     --nav-height: 60px;
   }
 }
+
+/* ── Section tones (brand "moods") ──
+   neutral/alt flip with the theme; feature/community are fixed brand
+   surfaces in both themes. */
+.section { background: var(--color-bg); color: var(--color-text); }
+.section--alt { background: var(--color-bg-alt); color: var(--color-text); }
+.section--feature {
+  background: var(--lh-navy);
+  color: var(--lh-white);
+  --color-text: var(--lh-white);
+  --color-text-muted: var(--lh-slate-200);
+}
+.section--community {
+  background: var(--lh-blue);
+  color: var(--lh-white);
+  --color-text: var(--lh-white);
+  --color-text-muted: rgba(255,255,255,0.85);
+}
+.section--feature .eyebrow,
+.section--community .eyebrow { color: var(--lh-white); }
+.section--feature .eyebrow::before,
+.section--community .eyebrow::before { background: var(--lh-white); }
+
+/* ── Decorative brand motifs ── */
+.graphic-accent {
+  position: absolute;
+  width: 220px;
+  max-width: 40%;
+  opacity: 0.12;
+  pointer-events: none;
+  user-select: none;
+}
+.graphic-accent--top-right    { top: 0; right: 0; }
+.graphic-accent--bottom-right { bottom: 0; right: 0; }
+.graphic-accent--bottom-left  { bottom: 0; left: 0; }
+@media (prefers-reduced-motion: reduce) { .graphic-accent { opacity: 0.1; } }
