@@ -1,6 +1,7 @@
 ---
 // src/components/TeamCard.astro
 import type { Team } from '../data/teams';
+import { teamWordmarkSrc } from '../lib/teamWordmark';
 
 interface Props {
   team: Team;
@@ -27,7 +28,12 @@ const { team } = Astro.props;
   </div>
   <div class="team-card__info">
     <span class="team-card__gender">{team.gender}</span>
-    <h2 class="team-card__name">{team.name}</h2>
+    <h2 class="team-card__name">
+      <img class="team-card__wordmark team-card__wordmark--light"
+           src={teamWordmarkSrc(team.name, 'base')} alt={team.name} loading="lazy" />
+      <img class="team-card__wordmark team-card__wordmark--dark"
+           src={teamWordmarkSrc(team.name, 'white')} alt="" aria-hidden="true" loading="lazy" />
+    </h2>
     <p class="team-card__division">{team.division}</p>
     {team.badge && <span class="team-card__badge">{team.badge}</span>}
   </div>
@@ -35,7 +41,7 @@ const { team } = Astro.props;
 
 <style>
   .team-card {
-    background: rgba(255,255,255,0.03);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 14px;
     overflow: hidden;
@@ -44,11 +50,11 @@ const { team } = Astro.props;
 
   .team-card--featured {
     border-color: var(--color-border-blue);
-    background: linear-gradient(135deg, rgba(0,60,180,0.07), rgba(0,120,255,0.02));
+    background: color-mix(in srgb, var(--lh-blue) 6%, transparent);
   }
 
   .team-card:hover {
-    border-color: rgba(0,120,255,0.3);
+    border-color: var(--color-border-blue);
     transform: translateY(-2px);
   }
 
@@ -92,13 +98,11 @@ const { team } = Astro.props;
     margin-bottom: 6px;
   }
 
-  .team-card__name {
-    font-size: 1.25rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.5px;
-    margin-bottom: 4px;
-  }
+  .team-card__name { margin-bottom: 8px; line-height: 0; }
+  .team-card__wordmark { height: 30px; width: auto; display: block; }
+  .team-card__wordmark--dark { display: none; }
+  :global([data-theme="dark"]) .team-card__wordmark--light { display: none; }
+  :global([data-theme="dark"]) .team-card__wordmark--dark { display: block; }
 
   .team-card__division {
     font-size: 0.6875rem;
@@ -110,7 +114,8 @@ const { team } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    background: var(--lh-blue);
+    color: var(--lh-navy);
     border-radius: 3px;
     padding: 3px 10px;
     font-size: 0.5rem;
