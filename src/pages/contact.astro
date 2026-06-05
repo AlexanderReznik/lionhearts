@@ -138,7 +138,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
 
 
   .contact-card {
-    background: rgba(255,255,255,0.03);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 14px;
     padding: 20px 24px;
@@ -148,7 +148,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     transition: border-color 0.2s;
   }
 
-  .contact-card:hover { border-color: rgba(0,120,255,0.3); }
+  .contact-card:hover { border-color: var(--color-border-blue); }
 
   .contact-card__link:focus-visible,
   .social-card:focus-visible {
@@ -157,7 +157,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
   }
 
   .contact-card--featured {
-    background: linear-gradient(135deg, rgba(0,60,180,0.1), rgba(0,120,255,0.05));
+    background: linear-gradient(135deg, rgba(84,164,247,0.10), rgba(84,164,247,0.05));
     border-color: var(--color-border-blue);
   }
 
@@ -202,9 +202,10 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
   .contact-card__link:hover { text-decoration: underline; }
 
   /* ── Location block ── */
+  /* location-block is an intentional dark feature surface — navy bg, white text */
   .location-block {
-    background: linear-gradient(160deg, #070f22, #0a1628);
-    border: 1px solid rgba(0,100,220,0.15);
+    background: linear-gradient(160deg, var(--lh-navy-deep), var(--lh-navy));
+    border: 1px solid rgba(84,164,247,0.15);
     border-radius: 16px;
     overflow: hidden;
     display: grid;
@@ -218,6 +219,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     flex-direction: column;
     gap: 16px;
     justify-content: center;
+    color: #fff; /* scoped override: dark panel needs white text */
   }
 
   .location-info__headline {
@@ -226,12 +228,13 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     text-transform: uppercase;
     letter-spacing: -0.5px;
     margin-bottom: 0;
+    color: #fff;
   }
 
-  .location-info__headline em { color: var(--color-accent-to); font-style: normal; }
+  .location-info__headline em { color: var(--lh-blue); font-style: normal; }
 
   .location-info__address {
-    color: var(--color-text-muted);
+    color: rgba(255,255,255,0.75);
     font-size: 0.875rem;
     line-height: 1.8;
     font-style: normal;
@@ -240,7 +243,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
   .location-info__directions {
     display: inline-flex;
     align-items: center;
-    color: var(--color-accent-to);
+    color: var(--lh-blue);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -272,7 +275,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
 
   .social-card {
     flex: 1;
-    background: rgba(255,255,255,0.03);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 20px 24px;
@@ -284,7 +287,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     transition: border-color 0.2s;
   }
 
-  .social-card:hover { border-color: rgba(0,120,255,0.3); }
+  .social-card:hover { border-color: var(--color-border-blue); }
 
   .social-card__icon {
     width: 36px;
@@ -294,14 +297,13 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: rgba(255,255,255,0.7);
   }
 
-  .social-card--instagram .social-card__icon { background: rgba(225,48,108,0.15); color: #e1306c; }
-  .social-card--facebook  .social-card__icon { background: rgba(24,119,242,0.15); color: #4a9ef5; }
-  .social-card--youtube   .social-card__icon { background: rgba(255,0,0,0.15);    color: #ff4444; }
+  .social-card--instagram .social-card__icon { background: rgba(225,48,108,0.12); color: #e1306c; }
+  .social-card--facebook  .social-card__icon { background: rgba(24,119,242,0.12); color: #1877f2; }
+  .social-card--youtube   .social-card__icon { background: rgba(255,0,0,0.10);    color: #cc0000; }
   .social-card__name { font-size: 0.8125rem; font-weight: 700; margin-bottom: 2px; }
-  .social-card__handle { font-size: 0.6875rem; color: rgba(255,255,255,0.55); }
+  .social-card__handle { font-size: 0.6875rem; color: var(--color-text-muted); }
 
   @media (max-width: 920px) {
     .contact-cards { grid-template-columns: repeat(2, 1fr); }
