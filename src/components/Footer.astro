@@ -93,8 +93,8 @@ const contactLinks = [
 
 <style>
   .footer {
-    background: #020609;
-    border-top: 1px solid rgba(0, 80, 220, 0.25);
+    background: var(--color-bg-alt);
+    border-top: 1px solid var(--color-border);
     padding: 52px 0 28px;
   }
 
@@ -124,14 +124,14 @@ const contactLinks = [
   .footer__crest :global(.brand-logo__img) { height: 60px; width: auto; }
 
   .footer__tagline {
-    color: rgba(255,255,255,0.55);
+    color: var(--color-text-muted);
     font-size: 0.8125rem;
     font-style: italic;
   }
 
   .footer__address {
     display: block;
-    color: rgba(255,255,255,0.5);
+    color: var(--color-text-muted);
     font-size: 0.6875rem;
     line-height: 1.7;
     font-style: normal;
@@ -140,7 +140,7 @@ const contactLinks = [
     transition: color 0.15s;
   }
 
-  .footer__address:hover { color: rgba(255,255,255,0.7); }
+  .footer__address:hover { color: var(--color-text); }
   .footer__address address { font-style: normal; }
 
   .footer__socials {
@@ -153,19 +153,19 @@ const contactLinks = [
     display: flex;
     align-items: center;
     gap: 5px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: color-mix(in srgb, var(--color-text) 5%, transparent);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
     padding: 5px 12px;
     font-size: 0.625rem;
-    color: rgba(255,255,255,0.6);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: border-color 0.15s, color 0.15s;
   }
 
   .footer__social-pill:hover {
-    border-color: rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7);
+    border-color: var(--color-border-blue);
+    color: var(--color-text);
   }
 
   .footer__social-icon {
@@ -201,26 +201,26 @@ const contactLinks = [
   }
 
   .footer__col a {
-    color: rgba(255,255,255,0.65);
+    color: var(--color-text-muted);
     font-size: 0.75rem;
     text-decoration: none;
     transition: color 0.15s;
   }
 
-  .footer__col a:hover { color: rgba(255,255,255,0.75); }
+  .footer__col a:hover { color: var(--color-text); }
 
   .footer__bottom {
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 22px var(--page-px) 0;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid var(--color-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
   .footer__bottom p {
-    color: rgba(255,255,255,0.5);
+    color: var(--color-text-muted);
     font-size: 0.6875rem;
   }
 
