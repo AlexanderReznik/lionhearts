@@ -7,22 +7,23 @@ a { color: inherit; }
 /* ── Design tokens ── */
 :root {
   /* Layer 1 — Brand tokens (fixed, never change per theme) */
-  --lh-navy:        #11234B;
-  --lh-navy-deep:   #05122B;
+  --lh-navy:        #11234b;
+  --lh-navy-deep:   #05122b;
   --lh-navy-raised: #1b2f5c;
   --lh-white:       #ffffff;
-  --lh-blue:        #54A4F7;
-  --lh-blue-deep:   #002D72;
-  --lh-blue-300:    #8FC5F7;
-  --lh-blue-100:    #E0EEFB;
-  --lh-red:         #C44128;
-  --lh-pink:        #D75EB1;
-  --lh-green:       #76CD54;
+  --lh-blue:        #54a4f7;
+  --lh-blue-deep:   #002d72;
+  --lh-blue-300:    #8fc5f7;
+  --lh-blue-100:    #e0eefb;
+  /* secondary + neutral palette — registered up front; not all consumed in Phase 1 */
+  --lh-red:         #c44128;
+  --lh-pink:        #d75eb1;
+  --lh-green:       #76cd54;
   --lh-slate:       #374155;
-  --lh-slate-400:   #7587AE;
-  --lh-slate-200:   #B9C3DD;
-  --lh-grey-400:    #9BA0AA;
-  --lh-grey-200:    #CDD0D5;
+  --lh-slate-400:   #7587ae;
+  --lh-slate-200:   #b9c3dd;
+  --lh-grey-400:    #9ba0aa;
+  --lh-grey-200:    #cdd0d5;
 
   /* Layer 2 — Semantic tokens (LIGHT theme = default).
      NOTE: the legacy --color-* names ARE the semantic layer; components
@@ -30,8 +31,9 @@ a { color: inherit; }
   --color-bg:           var(--lh-white);
   --color-bg-alt:       var(--lh-blue-100);
   --color-surface:      var(--lh-white);
-  --color-surface-2:    #F4F8FD;
-  --color-surface-3:    #EAF1FB;
+  /* (a few intermediate tints below are semantic-only by design — no --lh-* equivalent) */
+  --color-surface-2:    #f4f8fd;
+  --color-surface-3:    #eaf1fb;
   --color-accent-from:  var(--lh-blue);   /* gradients flatten to one brand blue */
   --color-accent-to:    var(--lh-blue);
   --color-text:         var(--lh-navy);
@@ -68,6 +70,7 @@ a { color: inherit; }
 /* Dark theme token set — authored now (dual-ready); activated by the
    Phase 2 toggle via [data-theme="dark"]. Safe to ship inert. */
 [data-theme="dark"] {
+  /* --color-accent-* and --btn-accent-* intentionally inherit from :root (light-blue works on both themes) */
   --color-bg:           var(--lh-navy);
   --color-bg-alt:       var(--lh-navy-deep);
   --color-surface:      var(--lh-navy-raised);
