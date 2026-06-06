@@ -22,7 +22,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="pathways">
 
       <!-- 1: Open session -->
-      <div class="pathway pathway--featured">
+      <div class="pathway pathway--featured section--community">
         <p class="pathway__rec">Best way in</p>
         <div class="pathway__icon" aria-hidden="true">🏐</div>
         <h2 class="pathway__title">Come to an Open Session</h2>
@@ -184,10 +184,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     overflow: hidden;
   }
 
-  /* featured pathway is an intentional dark navy feature panel — keep white text */
+  /* featured pathway uses section--community for bg; override border only */
   .pathway--featured {
-    background: linear-gradient(135deg, var(--lh-navy), var(--lh-navy-raised));
-    border-color: rgba(84,164,247,0.3);
+    border-color: rgba(17,35,75,0.3);
   }
 
   .pathway__rec {
@@ -234,9 +233,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     flex: 1;
   }
 
-  /* featured (navy) pathway keeps white text */
-  .pathway--featured .pathway__body { color: rgba(255,255,255,0.8); }
-  .pathway--featured .pathway__title { color: #fff; }
+  /* featured (community) pathway: body + rec in navy for AA contrast on #54a4f7 */
+  .pathway--featured .pathway__body { color: var(--lh-navy); }
+  .pathway--featured .pathway__rec { color: var(--lh-navy); }
 
   .pathway__cta { align-self: flex-start; }
 
