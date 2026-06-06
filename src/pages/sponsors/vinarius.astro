@@ -177,7 +177,7 @@ import '@fontsource/playfair-display/600-italic.css';
     --vin-navy-mid:      #1c2a55;
     --vin-plum:          #3a1442;
     --vin-font-display: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
-    --vin-font-serif:   'Playfair Display', Georgia, serif;
+    --vin-font-serif:   'Playfair Display', serif;
   }
 
   .vin-page { font-family: var(--vin-font-display); }
@@ -423,15 +423,15 @@ import '@fontsource/playfair-display/600-italic.css';
   }
 
   .vin-bridge__col--sport {
-    background: linear-gradient(135deg, #002fa8, #0058d8);
+    background: linear-gradient(135deg, #11234b, #1c2a55);
   }
 
   .vin-bridge__col--wine {
-    background: linear-gradient(135deg, #5a1020, #8b1a2e);
+    background: linear-gradient(135deg, #4a0622, #6E0833);
   }
 
   .vin-bridge__divider {
-    background: var(--vin-dark);
+    background: var(--vin-navy);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -491,10 +491,10 @@ import '@fontsource/playfair-display/600-italic.css';
 
   /* ── QUOTE ── */
   .vin-quote {
-    background: var(--vin-dark);
+    background: var(--vin-burgundy-deep);
     padding: 100px var(--page-px);
-    border-top: 1px solid rgba(107, 23, 40, 0.4);
-    border-bottom: 1px solid rgba(107, 23, 40, 0.4);
+    border-top: 1px solid rgba(236, 245, 217, 0.12);
+    border-bottom: 1px solid rgba(236, 245, 217, 0.12);
   }
 
   .vin-quote__block {
@@ -506,7 +506,7 @@ import '@fontsource/playfair-display/600-italic.css';
   .vin-quote__mark {
     font-size: 8rem;
     line-height: 0.5;
-    color: rgba(107, 23, 40, 0.6);
+    color: rgba(236, 245, 217, 0.5);
     font-family: var(--vin-font-serif);
     font-weight: 400;
     margin-bottom: 16px;
@@ -518,7 +518,7 @@ import '@fontsource/playfair-display/600-italic.css';
     text-transform: uppercase;
     letter-spacing: -1px;
     line-height: 1.1;
-    color: #fff;
+    color: var(--vin-beige);
     margin-bottom: 24px;
   }
 
@@ -527,12 +527,12 @@ import '@fontsource/playfair-display/600-italic.css';
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--vin-gold);
+    color: rgba(236, 245, 217, 0.75);
   }
 
   /* ── VISIT ── */
   .vin-visit {
-    background: linear-gradient(135deg, #4a0e1c, #6b1728 50%, #4a0e1c);
+    background: linear-gradient(135deg, #4a0622, #6E0833 50%, #4a0622);
     padding: 72px var(--page-px);
     position: relative;
     overflow: hidden;
@@ -552,7 +552,7 @@ import '@fontsource/playfair-display/600-italic.css';
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: rgba(201, 164, 62, 0.8);
+    color: rgba(236, 245, 217, 0.85);
     margin-bottom: 16px;
   }
 
@@ -562,17 +562,17 @@ import '@fontsource/playfair-display/600-italic.css';
     text-transform: uppercase;
     letter-spacing: -1.5px;
     line-height: 0.95;
-    color: #fff;
+    color: var(--vin-beige);
     margin-bottom: 20px;
   }
 
   .vin-visit__headline em {
-    color: var(--vin-gold);
+    color: var(--vin-beige);
     font-style: normal;
   }
 
   .vin-visit__body {
-    color: rgba(255, 246, 230, 0.65);
+    color: rgba(236, 245, 217, 0.78);
     font-size: 0.9375rem;
     line-height: 1.75;
     max-width: 480px;
