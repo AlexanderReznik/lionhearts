@@ -270,12 +270,12 @@ import '@fontsource/playfair-display/600-italic.css';
 
   /* ── MANIFESTO ── */
   .vin-manifesto {
-    background: var(--vin-dark);
+    background: var(--vin-burgundy-deep);
     padding: 100px var(--page-px);
     position: relative;
     overflow: hidden;
-    border-top: 1px solid rgba(107, 23, 40, 0.4);
-    border-bottom: 1px solid rgba(107, 23, 40, 0.4);
+    border-top: 1px solid rgba(236, 245, 217, 0.12);
+    border-bottom: 1px solid rgba(236, 245, 217, 0.12);
   }
 
   .vin-manifesto__num {
@@ -284,7 +284,7 @@ import '@fontsource/playfair-display/600-italic.css';
     left: var(--page-px);
     font-size: clamp(8rem, 20vw, 18rem);
     font-weight: 900;
-    color: rgba(107, 23, 40, 0.18);
+    color: rgba(236, 245, 217, 0.10);
     line-height: 1;
     pointer-events: none;
     user-select: none;
@@ -307,12 +307,12 @@ import '@fontsource/playfair-display/600-italic.css';
     text-transform: uppercase;
     letter-spacing: -2px;
     line-height: 0.95;
-    color: #fff;
+    color: var(--vin-beige);
   }
 
   .vin-manifesto__body {
     font-size: 1rem;
-    color: rgba(255, 246, 230, 0.65);
+    color: rgba(236, 245, 217, 0.75);
     line-height: 1.8;
   }
 
@@ -336,7 +336,7 @@ import '@fontsource/playfair-display/600-italic.css';
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--vin-gold);
+    color: var(--vin-burgundy);
     margin-bottom: 16px;
   }
 
@@ -347,6 +347,7 @@ import '@fontsource/playfair-display/600-italic.css';
     letter-spacing: -1px;
     line-height: 1;
     margin-bottom: 24px;
+    color: var(--vin-burgundy);
   }
 
   .vin-about__body {
@@ -357,25 +358,25 @@ import '@fontsource/playfair-display/600-italic.css';
   }
 
   .vin-about__link {
-    color: var(--vin-gold);
+    color: var(--vin-burgundy);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
     text-decoration: none;
-    border-bottom: 1px solid rgba(201, 164, 62, 0.3);
+    border-bottom: 1px solid rgba(110, 8, 51, 0.3);
     padding-bottom: 2px;
     transition: border-color 0.15s;
   }
 
-  .vin-about__link:hover { border-color: var(--vin-gold); }
+  .vin-about__link:hover { border-color: var(--vin-burgundy); }
 
   .vin-about__facts {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2px;
-    background: rgba(107, 23, 40, 0.2);
-    border: 1px solid rgba(107, 23, 40, 0.35);
+    background: rgba(110, 8, 51, 0.18);
+    border: 1px solid rgba(110, 8, 51, 0.3);
     border-radius: 16px;
     overflow: hidden;
   }
@@ -389,19 +390,19 @@ import '@fontsource/playfair-display/600-italic.css';
     transition: background 0.2s;
   }
 
-  .vin-fact:hover { background: rgba(107, 23, 40, 0.08); }
+  .vin-fact:hover { background: rgba(110, 8, 51, 0.06); }
 
   .vin-fact__num {
     font-size: 2.5rem;
     font-weight: 900;
     line-height: 1;
-    color: #fff;
+    color: var(--vin-burgundy);
     letter-spacing: -1px;
   }
 
   .vin-fact__label {
     font-size: 0.6875rem;
-    color: rgba(255, 246, 230, 0.55);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1.5px;
     line-height: 1.5;
