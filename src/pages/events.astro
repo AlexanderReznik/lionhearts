@@ -140,14 +140,14 @@ const teamSections = [
 
       <div class="session-cards">
         {sessions.map(s => (
-          <div class="session-card">
+          <div class="session-card section--community">
             <div class="session-card__day">{s.day}</div>
             <div class="session-card__time">{s.time}</div>
             <div class="session-card__level">{s.level}</div>
             <div class="session-card__venue">📍 {s.venue}<br />{s.price}</div>
           </div>
         ))}
-        <div class="session-card session-card--venue">
+        <div class="session-card session-card--venue section--community">
           <div class="session-card__venue-label">Venue</div>
           <strong>Mulberry Academy Shoreditch</strong>
           <span>Gosset Street, E2 6NW</span>
@@ -375,10 +375,9 @@ const teamSections = [
     gap: 12px;
   }
 
-  /* Session cards are intentional brand feature surfaces — navy bg, white text */
+  /* Session cards — community tone: #54a4f7 bg (via .section--community), navy text */
   .session-card {
-    background: var(--lh-navy);
-    border: 1px solid rgba(84,164,247,0.2);
+    border: 1px solid rgba(17,35,75,0.18);
     border-radius: 10px;
     padding: 18px;
     display: flex;
@@ -386,22 +385,21 @@ const teamSections = [
     gap: 4px;
   }
 
-  .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; color: var(--lh-blue); }
-  .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: #fff; }
-  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--lh-blue-300); }
-  .session-card__venue { font-size: 0.625rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px; }
+  .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; color: var(--lh-navy); }
+  .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: var(--lh-navy); }
+  .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(17,35,75,0.75); }
+  .session-card__venue { font-size: 0.625rem; color: rgba(17,35,75,0.8); line-height: 1.5; margin-top: 4px; }
 
   .session-card--venue {
-    background: var(--lh-navy-deep);
-    border-color: rgba(84,164,247,0.15);
+    border-color: rgba(17,35,75,0.18);
     justify-content: center;
   }
 
-  .session-card__venue-label { font-size: 0.5625rem; color: rgba(255,255,255,0.6); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-  .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; color: #fff; }
-  .session-card--venue span { font-size: 0.6875rem; color: rgba(255,255,255,0.7); }
-  .session-card__map-link { color: var(--lh-blue); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
-  .session-card__transport { font-size: 0.625rem; color: var(--lh-blue-300); opacity: 0.85; margin-top: 4px; line-height: 1.5; }
+  .session-card__venue-label { font-size: 0.5625rem; color: rgba(17,35,75,0.7); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-card--venue strong { font-size: 0.8125rem; font-weight: 700; color: var(--lh-navy); }
+  .session-card--venue span { font-size: 0.6875rem; color: rgba(17,35,75,0.8); }
+  .session-card__map-link { color: var(--lh-navy); font-size: 0.625rem; font-weight: 700; text-decoration: none; margin-top: 8px; }
+  .session-card__transport { font-size: 0.625rem; color: rgba(17,35,75,0.7); opacity: 0.85; margin-top: 4px; line-height: 1.5; }
 
   /* ── Team fixture sections ──*/
   .team-fixture-section {
