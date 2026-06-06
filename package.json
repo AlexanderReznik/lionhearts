@@ -15,8 +15,10 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
+    "@fontsource-variable/hanken-grotesk": "^5.2.8",
     "@fontsource/barlow": "^5.2.8",
     "@fontsource/barlow-condensed": "^5.2.8",
+    "@fontsource/playfair-display": "^5.2.8",
     "astro": "^6.3.7"
   },
   "devDependencies": {

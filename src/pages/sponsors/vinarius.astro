@@ -1,12 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import '@fontsource-variable/hanken-grotesk';
+import '@fontsource/playfair-display/400-italic.css';
+import '@fontsource/playfair-display/600-italic.css';
 ---
 
 <BaseLayout
   title="Vinarius London · London Lionhearts VBC"
   description="Vinarius London — East London's independent wine merchant and title sponsor of London Lionhearts VBC. Small-production wines, tastings, and supper clubs in Shoreditch."
 >
-  <div class="force-light">
+  <div class="force-light vin-page">
   <!-- ── HERO ── -->
   <section class="vin-hero">
     <div class="vin-hero__bg" aria-hidden="true"></div>
@@ -173,7 +176,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     --vin-bright: #9b2f3e;
     --vin-gold:   #c9a43e;
     --vin-cream:  rgba(255, 246, 230, 0.85);
+    --vin-font-display: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
+    --vin-font-serif:   'Playfair Display', Georgia, serif;
   }
+
+  .vin-page { font-family: var(--vin-font-display); }
 
   /* ── HERO ── */
   .vin-hero {
@@ -243,6 +250,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     font-size: 0.875rem;
     color: rgba(255, 246, 230, 0.6);
     font-style: italic;
+    font-family: var(--vin-font-serif);
     letter-spacing: 0.5px;
     margin-bottom: 12px;
   }
@@ -515,7 +523,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     font-size: 8rem;
     line-height: 0.5;
     color: rgba(107, 23, 40, 0.6);
-    font-family: Georgia, serif;
+    font-family: var(--vin-font-serif);
     font-weight: 400;
     margin-bottom: 16px;
   }
