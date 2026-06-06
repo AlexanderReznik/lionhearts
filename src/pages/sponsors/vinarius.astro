@@ -13,7 +13,6 @@ import '@fontsource/playfair-display/600-italic.css';
   <!-- ── HERO ── -->
   <section class="vin-hero">
     <div class="vin-hero__bg" aria-hidden="true"></div>
-    <div class="vin-hero__stripe" aria-hidden="true"></div>
     <div class="vin-hero__content">
       <span class="vin-hero__badge">Title Sponsor · London Lionhearts VBC</span>
       <h1 class="vin-hero__name">Vinarius</h1>
@@ -171,11 +170,12 @@ import '@fontsource/playfair-display/600-italic.css';
 <style>
   /* ── Wine palette (scoped to this page) ── */
   :root {
-    --vin-dark:   #0e0409;
-    --vin-mid:    #6b1728;
-    --vin-bright: #9b2f3e;
-    --vin-gold:   #c9a43e;
-    --vin-cream:  rgba(255, 246, 230, 0.85);
+    --vin-burgundy:      #6E0833;
+    --vin-burgundy-deep: #4a0622;
+    --vin-beige:         #ECF5D9;
+    --vin-navy:          #11234B;
+    --vin-navy-mid:      #1c2a55;
+    --vin-plum:          #3a1442;
     --vin-font-display: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
     --vin-font-serif:   'Playfair Display', Georgia, serif;
   }
@@ -189,25 +189,13 @@ import '@fontsource/playfair-display/600-italic.css';
     display: flex;
     align-items: center;
     overflow: hidden;
-    background: var(--color-bg);
+    background: linear-gradient(125deg, #6E0833 0%, #5a1338 38%, #1c2a55 75%, #11234b 100%);
   }
 
   .vin-hero__bg {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(ellipse 80% 70% at 75% 40%, rgba(107, 23, 40, 0.45), transparent),
-      radial-gradient(ellipse 50% 60% at 10% 80%, rgba(0, 40, 160, 0.25), transparent),
-      radial-gradient(ellipse 40% 40% at 50% 10%, rgba(155, 47, 62, 0.15), transparent);
-  }
-
-  .vin-hero__stripe {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 55%;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, rgba(201, 164, 62, 0.3) 40%, rgba(201, 164, 62, 0.1) 70%, transparent);
-    transform: skewX(-8deg);
+    background: radial-gradient(ellipse 60% 60% at 78% 38%, rgba(236, 245, 217, 0.06), transparent 70%);
   }
 
   .vin-hero__content {
@@ -221,9 +209,9 @@ import '@fontsource/playfair-display/600-italic.css';
 
   .vin-hero__badge {
     display: inline-block;
-    background: rgba(201, 164, 62, 0.15);
-    border: 1px solid rgba(201, 164, 62, 0.35);
-    color: var(--vin-gold);
+    background: rgba(236, 245, 217, 0.12);
+    border: 1px solid rgba(236, 245, 217, 0.4);
+    color: var(--vin-beige);
     font-size: 0.5625rem;
     font-weight: 700;
     letter-spacing: 2.5px;
@@ -234,21 +222,19 @@ import '@fontsource/playfair-display/600-italic.css';
   }
 
   .vin-hero__name {
+    font-family: var(--vin-font-display);
     font-size: clamp(4rem, 14vw, 11rem);
-    font-weight: 900;
+    font-weight: 800;
     line-height: 0.85;
     letter-spacing: -4px;
     text-transform: uppercase;
-    background: linear-gradient(135deg, #ffffff 30%, var(--vin-cream) 60%, rgba(201, 164, 62, 0.8) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--vin-beige);
     margin-bottom: 24px;
   }
 
   .vin-hero__latin {
     font-size: 0.875rem;
-    color: rgba(255, 246, 230, 0.6);
+    color: rgba(236, 245, 217, 0.85);
     font-style: italic;
     font-family: var(--vin-font-serif);
     letter-spacing: 0.5px;
@@ -257,7 +243,7 @@ import '@fontsource/playfair-display/600-italic.css';
 
   .vin-hero__sub {
     font-size: 1rem;
-    color: rgba(255, 246, 230, 0.7);
+    color: rgba(236, 245, 217, 0.75);
     letter-spacing: 1px;
     text-transform: uppercase;
     font-weight: 600;
@@ -268,22 +254,19 @@ import '@fontsource/playfair-display/600-italic.css';
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    border: 1px solid rgba(201, 164, 62, 0.4);
+    background: var(--vin-beige);
+    border: 1px solid var(--vin-beige);
     border-radius: 4px;
     padding: 12px 24px;
-    color: var(--vin-gold);
+    color: var(--vin-burgundy);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-decoration: none;
     text-transform: uppercase;
-    transition: background 0.2s, border-color 0.2s;
+    transition: opacity 0.2s;
   }
-
-  .vin-hero__cta:hover {
-    background: rgba(201, 164, 62, 0.1);
-    border-color: rgba(201, 164, 62, 0.7);
-  }
+  .vin-hero__cta:hover { opacity: 0.9; }
 
   /* ── MANIFESTO ── */
   .vin-manifesto {
