@@ -1,16 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import '@fontsource-variable/hanken-grotesk/index.css';
+import '@fontsource/playfair-display/400-italic.css';
+import '@fontsource/playfair-display/600-italic.css';
 ---
 
 <BaseLayout
   title="Vinarius London · London Lionhearts VBC"
   description="Vinarius London — East London's independent wine merchant and title sponsor of London Lionhearts VBC. Small-production wines, tastings, and supper clubs in Shoreditch."
 >
-  <div class="force-light">
+  <div class="force-light vin-page">
   <!-- ── HERO ── -->
   <section class="vin-hero">
     <div class="vin-hero__bg" aria-hidden="true"></div>
-    <div class="vin-hero__stripe" aria-hidden="true"></div>
     <div class="vin-hero__content">
       <span class="vin-hero__badge">Title Sponsor · London Lionhearts VBC</span>
       <h1 class="vin-hero__name">Vinarius</h1>
@@ -43,6 +45,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   <section class="vin-about">
     <div class="vin-about__inner">
       <div class="vin-about__intro">
+        <img class="vin-about__logo" src="/brand/vinarius-logo-burgundy.svg"
+             alt="Vinarius London" width="180" height="48" loading="lazy" />
         <p class="vin-about__eyebrow">About the Partner</p>
         <h2 class="vin-about__headline">An Independent<br />Wine Merchant</h2>
         <p class="vin-about__body">
@@ -168,12 +172,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 <style>
   /* ── Wine palette (scoped to this page) ── */
   :root {
-    --vin-dark:   #0e0409;
-    --vin-mid:    #6b1728;
-    --vin-bright: #9b2f3e;
-    --vin-gold:   #c9a43e;
-    --vin-cream:  rgba(255, 246, 230, 0.85);
+    --vin-burgundy:      #6E0833;
+    --vin-burgundy-deep: #4a0622;
+    --vin-beige:         #ECF5D9;
+    --vin-navy:          #11234B;
+    --vin-navy-mid:      #1c2a55;
+    --vin-plum:          #3a1442;
+    --vin-font-display: 'Hanken Grotesk Variable', 'Hanken Grotesk', system-ui, sans-serif;
+    --vin-font-serif:   'Playfair Display', serif;
   }
+
+  .vin-page { font-family: var(--vin-font-display); }
 
   /* ── HERO ── */
   .vin-hero {
@@ -182,25 +191,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     display: flex;
     align-items: center;
     overflow: hidden;
-    background: var(--color-bg);
+    background: linear-gradient(125deg, #6E0833 0%, #5a1338 38%, #1c2a55 75%, #11234b 100%);
   }
 
   .vin-hero__bg {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(ellipse 80% 70% at 75% 40%, rgba(107, 23, 40, 0.45), transparent),
-      radial-gradient(ellipse 50% 60% at 10% 80%, rgba(0, 40, 160, 0.25), transparent),
-      radial-gradient(ellipse 40% 40% at 50% 10%, rgba(155, 47, 62, 0.15), transparent);
-  }
-
-  .vin-hero__stripe {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 55%;
-    width: 1px;
-    background: linear-gradient(to bottom, transparent, rgba(201, 164, 62, 0.3) 40%, rgba(201, 164, 62, 0.1) 70%, transparent);
-    transform: skewX(-8deg);
+    background: radial-gradient(ellipse 60% 60% at 78% 38%, rgba(236, 245, 217, 0.06), transparent 70%);
   }
 
   .vin-hero__content {
@@ -214,9 +211,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   .vin-hero__badge {
     display: inline-block;
-    background: rgba(201, 164, 62, 0.15);
-    border: 1px solid rgba(201, 164, 62, 0.35);
-    color: var(--vin-gold);
+    background: rgba(236, 245, 217, 0.12);
+    border: 1px solid rgba(236, 245, 217, 0.4);
+    color: var(--vin-beige);
     font-size: 0.5625rem;
     font-weight: 700;
     letter-spacing: 2.5px;
@@ -227,29 +224,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   }
 
   .vin-hero__name {
+    font-family: var(--vin-font-display);
     font-size: clamp(4rem, 14vw, 11rem);
-    font-weight: 900;
+    font-weight: 800;
     line-height: 0.85;
     letter-spacing: -4px;
     text-transform: uppercase;
-    background: linear-gradient(135deg, #ffffff 30%, var(--vin-cream) 60%, rgba(201, 164, 62, 0.8) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--vin-beige);
     margin-bottom: 24px;
   }
 
   .vin-hero__latin {
     font-size: 0.875rem;
-    color: rgba(255, 246, 230, 0.6);
+    color: rgba(236, 245, 217, 0.85);
     font-style: italic;
+    font-family: var(--vin-font-serif);
     letter-spacing: 0.5px;
     margin-bottom: 12px;
   }
 
   .vin-hero__sub {
     font-size: 1rem;
-    color: rgba(255, 246, 230, 0.7);
+    color: rgba(236, 245, 217, 0.75);
     letter-spacing: 1px;
     text-transform: uppercase;
     font-weight: 600;
@@ -260,31 +256,28 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    border: 1px solid rgba(201, 164, 62, 0.4);
+    background: var(--vin-beige);
+    border: 1px solid var(--vin-beige);
     border-radius: 4px;
     padding: 12px 24px;
-    color: var(--vin-gold);
+    color: var(--vin-burgundy);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-decoration: none;
     text-transform: uppercase;
-    transition: background 0.2s, border-color 0.2s;
+    transition: opacity 0.2s;
   }
-
-  .vin-hero__cta:hover {
-    background: rgba(201, 164, 62, 0.1);
-    border-color: rgba(201, 164, 62, 0.7);
-  }
+  .vin-hero__cta:hover { opacity: 0.9; }
 
   /* ── MANIFESTO ── */
   .vin-manifesto {
-    background: var(--vin-dark);
+    background: var(--vin-burgundy-deep);
     padding: 100px var(--page-px);
     position: relative;
     overflow: hidden;
-    border-top: 1px solid rgba(107, 23, 40, 0.4);
-    border-bottom: 1px solid rgba(107, 23, 40, 0.4);
+    border-top: 1px solid rgba(236, 245, 217, 0.12);
+    border-bottom: 1px solid rgba(236, 245, 217, 0.12);
   }
 
   .vin-manifesto__num {
@@ -293,7 +286,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     left: var(--page-px);
     font-size: clamp(8rem, 20vw, 18rem);
     font-weight: 900;
-    color: rgba(107, 23, 40, 0.18);
+    color: rgba(236, 245, 217, 0.10);
     line-height: 1;
     pointer-events: none;
     user-select: none;
@@ -316,12 +309,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     text-transform: uppercase;
     letter-spacing: -2px;
     line-height: 0.95;
-    color: #fff;
+    color: var(--vin-beige);
   }
 
   .vin-manifesto__body {
     font-size: 1rem;
-    color: rgba(255, 246, 230, 0.65);
+    color: rgba(236, 245, 217, 0.75);
     line-height: 1.8;
   }
 
@@ -340,12 +333,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     align-items: start;
   }
 
+  .vin-about__logo {
+    height: 44px;
+    width: auto;
+    margin-bottom: 24px;
+    display: block;
+  }
+
   .vin-about__eyebrow {
     font-size: 0.5625rem;
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--vin-gold);
+    color: var(--vin-burgundy);
     margin-bottom: 16px;
   }
 
@@ -356,6 +356,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     letter-spacing: -1px;
     line-height: 1;
     margin-bottom: 24px;
+    color: var(--vin-burgundy);
   }
 
   .vin-about__body {
@@ -366,25 +367,25 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   }
 
   .vin-about__link {
-    color: var(--vin-gold);
+    color: var(--vin-burgundy);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
     text-decoration: none;
-    border-bottom: 1px solid rgba(201, 164, 62, 0.3);
+    border-bottom: 1px solid rgba(110, 8, 51, 0.3);
     padding-bottom: 2px;
     transition: border-color 0.15s;
   }
 
-  .vin-about__link:hover { border-color: var(--vin-gold); }
+  .vin-about__link:hover { border-color: var(--vin-burgundy); }
 
   .vin-about__facts {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2px;
-    background: rgba(107, 23, 40, 0.2);
-    border: 1px solid rgba(107, 23, 40, 0.35);
+    background: rgba(110, 8, 51, 0.18);
+    border: 1px solid rgba(110, 8, 51, 0.3);
     border-radius: 16px;
     overflow: hidden;
   }
@@ -398,19 +399,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     transition: background 0.2s;
   }
 
-  .vin-fact:hover { background: rgba(107, 23, 40, 0.08); }
+  .vin-fact:hover { background: rgba(110, 8, 51, 0.06); }
 
   .vin-fact__num {
     font-size: 2.5rem;
     font-weight: 900;
     line-height: 1;
-    color: #fff;
+    color: var(--vin-burgundy);
     letter-spacing: -1px;
   }
 
   .vin-fact__label {
     font-size: 0.6875rem;
-    color: rgba(255, 246, 230, 0.55);
+    color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: 1.5px;
     line-height: 1.5;
@@ -431,15 +432,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   }
 
   .vin-bridge__col--sport {
-    background: linear-gradient(135deg, #002fa8, #0058d8);
+    background: linear-gradient(135deg, #11234b, #1c2a55);
   }
 
   .vin-bridge__col--wine {
-    background: linear-gradient(135deg, #5a1020, #8b1a2e);
+    background: linear-gradient(135deg, #4a0622, #6E0833);
   }
 
   .vin-bridge__divider {
-    background: var(--vin-dark);
+    background: var(--vin-navy);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -499,10 +500,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
   /* ── QUOTE ── */
   .vin-quote {
-    background: var(--vin-dark);
+    background: var(--vin-burgundy-deep);
     padding: 100px var(--page-px);
-    border-top: 1px solid rgba(107, 23, 40, 0.4);
-    border-bottom: 1px solid rgba(107, 23, 40, 0.4);
+    border-top: 1px solid rgba(236, 245, 217, 0.12);
+    border-bottom: 1px solid rgba(236, 245, 217, 0.12);
   }
 
   .vin-quote__block {
@@ -514,8 +515,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   .vin-quote__mark {
     font-size: 8rem;
     line-height: 0.5;
-    color: rgba(107, 23, 40, 0.6);
-    font-family: Georgia, serif;
+    color: rgba(236, 245, 217, 0.5);
+    font-family: var(--vin-font-serif);
     font-weight: 400;
     margin-bottom: 16px;
   }
@@ -526,7 +527,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     text-transform: uppercase;
     letter-spacing: -1px;
     line-height: 1.1;
-    color: #fff;
+    color: var(--vin-beige);
     margin-bottom: 24px;
   }
 
@@ -535,12 +536,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--vin-gold);
+    color: rgba(236, 245, 217, 0.75);
   }
 
   /* ── VISIT ── */
   .vin-visit {
-    background: linear-gradient(135deg, #4a0e1c, #6b1728 50%, #4a0e1c);
+    background: linear-gradient(135deg, #4a0622, #6E0833 50%, #4a0622);
     padding: 72px var(--page-px);
     position: relative;
     overflow: hidden;
@@ -560,7 +561,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: rgba(201, 164, 62, 0.8);
+    color: rgba(236, 245, 217, 0.85);
     margin-bottom: 16px;
   }
 
@@ -570,17 +571,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     text-transform: uppercase;
     letter-spacing: -1.5px;
     line-height: 0.95;
-    color: #fff;
+    color: var(--vin-beige);
     margin-bottom: 20px;
   }
 
   .vin-visit__headline em {
-    color: var(--vin-gold);
+    color: var(--vin-beige);
     font-style: normal;
   }
 
   .vin-visit__body {
-    color: rgba(255, 246, 230, 0.65);
+    color: rgba(236, 245, 217, 0.78);
     font-size: 0.9375rem;
     line-height: 1.75;
     max-width: 480px;
