@@ -6,7 +6,7 @@
 <section class="bridge" aria-label="The club in two halves">
   <p class="bridge__numeral" aria-hidden="true">03</p>
 
-  <div class="bridge__col bridge__col--compete">
+  <div class="bridge__col bridge__col--compete section--feature">
     <p class="bridge__eyebrow">On the Court</p>
     <h2 class="bridge__label">Compete</h2>
     <ul class="bridge__points" role="list">
@@ -21,7 +21,7 @@
     <span>&amp;</span>
   </div>
 
-  <div class="bridge__col bridge__col--connect">
+  <div class="bridge__col bridge__col--connect section--community">
     <p class="bridge__eyebrow">Off the Court</p>
     <h2 class="bridge__label">Connect</h2>
     <ul class="bridge__points" role="list">
@@ -67,13 +67,8 @@
   }
 
   .bridge__col--compete {
-    background: var(--lh-navy);
     align-items: flex-end;
     text-align: right;
-  }
-
-  .bridge__col--connect {
-    background: var(--lh-navy-deep);
   }
 
   .bridge__eyebrow {
@@ -95,13 +90,6 @@
     margin-bottom: 24px;
   }
 
-  .bridge__col--connect .bridge__label {
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
   .bridge__points {
     list-style: none;
     margin: 0 0 28px;
@@ -118,7 +106,7 @@
   }
 
   .bridge__col--connect .bridge__points li {
-    color: rgba(255, 255, 255, 0.65);
+    color: var(--lh-navy);
   }
 
   .bridge__link {
@@ -138,8 +126,8 @@
   .bridge__col--compete .bridge__link { align-self: flex-end; }
 
   .bridge__col--connect .bridge__link {
-    color: var(--lh-blue);
-    border-color: var(--color-border-blue);
+    color: var(--lh-navy);
+    border-color: rgba(17, 35, 75, 0.4);
   }
 
   .bridge__link:hover { border-color: currentColor; }
@@ -170,7 +158,6 @@
     .bridge__col--compete .bridge__link { align-self: flex-start; }
 
     .bridge__col--connect {
-      background: var(--lh-navy-deep);
       border-top: 1px solid var(--color-border);
     }
 
@@ -186,4 +173,7 @@
 
     .bridge__col { padding: 44px var(--page-px); }
   }
+
+  .bridge__col--compete .bridge__eyebrow { color: rgba(255, 255, 255, 0.6); }
+  .bridge__col--connect .bridge__eyebrow { color: var(--lh-navy); }
 </style>

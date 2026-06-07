@@ -3,7 +3,7 @@
 ---
 
 <section class="join-cta" aria-label="Join the club">
-  <div class="join-cta__inner">
+  <div class="join-cta__inner section--community">
     <div class="join-cta__copy">
       <p class="join-cta__kicker">Shoreditch · All Levels · All Backgrounds</p>
       <h2 class="join-cta__headline">Ready <span class="gradient-text">to play?</span></h2>
@@ -28,7 +28,6 @@
   }
 
   .join-cta__inner {
-    background: var(--color-surface);
     border-radius: 14px;
     padding: 56px 64px;
     overflow: hidden;
@@ -37,7 +36,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 48px;
-    box-shadow: 0 24px 60px -20px rgba(84, 164, 247, 0.35);
+    box-shadow: 0 24px 60px -20px rgba(17, 35, 75, 0.35);
   }
 
   .join-cta__inner::after {
@@ -46,9 +45,13 @@
     top: -80px; right: -80px;
     width: 320px; height: 320px;
     border-radius: 50%;
-    background: linear-gradient(135deg, rgba(84, 164, 247, 0.06), rgba(84, 164, 247, 0.02));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
     pointer-events: none;
   }
+
+  .section--community .gradient-text { color: var(--lh-navy); }
+
+  .section--community .join-cta__location { color: var(--lh-navy); }
 
   .join-cta__copy { position: relative; }
 
@@ -57,7 +60,7 @@
     font-weight: 700;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--color-accent-from);
+    color: var(--lh-navy);
     margin-bottom: 12px;
   }
 
@@ -87,7 +90,7 @@
 
   .join-cta__pin { margin-right: 4px; }
   .join-cta__venue {
-    color: var(--color-accent-from);
+    color: var(--lh-navy);
     font-weight: 700;
   }
 
@@ -105,14 +108,14 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--color-accent-from);
+    color: var(--lh-navy);
     text-decoration: none;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid rgba(17, 35, 75, 0.3);
     padding-bottom: 2px;
     transition: border-color 0.15s;
   }
 
-  .join-cta__secondary:hover { border-color: var(--color-accent-from); }
+  .join-cta__secondary:hover { border-color: rgba(17, 35, 75, 0.7); }
 
   @media (max-width: 768px) {
     .join-cta { padding: var(--space-md) var(--page-px); }

@@ -13,7 +13,7 @@ const sessions = raw.map(s => ({
 }));
 ---
 
-<aside class="sessions-strip" aria-label="Weekly open sessions">
+<aside class="sessions-strip section--community" aria-label="Weekly open sessions">
   <div class="sessions-strip__inner container">
     <div class="sessions-strip__lead">
       <span class="sessions-strip__dot" aria-hidden="true"></span>
@@ -39,9 +39,8 @@ const sessions = raw.map(s => ({
 
 <style>
   .sessions-strip {
-    background: var(--lh-navy);
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
+    border-top: 1px solid color-mix(in srgb, var(--lh-navy) 18%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--lh-navy) 18%, transparent);
   }
 
   .sessions-strip__inner {
@@ -78,7 +77,7 @@ const sessions = raw.map(s => ({
     font-size: 0.8125rem;
     font-weight: 800;
     letter-spacing: 0.5px;
-    color: #fff;
+    color: var(--lh-navy);
   }
 
   .sessions-strip__lead-text span {
@@ -101,7 +100,7 @@ const sessions = raw.map(s => ({
     align-items: baseline;
     gap: 10px;
     padding: 0 20px;
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 1px solid rgba(17, 35, 75, 0.15);
     white-space: nowrap;
   }
 
@@ -112,14 +111,14 @@ const sessions = raw.map(s => ({
     font-weight: 800;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--color-highlight-1);
+    color: var(--lh-navy);
     white-space: nowrap;
   }
 
   .sessions-strip__time {
     font-size: 0.9375rem;
     font-weight: 900;
-    color: #fff;
+    color: var(--lh-navy);
     letter-spacing: -0.02em;
     white-space: nowrap;
   }
@@ -137,7 +136,7 @@ const sessions = raw.map(s => ({
     font-weight: 800;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--color-accent-to);
+    color: var(--lh-navy);
     text-decoration: none;
     white-space: nowrap;
   }
@@ -183,7 +182,7 @@ const sessions = raw.map(s => ({
     .sessions-strip__item {
       padding: 8px 0;
       border-left: none;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(17, 35, 75, 0.12);
       gap: 10px;
     }
 
