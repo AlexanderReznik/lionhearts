@@ -174,21 +174,17 @@ const contactLinks = [
     flex-shrink: 0;
   }
 
-  .footer__social-pill--instagram { color: rgba(225,48,108,0.75); }
-  .footer__social-pill--facebook  { color: rgba(74,158,245,0.75); }
-  .footer__social-pill--youtube   { color: rgba(255,68,68,0.75); }
+  .footer__social-pill--instagram .footer__social-icon { color: #e1306c; }
+  .footer__social-pill--facebook  .footer__social-icon { color: #4a9ef5; }
+  .footer__social-pill--youtube   .footer__social-icon { color: #ff4444; }
 
-  .footer__social-pill--instagram:hover { color: #e1306c; border-color: rgba(225,48,108,0.3); }
-  .footer__social-pill--facebook:hover  { color: #4a9ef5; border-color: rgba(74,158,245,0.3); }
-  .footer__social-pill--youtube:hover   { color: #ff4444; border-color: rgba(255,68,68,0.3); }
+  .footer__social-pill--instagram:hover { border-color: rgba(225,48,108,0.3); }
+  .footer__social-pill--facebook:hover  { border-color: rgba(74,158,245,0.3); }
+  .footer__social-pill--youtube:hover   { border-color: rgba(255,68,68,0.3); }
 
-  /* Dark theme: brighten network label colours for AA on the navy footer */
-  :global(html[data-theme="dark"]) .footer__social-pill--instagram,
-  :global(html[data-theme="dark"]) .footer__social-pill--instagram:hover { color: #f48fb1; }
-  :global(html[data-theme="dark"]) .footer__social-pill--facebook,
-  :global(html[data-theme="dark"]) .footer__social-pill--facebook:hover { color: #8fc0ff; }
-  :global(html[data-theme="dark"]) .footer__social-pill--youtube,
-  :global(html[data-theme="dark"]) .footer__social-pill--youtube:hover { color: #ff8a8a; }
+  .footer__social-pill--instagram:hover .footer__social-icon { color: #e1306c; }
+  .footer__social-pill--facebook:hover  .footer__social-icon { color: #4a9ef5; }
+  .footer__social-pill--youtube:hover   .footer__social-icon { color: #ff4444; }
 
   .footer__col { flex: 1; }
 
@@ -197,7 +193,7 @@ const contactLinks = [
     font-weight: 700;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--color-accent-to);
+    color: var(--color-accent-text);
     margin-bottom: 14px;
   }
 
