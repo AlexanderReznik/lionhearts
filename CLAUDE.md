@@ -42,6 +42,22 @@ Typography is **Barlow** (self-hosted via Fontsource) — an open substitute for
 brand's DIN 2014; swap is a `--font-sans` change. Accents are flat brand blue (no
 gradients). Official logo/favicon/team-wordmark SVGs live in `public/brand/`.
 
+### Accent TEXT vs accent backgrounds (WCAG AA)
+
+Flat brand blue `#54a4f7` only reaches ~2.2–2.6:1 on white, so it **fails AA as
+text** in the light theme. Use the dedicated `--color-accent-text` semantic token
+for any accent-coloured **text** (eyebrows, heading `<em>`, links, labels, footer
+headings): `:root` = `#0050b8` (~7.5:1), `[data-theme="dark"]` = `var(--lh-blue)`
+(`#54a4f7`, passes on navy). Dark surfaces inside the light theme re-assert the
+light-blue locally — `.section--feature` sets it, and page-specific dark panels
+(`location-info`, `sponsor-hero`, `become-sponsor`) carry a local
+`--color-accent-text: var(--lh-blue)`. **Backgrounds** (buttons `.btn--accent`,
+`.filter-pill--active`, gradients, toggle knob, page-hero radial) keep `#54a4f7`
+directly — only text moved. When adding accent-coloured text, reach for
+`--color-accent-text`, never `--lh-blue`/`#54a4f7`. (Mirror the token in the no-JS
+`@media (prefers-color-scheme: dark)` block too.) The community white-on-`#54a4f7`
+headings are a deliberate brand Style-#2 exception (~2.62:1, accepted, commented).
+
 ### Theming (light/dark toggle)
 
 - The theme is set on `<html data-theme>` by a no-flash inline `is:inline` boot
@@ -66,7 +82,9 @@ the `:global(html[data-theme="dark"]) .my-class` ancestor pattern IS correct.)
 
 ### Brand work — specs & plans
 
-Phased rebrand documented under `docs/superpowers/{specs,plans}/`. Phase 1
-(light-led foundation) and Phase 2 (dark theme + toggle) are merged. Phase 3
-(Vinarius burgundy/cream sub-brand, full dual-style section mapping, photography)
-is not yet started.
+Phased rebrand documented under `docs/superpowers/{specs,plans}/`. **Merged:**
+Phase 1 (light-led foundation), Phase 2 (dark theme + toggle), Phase 3-A (Vinarius
+burgundy/cream sub-brand page), Phase 3-B (dual-style `.section--feature`/
+`--community` mapping), and the light-theme WCAG AA pass (`--color-accent-text`).
+**Remaining:** Phase 3-C — photography (real photos + navy duotone), not yet
+started.
