@@ -38,7 +38,8 @@ a { color: inherit; }
   --color-accent-to:    var(--lh-blue);
   --color-text:         var(--lh-navy);
   --color-text-muted:   #5a6b86;
-  --color-text-faint:   var(--lh-slate-400);
+  --color-text-faint:   #5e6c88;
+  --color-accent-text:  #0050b8;
   --color-highlight-1:  var(--lh-blue);
   --color-highlight-2:  var(--lh-blue-deep);
   --color-border:       rgba(17, 35, 75, 0.12);
@@ -79,6 +80,7 @@ a { color: inherit; }
   --color-text:         var(--lh-white);
   --color-text-muted:   var(--lh-slate-200);
   --color-text-faint:   #94a1c0;
+  --color-accent-text:  var(--lh-blue);
   --color-highlight-1:  var(--lh-blue-300);
   --color-highlight-2:  var(--lh-blue);
   --color-border:       rgba(255, 255, 255, 0.10);
@@ -99,6 +101,7 @@ a { color: inherit; }
     --color-text:         var(--lh-white);
     --color-text-muted:   var(--lh-slate-200);
     --color-text-faint:   #94a1c0;
+    --color-accent-text:  var(--lh-blue);
     --color-highlight-1:  var(--lh-blue-300);
     --color-highlight-2:  var(--lh-blue);
     --color-border:       rgba(255, 255, 255, 0.10);
@@ -159,8 +162,8 @@ body {
 .btn--accent { background: var(--btn-accent-bg); color: var(--btn-accent-text); }
 .btn--accent:hover { opacity: 0.9; }
 
-.btn--ghost { background: transparent; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.28); }
-.btn--ghost:hover { border-color: rgba(255,255,255,0.55); color: #fff; }
+.btn--ghost { background: transparent; color: var(--color-text); border: 1px solid color-mix(in srgb, var(--color-text) 30%, transparent); }
+.btn--ghost:hover { border-color: color-mix(in srgb, var(--color-text) 55%, transparent); }
 
 .btn--white { background: var(--lh-white); color: var(--lh-navy); }
 .btn--white:hover { opacity: 0.9; }
@@ -173,7 +176,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--color-accent-to);
+  color: var(--color-accent-text);
   font-size: 0.5625rem;
   font-weight: 700;
   letter-spacing: 3px;
@@ -185,7 +188,7 @@ body {
   display: block;
   width: 20px;
   height: 2px;
-  background: var(--color-accent-to);
+  background: var(--color-accent-text);
   flex-shrink: 0;
 }
 
@@ -212,10 +215,10 @@ body {
   background: radial-gradient(ellipse at 80% 50%, rgba(84,164,247,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
-.page-hero__eyebrow { color: var(--color-accent-to); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-to); }
+.page-hero__eyebrow { color: var(--color-accent-text); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-text); }
 .page-hero__title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; line-height: 0.95; }
-.page-hero__title em { color: var(--color-accent-to); font-style: normal; }
+.page-hero__title em { color: var(--color-accent-text); font-style: normal; }
 .page-hero__sub { color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 12px; max-width: 520px; line-height: 1.65; }
 
 /* ── Page content wrapper ── */
@@ -298,6 +301,7 @@ body {
   color: var(--lh-white);
   --color-text: var(--lh-white);
   --color-text-muted: var(--lh-slate-200);
+  --color-accent-text: var(--lh-blue);
 }
 [data-theme="dark"] .section--feature {
   background: var(--lh-navy-deep);
@@ -311,6 +315,8 @@ body {
   --color-text: var(--lh-navy);
   --color-text-muted: var(--lh-navy);
 }
+/* NOTE: white headings on #54a4f7 are ~2.62:1 — below AA. Kept deliberately
+   per the brand book's Style #2; accepted exception (body text is navy/AA). */
 .section--community :is(h1, h2, h3) { color: var(--lh-white); }
 .section--community .btn--primary { background: var(--lh-white); color: var(--lh-navy); }
 
@@ -345,7 +351,8 @@ body {
   --color-surface-3:    #eaf1fb;
   --color-text:         var(--lh-navy);
   --color-text-muted:   #5a6b86;
-  --color-text-faint:   var(--lh-slate-400);
+  --color-text-faint:   #5e6c88;
+  --color-accent-text:  #0050b8;
   --color-highlight-1:  var(--lh-blue);
   --color-highlight-2:  var(--lh-blue-deep);
   --color-border:       rgba(17, 35, 75, 0.12);

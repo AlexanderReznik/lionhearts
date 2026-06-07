@@ -361,7 +361,7 @@ const teamSections = [
 
   .sessions-box__notice {
     font-size: 0.75rem;
-    color: var(--lh-blue);
+    color: var(--color-accent-text);
     background: rgba(84,164,247,0.08);
     border: 1px solid rgba(84,164,247,0.25);
     border-radius: 6px;
@@ -431,7 +431,7 @@ const teamSections = [
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--color-highlight-1);
+    color: var(--color-accent-text);
     background: rgba(84,164,247,0.15);
     padding: 3px 10px;
     border-radius: 3px;
@@ -511,7 +511,7 @@ const teamSections = [
   }
 
   .tl-date { color: var(--color-text-faint); font-size: 0.65rem; white-space: nowrap; }
-  .tl-row-up--next .tl-date { color: var(--lh-blue); font-weight: 700; }
+  .tl-row-up--next .tl-date { color: var(--color-accent-text); font-weight: 700; }
 
   .tl-vs { color: var(--color-text-faint); font-size: 0.6rem; margin-right: 4px; }
 
@@ -559,7 +559,9 @@ const teamSections = [
 
   .badge-l {
     background: rgba(196,65,40,0.10);
-    color: var(--lh-red);
+    /* Darkened brand red (raw --lh-red #c44128 only hits 4.41:1 on this tint);
+       mirrors the .badge-w darkened-green treatment for light-theme AA. */
+    color: #ad3418;
     border: 1px solid rgba(196,65,40,0.25);
     border-radius: 4px;
     padding: 2px 8px;
