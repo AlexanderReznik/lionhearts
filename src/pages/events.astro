@@ -559,7 +559,9 @@ const teamSections = [
 
   .badge-l {
     background: rgba(196,65,40,0.10);
-    color: var(--lh-red);
+    /* Darkened brand red (raw --lh-red #c44128 only hits 4.41:1 on this tint);
+       mirrors the .badge-w darkened-green treatment for light-theme AA. */
+    color: #ad3418;
     border: 1px solid rgba(196,65,40,0.25);
     border-radius: 4px;
     padding: 2px 8px;
