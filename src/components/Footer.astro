@@ -28,7 +28,7 @@ const contactLinks = [
   <div class="footer__inner">
     <div class="footer__brand">
       <div class="footer__crest">
-        <BrandLogo class="footer__brandlogo" width={180} height={66} />
+        <BrandLogo class="footer__brandlogo" width={242} height={88} />
         <p class="footer__tagline">"Together We Roar."</p>
       </div>
       <div class="footer__socials">
@@ -115,13 +115,13 @@ const contactLinks = [
 
   .footer__crest {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
     margin-bottom: 20px;
   }
 
-  .footer__crest :global(.brand-logo__img) { height: 60px; width: auto; }
+  .footer__crest :global(.brand-logo__img) { height: 88px; width: auto; }
 
   .footer__tagline {
     color: var(--color-text-muted);
@@ -242,6 +242,8 @@ const contactLinks = [
       grid-template-columns: 1fr 1fr;
       gap: 24px 32px;
     }
+
+    .footer__crest :global(.brand-logo__img) { height: 72px; }
 
     .footer__bottom {
       flex-direction: column;
