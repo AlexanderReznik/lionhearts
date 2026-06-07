@@ -184,10 +184,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     overflow: hidden;
   }
 
-  /* featured pathway uses section--community for bg; override border only */
+  /* featured pathway: force community bg (scoped .pathway wins over global .section--community) */
   .pathway--featured {
+    background: var(--lh-blue);
     border-color: rgba(17,35,75,0.3);
   }
+
+  /* title inherits --color-text which is navy on light bg; force white on blue card */
+  .pathway--featured .pathway__title { color: var(--lh-white); }
 
   .pathway__rec {
     font-size: 0.4375rem;
