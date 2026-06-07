@@ -1,19 +1,23 @@
 ---
 // src/components/BrandLogo.astro
-// Renders the official wordmark. Navy variant on light theme, white on dark.
+// Renders an official mark. Navy variant on light theme, white on dark.
+// variant="main" = full wordmark (default); variant="submark" = compact crest.
 interface Props {
   class?: string;
   width?: number;
   height?: number;
+  variant?: 'main' | 'submark';
 }
-const { class: className, width = 132, height = 48 } = Astro.props;
+const { class: className, width = 132, height = 48, variant = 'main' } = Astro.props;
+const base = variant === 'submark' ? '/brand/logo-submark-base.svg' : '/brand/logo-main-base.svg';
+const onDark = variant === 'submark' ? '/brand/logo-submark.svg' : '/brand/logo-main.svg';
 ---
 <span class:list={['brand-logo', className]}>
   <img class="brand-logo__img brand-logo__img--light"
-       src="/brand/logo-main-base.svg" alt="London Lionhearts Volleyball Club"
+       src={base} alt="London Lionhearts Volleyball Club"
        width={width} height={height} />
   <img class="brand-logo__img brand-logo__img--dark"
-       src="/brand/logo-main.svg" alt="London Lionhearts Volleyball Club" loading="lazy"
+       src={onDark} alt="London Lionhearts Volleyball Club" loading="lazy"
        width={width} height={height} />
 </span>
 
