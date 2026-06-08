@@ -36,7 +36,9 @@ const isActive = (href: string) =>
       ))}
     </ul>
 
-    <ThemeToggle class="nav__theme-toggle" />
+    <div class="nav__theme-toggle">
+      <ThemeToggle />
+    </div>
     <a href="/join" class="btn btn--primary nav__cta">Join Us</a>
     <button
       class="nav__hamburger"
@@ -248,7 +250,7 @@ const isActive = (href: string) =>
     .nav__hamburger { width: 36px; height: 36px; font-size: 1.25rem; }
   }
 
-  .nav__theme-toggle { margin-left: 0; }
+  .nav__theme-toggle { display: flex; align-items: center; flex-shrink: 0; }
 
   .nav__overlay-theme {
     display: flex;
