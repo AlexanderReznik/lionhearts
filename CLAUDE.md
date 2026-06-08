@@ -50,7 +50,7 @@ for any accent-coloured **text** (eyebrows, heading `<em>`, links, labels, foote
 headings): `:root` = `#0050b8` (~7.5:1), `[data-theme="dark"]` = `var(--lh-blue)`
 (`#54a4f7`, passes on navy). Dark surfaces inside the light theme re-assert the
 light-blue locally — `.section--feature` sets it, and page-specific dark panels
-(`location-info`, `sponsor-hero`, `become-sponsor`) carry a local
+(`location-info`, `become-sponsor`) carry a local
 `--color-accent-text: var(--lh-blue)`. **Backgrounds** (buttons `.btn--accent`,
 `.filter-pill--active`, gradients, toggle knob, page-hero radial) keep `#54a4f7`
 directly — only text moved. When adding accent-coloured text, reach for
