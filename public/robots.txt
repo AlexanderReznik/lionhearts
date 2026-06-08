@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://lionheartsvolleyball.com/sitemap-index.xml
+Sitemap: https://lionhearts.vercel.app/sitemap-index.xml
