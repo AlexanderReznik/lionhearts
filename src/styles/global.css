@@ -116,8 +116,11 @@ a { color: inherit; }
   }
 }
 
-/* ── Base ── */
-html { scroll-behavior: smooth; }
+/* ── Base ──
+   Root font size scales all rem-based type site-wide. 112.5% = 18px base
+   (browser default is 16px) for more readable body copy; px-based spacing
+   and layout are unaffected. Tune this one value to resize all text. */
+html { font-size: 112.5%; scroll-behavior: smooth; }
 body {
   background: var(--color-bg);
   color: var(--color-text);
