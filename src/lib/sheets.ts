@@ -10,11 +10,15 @@ export interface Session {
 
 /**
  * Hardcoded fallback used when GOOGLE_SHEET_ID is unset or the fetch fails.
- * Minimal — the Google Sheet is the canonical source; this exists so the
- * pages never render an empty schedule. Only day/time/level are needed —
- * venue and price default to the club constants in src/data/club.ts.
+ * The Google Sheet is the canonical source; this exists so the pages never
+ * render an empty schedule. It mirrors the real weekly schedule so the
+ * displayed cards, the hero copy ("Mon, Thu & Fri") and the derived JSON-LD
+ * stay consistent when the live sheet is unavailable. Only day/time/level are
+ * needed — venue and price default to the club constants in src/data/club.ts.
  */
 export const FALLBACK_CSV = `day,time,level
+Monday,7:00pm–9:00pm,All Levels
+Thursday,7:00pm–9:00pm,All Levels
 Friday,8:00pm–10:00pm,Intermediate / Advanced`;
 
 export function parseSessionsCSV(csv: string): Session[] {
@@ -112,6 +116,54 @@ export function abbreviateTime(time: string): string {
   return mer1.toLowerCase() === mer2.toLowerCase()
     ? `${start}–${end}${mer2.toLowerCase()}`
     : `${start}${mer1.toLowerCase()}–${end}${mer2.toLowerCase()}`;
+}
+
+// ── schema.org Event schedule derivation ───────────────────────────────────
+// Lets /events build its JSON-LD from the live session data instead of a
+// hardcoded block, so structured data can never drift from what's displayed.
+
+const DAY_SCHEMA_URL: Record<string, string> = {
+  monday: 'https://schema.org/Monday',
+  tuesday: 'https://schema.org/Tuesday',
+  wednesday: 'https://schema.org/Wednesday',
+  thursday: 'https://schema.org/Thursday',
+  friday: 'https://schema.org/Friday',
+  saturday: 'https://schema.org/Saturday',
+  sunday: 'https://schema.org/Sunday',
+};
+
+/** "8:00pm" → "20:00" (24-hour). Returns null if unparseable. */
+export function to24Hour(clock: string): string | null {
+  const m = clock.trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/i);
+  if (!m) return null;
+  let h = parseInt(m[1], 10);
+  if (h < 1 || h > 12) return null;
+  const min = m[2] ?? '00';
+  if (m[3].toLowerCase() === 'pm' && h !== 12) h += 12;
+  if (m[3].toLowerCase() === 'am' && h === 12) h = 0;
+  return `${String(h).padStart(2, '0')}:${min}`;
+}
+
+export interface SessionSchedule {
+  byDay: string;      // schema.org day URL
+  startTime: string;  // "HH:MM"
+  endTime: string;    // "HH:MM"
+}
+
+/**
+ * Convert a Session's day + "7:00pm–9:00pm" time into schema.org Schedule
+ * parts. Returns null when the day or time can't be parsed, so callers can
+ * skip emitting an invalid Event rather than producing broken JSON-LD.
+ */
+export function parseSessionSchedule(session: Session): SessionSchedule | null {
+  const byDay = DAY_SCHEMA_URL[session.day.trim().toLowerCase()];
+  if (!byDay) return null;
+  const range = session.time.match(/^(.+?)\s*[–-]\s*(.+)$/);
+  if (!range) return null;
+  const startTime = to24Hour(range[1]);
+  const endTime = to24Hour(range[2]);
+  if (!startTime || !endTime) return null;
+  return { byDay, startTime, endTime };
 }
 
 // ── Overheard quotes ──────────────────────────────────────────────────────

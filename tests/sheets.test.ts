@@ -4,11 +4,22 @@ import {
   parseQuotesCSV,
   abbreviateDay,
   abbreviateTime,
+  to24Hour,
+  parseSessionSchedule,
   getSessions,
   getQuotes,
   FALLBACK_QUOTES,
   type Session,
 } from '../src/lib/sheets';
+
+const makeSession = (over: Partial<Session> = {}): Session => ({
+  day: 'Monday',
+  time: '7:00pm–9:00pm',
+  level: 'All Levels',
+  venue: 'Mulberry Academy',
+  price: '£8',
+  ...over,
+});
 
 describe('parseSessionsCSV', () => {
   it('parses a valid CSV into session objects', () => {
@@ -111,6 +122,47 @@ describe('abbreviateTime', () => {
   });
 });
 
+describe('to24Hour', () => {
+  it('converts pm times, leaving noon untouched', () => {
+    expect(to24Hour('7:00pm')).toBe('19:00');
+    expect(to24Hour('12:00pm')).toBe('12:00');
+    expect(to24Hour('8pm')).toBe('20:00');
+  });
+
+  it('converts am times, mapping midnight correctly', () => {
+    expect(to24Hour('9:30am')).toBe('09:30');
+    expect(to24Hour('12:00am')).toBe('00:00');
+  });
+
+  it('returns null for unparseable or out-of-range input', () => {
+    expect(to24Hour('TBC')).toBeNull();
+    expect(to24Hour('19:00')).toBeNull();
+    expect(to24Hour('13:00pm')).toBeNull();
+  });
+});
+
+describe('parseSessionSchedule', () => {
+  it('derives schema.org schedule parts from day + time', () => {
+    expect(parseSessionSchedule(makeSession({ day: 'Friday', time: '8:00pm–10:00pm' }))).toEqual({
+      byDay: 'https://schema.org/Friday',
+      startTime: '20:00',
+      endTime: '22:00',
+    });
+  });
+
+  it('handles a plain hyphen separator', () => {
+    expect(parseSessionSchedule(makeSession({ time: '7:00pm-9:00pm' }))?.endTime).toBe('21:00');
+  });
+
+  it('returns null for an unknown day', () => {
+    expect(parseSessionSchedule(makeSession({ day: 'Someday' }))).toBeNull();
+  });
+
+  it('returns null for an unparseable time', () => {
+    expect(parseSessionSchedule(makeSession({ time: 'TBC' }))).toBeNull();
+  });
+});
+
 describe('getSessions', () => {
   const realFetch = globalThis.fetch;
 
@@ -122,8 +174,8 @@ describe('getSessions', () => {
   it('returns fallback when no sheet ID is provided', async () => {
     const { sessions, usingFallback } = await getSessions();
     expect(usingFallback).toBe(true);
-    expect(sessions).toHaveLength(1);
-    expect(sessions[0].day).toBe('Friday');
+    // Fallback mirrors the real weekly schedule (Mon, Thu, Fri).
+    expect(sessions.map(s => s.day)).toEqual(['Monday', 'Thursday', 'Friday']);
   });
 
   it('returns live data when the fetch succeeds', async () => {
@@ -144,7 +196,7 @@ describe('getSessions', () => {
 
     const { sessions, usingFallback } = await getSessions('test-sheet-id');
     expect(usingFallback).toBe(true);
-    expect(sessions).toHaveLength(1);
+    expect(sessions).toHaveLength(3);
   });
 });
 

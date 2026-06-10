@@ -2,7 +2,7 @@
 // src/pages/events.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
-import { getSessions } from '../lib/sheets';
+import { getSessions, parseSessionSchedule } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
 
@@ -67,44 +67,32 @@ const ORGANIZER = {
   url: 'https://lionhearts.vercel.app',
 };
 
-const sessionSchemas = [
-  {
+// Derived from the live session data (single source of truth) so the
+// structured data can never drift from the schedule shown on the page.
+// Sessions whose day/time can't be parsed are skipped rather than emitted
+// as invalid Events.
+const sessionSchemas = sessions.flatMap(s => {
+  const schedule = parseSessionSchedule(s);
+  if (!schedule) return [];
+  return [{
     '@context': 'https://schema.org',
     '@type': 'Event',
-    name: 'London Lionhearts — Open Training (All Levels)',
-    description: 'Open volleyball session at Mulberry Academy Shoreditch. All levels welcome, no booking required.',
+    name: `London Lionhearts — Open Training (${s.level})`,
+    description: `Open volleyball session at ${s.venue} — ${s.level}. No booking required.`,
     location: VENUE,
     organizer: ORGANIZER,
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     eventSchedule: {
       '@type': 'Schedule',
-      byDay: ['https://schema.org/Monday', 'https://schema.org/Thursday'],
-      startTime: '19:00',
-      endTime: '21:00',
+      byDay: [schedule.byDay],
+      startTime: schedule.startTime,
+      endTime: schedule.endTime,
       repeatFrequency: 'P1W',
       scheduleTimezone: 'Europe/London',
     },
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    name: 'London Lionhearts — Open Training (Intermediate / Advanced)',
-    description: 'Open volleyball session at Mulberry Academy Shoreditch for intermediate and advanced players.',
-    location: VENUE,
-    organizer: ORGANIZER,
-    eventStatus: 'https://schema.org/EventScheduled',
-    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-    eventSchedule: {
-      '@type': 'Schedule',
-      byDay: ['https://schema.org/Friday'],
-      startTime: '20:00',
-      endTime: '22:00',
-      repeatFrequency: 'P1W',
-      scheduleTimezone: 'Europe/London',
-    },
-  },
-];
+  }];
+});
 
 const teamSections = [
   { label: "Women's Teams", section: 'womens', spaced: false, teams: teams.filter(t => t.gender === "Women's") },

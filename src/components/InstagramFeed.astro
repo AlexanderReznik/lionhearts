@@ -4,10 +4,11 @@
 // 1. Create a free account at behold.so
 // 2. Connect @lionhearts_volleyball
 // 3. Create a feed and copy the feed ID
-// 4. Replace REPLACE_WITH_BEHOLD_FEED_ID below
+// 4. Set BEHOLD_FEED_ID in your environment (see .env.example).
+//    When unset, the component renders the "follow us" fallback panel.
 
-const BEHOLD_FEED_ID = 'REPLACE_WITH_BEHOLD_FEED_ID';
-const hasBehold = BEHOLD_FEED_ID !== 'REPLACE_WITH_BEHOLD_FEED_ID';
+const BEHOLD_FEED_ID = import.meta.env.BEHOLD_FEED_ID;
+const hasBehold = Boolean(BEHOLD_FEED_ID);
 ---
 
 <section class="instagram" aria-labelledby="instagram-heading">

@@ -99,9 +99,28 @@ export async function fetchTeamFixtures(
 
   if (!res.ok) throw new Error(`Volleyzone HTTP ${res.status}`);
 
+  // The endpoint double-encodes its payload: the outer JSON carries a `debug`
+  // string that is itself JSON of shape { data: { fixtures: [...] } }. This is
+  // undocumented and brittle, so validate each step and throw a descriptive
+  // error — fetchAllFixtures() catches it per-team and degrades to an error
+  // state rather than failing the whole build.
   const outer = await res.json();
-  const inner = JSON.parse(outer.debug) as { data: { fixtures: Match[] } };
-  return inner.data.fixtures;
+  if (!outer || typeof outer.debug !== 'string') {
+    throw new Error('Volleyzone response missing expected `debug` payload');
+  }
+
+  let inner: { data?: { fixtures?: Match[] } };
+  try {
+    inner = JSON.parse(outer.debug);
+  } catch {
+    throw new Error('Volleyzone `debug` payload was not valid JSON');
+  }
+
+  const fixtures = inner?.data?.fixtures;
+  if (!Array.isArray(fixtures)) {
+    throw new Error('Volleyzone response missing `data.fixtures` array');
+  }
+  return fixtures;
 }
 
 export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Record<string, TeamFixtures>> {

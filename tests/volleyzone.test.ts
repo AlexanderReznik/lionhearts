@@ -226,6 +226,30 @@ describe('fetchTeamFixtures', () => {
     await expect(fetchTeamFixtures('209508', '3881', '298568', 'lva')).rejects.toThrow('500');
   });
 
+  it('throws a descriptive error when the `debug` payload is missing', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) } as Response);
+
+    const { fetchTeamFixtures } = await import('../src/lib/volleyzone');
+    await expect(fetchTeamFixtures('209508', '3881', '298568', 'lva')).rejects.toThrow(/debug/);
+  });
+
+  it('throws when the `debug` payload is not valid JSON', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ debug: 'not json' }) } as Response);
+
+    const { fetchTeamFixtures } = await import('../src/lib/volleyzone');
+    await expect(fetchTeamFixtures('209508', '3881', '298568', 'lva')).rejects.toThrow(/valid JSON/);
+  });
+
+  it('throws when the fixtures array is absent', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ debug: JSON.stringify({ data: {} }) }),
+    } as Response);
+
+    const { fetchTeamFixtures } = await import('../src/lib/volleyzone');
+    await expect(fetchTeamFixtures('209508', '3881', '298568', 'lva')).rejects.toThrow(/data\.fixtures/);
+  });
+
   it('sends correct POST params and headers', async () => {
     const inner = { data: { fixtures: [] } };
     globalThis.fetch = vi.fn().mockResolvedValue({
