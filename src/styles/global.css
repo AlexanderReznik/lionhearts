@@ -55,6 +55,11 @@ a { color: inherit; }
   --font-sans:      'Barlow', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-condensed: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
 
+  /* Display headings (Tier A): tracking + leading shared by every uppercase
+     900-weight title. Watermark words (Tier B, 8rem+) keep their own -0.05em. */
+  --tracking-display: -0.02em;
+  --leading-display:  1.05;
+
   /* Spacing */
   --space-xs:  0.5rem;
   --space-sm:  1rem;
@@ -220,7 +225,7 @@ body {
 }
 .page-hero__eyebrow { color: var(--color-accent-text); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-text); }
-.page-hero__title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; line-height: 0.95; }
+.page-hero__title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: var(--tracking-display); line-height: var(--leading-display); }
 .page-hero__title em { color: var(--color-accent-text); font-style: normal; }
 .page-hero__sub { color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 12px; max-width: 520px; line-height: 1.65; }
 
