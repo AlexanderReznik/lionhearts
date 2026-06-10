@@ -4,7 +4,6 @@ export interface Team {
   gender: "Women's" | "Men's";
   division: string;
   badge?: string;
-  image?: string;
   volleyzoneSlug?: string;
   compId?: string;
   seasonId?: string;
