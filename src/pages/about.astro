@@ -94,15 +94,21 @@ const values = [
       </div>
     </div>
 
-    <!-- Values row -->
-    <div class="values-row">
-      {values.map(v => (
-        <div class:list={['value-card', { 'value-card--featured': v.featured }]}>
-          <div class="value-card__icon" aria-hidden="true">{v.icon}</div>
-          <h3 class="value-card__title">{v.title}</h3>
-          <p class="value-card__body">{v.body}</p>
-        </div>
-      ))}
+  </section>
+
+  <!-- Values band — dark feature surface for a punchy "what we stand for" close -->
+  <section class="about-values section--feature">
+    <div class="about-values__inner container">
+      <p class="eyebrow">What We Stand For</p>
+      <div class="values-row">
+        {values.map(v => (
+          <div class:list={['value-card', { 'value-card--featured': v.featured }]}>
+            <div class="value-card__icon" aria-hidden="true">{v.icon}</div>
+            <h3 class="value-card__title">{v.title}</h3>
+            <p class="value-card__body">{v.body}</p>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -113,7 +119,6 @@ const values = [
     grid-template-columns: 1fr 1fr;
     gap: 56px;
     align-items: start;
-    margin-bottom: 52px;
   }
 
   .about-history__photo {
@@ -170,7 +175,10 @@ const values = [
     margin-bottom: 12px;
   }
 
-  /* Values */
+  /* Values — dark feature band; cards are white-alpha glass on navy */
+  .about-values { padding: 56px var(--page-px); }
+  .about-values__inner .eyebrow { margin-bottom: 24px; }
+
   .values-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -178,18 +186,19 @@ const values = [
   }
 
   .value-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
     border-radius: 12px;
     padding: 28px;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, transform 0.2s;
   }
 
-  .value-card:hover { border-color: var(--color-border-blue); }
+  .value-card:hover { border-color: var(--color-border-blue); transform: translateY(-2px); }
 
+  /* Featured ("Competitive") is the vivid accent on the dark band */
   .value-card--featured {
-    background: linear-gradient(135deg, rgba(84,164,247,0.08), rgba(84,164,247,0.04));
-    border-color: var(--color-border-blue);
+    background: rgba(84,164,247,0.14);
+    border-color: rgba(84,164,247,0.45);
   }
 
   .value-card__icon { font-size: 1.75rem; margin-bottom: 14px; }
