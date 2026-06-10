@@ -4,8 +4,8 @@ import { flags } from '../data/flags';
 import OverheardArchive from './OverheardArchive.astro';
 ---
 
-<section class="community">
-  <p class="community__numeral" aria-hidden="true">02</p>
+<section class="community section--feature">
+  <p class="community__numeral" aria-hidden="true">03</p>
   <div class="community__inner container">
 
     <div class="community__header">
@@ -46,9 +46,11 @@ import OverheardArchive from './OverheardArchive.astro';
 
 <style>
   .community {
-    background: var(--color-surface-3);
+    /* Dark feature surface (.section--feature) supplies the navy background in
+       both themes — this block's overlays/dividers are all white-alpha, so they
+       only read correctly on navy. */
     padding: var(--space-xl) var(--page-px);
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255,255,255,0.08);
     position: relative;
     overflow: hidden;
   }

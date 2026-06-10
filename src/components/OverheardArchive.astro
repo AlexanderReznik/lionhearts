@@ -111,9 +111,12 @@ const first = quotes[0];
     font-weight: 600;
   }
 
+  /* Always rendered inside CommunitySection's dark feature surface, so the
+     card uses white-alpha glass (matching the flag mosaic) rather than the
+     theme --color-surface, which would be white in the light theme. */
   .overheard__card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 14px;
     padding: 32px 32px 20px;
     position: relative;
@@ -149,14 +152,14 @@ const first = quotes[0];
     align-items: center;
     justify-content: space-between;
     padding-top: 16px;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid rgba(255,255,255,0.08);
   }
 
   .overheard__counter {
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
     font-size: 0.65rem;
     letter-spacing: 1.5px;
-    color: var(--color-text-faint);
+    color: rgba(255,255,255,0.45);
   }
 
   .overheard__nav {
@@ -166,7 +169,7 @@ const first = quotes[0];
 
   .overheard__nav-btn {
     background: transparent;
-    border: 1px solid var(--color-border);
+    border: 1px solid rgba(255,255,255,0.18);
     color: var(--color-text-muted);
     border-radius: 6px;
     min-width: 44px;
