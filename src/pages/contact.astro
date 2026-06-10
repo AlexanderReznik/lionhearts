@@ -213,6 +213,12 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     margin-bottom: 32px;
   }
 
+  /* Dark theme: navy panel sits on the navy page, so strengthen the brand
+     light-blue (#54A4F7) hairline so it still reads as a distinct panel. */
+  :global([data-theme="dark"]) .location-block {
+    border-color: var(--color-border-blue);
+  }
+
   .location-info {
     padding: 40px;
     display: flex;
