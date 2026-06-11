@@ -56,9 +56,19 @@ a { color: inherit; }
   --font-condensed: 'Barlow Condensed', 'Barlow', system-ui, sans-serif;
 
   /* Display headings (Tier A): tracking + leading shared by every uppercase
-     900-weight title. Watermark words (Tier B, 8rem+) keep their own -0.05em. */
-  --tracking-display: -0.02em;
+     900-weight title AND its matching sub-titles. Loosened per designer (S17/18 —
+     titles were too tight); can go larger. Watermark words (Tier B, 8rem+) keep
+     their own -0.05em locally. */
+  --tracking-display: 0.02em;
   --leading-display:  1.05;
+
+  /* The single "very wide" tracking — eyebrows + buttons only (S16). */
+  --tracking-wide: 0.2em;
+  /* Body + notes share one near-zero tracking (S16). */
+  --tracking-body: 0;
+
+  /* Sub-tier heading size ("Sub ~32px", S19/S27) — community + overheard heads. */
+  --text-sub: clamp(2rem, 4vw, 2.5rem);
 
   /* Spacing */
   --space-xs:  0.5rem;
@@ -150,7 +160,7 @@ body {
   border-radius: 4px;
   font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   text-decoration: none;
   border: none;
@@ -187,7 +197,7 @@ body {
   color: var(--color-accent-text);
   font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   margin-bottom: 1rem;
 }
@@ -223,7 +233,7 @@ body {
   background: radial-gradient(ellipse at 80% 50%, rgba(84,164,247,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
-.page-hero__eyebrow { color: var(--color-accent-text); font-size: 0.5625rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.page-hero__eyebrow { color: var(--color-accent-text); font-size: 0.5625rem; font-weight: 700; letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-text); }
 .page-hero__title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: var(--tracking-display); line-height: var(--leading-display); }
 .page-hero__title em { color: var(--color-accent-text); font-style: normal; }
