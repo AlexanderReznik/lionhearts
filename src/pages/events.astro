@@ -339,11 +339,9 @@ const teamSections = [
 
 <style>
   /* ── Sessions box ── */
+  /* S31: no boxed background — the Open Sessions block aligns with the rest of
+     the page hierarchy; the eyebrow heading + cards carry the section on their own. */
   .sessions-box {
-    background: linear-gradient(135deg, rgba(84,164,247,0.12), rgba(84,164,247,0.06));
-    border: 1px solid var(--color-border-blue);
-    border-radius: 14px;
-    padding: 32px;
     margin-bottom: 36px;
   }
 
@@ -359,7 +357,7 @@ const teamSections = [
 
   .session-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 12px;
   }
 
