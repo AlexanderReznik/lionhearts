@@ -204,8 +204,8 @@ body {
 .eyebrow::before {
   content: '';
   display: block;
-  width: 20px;
-  height: 2px;
+  width: 3px;
+  height: 0.625em;
   background: var(--color-accent-text);
   flex-shrink: 0;
 }

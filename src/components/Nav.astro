@@ -39,7 +39,7 @@ const isActive = (href: string) =>
     <div class="nav__theme-toggle">
       <ThemeToggle />
     </div>
-    <a href="/join" class="btn btn--white nav__cta">Join Us</a>
+    <a href="/join" class="btn nav__cta">Join Us</a>
     <button
       class="nav__hamburger"
       type="button"
@@ -141,9 +141,18 @@ const isActive = (href: string) =>
   .nav__link:hover { color: var(--color-text); border-bottom-color: rgba(255,255,255,0.2); }
   .nav__link--active { color: var(--color-text); border-bottom-color: var(--color-accent-text); }
 
+  /* S25: max contrast against the nav bar in each theme — navy fill on the
+     light (white) nav, white fill on the dark (navy) nav. */
   .nav__cta {
     flex-shrink: 0;
     font-size: 0.6875rem;
+    background: var(--lh-navy);
+    color: var(--lh-white);
+  }
+  .nav__cta:hover { opacity: 0.9; }
+  :global(html[data-theme="dark"]) .nav__cta {
+    background: var(--lh-white);
+    color: var(--lh-navy);
   }
 
   /* ── Hamburger (hidden on desktop) ── */
