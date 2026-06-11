@@ -37,12 +37,13 @@ components reference the token instead of a literal:
 
 | Token | Applies to | Notes |
 |-------|-----------|-------|
-| `--tracking-display` | **Titles + sub-titles** (one style) | Loosen from current `-0.02em` toward `~0`. The S17/18 sample is visibly looser than the live value. Watermark words (Tier B, 8rem+) keep their own `-0.05em`. |
+| `--tracking-display` | **Titles + sub-titles** (one style) | Loosen from current `-0.02em` to a **positive** value (start ~`0.02em`, can go larger). The S17/18 sample is visibly looser than the live value, and the designer confirmed tracking can be larger. Watermark words (Tier B, 8rem+) keep their own `-0.05em`. |
 | `--tracking-wide` | **Eyebrows + buttons only** | The "very wide" scale. Today eyebrows use `1.5px`/`3px` and buttons `1px`; unify to a single value (~`0.16–0.18em`). |
 | `--tracking-body` | **Body + notes** (one style) | Near-zero (`0` or `~0.01em`). |
 
 - Loosening `--tracking-display` addresses S17/S18 ("all titles too tight"). The
-  exact value is tunable; start at `0` and adjust toward the sample by eye.
+  exact value is tunable; start around `0.02em` and adjust **upward** toward the
+  sample by eye — the designer confirmed it can be larger.
 - Sweep existing `letter-spacing` literals in `global.css` and component scoped
   styles → the appropriate token.
 
