@@ -3,7 +3,6 @@
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import type { Team } from '../data/teams';
-import { teamWordmarkSrc } from '../lib/teamWordmark';
 
 interface Props {
   team: Team;
@@ -41,12 +40,7 @@ const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.defa
   </div>
   <div class="team-card__info">
     <span class="team-card__gender">{team.gender}</span>
-    <h2 class="team-card__name">
-      <img class="team-card__wordmark team-card__wordmark--light"
-           src={teamWordmarkSrc(team.name, 'base')} alt={team.name} loading="lazy" />
-      <img class="team-card__wordmark team-card__wordmark--dark"
-           src={teamWordmarkSrc(team.name, 'white')} alt="" aria-hidden="true" loading="lazy" />
-    </h2>
+    <h2 class="team-card__name">{team.name}</h2>
     <p class="team-card__division">{team.division}</p>
     {team.badge && <span class="team-card__badge">{team.badge}</span>}
   </div>
@@ -72,7 +66,7 @@ const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.defa
   }
 
   .team-card__photo {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 3 / 2;
     background: linear-gradient(160deg, var(--color-surface-2), var(--color-surface));
     border-bottom: 1px solid var(--color-border);
     position: relative;
@@ -109,11 +103,15 @@ const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.defa
     margin-bottom: 6px;
   }
 
-  .team-card__name { margin-bottom: 8px; line-height: 0; }
-  .team-card__wordmark { height: 30px; width: auto; display: block; }
-  .team-card__wordmark--dark { display: none; }
-  :global([data-theme="dark"]) .team-card__wordmark--light { display: none; }
-  :global([data-theme="dark"]) .team-card__wordmark--dark { display: block; }
+  .team-card__name {
+    margin-bottom: 8px;
+    font-size: var(--text-sub);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+    color: var(--color-text);
+  }
 
   .team-card__division {
     font-size: 0.6875rem;
