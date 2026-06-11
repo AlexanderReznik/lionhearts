@@ -19,24 +19,35 @@ const orgSchema = {
   },
 };
 
+// Our Values — Allan's copy (slides 40–41). `iconSvg` is an optional path to a
+// future custom SVG (S42); while null we render the emoji fallback.
+const valuesIntro =
+  'As a friendly local club, we have social values and community as top of mind.';
+
 const values = [
   {
     icon: '🤝',
-    title: 'Inclusive',
-    body: 'From your first ever open session to the NVL Super League — there\'s a team and a level for everyone. No experience, no problem.',
+    iconSvg: null as string | null,
+    title: 'Inclusivity',
+    body: 'We act as catalysts for change for a truly inclusive society by promoting safe, accessible and fair participation, and inspiring physical activity for all.',
   },
   {
-    icon: '🏆',
-    title: 'Competitive',
-    body: '9 teams. NVL Super League. 9× LVA Champions. We\'re here to win — at every division, not just the top.',
+    icon: '⚖️',
+    iconSvg: null as string | null,
+    title: 'Respect',
+    body: 'We value and celebrate unique and diverse talents, experiences and perspectives. We treat our participants, partners, donors, and each other with sensitivity and respect.',
     featured: true,
   },
   {
-    icon: '🌍',
-    title: 'Community',
-    body: 'Players from all over the world call Lionhearts home. If you\'re new to London, you\'ll feel it within your first session.',
+    icon: '🤲',
+    iconSvg: null as string | null,
+    title: 'Collaboration',
+    body: 'We work and win together, individually and collectively, as distinct and diverse individuals.',
   },
 ];
+
+const mission =
+  'To develop, promote growth and increase the quality of volleyball for everyone within our community. Together, we can create positive opportunities that generate sustainable societal change.';
 ---
 
 <BaseLayout
@@ -96,18 +107,28 @@ const values = [
 
   </section>
 
-  <!-- Values band — dark feature surface for a punchy "what we stand for" close -->
+  <!-- Values band — dark feature surface; copy from Allan (slides 40–41) -->
   <section class="about-values section--feature">
     <div class="about-values__inner container">
-      <p class="eyebrow">What We Stand For</p>
+      <p class="eyebrow">Our Values</p>
+      <p class="about-values__intro">{valuesIntro}</p>
       <div class="values-row">
         {values.map(v => (
           <div class:list={['value-card', { 'value-card--featured': v.featured }]}>
-            <div class="value-card__icon" aria-hidden="true">{v.icon}</div>
+            <div class="value-card__icon" aria-hidden="true">
+              {v.iconSvg
+                ? <img class="value-card__icon-svg" src={v.iconSvg} alt="" />
+                : v.icon}
+            </div>
             <h3 class="value-card__title">{v.title}</h3>
             <p class="value-card__body">{v.body}</p>
           </div>
         ))}
+      </div>
+
+      <div class="about-mission">
+        <h3 class="eyebrow about-mission__eyebrow">Our Mission</h3>
+        <p class="about-mission__text">{mission}</p>
       </div>
     </div>
   </section>
@@ -204,6 +225,26 @@ const values = [
   .value-card__icon { font-size: 1.75rem; margin-bottom: 14px; }
   .value-card__title { font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin-bottom: 8px; }
   .value-card__body { font-size: 0.8125rem; color: var(--color-text-muted); line-height: 1.65; }
+
+  .about-values__intro {
+    color: var(--color-text-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    max-width: 60ch;
+    margin-bottom: 28px;
+  }
+
+  .value-card__icon-svg { width: 1.75rem; height: 1.75rem; display: block; }
+
+  .about-mission { margin-top: 40px; }
+  .about-mission__eyebrow { margin-bottom: 16px; }
+  .about-mission__text {
+    font-size: var(--text-sub);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: var(--tracking-display);
+    max-width: 22ch;
+  }
 
   @media (max-width: 768px) {
     .about-history__inner {
