@@ -2,6 +2,8 @@
 // src/pages/events.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
+import { Image } from 'astro:assets';
+import sessionPhoto from '../assets/hero/cats-2025-26-2.jpg';
 import { getSessions, parseSessionSchedule } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
@@ -128,11 +130,22 @@ const teamSections = [
 
       <div class="session-cards">
         {sessions.map(s => (
-          <div class="session-card section--community">
-            <div class="session-card__day">{s.day}</div>
-            <div class="session-card__time">{s.time}</div>
-            <div class="session-card__level">{s.level}</div>
-            <div class="session-card__venue">📍 {s.venue}<br />{s.price}</div>
+          <div class="session-card session-card--photo">
+            <Image
+              class="session-card__bg"
+              src={sessionPhoto}
+              alt=""
+              aria-hidden="true"
+              widths={[240, 360, 480]}
+              sizes="(max-width: 640px) 50vw, 240px"
+              loading="lazy"
+            />
+            <div class="session-card__content">
+              <div class="session-card__day">{s.day}</div>
+              <div class="session-card__time">{s.time}</div>
+              <div class="session-card__level">{s.level}</div>
+              <div class="session-card__venue">📍 {s.venue}<br />{s.price}</div>
+            </div>
           </div>
         ))}
         <div class="session-card session-card--venue section--community">
@@ -371,10 +384,44 @@ const teamSections = [
     gap: 4px;
   }
 
+  /* S32: photo-backed schedule cards — darkened so they read distinct from the
+     blue filter pills below; text goes white over the overlay. */
+  .session-card--photo {
+    position: relative;
+    overflow: hidden;
+    border-color: rgba(5,18,43,0.4);
+    background: var(--lh-navy-deep);
+  }
+  .session-card__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .session-card--photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(5,18,43,0.78), rgba(17,35,75,0.88));
+  }
+  .session-card__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   .session-card__day { font-size: 0.8125rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; color: var(--lh-navy); }
   .session-card__time { font-size: 1.375rem; font-weight: 900; letter-spacing: -0.5px; color: var(--lh-navy); }
   .session-card__level { font-size: 0.5625rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--lh-navy); }
   .session-card__venue { font-size: 0.625rem; color: var(--lh-navy); line-height: 1.5; margin-top: 4px; }
+
+  /* White text on the darkened photo cards (overrides the navy defaults above). */
+  .session-card--photo .session-card__day,
+  .session-card--photo .session-card__time,
+  .session-card--photo .session-card__level,
+  .session-card--photo .session-card__venue { color: var(--lh-white); }
 
   .session-card--venue {
     border-color: rgba(17,35,75,0.18);
