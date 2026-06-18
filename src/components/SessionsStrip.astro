@@ -47,8 +47,9 @@ const sessions = raw.map(s => ({
 
   .sessions-strip__inner {
     display: flex;
+    flex-wrap: wrap;          /* pieces wrap onto new rows instead of overflowing */
     align-items: center;
-    gap: 32px;
+    gap: 16px 32px;
     padding: 18px var(--page-px);
     min-height: 72px;
   }
@@ -90,8 +91,10 @@ const sessions = raw.map(s => ({
   .sessions-strip__list {
     list-style: none;
     display: flex;
-    gap: 0;
-    flex: 1;
+    flex-wrap: wrap;          /* items flow onto more rows for any session count */
+    gap: 8px 0;
+    flex: 1 1 auto;
+    min-width: 0;             /* allow the list to shrink below content width */
     justify-content: center;
     margin: 0;
     padding: 0;
@@ -150,7 +153,7 @@ const sessions = raw.map(s => ({
     text-decoration: none;
     white-space: nowrap;
     padding: 8px 14px;
-    margin-left: 8px;
+    margin-left: auto;        /* stays right-aligned inline and when wrapped to its own row */
     border: 1px solid color-mix(in srgb, var(--lh-navy) 22%, transparent);
     border-radius: 6px;
   }
