@@ -184,7 +184,8 @@ const sessions = raw.map(s => ({
     .sessions-strip__item:first-child { padding-left: 0; }
 
     .sessions-strip__link {
-      align-self: flex-end;
+      align-self: flex-start;
+      margin-left: 0;          /* reset base auto-margin so it hugs the left */
       margin-top: 2px;
     }
   }
