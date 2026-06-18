@@ -46,7 +46,6 @@ const { slides } = Astro.props;
   <!-- Decorative overlays -->
   <div class="hero__texture" aria-hidden="true"></div>
   <div class="hero__overlay" aria-hidden="true"></div>
-  <div class="hero__accent" aria-hidden="true"></div>
 
   <!-- Content -->
   <div class="hero__content">
@@ -132,12 +131,6 @@ const { slides } = Astro.props;
   .hero__overlay {
     position: absolute; inset: 0; pointer-events: none;
     background: linear-gradient(to top, rgba(5,18,43,0.97) 0%, rgba(5,18,43,0.55) 40%, rgba(5,18,43,0.10) 100%);
-  }
-
-  .hero__accent {
-    position: absolute; top: 0; right: 200px; bottom: 0; width: 1px; pointer-events: none;
-    background: linear-gradient(to bottom, transparent, rgba(84,164,247,0.3), transparent);
-    transform: skewX(-12deg);
   }
 
   /* ── Content ── */
