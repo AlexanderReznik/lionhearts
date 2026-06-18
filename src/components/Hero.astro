@@ -182,7 +182,9 @@ const { slides } = Astro.props;
     max-width: 460px;
   }
 
-  .hero__ctas { display: flex; gap: 14px; align-items: center; }
+  /* inline-grid with equal 1fr tracks sizes both buttons to the wider one. */
+  .hero__ctas { display: inline-grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: center; }
+  .hero__ctas .btn { justify-content: center; }
 
   /* ── Carousel controls ── */
   .hero__carousel-label {
@@ -237,8 +239,7 @@ const { slides } = Astro.props;
     }
 
     .hero__ctas {
-      flex-direction: column;
-      align-items: flex-start;
+      grid-template-columns: 1fr;   /* stack, still equal width (sized to the wider button) */
       gap: 10px;
     }
   }
