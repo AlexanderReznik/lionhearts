@@ -161,7 +161,7 @@ const { slides } = Astro.props;
     border: 1px solid rgba(84,164,247,0.3);
     border-radius: 4px;
     padding: 6px 14px;
-    font-size: 0.625rem;
+    font-size: var(--text-eyebrow);
     font-weight: 700;
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
@@ -171,7 +171,7 @@ const { slides } = Astro.props;
   .hero__location span:last-child { color: var(--color-text-muted); }
 
   .hero__headline {
-    font-size: clamp(3.25rem, 8vw, 6rem);
+    font-size: var(--text-hero);
     font-weight: 900;
     line-height: var(--leading-display);
     text-transform: uppercase;
@@ -183,7 +183,7 @@ const { slides } = Astro.props;
 
   .hero__sub {
     color: var(--color-text-muted);
-    font-size: 0.9375rem;
+    font-size: var(--text-body);
     line-height: 1.65;
     margin-bottom: 32px;
     max-width: 460px;
@@ -198,7 +198,7 @@ const { slides } = Astro.props;
     left: var(--page-px);
     z-index: 3;
     color: rgba(255,255,255,0.5);
-    font-size: 0.5625rem;
+    font-size: var(--text-eyebrow);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
   }

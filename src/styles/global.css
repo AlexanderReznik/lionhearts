@@ -69,8 +69,28 @@ a { color: inherit; }
   /* Tier-B giant watermark words (8rem+) — the only other tracking option. */
   --tracking-watermark: 0.05em;
 
-  /* Sub-tier heading size ("Sub ~32px", S19/S27) — community + overheard heads. */
-  --text-sub: clamp(2rem, 4vw, 2.5rem);
+  /* ── Type scale ──
+     ONE definition per size; components never hardcode a font-size. Named per
+     the designer's brand-book styles where they exist (Eyebrow 10px, Note/Button
+     12px, Body/Hero-sub 15px, Sub 32px, Hero 52px); intermediate steps use a
+     t-shirt scale. rem is sized at the 16px design base, then rendered ~12.5%
+     larger by the 18px root (`html { font-size: 112.5% }`) — so --text-body
+     (0.9375rem) is the site's long-standing body size. px notes below are the
+     designer's 16px-base targets. Tune the root to rescale everything. */
+  --text-micro:   0.5rem;     /* 8px  — micro tags / legal / fixture chrome */
+  --text-eyebrow: 0.625rem;   /* 10px — eyebrows, badges, small uppercase labels */
+  --text-note:    0.75rem;    /* 12px — notes, captions, links, buttons, meta */
+  --text-body-sm: 0.8125rem;  /* 13px — dense / secondary body */
+  --text-body:    0.9375rem;  /* 15px — body copy & hero sub-headlines */
+  --text-lead:    1.125rem;   /* 18px — lead paragraphs / small icons */
+  --text-lg:      1.375rem;   /* 22px — card & nav headings, session time */
+  --text-xl:      1.5rem;     /* 24px — secondary headings / panel icons */
+  --text-2xl:     1.75rem;    /* 28px — stat numerals / sub-section heads */
+  --text-3xl:     2.25rem;    /* 36px — large decorative numerals / icons */
+  --text-sub:       clamp(2rem, 4vw, 2.5rem);     /* ~32px — section sub-heads */
+  --text-display:   clamp(2.5rem, 6vw, 3.5rem);   /* page-hero & big section titles */
+  --text-hero:      clamp(3.25rem, 8vw, 6rem);    /* ~52px — homepage hero headline */
+  --text-watermark: clamp(8rem, 18vw, 16rem);     /* giant decorative watermark words */
 
   /* Spacing */
   --space-xs:  0.5rem;
@@ -160,7 +180,7 @@ body {
   gap: 0.5rem;
   padding: 0.75rem 1.75rem;
   border-radius: 4px;
-  font-size: 0.6875rem;
+  font-size: var(--text-note);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
@@ -197,7 +217,7 @@ body {
   align-items: center;
   gap: 10px;
   color: var(--color-accent-text);
-  font-size: 0.5625rem;
+  font-size: var(--text-eyebrow);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
@@ -235,11 +255,11 @@ body {
   background: radial-gradient(ellipse at 80% 50%, rgba(84,164,247,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
-.page-hero__eyebrow { color: var(--color-accent-text); font-size: 0.5625rem; font-weight: 700; letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.page-hero__eyebrow { color: var(--color-accent-text); font-size: var(--text-eyebrow); font-weight: 700; letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-text); }
-.page-hero__title { font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: var(--tracking-display); line-height: var(--leading-display); }
+.page-hero__title { font-size: var(--text-display); font-weight: 900; text-transform: uppercase; letter-spacing: var(--tracking-display); line-height: var(--leading-display); }
 .page-hero__title em { color: var(--color-accent-text); font-style: normal; }
-.page-hero__sub { color: var(--color-text-muted); font-size: 0.9375rem; margin-top: 12px; max-width: 520px; line-height: 1.65; }
+.page-hero__sub { color: var(--color-text-muted); font-size: var(--text-body); margin-top: 12px; max-width: 520px; line-height: 1.65; }
 
 /* ── Page content wrapper ── */
 .page-content { padding: 52px var(--page-px); }
@@ -274,7 +294,7 @@ body {
 .filter-pill {
   padding: 7px 16px;
   border-radius: 20px;
-  font-size: 0.625rem;
+  font-size: var(--text-eyebrow);
   font-weight: 700;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;

@@ -100,7 +100,7 @@ const first = quotes[0];
   }
 
   .overheard__sub {
-    font-size: 0.875rem;
+    font-size: var(--text-body);
     color: var(--color-text-muted);
     line-height: 1.55;
     max-width: 540px;
@@ -128,7 +128,7 @@ const first = quotes[0];
   }
 
   .overheard__quote p {
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-size: var(--text-lead);
     line-height: 1.4;
     font-weight: 600;
     color: var(--color-text);
@@ -136,7 +136,7 @@ const first = quotes[0];
   }
 
   .overheard__attrib {
-    font-size: 0.7rem;
+    font-size: var(--text-note);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text-muted);
@@ -157,7 +157,7 @@ const first = quotes[0];
 
   .overheard__counter {
     font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-    font-size: 0.65rem;
+    font-size: var(--text-eyebrow);
     letter-spacing: var(--tracking-wide);
     color: rgba(255,255,255,0.45);
   }
@@ -175,7 +175,7 @@ const first = quotes[0];
     min-width: 44px;
     min-height: 44px;
     font: inherit;
-    font-size: 0.95rem;
+    font-size: var(--text-body);
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s;
   }
