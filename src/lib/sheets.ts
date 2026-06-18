@@ -106,16 +106,25 @@ export function abbreviateDay(day: string): string {
   return day.slice(0, 3);
 }
 
-/** "7:00pm–9:00pm" → "7–9pm" (collapses :00 and dedupes the meridiem when both ends share it). */
-export function abbreviateTime(time: string): string {
+/**
+ * "7:00pm–9:00pm" → { range: "7 – 9", meridiem: "pm" } for the compact strip.
+ * Collapses :00, pads the en-dash with thin spaces (U+2009) so the range reads
+ * as two values, and — when both ends share a meridiem — returns it separately
+ * so the UI can style it quietly. When the ends differ (e.g. "11am – 1pm") the
+ * meridiems stay inline and `meridiem` is null. Unrecognised formats fall back
+ * to a naive :00 strip with no thin spaces.
+ */
+export function abbreviateTime(time: string): { range: string; meridiem: string | null } {
   const match = time.match(/^(\d+)(?::(\d+))?(am|pm)\s*[–-]\s*(\d+)(?::(\d+))?(am|pm)$/i);
-  if (!match) return time.replace(/:00/g, '');
+  if (!match) return { range: time.replace(/:00/g, ''), meridiem: null };
   const [, h1, m1, mer1, h2, m2, mer2] = match;
   const start = m1 && m1 !== '00' ? `${h1}:${m1}` : h1;
   const end = m2 && m2 !== '00' ? `${h2}:${m2}` : h2;
-  return mer1.toLowerCase() === mer2.toLowerCase()
-    ? `${start}–${end}${mer2.toLowerCase()}`
-    : `${start}${mer1.toLowerCase()}–${end}${mer2.toLowerCase()}`;
+  const shared = mer1.toLowerCase() === mer2.toLowerCase();
+  const range = shared
+    ? `${start} – ${end}`
+    : `${start}${mer1.toLowerCase()} – ${end}${mer2.toLowerCase()}`;
+  return { range, meridiem: shared ? mer2.toLowerCase() : null };
 }
 
 // ── schema.org Event schedule derivation ───────────────────────────────────

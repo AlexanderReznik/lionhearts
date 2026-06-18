@@ -102,23 +102,26 @@ describe('abbreviateDay', () => {
 });
 
 describe('abbreviateTime', () => {
-  it('drops :00 minutes and dedupes the meridiem when both ends match', () => {
-    expect(abbreviateTime('7:00pm–9:00pm')).toBe('7–9pm');
-    expect(abbreviateTime('8:00pm–10:00pm')).toBe('8–10pm');
+  // U+2009 THIN SPACE pads the en-dash in the formatted range.
+  const T = ' ';
+
+  it('drops :00 minutes and returns a shared meridiem separately', () => {
+    expect(abbreviateTime('7:00pm–9:00pm')).toEqual({ range: `7${T}–${T}9`, meridiem: 'pm' });
+    expect(abbreviateTime('8:00pm–10:00pm')).toEqual({ range: `8${T}–${T}10`, meridiem: 'pm' });
   });
 
   it('keeps non-zero minutes', () => {
-    expect(abbreviateTime('7:30pm–9:30pm')).toBe('7:30–9:30pm');
+    expect(abbreviateTime('7:30pm–9:30pm')).toEqual({ range: `7:30${T}–${T}9:30`, meridiem: 'pm' });
   });
 
-  it('keeps both meridiems when they differ', () => {
-    expect(abbreviateTime('11:00am–1:00pm')).toBe('11am–1pm');
+  it('keeps both meridiems inline (no separate meridiem) when they differ', () => {
+    expect(abbreviateTime('11:00am–1:00pm')).toEqual({ range: `11am${T}–${T}1pm`, meridiem: null });
   });
 
   it('falls back gracefully on unrecognised formats', () => {
-    expect(abbreviateTime('TBC')).toBe('TBC');
+    expect(abbreviateTime('TBC')).toEqual({ range: 'TBC', meridiem: null });
     // 24h format not matched by the regex — naive :00 strip still kicks in
-    expect(abbreviateTime('19:00–21:00')).toBe('19–21');
+    expect(abbreviateTime('19:00–21:00')).toEqual({ range: '19–21', meridiem: null });
   });
 });
 

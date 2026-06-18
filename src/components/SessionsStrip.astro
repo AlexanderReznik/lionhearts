@@ -27,7 +27,9 @@ const sessions = raw.map(s => ({
       {sessions.map(s => (
         <li class="sessions-strip__item">
           <span class="sessions-strip__day">{s.day}</span>
-          <span class="sessions-strip__time">{s.time}</span>
+          <span class="sessions-strip__time">{s.time.range}{s.time.meridiem && (
+            <span class="sessions-strip__meridiem">{s.time.meridiem}</span>
+          )}</span>
           <span class="sessions-strip__level">{s.level}</span>
         </li>
       ))}
@@ -121,6 +123,14 @@ const sessions = raw.map(s => ({
     color: var(--lh-navy);
     letter-spacing: var(--tracking-body);
     white-space: nowrap;
+  }
+
+  /* Quiet unit label: smaller + lighter + muted, so the numbers stay the headline. */
+  .sessions-strip__meridiem {
+    margin-left: 0.2em;
+    font-size: var(--text-note);
+    font-weight: var(--weight-semibold);
+    opacity: 0.6;
   }
 
   .sessions-strip__level {
