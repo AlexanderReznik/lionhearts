@@ -236,14 +236,23 @@ const mission =
 
   .value-card__icon-svg { width: 1.75rem; height: 1.75rem; display: block; }
 
-  .about-mission { margin-top: 40px; }
-  .about-mission__eyebrow { margin-bottom: 16px; }
+  /* Label on the left, statement filling the right — uses the full band width
+     instead of a narrow left-hand column. */
+  .about-mission {
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: grid;
+    grid-template-columns: minmax(150px, 220px) 1fr;
+    gap: 20px 64px;
+    align-items: start;
+  }
+  .about-mission__eyebrow { margin-bottom: 0; }
   .about-mission__text {
     font-size: var(--text-sub);
     font-weight: var(--weight-bold);
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-display);
-    max-width: 22ch;
   }
 
   @media (max-width: 768px) {
@@ -262,6 +271,11 @@ const mission =
 
     .values-row {
       grid-template-columns: 1fr;
+    }
+
+    .about-mission {
+      grid-template-columns: 1fr;
+      gap: 16px;
     }
   }
 </style>
