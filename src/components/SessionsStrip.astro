@@ -26,10 +26,12 @@ const sessions = raw.map(s => ({
     <ul class="sessions-strip__list" role="list">
       {sessions.map(s => (
         <li class="sessions-strip__item">
-          <span class="sessions-strip__day">{s.day}</span>
-          <span class="sessions-strip__time">{s.time.range}{s.time.meridiem && (
-            <span class="sessions-strip__meridiem">{s.time.meridiem}</span>
-          )}</span>
+          <span class="sessions-strip__when">
+            <span class="sessions-strip__day">{s.day}</span>
+            <span class="sessions-strip__time">{s.time.range}{s.time.meridiem && (
+              <span class="sessions-strip__meridiem">{s.time.meridiem}</span>
+            )}</span>
+          </span>
           <span class="sessions-strip__level">{s.level}</span>
         </li>
       ))}
@@ -45,25 +47,28 @@ const sessions = raw.map(s => ({
     border-bottom: 1px solid color-mix(in srgb, var(--lh-navy) 18%, transparent);
   }
 
+  /* Wide screens: one distributed row — lead on the left, sessions filling
+     the centre, button on the right. Narrower screens fall back to a stacked
+     layout (lead + button on top, sessions below) further down. */
   .sessions-strip__inner {
     display: flex;
-    flex-wrap: wrap;          /* pieces wrap onto new rows instead of overflowing */
     align-items: center;
-    gap: 16px 32px;
+    gap: 24px;
     padding: 18px var(--page-px);
     min-height: 72px;
   }
 
   .sessions-strip__lead {
-    display: flex;
-    align-items: center;
-    gap: 12px;
     flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;  /* dot + text align to the first line, not the block centre */
+    gap: 12px;
   }
 
   .sessions-strip__dot {
     width: 8px;
     height: 8px;
+    margin-top: 6px;          /* centre the dot on the heading's first line */
     border-radius: 50%;
     background: var(--lh-green);
     box-shadow: 0 0 0 4px rgba(118, 205, 84, 0.18);
@@ -93,23 +98,30 @@ const sessions = raw.map(s => ({
     display: flex;
     flex-wrap: wrap;          /* items flow onto more rows for any session count */
     gap: 8px 0;
-    flex: 1 1 auto;
-    min-width: 0;             /* allow the list to shrink below content width */
-    justify-content: center;
+    flex: 1;                  /* fill the central space */
+    min-width: 0;
+    justify-content: center;  /* sessions sit in the middle of the row */
     margin: 0;
     padding: 0;
   }
 
   .sessions-strip__item {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
+    flex-direction: column;   /* day + time on top, level underneath */
+    align-items: flex-start;
+    gap: 2px;
     padding: 0 20px;
     border-left: 1px solid rgba(17, 35, 75, 0.15);
     white-space: nowrap;
   }
 
-  .sessions-strip__item:first-child { border-left: none; }
+  .sessions-strip__item:first-child { border-left: none; padding-left: 0; }
+
+  .sessions-strip__when {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
 
   .sessions-strip__day {
     font-size: var(--text-body);          /* match the time size */
@@ -153,41 +165,28 @@ const sessions = raw.map(s => ({
     text-decoration: none;
     white-space: nowrap;
     padding: 8px 14px;
-    margin-left: auto;        /* stays right-aligned inline and when wrapped to its own row */
     border: 1px solid color-mix(in srgb, var(--lh-navy) 22%, transparent);
     border-radius: 6px;
   }
 
   .sessions-strip__link:hover { text-decoration: underline; }
 
-  @media (max-width: 960px) {
+  /* Below the content max-width (1120px) the one-row layout can't fit, so
+     stack it — lead + button on top, sessions (with level) left-aligned below. */
+  @media (max-width: 1120px) {
     .sessions-strip__inner {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 14px;
-      padding: 18px var(--page-px);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        "lead link"
+        "list list";
+      column-gap: 32px;
+      row-gap: 14px;
     }
 
-    .sessions-strip__lead { align-self: flex-start; }
-
-    .sessions-strip__list {
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px 0;
-    }
-
-    .sessions-strip__item {
-      flex: 1 1 auto;
-      padding: 0 16px;
-    }
-
-    .sessions-strip__item:first-child { padding-left: 0; }
-
-    .sessions-strip__link {
-      align-self: flex-start;
-      margin-left: 0;          /* reset base auto-margin so it hugs the left */
-      margin-top: 2px;
-    }
+    .sessions-strip__lead { grid-area: lead; min-width: 0; }
+    .sessions-strip__list { grid-area: list; justify-content: flex-start; }
+    .sessions-strip__link { grid-area: link; justify-self: end; }
   }
 
   @media (max-width: 560px) {
@@ -198,6 +197,8 @@ const sessions = raw.map(s => ({
     }
 
     .sessions-strip__item {
+      flex-direction: row;     /* full-width row again: day+time left, level right */
+      align-items: baseline;
       padding: 8px 0;
       border-left: none;
       border-top: 1px solid rgba(17, 35, 75, 0.12);
