@@ -16,6 +16,8 @@ import { fetchAllFixtures } from '../lib/volleyzone';
 // rebuild whenever the sheet is edited.
 // ─────────────────────────────────────────────────────────────────────────
 const { sessions, usingFallback } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
+// Tile count = sessions + the venue tile; drives the responsive grid columns.
+const tileCount = sessions.length + 1;
 
 const fixturesMap = await fetchAllFixtures();
 const buildTimestamp = new Date().toLocaleDateString('en-GB', {
@@ -128,7 +130,7 @@ const teamSections = [
         </p>
       )}
 
-      <div class="session-cards">
+      <div class={`session-cards session-cards--${tileCount}`}>
         {sessions.map(s => (
           <div class="session-card session-card--photo">
             <Image
@@ -368,10 +370,35 @@ const teamSections = [
     margin-bottom: 20px;
   }
 
+  /* Columns track the tile count (sessions + venue). Shrinking, even counts
+     fold to a balanced 2-up grid and odd counts collapse straight to a single
+     column — so we never land on an orphaned row (no 3+1 / 2+1). */
   .session-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 12px;
+    grid-template-columns: repeat(4, 1fr);   /* fallback */
+  }
+
+  .session-cards--2 { grid-template-columns: repeat(2, 1fr); }
+  .session-cards--3 { grid-template-columns: repeat(3, 1fr); }
+  .session-cards--4 { grid-template-columns: repeat(4, 1fr); }
+  .session-cards--5 { grid-template-columns: repeat(5, 1fr); }
+
+  @media (max-width: 900px) {
+    .session-cards--5 { grid-template-columns: 1fr; }       /* 5: no clean fold → stack */
+  }
+
+  @media (max-width: 820px) {
+    .session-cards--4 { grid-template-columns: repeat(2, 1fr); }   /* 4 → 2×2 */
+  }
+
+  @media (max-width: 620px) {
+    .session-cards--3 { grid-template-columns: 1fr; }       /* 3 → stack (avoids 2+1) */
+  }
+
+  @media (max-width: 420px) {
+    .session-cards--2,
+    .session-cards--4 { grid-template-columns: 1fr; }       /* final fold to single column */
   }
 
   /* Session cards — community tone: #54a4f7 bg (via .section--community), navy text */
