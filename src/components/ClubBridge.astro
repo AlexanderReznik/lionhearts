@@ -4,8 +4,6 @@
 ---
 
 <section class="bridge" aria-label="The club in two halves">
-  <p class="bridge__numeral" aria-hidden="true">02</p>
-
   <div class="bridge__col bridge__col--compete section--feature">
     <p class="eyebrow bridge__eyebrow">On the Court</p>
     <h2 class="bridge__label">Compete</h2>
@@ -43,20 +41,6 @@
     border-bottom: 1px solid var(--color-border);
   }
 
-  .bridge__numeral {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: var(--text-watermark);
-    font-weight: var(--weight-black);
-    color: rgba(255, 255, 255, 0.04);
-    line-height: var(--leading-none);
-    pointer-events: none;
-    user-select: none;
-    letter-spacing: var(--tracking-watermark);
-    z-index: 0;
-  }
 
   .bridge__col {
     padding: 56px clamp(28px, 5vw, 64px);
@@ -164,8 +148,6 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       font-size: var(--text-xl);
     }
-
-    .bridge__numeral { top: -12px; }
 
     .bridge__col { padding: 44px var(--page-px); }
   }

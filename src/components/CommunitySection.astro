@@ -5,7 +5,6 @@ import OverheardArchive from './OverheardArchive.astro';
 ---
 
 <section class="community section--feature">
-  <p class="community__numeral" aria-hidden="true">03</p>
   <div class="community__inner container">
 
     <div class="community__header">
@@ -62,19 +61,6 @@ import OverheardArchive from './OverheardArchive.astro';
     width: 500px; height: 500px;
     background: radial-gradient(circle, rgba(84,164,247,0.08) 0%, transparent 70%);
     pointer-events: none;
-  }
-
-  .community__numeral {
-    position: absolute;
-    top: -28px;
-    right: 4vw;
-    font-size: var(--text-watermark);
-    font-weight: var(--weight-black);
-    color: rgba(84, 164, 247, 0.06);
-    line-height: var(--leading-none);
-    pointer-events: none;
-    user-select: none;
-    letter-spacing: var(--tracking-watermark);
   }
 
   .community__inner { position: relative; }

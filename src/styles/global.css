@@ -75,8 +75,6 @@ a { color: inherit; }
   --tracking-wide: 0.2em;
   /* Body + notes share one near-zero tracking (S16). */
   --tracking-body: 0;
-  /* Tier-B giant watermark words (8rem+) — the only other tracking option. */
-  --tracking-watermark: 0.05em;
 
   /* ── Type scale ──
      ONE definition per size; components never hardcode a font-size. Named per
@@ -99,7 +97,6 @@ a { color: inherit; }
   --text-sub:       clamp(2rem, 4vw, 2.5rem);     /* ~32px — section sub-heads */
   --text-display:   clamp(2.5rem, 6vw, 3.5rem);   /* page-hero & big section titles */
   --text-hero:      clamp(3.25rem, 8vw, 6rem);    /* ~52px — homepage hero headline */
-  --text-watermark: clamp(8rem, 18vw, 16rem);     /* giant decorative watermark words */
 
   /* ── Font-weight scale ──
      ONE definition per weight (Barlow ships these faces); never hardcode. */
