@@ -246,7 +246,9 @@ const isActive = (href: string) =>
   .nav__overlay-cta { width: 100%; justify-content: center; }
 
   /* ── Mobile breakpoint ── */
-  @media (max-width: 768px) {
+  /* 992px (not 768): the full desktop row stops fitting around ~960px, so the
+     hamburger must take over before the CTA overflows the viewport. */
+  @media (max-width: 992px) {
     .nav__links  { display: none; }
     .nav__hamburger { display: flex; }
     .nav__inner { gap: 12px; }
@@ -276,7 +278,7 @@ const isActive = (href: string) =>
   }
 
   /* Hide the desktop toggle on mobile (it lives in the overlay there) */
-  @media (max-width: 768px) {
+  @media (max-width: 992px) {
     .nav__theme-toggle { display: none; }
   }
 
