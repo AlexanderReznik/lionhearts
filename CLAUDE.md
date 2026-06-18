@@ -66,8 +66,6 @@ headings are a deliberate brand Style-#2 exception (~2.62:1, accepted, commented
   pill-slider (in `Nav.astro`, desktop + overlay) flips it and persists to
   `localStorage['lh-theme']`. Knob position is pure-CSS-driven from
   `html[data-theme]`, so instances stay in sync.
-- **Per-page light opt-out:** wrap content in `.force-light` (re-asserts light
-  semantic tokens). Used by the Vinarius sub-brand page.
 
 ### GOTCHA — dark overrides in `is:global` / `set:html` blocks
 
@@ -83,8 +81,9 @@ the `:global(html[data-theme="dark"]) .my-class` ancestor pattern IS correct.)
 ### Brand work — specs & plans
 
 Phased rebrand documented under `docs/superpowers/{specs,plans}/`. **Merged:**
-Phase 1 (light-led foundation), Phase 2 (dark theme + toggle), Phase 3-A (Vinarius
-burgundy/cream sub-brand page), Phase 3-B (dual-style `.section--feature`/
-`--community` mapping), and the light-theme WCAG AA pass (`--color-accent-text`).
-**Remaining:** Phase 3-C — photography (real photos + navy duotone), not yet
-started.
+Phase 1 (light-led foundation), Phase 2 (dark theme + toggle), Phase 3-B
+(dual-style `.section--feature`/`--community` mapping), and the light-theme WCAG
+AA pass (`--color-accent-text`). **Removed:** Phase 3-A (the Vinarius
+burgundy/cream sub-brand page) and its `.force-light` opt-out utility — the
+sponsor tile now links straight to `https://vinarius.london`. **Remaining:**
+Phase 3-C — photography (real photos + navy duotone), not yet started.

@@ -360,25 +360,3 @@ body {
 .graphic-accent--bottom-left  { bottom: 0; left: 0; }
 @media (prefers-reduced-motion: reduce) { .graphic-accent { opacity: 0.1; } }
 
-/* ── Force-light subtree ──
-   Re-asserts the light semantic tokens, overriding an ancestor
-   html[data-theme="dark"]. Used by the Vinarius sub-brand page. */
-.force-light {
-  --color-bg:           var(--lh-white);
-  --color-bg-alt:       var(--lh-blue-100);
-  --color-surface:      var(--lh-white);
-  --color-surface-2:    #f4f8fd;
-  --color-surface-3:    #eaf1fb;
-  --color-text:         var(--lh-navy);
-  --color-text-muted:   #5a6b86;
-  --color-text-faint:   #5e6c88;
-  --color-accent-text:  #0050b8;
-  --color-highlight-1:  var(--lh-blue);
-  --color-highlight-2:  var(--lh-blue-deep);
-  --color-border:       rgba(17, 35, 75, 0.12);
-  --color-border-blue:  rgba(84, 164, 247, 0.35);
-  --btn-primary-bg:     var(--lh-navy);
-  --btn-primary-text:   var(--lh-white);
-  background: var(--color-bg);
-  color: var(--color-text);
-}
