@@ -7,7 +7,7 @@
   <p class="bridge__numeral" aria-hidden="true">02</p>
 
   <div class="bridge__col bridge__col--compete section--feature">
-    <p class="bridge__eyebrow">On the Court</p>
+    <p class="eyebrow bridge__eyebrow">On the Court</p>
     <h2 class="bridge__label">Compete</h2>
     <ul class="bridge__points" role="list">
       <li>NVL Super League</li>
@@ -22,7 +22,7 @@
   </div>
 
   <div class="bridge__col bridge__col--connect section--community">
-    <p class="bridge__eyebrow">Off the Court</p>
+    <p class="eyebrow bridge__eyebrow">Off the Court</p>
     <h2 class="bridge__label">Connect</h2>
     <ul class="bridge__points" role="list">
       <li>Open sessions every week</li>
@@ -71,12 +71,8 @@
     text-align: right;
   }
 
+  /* recipe from .eyebrow; per-column colour set below */
   .bridge__eyebrow {
-    font-size: var(--text-eyebrow);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.55);
     margin-bottom: 14px;
   }
 
@@ -174,6 +170,6 @@
     .bridge__col { padding: 44px var(--page-px); }
   }
 
-  .bridge__col--compete .bridge__eyebrow { color: rgba(255, 255, 255, 0.6); }
-  .bridge__col--connect .bridge__eyebrow { color: var(--lh-navy); }
+  .bridge__col--compete .bridge__eyebrow { --color-accent-text: rgba(255, 255, 255, 0.6); }
+  .bridge__col--connect .bridge__eyebrow { --color-accent-text: var(--lh-navy); }
 </style>

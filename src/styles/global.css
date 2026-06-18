@@ -243,11 +243,14 @@ body {
 .eyebrow::before {
   content: '';
   display: block;
-  width: 3px;
-  height: 0.625em;
+  width: 18px;            /* accent block — wide lead-in, full text height */
+  height: 1em;
   background: var(--color-accent-text);
   flex-shrink: 0;
 }
+/* Centered eyebrow (e.g. above a centered section card) — drop the leading tick. */
+.eyebrow--center { justify-content: center; text-align: center; }
+.eyebrow--center::before { display: none; }
 
 /* ── Container ──
    Max-width + centering only. Edge padding belongs to the section
@@ -272,8 +275,8 @@ body {
   background: radial-gradient(ellipse at 80% 50%, rgba(84,164,247,0.12) 0%, transparent 70%);
   pointer-events: none;
 }
-.page-hero__eyebrow { color: var(--color-accent-text); font-size: var(--text-eyebrow); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-.page-hero__eyebrow::before { content: ''; display: block; width: 18px; height: 2px; background: var(--color-accent-text); }
+/* Page-hero eyebrow — shares the .eyebrow recipe + accent rule; only spacing differs. */
+.page-hero__eyebrow { gap: 8px; margin-bottom: 12px; }
 .page-hero__title { font-size: var(--text-display); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-display); line-height: var(--leading-display); }
 .page-hero__title em { color: var(--color-accent-text); font-style: normal; }
 .page-hero__sub { color: var(--color-text-muted); font-size: var(--text-body); margin-top: 12px; max-width: 520px; line-height: var(--leading-relaxed); }

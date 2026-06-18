@@ -10,7 +10,7 @@ const sponsor = {
 ---
 
 <section class="sponsors" aria-labelledby="sponsors-heading">
-  <h2 id="sponsors-heading" class="sponsors__eyebrow">Proudly supported by</h2>
+  <h2 id="sponsors-heading" class="eyebrow eyebrow--center sponsors__eyebrow">Proudly supported by</h2>
 
   <div class="sponsors__title-card">
     <span class="sponsors__badge">Title Sponsor</span>
@@ -31,12 +31,9 @@ const sponsor = {
     border-top: 1px solid var(--color-border);
   }
 
+  /* recipe from .eyebrow + .eyebrow--center (centered, tickless); muted colour */
   .sponsors__eyebrow {
-    text-align: center;
-    color: var(--color-text-muted);
-    font-size: var(--text-eyebrow);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
+    --color-accent-text: var(--color-text-muted);
     margin-bottom: 28px;
   }
 

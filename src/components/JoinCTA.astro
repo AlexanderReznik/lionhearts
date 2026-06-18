@@ -5,7 +5,7 @@
 <section class="join-cta" aria-label="Join the club">
   <div class="join-cta__inner section--community">
     <div class="join-cta__copy">
-      <p class="join-cta__kicker">Shoreditch · All Levels · All Backgrounds</p>
+      <p class="eyebrow join-cta__kicker">Shoreditch · All Levels · All Backgrounds</p>
       <h2 class="join-cta__headline">Ready <span class="gradient-text">to play?</span></h2>
       <p class="join-cta__sub">Open sessions 3× a week. No experience needed. New to London? You'll fit right in.</p>
       <p class="join-cta__location">
@@ -55,12 +55,9 @@
 
   .join-cta__copy { position: relative; }
 
+  /* recipe from .eyebrow; navy text + tick on the light-blue community panel */
   .join-cta__kicker {
-    font-size: var(--text-eyebrow);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--lh-navy);
+    --color-accent-text: var(--lh-navy);
     margin-bottom: 12px;
   }
 
