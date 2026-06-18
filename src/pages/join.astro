@@ -196,7 +196,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .pathway__rec {
     font-size: 0.4375rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: rgba(255,255,255,0.65);
   }
@@ -226,7 +226,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 1.125rem;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: -0.5px;
+    letter-spacing: var(--tracking-display);
   }
 
   /* non-featured pathways are on a light surface — use dark text tokens */
@@ -284,7 +284,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: 10px;
     font-size: 0.5625rem;
     font-weight: 700;
-    letter-spacing: 2.5px;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text);
     margin-bottom: 20px;
@@ -316,12 +316,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .join-form__field label {
     font-size: 0.5625rem;
     font-weight: 700;
-    letter-spacing: 1.5px;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
 
-  .join-form__optional { font-weight: 400; color: var(--color-text-faint); text-transform: none; letter-spacing: 0; }
+  .join-form__optional { font-weight: 400; color: var(--color-text-faint); text-transform: none; letter-spacing: var(--tracking-body); }
 
   .join-form__field input,
   .join-form__field select,
@@ -390,7 +390,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-top: 8px;
     padding: 15px;
     font-size: 0.875rem;
-    letter-spacing: 1px;
+    letter-spacing: var(--tracking-wide);
   }
 
   .join-form__note {

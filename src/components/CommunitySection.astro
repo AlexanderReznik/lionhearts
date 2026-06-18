@@ -74,7 +74,7 @@ import OverheardArchive from './OverheardArchive.astro';
     line-height: 1;
     pointer-events: none;
     user-select: none;
-    letter-spacing: -0.05em;
+    letter-spacing: var(--tracking-watermark);
   }
 
   .community__inner { position: relative; }
@@ -140,7 +140,7 @@ import OverheardArchive from './OverheardArchive.astro';
   .community__divider span {
     font-size: 0.5625rem;
     color: rgba(255,255,255,0.5);
-    letter-spacing: 2px;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     white-space: nowrap;
   }

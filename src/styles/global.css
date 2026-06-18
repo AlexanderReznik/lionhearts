@@ -57,15 +57,17 @@ a { color: inherit; }
 
   /* Display headings (Tier A): tracking + leading shared by every uppercase
      900-weight title AND its matching sub-titles. Loosened per designer (S17/18 —
-     titles were too tight); can go larger. Watermark words (Tier B, 8rem+) keep
-     their own -0.05em locally. */
+     titles were too tight); can go larger. */
   --tracking-display: 0.02em;
   --leading-display:  1.05;
 
-  /* The single "very wide" tracking — eyebrows + buttons only (S16). */
+  /* The single "very wide" tracking — eyebrows + buttons + small uppercase
+     labels/badges/meta (S16). */
   --tracking-wide: 0.2em;
   /* Body + notes share one near-zero tracking (S16). */
   --tracking-body: 0;
+  /* Tier-B giant watermark words (8rem+) — the only other tracking option. */
+  --tracking-watermark: 0.05em;
 
   /* Sub-tier heading size ("Sub ~32px", S19/S27) — community + overheard heads. */
   --text-sub: clamp(2rem, 4vw, 2.5rem);
@@ -274,7 +276,7 @@ body {
   border-radius: 20px;
   font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   border: 1px solid var(--color-border);
   color: var(--color-text-muted);
