@@ -413,10 +413,10 @@ const teamSections = [
     gap: 4px;
   }
 
-  .session-card__day { font-size: var(--text-body-sm); font-weight: 900; text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--lh-navy); }
-  .session-card__time { font-size: var(--text-lg); font-weight: 900; letter-spacing: var(--tracking-display); color: var(--lh-navy); }
-  .session-card__level { font-size: var(--text-eyebrow); font-weight: 700; letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--lh-navy); }
-  .session-card__venue { font-size: var(--text-eyebrow); color: var(--lh-navy); line-height: 1.5; margin-top: 4px; }
+  .session-card__day { font-size: var(--text-body-sm); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--lh-navy); }
+  .session-card__time { font-size: var(--text-lg); font-weight: var(--weight-black); letter-spacing: var(--tracking-display); color: var(--lh-navy); }
+  .session-card__level { font-size: var(--text-eyebrow); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--lh-navy); }
+  .session-card__venue { font-size: var(--text-eyebrow); color: var(--lh-navy); line-height: var(--leading-normal); margin-top: 4px; }
 
   /* White text on the darkened photo cards (overrides the navy defaults above). */
   .session-card--photo .session-card__day,
@@ -430,10 +430,10 @@ const teamSections = [
   }
 
   .session-card__venue-label { font-size: var(--text-eyebrow); color: var(--lh-navy); letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 4px; }
-  .session-card--venue strong { font-size: var(--text-body-sm); font-weight: 700; color: var(--lh-navy); }
+  .session-card--venue strong { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--lh-navy); }
   .session-card--venue span { font-size: var(--text-note); color: var(--lh-navy); }
-  .session-card__map-link { color: var(--lh-navy); font-size: var(--text-eyebrow); font-weight: 700; text-decoration: none; margin-top: 8px; }
-  .session-card__transport { font-size: var(--text-eyebrow); color: var(--lh-navy); margin-top: 4px; line-height: 1.5; }
+  .session-card__map-link { color: var(--lh-navy); font-size: var(--text-eyebrow); font-weight: var(--weight-bold); text-decoration: none; margin-top: 8px; }
+  .session-card__transport { font-size: var(--text-eyebrow); color: var(--lh-navy); margin-top: 4px; line-height: var(--leading-normal); }
 
   /* ── Team fixture sections ──*/
   .team-fixture-section {
@@ -455,14 +455,14 @@ const teamSections = [
 
   .team-fixture-section__name {
     font-size: var(--text-body);
-    font-weight: 800;
+    font-weight: var(--weight-extrabold);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
   }
 
   .team-fixture-section__badge {
     font-size: var(--text-eyebrow);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-accent-text);
@@ -512,7 +512,7 @@ const teamSections = [
   .tl-section-label {
     padding: 7px 18px 5px;
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text-faint);
@@ -545,13 +545,13 @@ const teamSections = [
   }
 
   .tl-date { color: var(--color-text-faint); font-size: var(--text-body-sm); white-space: nowrap; }
-  .tl-row-up--next .tl-date { color: var(--color-accent-text); font-weight: 700; }
+  .tl-row-up--next .tl-date { color: var(--color-accent-text); font-weight: var(--weight-bold); }
 
   .tl-vs { color: var(--color-text-faint); font-size: var(--text-note); margin-right: 4px; }
 
   .tl-up-meta { display: flex; flex-direction: column; gap: 3px; }
   .tl-up-opp { color: var(--color-text); }
-  .tl-row-up--next .tl-up-opp { color: var(--lh-navy); font-weight: 700; }
+  .tl-row-up--next .tl-up-opp { color: var(--lh-navy); font-weight: var(--weight-bold); }
   .tl-up-venue { color: var(--color-text-faint); font-size: var(--text-note); }
   .tl-row-up--next .tl-up-venue { color: var(--color-text-muted); }
 
@@ -559,7 +559,7 @@ const teamSections = [
 
   .next-pill {
     font-size: var(--text-micro);
-    font-weight: 800;
+    font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--lh-navy);
@@ -587,7 +587,7 @@ const teamSections = [
     border-radius: 4px;
     padding: 2px 8px;
     font-size: var(--text-eyebrow);
-    font-weight: 800;
+    font-weight: var(--weight-extrabold);
     white-space: nowrap;
   }
 
@@ -600,7 +600,7 @@ const teamSections = [
     border-radius: 4px;
     padding: 2px 8px;
     font-size: var(--text-eyebrow);
-    font-weight: 800;
+    font-weight: var(--weight-extrabold);
     white-space: nowrap;
   }
 

@@ -86,7 +86,7 @@ const first = quotes[0];
 
   .overheard__title {
     font-size: var(--text-sub);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     line-height: var(--leading-display);
     letter-spacing: var(--tracking-display);
     text-transform: uppercase;
@@ -102,13 +102,13 @@ const first = quotes[0];
   .overheard__sub {
     font-size: var(--text-body);
     color: var(--color-text-muted);
-    line-height: 1.55;
+    line-height: var(--leading-normal);
     max-width: 540px;
   }
 
   .overheard__sub strong {
     color: var(--color-text);
-    font-weight: 600;
+    font-weight: var(--weight-semibold);
   }
 
   /* Always rendered inside CommunitySection's dark feature surface, so the
@@ -129,8 +129,8 @@ const first = quotes[0];
 
   .overheard__quote p {
     font-size: var(--text-lead);
-    line-height: 1.4;
-    font-weight: 600;
+    line-height: var(--leading-snug);
+    font-weight: var(--weight-semibold);
     color: var(--color-text);
     margin: 0 0 16px;
   }
@@ -144,7 +144,7 @@ const first = quotes[0];
 
   .overheard__attrib strong {
     color: var(--color-text);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
   }
 
   .overheard__pagination {

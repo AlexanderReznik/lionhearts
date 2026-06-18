@@ -100,7 +100,7 @@ const perks = [
     background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
     color: #fff;
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     padding: 5px 14px;
@@ -134,7 +134,7 @@ const perks = [
   .sponsor-hero__desc {
     color: var(--color-text-muted);
     font-size: var(--text-body);
-    line-height: 1.75;
+    line-height: var(--leading-loose);
     margin-bottom: 22px;
   }
 
@@ -177,7 +177,7 @@ const perks = [
   .become-sponsor__headline {
     color: var(--lh-white);
     font-size: var(--text-2xl);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
     margin-bottom: 8px;
@@ -187,7 +187,7 @@ const perks = [
     color: rgba(255,255,255,0.65);
     font-size: var(--text-body);
     max-width: 400px;
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
   }
 
   /* ── Perks grid ── */
@@ -217,6 +217,6 @@ const perks = [
   .perk-card:hover { border-color: var(--color-border-blue); }
 
   .perk-card__icon { font-size: var(--text-xl); margin-bottom: 12px; }
-  .perk-card__title { font-size: var(--text-body-sm); font-weight: 700; text-transform: uppercase; letter-spacing: var(--tracking-display); margin-bottom: 6px; }
-  .perk-card__body { font-size: var(--text-note); color: var(--color-text-muted); line-height: 1.65; }
+  .perk-card__title { font-size: var(--text-body-sm); font-weight: var(--weight-bold); text-transform: uppercase; letter-spacing: var(--tracking-display); margin-bottom: 6px; }
+  .perk-card__body { font-size: var(--text-note); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
 </style>

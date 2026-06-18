@@ -70,12 +70,12 @@ const sessions = raw.map(s => ({
   .sessions-strip__lead-text {
     display: flex;
     flex-direction: column;
-    line-height: 1.35;
+    line-height: var(--leading-snug);
   }
 
   .sessions-strip__lead-text strong {
     font-size: var(--text-body-sm);
-    font-weight: 800;
+    font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-body);
     color: var(--lh-navy);
   }
@@ -108,7 +108,7 @@ const sessions = raw.map(s => ({
 
   .sessions-strip__day {
     font-size: var(--text-body);          /* match the time size */
-    font-weight: 600;              /* lighter than the 900 time, to differentiate */
+    font-weight: var(--weight-semibold);              /* lighter than the 900 time, to differentiate */
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--lh-navy);
@@ -117,7 +117,7 @@ const sessions = raw.map(s => ({
 
   .sessions-strip__time {
     font-size: var(--text-body);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     color: var(--lh-navy);
     letter-spacing: var(--tracking-body);
     white-space: nowrap;
@@ -133,7 +133,7 @@ const sessions = raw.map(s => ({
   .sessions-strip__link {
     flex-shrink: 0;
     font-size: var(--text-eyebrow);
-    font-weight: 800;
+    font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--lh-navy);

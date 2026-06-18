@@ -95,7 +95,7 @@ const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.defa
 
   .team-card__gender {
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-accent-text);
@@ -106,10 +106,10 @@ const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.defa
   .team-card__name {
     margin-bottom: 8px;
     font-size: var(--text-sub);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
-    line-height: 1;
+    line-height: var(--leading-none);
     color: var(--color-text);
   }
 
@@ -128,7 +128,7 @@ const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.defa
     border-radius: 3px;
     padding: 3px 10px;
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
   }

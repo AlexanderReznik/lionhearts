@@ -162,7 +162,7 @@ const { slides } = Astro.props;
     border-radius: 4px;
     padding: 6px 14px;
     font-size: var(--text-eyebrow);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
   }
@@ -172,7 +172,7 @@ const { slides } = Astro.props;
 
   .hero__headline {
     font-size: var(--text-hero);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     line-height: var(--leading-display);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
@@ -184,7 +184,7 @@ const { slides } = Astro.props;
   .hero__sub {
     color: var(--color-text-muted);
     font-size: var(--text-body);
-    line-height: 1.65;
+    line-height: var(--leading-relaxed);
     margin-bottom: 32px;
     max-width: 460px;
   }

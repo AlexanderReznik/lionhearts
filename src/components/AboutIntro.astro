@@ -61,9 +61,9 @@ const stats = [
     top: -32px;
     left: 4vw;
     font-size: var(--text-watermark);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     color: rgba(84, 164, 247, 0.06);
-    line-height: 1;
+    line-height: var(--leading-none);
     pointer-events: none;
     user-select: none;
     letter-spacing: var(--tracking-watermark);
@@ -80,7 +80,7 @@ const stats = [
 
   .about-intro__headline {
     font-size: var(--text-sub);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     line-height: var(--leading-display);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
@@ -92,7 +92,7 @@ const stats = [
   .about-intro__body {
     color: var(--color-text-muted);
     font-size: var(--text-body);
-    line-height: 1.75;
+    line-height: var(--leading-loose);
     margin-bottom: 24px;
   }
 
@@ -102,7 +102,7 @@ const stats = [
     gap: 8px;
     color: var(--color-accent-text);
     font-size: var(--text-note);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     text-decoration: none;
@@ -140,9 +140,9 @@ const stats = [
     font-size: var(--text-lead);
   }
 
-  .about-intro__location-card h3 { font-size: var(--text-body); font-weight: 800; margin-bottom: 2px; }
-  .about-intro__location-card p { font-size: var(--text-note); color: var(--color-text-muted); line-height: 1.5; }
-  .about-intro__postcode { color: var(--color-accent-text); font-weight: 700; }
+  .about-intro__location-card h3 { font-size: var(--text-body); font-weight: var(--weight-extrabold); margin-bottom: 2px; }
+  .about-intro__location-card p { font-size: var(--text-note); color: var(--color-text-muted); line-height: var(--leading-normal); }
+  .about-intro__postcode { color: var(--color-accent-text); font-weight: var(--weight-bold); }
 
   /* ── By the numbers ── */
   .about-intro__numbers {
@@ -165,15 +165,15 @@ const stats = [
 
   .about-intro__stat strong {
     font-size: var(--text-2xl);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     color: var(--color-text);
-    line-height: 1;
+    line-height: var(--leading-none);
     letter-spacing: var(--tracking-display);
   }
 
   .about-intro__stat span {
     font-size: var(--text-eyebrow);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text-muted);

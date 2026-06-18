@@ -49,9 +49,9 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: var(--text-watermark);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     color: rgba(255, 255, 255, 0.04);
-    line-height: 1;
+    line-height: var(--leading-none);
     pointer-events: none;
     user-select: none;
     letter-spacing: var(--tracking-watermark);
@@ -73,7 +73,7 @@
 
   .bridge__eyebrow {
     font-size: var(--text-eyebrow);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.55);
@@ -82,7 +82,7 @@
 
   .bridge__label {
     font-size: var(--text-display);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
     line-height: var(--leading-display);
@@ -102,7 +102,7 @@
   .bridge__points li {
     font-size: var(--text-body);
     color: rgba(255, 255, 255, 0.75);
-    line-height: 1.5;
+    line-height: var(--leading-normal);
   }
 
   .bridge__col--connect .bridge__points li {
@@ -111,7 +111,7 @@
 
   .bridge__link {
     font-size: var(--text-note);
-    font-weight: 800;
+    font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     text-decoration: none;
@@ -139,7 +139,7 @@
     justify-content: center;
     color: rgba(255, 255, 255, 0.25);
     font-size: var(--text-2xl);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     border-left: 1px solid rgba(255, 255, 255, 0.04);
     border-right: 1px solid rgba(255, 255, 255, 0.04);
   }

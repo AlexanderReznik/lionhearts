@@ -195,7 +195,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .pathway__rec {
     font-size: var(--text-micro);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: rgba(255,255,255,0.65);
@@ -204,7 +204,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .form-intro {
     color: var(--color-text-muted);
     font-size: var(--text-body);
-    line-height: 1.65;
+    line-height: var(--leading-relaxed);
     margin-top: -12px;
     margin-bottom: 28px;
     max-width: 520px;
@@ -224,7 +224,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .pathway__title {
     font-size: var(--text-lead);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
   }
@@ -232,7 +232,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   /* non-featured pathways are on a light surface — use dark text tokens */
   .pathway__body {
     font-size: var(--text-body-sm);
-    line-height: 1.65;
+    line-height: var(--leading-relaxed);
     color: var(--color-text-muted);
     flex: 1;
   }
@@ -254,7 +254,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     text-decoration: none;
     color: var(--color-text);
     font-size: var(--text-note);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     background: var(--color-bg-alt);
     margin-top: auto;
     transition: border-color 0.15s;
@@ -283,7 +283,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     align-items: center;
     gap: 10px;
     font-size: var(--text-eyebrow);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text);
@@ -315,13 +315,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .join-form__field label {
     font-size: var(--text-eyebrow);
-    font-weight: 700;
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
 
-  .join-form__optional { font-weight: 400; color: var(--color-text-faint); text-transform: none; letter-spacing: var(--tracking-body); }
+  .join-form__optional { font-weight: var(--weight-regular); color: var(--color-text-faint); text-transform: none; letter-spacing: var(--tracking-body); }
 
   .join-form__field input,
   .join-form__field select,
@@ -371,7 +371,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     gap: 12px;
     font-size: var(--text-note);
     color: var(--color-text-muted);
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
     cursor: pointer;
   }
 
@@ -396,7 +396,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .join-form__note {
     color: var(--color-text-muted);
     font-size: var(--text-note);
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
     text-align: center;
   }
 

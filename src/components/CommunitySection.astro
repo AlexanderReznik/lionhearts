@@ -69,9 +69,9 @@ import OverheardArchive from './OverheardArchive.astro';
     top: -28px;
     right: 4vw;
     font-size: var(--text-watermark);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     color: rgba(84, 164, 247, 0.06);
-    line-height: 1;
+    line-height: var(--leading-none);
     pointer-events: none;
     user-select: none;
     letter-spacing: var(--tracking-watermark);
@@ -85,7 +85,7 @@ import OverheardArchive from './OverheardArchive.astro';
 
   .community__headline {
     font-size: var(--text-sub);
-    font-weight: 900;
+    font-weight: var(--weight-black);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
     line-height: var(--leading-display);
@@ -98,7 +98,7 @@ import OverheardArchive from './OverheardArchive.astro';
     color: var(--color-text-muted);
     font-size: var(--text-body);
     margin-top: 12px;
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
   }
 
   .community__mosaic {
