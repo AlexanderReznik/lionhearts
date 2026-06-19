@@ -101,6 +101,32 @@ export async function getSessions(sheetId?: string): Promise<{ sessions: Session
   }
 }
 
+/**
+ * Hardcoded fallback for the junior sessions, used when GOOGLE_SHEET_ID /
+ * GOOGLE_JUNIORS_GID are unset or the fetch fails. Juniors live on a separate
+ * tab of the same sheet (its own gid) and only carry day + time — level/venue
+ * /price default via parseSessionsCSV the same way the adult sessions do.
+ */
+export const JUNIOR_FALLBACK_CSV = `day,time
+Saturday,1:30pm–3:30pm`;
+
+/**
+ * Returns the junior sessions from the dedicated juniors tab (its own gid) if
+ * both sheetId and gid are set, otherwise from JUNIOR_FALLBACK_CSV. Mirrors
+ * getSessions, resolving `usingFallback` so callers can surface a notice.
+ */
+export async function getJuniorSessions(sheetId?: string, gid?: string): Promise<{ sessions: Session[]; usingFallback: boolean }> {
+  if (!sheetId || !gid) {
+    return { sessions: parseSessionsCSV(JUNIOR_FALLBACK_CSV), usingFallback: true };
+  }
+  try {
+    return { sessions: parseSessionsCSV(await fetchSheetCSV(sheetId, gid)), usingFallback: false };
+  } catch (e) {
+    console.warn('Google Sheets fetch failed, using fallback junior session data:', e);
+    return { sessions: parseSessionsCSV(JUNIOR_FALLBACK_CSV), usingFallback: true };
+  }
+}
+
 /** "Monday" → "Mon" */
 export function abbreviateDay(day: string): string {
   return day.slice(0, 3);

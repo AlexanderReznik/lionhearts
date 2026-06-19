@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
 import { Image } from 'astro:assets';
 import sessionPhoto from '../assets/hero/cats-2025-26-2.jpg';
-import { getSessions, parseSessionSchedule } from '../lib/sheets';
+import { getSessions, getJuniorSessions, parseSessionSchedule } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
 
@@ -18,6 +18,11 @@ import { fetchAllFixtures } from '../lib/volleyzone';
 const { sessions, usingFallback } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 // Tile count = sessions + the venue tile; drives the responsive grid columns.
 const tileCount = sessions.length + 1;
+
+// Junior sessions live on a separate tab of the same sheet — set
+// GOOGLE_JUNIORS_GID to its gid. day + time only (no level/venue tile).
+const { sessions: juniorSessions, usingFallback: juniorsFallback } =
+  await getJuniorSessions(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_JUNIORS_GID);
 
 const fixturesMap = await fetchAllFixtures();
 const buildTimestamp = new Date().toLocaleDateString('en-GB', {
@@ -166,6 +171,39 @@ const teamSections = [
             Short walk from Bethnal Green,<br />Shoreditch High Street or Hoxton
           </span>
         </div>
+      </div>
+    </section>
+
+    <!-- Junior Sessions -->
+    <section class="sessions-box" aria-labelledby="juniors-heading">
+      <h2 class="eyebrow" id="juniors-heading">Junior Sessions</h2>
+
+      {juniorsFallback && (
+        <p class="sessions-box__notice">
+          ℹ️ Schedule confirmed — check our Instagram for any last-minute changes.
+        </p>
+      )}
+
+      <div class="junior-cards">
+        {juniorSessions.map(s => (
+          <div class="session-card session-card--photo">
+            <Image
+              class="session-card__bg"
+              src={sessionPhoto}
+              alt=""
+              aria-hidden="true"
+              widths={[240, 360, 480]}
+              sizes="(max-width: 640px) 50vw, 240px"
+              loading="lazy"
+            />
+            <div class="session-card__content">
+              <div class="session-card__day">{s.day}</div>
+              <div class="session-card__time">{s.time}</div>
+              {s.level && <div class="session-card__level">{s.level}</div>}
+              <div class="session-card__venue">📍 {s.venue}</div>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
 
@@ -399,6 +437,18 @@ const teamSections = [
   @media (max-width: 420px) {
     .session-cards--2,
     .session-cards--4 { grid-template-columns: 1fr; }       /* final fold to single column */
+  }
+
+  /* Junior cards — fixed-width tiles that wrap, so a lone session doesn't
+     stretch full-width like the count-aware adult grid does. */
+  .junior-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 260px));
+    gap: 12px;
+  }
+
+  @media (max-width: 420px) {
+    .junior-cards { grid-template-columns: 1fr; }
   }
 
   /* Session cards — community tone: #54a4f7 bg (via .section--community), navy text */

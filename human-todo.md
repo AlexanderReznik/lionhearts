@@ -19,55 +19,6 @@ The contact form on `/join` is wired up but needs a real form ID.
 
 ---
 
-## 2. Team photos (9 photos needed)
-
-### Where to put them
-Drop files into `public/images/teams/`. Use these exact filenames:
-
-| Team | Filename |
-|---|---|
-| Vinarius | `vinarius.jpg` |
-| Cats | `cats.jpg` |
-| Fury | `fury.jpg` |
-| Beats | `beats.jpg` |
-| Alpha | `alpha.jpg` |
-| Predators | `predators.jpg` |
-| Pride | `pride.jpg` |
-| Roar | `roar.jpg` |
-| Leo | `leo.jpg` |
-
-### How they plug in
-Open `src/data/teams.ts` and set the `image` field for each team:
-```ts
-{ name: 'Vinarius', image: '/images/teams/vinarius.jpg', ... }
-```
-The team cards will automatically show the photo once the path is set.
-
-### Photo specs
-- **Size:** 1280×720 px (16:9 landscape) recommended. 960×540 minimum.
-- **Aspect:** **16:9** — the team card uses `aspect-ratio: 16/9` with `object-fit: cover`, so 4:3 photos will get the top + bottom cropped. Shoot or crop wide.
-- **Format:** WebP preferred (~30% smaller). JPEG fine.
-- **File size:** under 150 KB each.
-- **Composition:** whole team visible, faces roughly centered, a little headroom — anything at the very top/bottom may get clipped by the card crop.
-- Photos from a phone are fine — just resize and re-crop to 16:9 before dropping in.
-
-> If you use WebP, change the file extensions to `.webp` and update the `image:` paths in `src/data/teams.ts` to match.
-
----
-
-## 3. Vinarius logo (Sponsorship page)
-
-The sponsor block on `/sponsorship` shows a grey placeholder where the logo should go.
-
-1. Get a Vinarius logo file — PNG with transparent background is ideal, SVG also works
-2. Drop it into `public/images/sponsors/vinarius.png`
-3. Open `src/pages/sponsorship.astro` and set:
-   ```ts
-   logo: '/images/sponsors/vinarius.png'
-   ```
-
----
-
 ## 4. OG image (social sharing preview)
 
 This is the image that appears when the site is shared on WhatsApp, iMessage, Twitter, etc. There's a placeholder wired up but it needs a real image.
@@ -291,6 +242,45 @@ A single placeholder file at `src/assets/hero/placeholder.jpg` (a subtle blue gr
 
 ---
 
+## 12. Junior sessions tab (Google Sheet)
+
+The **Junior Sessions** block on `/events` reads from its own tab on the same
+Google Sheet from item 8. Skip this and the section shows a single hardcoded
+fallback (Saturday 1:30–3:30pm) — fine for launch, easy to add later.
+
+### 12a. Create the tab
+
+1. Open the existing schedule sheet.
+2. Click the `+` at the bottom-left to add a new tab. Rename it to **Juniors**.
+3. In row 1 add these headers (case-insensitive):
+   - `day` (required) — e.g. "Saturday"
+   - `time` (required) — e.g. "1:30pm–3:30pm" (real en-dash `–`, see item 8)
+4. One session per row. Just the two columns is the common case:
+
+   | day | time |
+   |---|---|
+   | Saturday | 1:30pm–3:30pm |
+
+   Venue/price are not shown on the junior cards (they default to the club
+   constants), so no extra columns are needed.
+
+### 12b. Wire the tab's gid into the site
+
+The "gid" is the numeric ID of the tab. Find it by clicking the Juniors tab and
+looking at the URL: `...#gid=123456789` — that number is the gid.
+
+1. Locally: add to `.env.local`:
+   ```
+   GOOGLE_JUNIORS_GID=123456789
+   ```
+2. In Netlify/Vercel: add `GOOGLE_JUNIORS_GID` as an env var with the same value.
+3. Trigger a redeploy.
+
+The webhook from item 8c already covers this tab — onChange fires for edits to
+any tab in the sheet.
+
+---
+
 ## Image folder structure (for reference)
 
 ```
@@ -319,3 +309,21 @@ public/
       vinarius.png
   og-image.jpg
 ```
+
+
+
+
+Add other sponsors, make vinarius superleague sponsor,
+Follow lionhearts volleyball is too wide on mobile
+Add venue for the upcoming games and maybe results
+Clean up unused images
+Improve left side of the footer?
+Pick a nice free insta widget
+Add analytics
+
+
+Pending data
+- add hero carousel images
+- open sessions placeholder
+- 
+

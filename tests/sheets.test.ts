@@ -7,6 +7,7 @@ import {
   to24Hour,
   parseSessionSchedule,
   getSessions,
+  getJuniorSessions,
   getQuotes,
   FALLBACK_QUOTES,
   type Session,
@@ -200,6 +201,46 @@ describe('getSessions', () => {
     const { sessions, usingFallback } = await getSessions('test-sheet-id');
     expect(usingFallback).toBe(true);
     expect(sessions).toHaveLength(3);
+  });
+});
+
+describe('getJuniorSessions', () => {
+  const realFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+    vi.restoreAllMocks();
+  });
+
+  it('returns fallback when sheet ID or gid is missing', async () => {
+    const noId = await getJuniorSessions(undefined, '123');
+    expect(noId.usingFallback).toBe(true);
+    expect(noId.sessions.map(s => s.day)).toEqual(['Saturday']);
+
+    const noGid = await getJuniorSessions('sheet-id');
+    expect(noGid.usingFallback).toBe(true);
+    expect(noGid.sessions).toHaveLength(1);
+  });
+
+  it('returns live data when the fetch succeeds', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => `day,time\nSaturday,1:30pm–3:30pm\nSunday,10:00am–12:00pm`,
+    } as Response);
+
+    const { sessions, usingFallback } = await getJuniorSessions('sheet-id', '123');
+    expect(usingFallback).toBe(false);
+    expect(sessions).toHaveLength(2);
+    expect(sessions[0].day).toBe('Saturday');
+  });
+
+  it('falls back when the fetch fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response);
+
+    const { sessions, usingFallback } = await getJuniorSessions('sheet-id', '123');
+    expect(usingFallback).toBe(true);
+    expect(sessions).toHaveLength(1);
   });
 });
 
