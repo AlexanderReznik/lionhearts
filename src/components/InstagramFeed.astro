@@ -71,6 +71,7 @@ const hasBehold = Boolean(BEHOLD_FEED_ID);
     font-weight: var(--weight-black);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
+    overflow-wrap: anywhere;
   }
 
   .instagram__heading a {
@@ -140,6 +141,12 @@ const hasBehold = Boolean(BEHOLD_FEED_ID);
       align-items: flex-start;
       gap: 20px;
       padding: 28px 24px;
+    }
+
+    .instagram__follow-btn {
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
   }
 </style>
