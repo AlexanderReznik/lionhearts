@@ -27,12 +27,20 @@ const { tryouts } = Astro.props;
     color: var(--lh-white);
   }
 
-  /* Dark theme: the page bg IS --lh-navy, so lift the bar to a raised navy
-     (with a hairline) to keep the same stands-out-from-the-page contrast it
-     has against white in light theme. */
+  /* Dark theme: invert the band. In light theme it's a dark navy strip on a
+     white page; in dark theme it becomes a light strip on the navy page, keeping
+     the same stand-out contrast. Body text flips to navy; accent text/links go
+     deep-blue (AA on white) while the dot's bright blue still reads on white. */
   :global(html[data-theme="dark"]) .tryouts-bar {
-    background: var(--lh-navy-raised);
-    border-bottom: 1px solid var(--color-border);
+    background: var(--lh-white);
+    color: var(--lh-navy);
+  }
+  :global(html[data-theme="dark"]) .tryouts-bar__title,
+  :global(html[data-theme="dark"]) .tryouts-bar__link {
+    color: var(--lh-blue-deep);
+  }
+  :global(html[data-theme="dark"]) .tryouts-bar__link:focus-visible {
+    outline-color: var(--lh-blue-deep);
   }
 
   .tryouts-bar__inner {
