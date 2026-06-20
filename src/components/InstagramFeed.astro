@@ -1,14 +1,12 @@
 ---
 // src/components/InstagramFeed.astro
-// Behold.so embed — free tier: 25 posts, refreshes every 24h.
-// 1. Create a free account at behold.so
-// 2. Connect @lionhearts_volleyball
-// 3. Create a feed and copy the feed ID
-// 4. Set BEHOLD_FEED_ID in your environment (see .env.example).
-//    When unset, the component renders the "follow us" fallback panel.
+// Build-time Behold.so JSON feed → static, site-native Instagram grid.
+// See src/lib/behold.ts. When the feed is empty/unavailable (or BEHOLD_FEED_ID
+// is unset), this renders the "follow us" fallback panel instead.
+import { fetchInstagramPosts } from '../lib/behold';
 
-const BEHOLD_FEED_ID = import.meta.env.BEHOLD_FEED_ID;
-const hasBehold = Boolean(BEHOLD_FEED_ID);
+const posts = await fetchInstagramPosts();
+const hasPosts = posts.length > 0;
 ---
 
 <section class="instagram" aria-labelledby="instagram-heading">
@@ -30,11 +28,47 @@ const hasBehold = Boolean(BEHOLD_FEED_ID);
     </a>
   </div>
 
-  {hasBehold ? (
-    <div class="instagram__embed">
-      <behold-widget feed-id={BEHOLD_FEED_ID}></behold-widget>
-      <script defer src="https://w.behold.so/widget.js" type="module"></script>
-    </div>
+  {hasPosts ? (
+    <ul class="ig-grid" role="list">
+      {posts.map((post) => (
+        <li class="ig-tile" style={post.bgColor ? `--tile-bg:${post.bgColor}` : undefined}>
+          <a
+            class="ig-tile__link"
+            href={post.permalink}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={post.altText}
+          >
+            <img
+              class="ig-tile__img"
+              src={post.thumbnailSrc}
+              srcset={post.srcSet}
+              sizes="(max-width: 640px) 50vw, 33vw"
+              loading="lazy"
+              decoding="async"
+              width="400"
+              height="400"
+              alt={post.altText}
+            />
+            {post.mediaType === 'video' && (
+              <span class="ig-tile__badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M8 5v14l11-7z" /></svg>
+              </span>
+            )}
+            {post.mediaType === 'album' && (
+              <span class="ig-tile__badge" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="7" width="12" height="12" rx="2" /><path d="M3 15V5a2 2 0 0 1 2-2h10" /></svg>
+              </span>
+            )}
+            {post.caption && (
+              <span class="ig-tile__overlay" aria-hidden="true">
+                <span class="ig-tile__caption">{post.caption}</span>
+              </span>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
   ) : (
     <div class="instagram__follow-panel">
       <p class="instagram__follow-body">
@@ -90,6 +124,92 @@ const hasBehold = Boolean(BEHOLD_FEED_ID);
 
   .instagram__view-all:hover { color: var(--color-text); }
 
+  /* --- Post grid --- */
+  .ig-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .ig-tile {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--tile-bg, var(--color-bg-alt));
+  }
+
+  .ig-tile__link {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ig-tile__link:focus-visible {
+    outline: 2px solid var(--color-accent-to);
+    outline-offset: 2px;
+  }
+
+  .ig-tile__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .ig-tile__badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: rgba(5, 18, 43, 0.6);
+  }
+
+  .ig-tile__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    background: linear-gradient(
+      to top,
+      var(--lh-navy-deep) 0%,
+      rgba(5, 18, 43, 0.1) 55%,
+      transparent 100%
+    );
+  }
+
+  .ig-tile__caption {
+    color: #fff;
+    font-size: var(--text-note);
+    line-height: var(--leading-snug);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Hover/focus reveal — pointer devices only; touch just opens the link. */
+  @media (hover: hover) {
+    .ig-tile__link:hover .ig-tile__overlay,
+    .ig-tile__link:focus-visible .ig-tile__overlay { opacity: 1; }
+    .ig-tile__link:hover .ig-tile__img,
+    .ig-tile__link:focus-visible .ig-tile__img { transform: scale(1.05); }
+  }
+
+  /* --- Fallback panel (unchanged) --- */
   .instagram__follow-panel {
     background: rgba(255,255,255,0.02);
     border: 1px solid var(--color-border);
@@ -134,6 +254,10 @@ const hasBehold = Boolean(BEHOLD_FEED_ID);
       flex-direction: column;
       align-items: flex-start;
       gap: 8px;
+    }
+
+    .ig-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .instagram__follow-panel {
