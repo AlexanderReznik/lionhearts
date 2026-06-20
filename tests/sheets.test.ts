@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   parseSessionsCSV,
   parseQuotesCSV,
+  parseTryoutsCSV,
   abbreviateDay,
   abbreviateTime,
   to24Hour,
@@ -386,5 +387,41 @@ describe('parseUKDate', () => {
     expect(parseUKDate('2026-09-13')).toBeNull(); // ISO not accepted
     expect(parseUKDate('31/02/2026')).toBeNull(); // Feb 31 overflows
     expect(parseUKDate('13/13/2026')).toBeNull(); // month 13
+  });
+});
+
+describe('parseTryoutsCSV', () => {
+  const header = 'date,time,team,venue,form,visible';
+
+  it('parses a row into a Tryout, parsing visible truthiness', () => {
+    const csv = `${header}\n13/09/2026,6:00pm–8:00pm,Men's NVL,The Castle,https://forms.gle/abc,TRUE`;
+    const result = parseTryoutsCSV(csv);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject<Partial<Tryout>>({
+      date: '13/09/2026',
+      time: '6:00pm–8:00pm',
+      team: "Men's NVL",
+      venue: 'The Castle',
+      form: 'https://forms.gle/abc',
+      visible: true,
+    });
+    expect(result[0].dateObj.getDate()).toBe(13);
+  });
+
+  it('defaults a blank venue to the club default and marks non-truthy visible false', () => {
+    const csv = `${header}\n14/09/2026,2:00pm–4:00pm,Women's LVA,,https://forms.gle/xyz,FALSE`;
+    const result = parseTryoutsCSV(csv);
+    expect(result[0].venue).toBe('Mulberry Academy Shoreditch');
+    expect(result[0].visible).toBe(false);
+  });
+
+  it('drops rows whose date will not parse', () => {
+    const csv = `${header}\nTBC,6:00pm–8:00pm,Men's NVL,The Castle,https://forms.gle/abc,TRUE`;
+    expect(parseTryoutsCSV(csv)).toHaveLength(0);
+  });
+
+  it('returns [] for empty or header-only input', () => {
+    expect(parseTryoutsCSV('')).toEqual([]);
+    expect(parseTryoutsCSV(header)).toEqual([]);
   });
 });

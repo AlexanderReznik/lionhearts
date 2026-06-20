@@ -313,3 +313,34 @@ export function parseUKDate(input: string): Date | null {
   }
   return d;
 }
+
+const TRYOUT_TRUTHY = ['true', 'yes', '1'];
+
+/**
+ * Parse the tryouts tab CSV into Tryout objects. Rows whose `date` cell can't be
+ * parsed as UK day-first are dropped (so a half-filled planning row never breaks
+ * the page). Blank `venue` falls back to DEFAULT_VENUE.
+ */
+export function parseTryoutsCSV(csv: string): Tryout[] {
+  if (!csv.trim()) return [];
+  const lines = csv.trim().split('\n');
+  if (lines.length < 2) return [];
+
+  const keys = lines[0].split(',').map(k => k.trim().toLowerCase());
+
+  return lines.slice(1).flatMap(line => {
+    const values = splitCSVLine(line);
+    const raw: Record<string, string> = Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
+    const dateObj = parseUKDate(raw['date'] ?? '');
+    if (!dateObj) return [];
+    return [{
+      date:    raw['date'] ?? '',
+      dateObj,
+      time:    raw['time'] ?? '',
+      team:    raw['team'] ?? '',
+      venue:   raw['venue'] || DEFAULT_VENUE,
+      form:    raw['form'] ?? '',
+      visible: TRYOUT_TRUTHY.includes((raw['visible'] ?? '').toLowerCase()),
+    } satisfies Tryout];
+  });
+}
