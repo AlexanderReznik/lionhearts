@@ -25,29 +25,36 @@ a { color: inherit; }
   --lh-grey-400:    #9ba0aa;
   --lh-grey-200:    #cdd0d5;
 
-  /* Layer 2 — Semantic tokens (LIGHT theme = default).
+  /* Layer 2 — Semantic tokens. Each theme-dependent token is declared ONCE as
+     light-dark(LIGHT, DARK); the active side follows `color-scheme`, which is
+     flipped by html[data-theme] (and the OS preference for no-JS) further down.
+     This replaces the old duplicated [data-theme="dark"] + @media dark blocks —
+     there is no longer a second copy to keep in sync.
      NOTE: the legacy --color-* names ARE the semantic layer; components
-     reference these, so re-pointing them re-themes the whole site. */
-  --color-bg:           var(--lh-white);
-  --color-bg-alt:       var(--lh-blue-100);
-  --color-surface:      var(--lh-white);
+     reference these, so re-pointing them re-themes the whole site.
+     accent-from/to and btn-accent-* are theme-independent (one brand blue),
+     so they stay as plain values. */
+  color-scheme: light;
+  --color-bg:           light-dark(var(--lh-white), var(--lh-navy));
+  --color-bg-alt:       light-dark(var(--lh-blue-100), var(--lh-navy-deep));
+  --color-surface:      light-dark(var(--lh-white), var(--lh-navy-raised));
   /* (a few intermediate tints below are semantic-only by design — no --lh-* equivalent) */
-  --color-surface-2:    #f4f8fd;
-  --color-surface-3:    #eaf1fb;
+  --color-surface-2:    light-dark(#f4f8fd, #0c1d40);
+  --color-surface-3:    light-dark(#eaf1fb, var(--lh-navy-deep));
   --color-accent-from:  var(--lh-blue);   /* gradients flatten to one brand blue */
   --color-accent-to:    var(--lh-blue);
-  --color-text:         var(--lh-navy);
-  --color-text-muted:   #5a6b86;
-  --color-text-faint:   #5e6c88;
-  --color-accent-text:  #0050b8;
-  --color-highlight-1:  var(--lh-blue);
-  --color-highlight-2:  var(--lh-blue-deep);
-  --color-border:       rgba(17, 35, 75, 0.12);
-  --color-border-blue:  rgba(84, 164, 247, 0.35);
+  --color-text:         light-dark(var(--lh-navy), var(--lh-white));
+  --color-text-muted:   light-dark(#5a6b86, var(--lh-slate-200));
+  --color-text-faint:   light-dark(#5e6c88, #94a1c0);
+  --color-accent-text:  light-dark(#0050b8, var(--lh-blue));
+  --color-highlight-1:  light-dark(var(--lh-blue), var(--lh-blue-300));
+  --color-highlight-2:  light-dark(var(--lh-blue-deep), var(--lh-blue));
+  --color-border:       light-dark(rgba(17, 35, 75, 0.12), rgba(255, 255, 255, 0.10));
+  --color-border-blue:  light-dark(rgba(84, 164, 247, 0.35), rgba(84, 164, 247, 0.30));
 
   /* Button semantics */
-  --btn-primary-bg:     var(--lh-navy);
-  --btn-primary-text:   var(--lh-white);
+  --btn-primary-bg:     light-dark(var(--lh-navy), var(--lh-blue));
+  --btn-primary-text:   light-dark(var(--lh-white), var(--lh-navy));
   --btn-accent-bg:      var(--lh-blue);
   --btn-accent-text:    var(--lh-navy);
 
@@ -119,52 +126,13 @@ a { color: inherit; }
   --page-px:    48px;
 }
 
-/* Dark theme token set — authored now (dual-ready); activated by the
-   Phase 2 toggle via [data-theme="dark"]. Safe to ship inert. */
-[data-theme="dark"] {
-  /* --color-accent-* and --btn-accent-* intentionally inherit from :root (light-blue works on both themes) */
-  --color-bg:           var(--lh-navy);
-  --color-bg-alt:       var(--lh-navy-deep);
-  --color-surface:      var(--lh-navy-raised);
-  --color-surface-2:    #0c1d40;
-  --color-surface-3:    var(--lh-navy-deep);
-  --color-text:         var(--lh-white);
-  --color-text-muted:   var(--lh-slate-200);
-  --color-text-faint:   #94a1c0;
-  --color-accent-text:  var(--lh-blue);
-  --color-highlight-1:  var(--lh-blue-300);
-  --color-highlight-2:  var(--lh-blue);
-  --color-border:       rgba(255, 255, 255, 0.10);
-  --color-border-blue:  rgba(84, 164, 247, 0.30);
-  --btn-primary-bg:     var(--lh-blue);
-  --btn-primary-text:   var(--lh-navy);
-}
-
-/* No-JS fallback: honour the OS preference when no explicit theme attribute
-   is set. DUPLICATE of the [data-theme="dark"] values above — keep in sync. */
+/* Theme selection — the ONLY place light vs dark is chosen. Flipping
+   color-scheme flips every light-dark() token in :root above. The explicit
+   toggle sets html[data-theme]; no-JS users fall back to the OS preference
+   unless they've explicitly chosen light. */
+:root[data-theme="dark"] { color-scheme: dark; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --color-bg:           var(--lh-navy);
-    --color-bg-alt:       var(--lh-navy-deep);
-    --color-surface:      var(--lh-navy-raised);
-    --color-surface-2:    #0c1d40;
-    --color-surface-3:    var(--lh-navy-deep);
-    --color-text:         var(--lh-white);
-    --color-text-muted:   var(--lh-slate-200);
-    --color-text-faint:   #94a1c0;
-    --color-accent-text:  var(--lh-blue);
-    --color-highlight-1:  var(--lh-blue-300);
-    --color-highlight-2:  var(--lh-blue);
-    --color-border:       rgba(255, 255, 255, 0.10);
-    --color-border-blue:  rgba(84, 164, 247, 0.30);
-    --btn-primary-bg:     var(--lh-blue);
-    --btn-primary-text:   var(--lh-navy);
-  }
-  :root:not([data-theme="light"]) .section--feature {
-    background: var(--lh-navy-deep);
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  }
+  :root:not([data-theme="light"]) { color-scheme: dark; }
 }
 
 /* ── Base ──
@@ -417,17 +385,16 @@ body {
 .section { background: var(--color-bg); color: var(--color-text); }
 .section--alt { background: var(--color-bg-alt); color: var(--color-text); }
 
+/* feature: navy (light) / deep navy (dark, with hairline borders to separate
+   it from the navy page). Both sides declared once via light-dark(). */
 .section--feature {
-  background: var(--lh-navy);
+  background: light-dark(var(--lh-navy), var(--lh-navy-deep));
+  border-top: 1px solid light-dark(transparent, rgba(255, 255, 255, 0.07));
+  border-bottom: 1px solid light-dark(transparent, rgba(255, 255, 255, 0.07));
   color: var(--lh-white);
   --color-text: var(--lh-white);
   --color-text-muted: var(--lh-slate-200);
   --color-accent-text: var(--lh-blue);
-}
-[data-theme="dark"] .section--feature {
-  background: var(--lh-navy-deep);
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .section--community {
