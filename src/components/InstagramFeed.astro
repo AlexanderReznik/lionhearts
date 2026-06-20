@@ -12,11 +12,12 @@ const hasPosts = posts.length > 0;
 <section class="instagram" aria-labelledby="instagram-heading">
   <div class="instagram__header">
     <div>
-      <h2 class="instagram__heading" id="instagram-heading">
-        Follow <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer">
+      <h2 class="instagram__heading" id="instagram-heading">On Instagram</h2>
+      <p class="instagram__handle">
+        <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer">
           @lionhearts_volleyball
         </a>
-      </h2>
+      </p>
     </div>
     <a
       href="https://instagram.com/lionhearts_volleyball"
@@ -105,15 +106,21 @@ const hasPosts = posts.length > 0;
     font-weight: var(--weight-black);
     text-transform: uppercase;
     letter-spacing: var(--tracking-display);
+  }
+
+  .instagram__handle {
+    margin-top: 4px;
+    font-size: var(--text-note);
+    font-weight: var(--weight-semibold);
+  }
+
+  .instagram__handle a {
+    color: var(--color-accent-text);
+    text-decoration: none;
     overflow-wrap: anywhere;
   }
 
-  .instagram__heading a {
-    color: var(--color-accent-text);
-    text-decoration: none;
-  }
-
-  .instagram__heading a:hover { text-decoration: underline; }
+  .instagram__handle a:hover { text-decoration: underline; }
 
   .instagram__view-all {
     color: var(--color-text-muted);
