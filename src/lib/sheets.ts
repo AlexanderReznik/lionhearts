@@ -21,12 +21,23 @@ Monday,7:00pm–9:00pm,All Levels
 Thursday,7:00pm–9:00pm,All Levels
 Friday,8:00pm–10:00pm,Intermediate / Advanced`;
 
-export function parseSessionsCSV(csv: string): Session[] {
+/**
+ * Defaults applied to a parsed session when its `venue`/`price` cells are blank
+ * (or the columns are absent). Juniors override the price default to £3.
+ */
+interface SessionDefaults {
+  venue?: string;
+  price?: string;
+}
+
+export function parseSessionsCSV(csv: string, defaults: SessionDefaults = {}): Session[] {
   if (!csv.trim()) return [];
 
   const lines = csv.trim().split('\n');
   if (lines.length < 2) return [];
 
+  const venueDefault = defaults.venue ?? DEFAULT_VENUE;
+  const priceDefault = defaults.price ?? DEFAULT_PRICE;
   const keys = lines[0].split(',').map(k => k.trim().toLowerCase());
 
   return lines.slice(1).map(line => {
@@ -36,8 +47,8 @@ export function parseSessionsCSV(csv: string): Session[] {
       day:   raw['day']   ?? '',
       time:  raw['time']  ?? '',
       level: raw['level'] ?? '',
-      venue: raw['venue'] || DEFAULT_VENUE,
-      price: raw['price'] || DEFAULT_PRICE,
+      venue: raw['venue'] || venueDefault,
+      price: raw['price'] || priceDefault,
     } satisfies Session;
   });
 }
@@ -110,20 +121,25 @@ export async function getSessions(sheetId?: string): Promise<{ sessions: Session
 export const JUNIOR_FALLBACK_CSV = `day,time
 Saturday,1:30pm–3:30pm`;
 
+/** Juniors are cheaper than the adult open sessions — default when unspecified. */
+export const JUNIOR_DEFAULT_PRICE = '£3';
+const JUNIOR_DEFAULTS: SessionDefaults = { price: JUNIOR_DEFAULT_PRICE };
+
 /**
  * Returns the junior sessions from the dedicated juniors tab (its own gid) if
  * both sheetId and gid are set, otherwise from JUNIOR_FALLBACK_CSV. Mirrors
  * getSessions, resolving `usingFallback` so callers can surface a notice.
+ * Blank price cells default to £3 (the junior rate), not the adult default.
  */
 export async function getJuniorSessions(sheetId?: string, gid?: string): Promise<{ sessions: Session[]; usingFallback: boolean }> {
   if (!sheetId || !gid) {
-    return { sessions: parseSessionsCSV(JUNIOR_FALLBACK_CSV), usingFallback: true };
+    return { sessions: parseSessionsCSV(JUNIOR_FALLBACK_CSV, JUNIOR_DEFAULTS), usingFallback: true };
   }
   try {
-    return { sessions: parseSessionsCSV(await fetchSheetCSV(sheetId, gid)), usingFallback: false };
+    return { sessions: parseSessionsCSV(await fetchSheetCSV(sheetId, gid), JUNIOR_DEFAULTS), usingFallback: false };
   } catch (e) {
     console.warn('Google Sheets fetch failed, using fallback junior session data:', e);
-    return { sessions: parseSessionsCSV(JUNIOR_FALLBACK_CSV), usingFallback: true };
+    return { sessions: parseSessionsCSV(JUNIOR_FALLBACK_CSV, JUNIOR_DEFAULTS), usingFallback: true };
   }
 }
 

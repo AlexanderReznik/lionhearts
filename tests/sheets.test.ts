@@ -220,9 +220,11 @@ describe('getJuniorSessions', () => {
     const noGid = await getJuniorSessions('sheet-id');
     expect(noGid.usingFallback).toBe(true);
     expect(noGid.sessions).toHaveLength(1);
+    // Juniors default to the £3 rate, not the adult open-session price.
+    expect(noGid.sessions[0].price).toBe('£3');
   });
 
-  it('returns live data when the fetch succeeds', async () => {
+  it('returns live data and defaults the price to £3 when unspecified', async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       text: async () => `day,time\nSaturday,1:30pm–3:30pm\nSunday,10:00am–12:00pm`,
@@ -232,6 +234,17 @@ describe('getJuniorSessions', () => {
     expect(usingFallback).toBe(false);
     expect(sessions).toHaveLength(2);
     expect(sessions[0].day).toBe('Saturday');
+    expect(sessions.every(s => s.price === '£3')).toBe(true);
+  });
+
+  it('respects an explicit price column over the £3 default', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => `day,time,price\nSaturday,1:30pm–3:30pm,£5`,
+    } as Response);
+
+    const { sessions } = await getJuniorSessions('sheet-id', '123');
+    expect(sessions[0].price).toBe('£5');
   });
 
   it('falls back when the fetch fails', async () => {

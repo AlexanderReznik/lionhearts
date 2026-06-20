@@ -261,8 +261,9 @@ fallback (Saturday 1:30–3:30pm) — fine for launch, easy to add later.
    |---|---|
    | Saturday | 1:30pm–3:30pm |
 
-   Venue/price are not shown on the junior cards (they default to the club
-   constants), so no extra columns are needed.
+   The junior cards show the venue (defaults to "Mulberry Academy Shoreditch")
+   and the price, which **defaults to £3** for juniors. Add an optional `price`
+   column only to override that for a specific session.
 
 ### 12b. Wire the tab's gid into the site
 
