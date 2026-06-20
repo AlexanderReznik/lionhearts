@@ -335,6 +335,58 @@ cron-triggered build hook) — optional.
 
 ---
 
+## 14. Instagram feed (Behold.so)
+
+The homepage "Follow @lionhearts_volleyball" section shows a grid of your 6
+latest Instagram posts. It's fetched **once at build time** from a Behold.so
+JSON feed and rendered as static HTML — so visitors never hit Behold directly
+and you never approach Behold's free-tier view cap, no matter how much traffic
+the site gets. Until you wire in a feed ID, that section shows a simple
+"follow us" fallback panel instead (perfectly fine for launch).
+
+### 14a. Create the Behold feed
+
+1. Create a free account at [behold.so](https://behold.so).
+2. Connect the **@lionhearts_volleyball** Instagram account (Behold walks you
+   through Instagram's login — it handles the access-token refresh for you, so
+   there's nothing to maintain afterwards).
+3. Create a **feed** and open its settings. Behold gives each feed a JSON URL
+   like `https://feeds.behold.so/AbC123xyz`.
+4. Copy the **feed ID** — that's just the last part of the URL
+   (`AbC123xyz` in the example above), not the whole URL.
+
+   The free plan returns up to 6 posts, which is exactly what the grid shows.
+
+### 14b. Wire the ID into the site
+
+1. Locally (optional, for testing): add to `.env.local` in the project root:
+   ```
+   BEHOLD_FEED_ID=<paste-feed-id-here>
+   ```
+   Then `npm run dev` and check the homepage Instagram grid shows real posts.
+   (To skip the fetch during local builds, set `SKIP_BEHOLD=true` — the grid
+   falls back to the "follow us" panel with no network call.)
+2. In Netlify/Vercel: project settings → **Environment Variables** → add
+   `BEHOLD_FEED_ID` with the same value.
+3. Trigger a redeploy. The grid now shows your latest posts.
+
+### 14c. Keeping it fresh (optional)
+
+Because posts are pulled at **build time**, new Instagram posts only appear
+after the site rebuilds. The Google-Sheets webhook from item 8c does **not**
+cover Instagram. If you want the grid to refresh on its own, add a **daily
+scheduled build**:
+
+- **Netlify:** Site → Build & deploy → **Build hooks** (the same hook from item
+  8c works) and a scheduled trigger, or Netlify's scheduled functions.
+- **Vercel:** Project → Settings → **Cron Jobs**, or a deploy hook pinged daily.
+
+Once a day is plenty — match-day photos showing up the next morning is the
+expected behaviour. Without a schedule, the grid still updates whenever the
+site rebuilds for any other reason (e.g. a sheet edit or a content change).
+
+---
+
 ## Image folder structure (for reference)
 
 ```
@@ -368,16 +420,11 @@ public/
 
 
 Add other sponsors, make vinarius superleague sponsor,
-Follow lionhearts volleyball is too wide on mobile
-Add venue for the upcoming games and maybe results
-Clean up unused images
-Improve left side of the footer?
-Pick a nice free insta widget
 Add analytics
 
 
 Pending data
 - add hero carousel images
 - open sessions placeholder
-- 
+- svgs
 
