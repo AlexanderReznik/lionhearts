@@ -29,18 +29,20 @@ const contactLinks = [
     <div class="footer__brand">
       <div class="footer__crest">
         <BrandLogo class="footer__brandlogo" width={242} height={88} />
-        <p class="footer__tagline">"Together We Roar."</p>
       </div>
-      <div class="footer__socials">
-        <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
-          <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={IG_PATH} /></svg>Instagram
-        </a>
-        <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill footer__social-pill--facebook" target="_blank" rel="noopener noreferrer">
-          <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={FB_PATH} /></svg>Facebook
-        </a>
-        <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill footer__social-pill--youtube" target="_blank" rel="noopener noreferrer">
-          <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={YT_PATH} /></svg>YouTube
-        </a>
+      <div class="footer__follow">
+        <h4 class="footer__follow-title">Follow</h4>
+        <div class="footer__socials">
+          <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
+            <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={IG_PATH} /></svg>Instagram
+          </a>
+          <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill footer__social-pill--facebook" target="_blank" rel="noopener noreferrer">
+            <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={FB_PATH} /></svg>Facebook
+          </a>
+          <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill footer__social-pill--youtube" target="_blank" rel="noopener noreferrer">
+            <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={YT_PATH} /></svg>YouTube
+          </a>
+        </div>
       </div>
     </div>
 
@@ -103,31 +105,25 @@ const contactLinks = [
     margin: 0 auto;
     padding: 0 var(--page-px);
     display: flex;
+    align-items: flex-start;
     gap: 48px;
     margin-bottom: 40px;
   }
 
-  .footer__brand {
-    flex: 1.4;
-    display: flex;
-    flex-direction: column;
-  }
+  /* Make wrapper transparent so logo + Follow join the inner flex row directly */
+  .footer__brand { display: contents; }
 
   .footer__crest {
+    flex: 1;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 18px;
-    margin-bottom: 20px;
   }
 
-  .footer__crest :global(.brand-logo__img) { height: 88px; width: auto; }
+  .footer__follow { flex: 1; }
 
-  .footer__tagline {
-    color: var(--color-text-muted);
-    font-size: var(--text-body-sm);
-    font-style: italic;
-  }
+  .footer__crest :global(.brand-logo__img) { height: 124px; width: auto; }
 
   .footer__address {
     display: block;
@@ -145,8 +141,9 @@ const contactLinks = [
 
   .footer__socials {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
-    flex-wrap: wrap;
   }
 
   .footer__social-pill {
@@ -188,7 +185,8 @@ const contactLinks = [
 
   .footer__col { flex: 1; }
 
-  .footer__col h4 {
+  .footer__col h4,
+  .footer__follow-title {
     font-size: var(--text-eyebrow);
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
