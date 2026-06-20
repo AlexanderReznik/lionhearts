@@ -282,6 +282,59 @@ any tab in the sheet.
 
 ---
 
+## 13. Tryouts tab (Google Sheet)
+
+The **Pre-season Tryouts** section on `/events`, plus the alert bar and accent
+band on the homepage, read from their own tab on the same Google Sheet from
+item 8. Unlike sessions there is **no fallback**: if the tab is missing, empty,
+or has no upcoming visible rows, none of these elements render — the feature is
+invisible outside tryout season. Set this up only when you have tryouts to
+announce.
+
+### 13a. Create the tab
+
+1. Open the existing schedule sheet.
+2. Click the `+` at the bottom-left to add a new tab. Rename it to **Tryouts**.
+3. In row 1 add these headers (case-insensitive):
+   - `date` (required) — UK day-first **DD/MM/YYYY**, e.g. "13/09/2026"
+   - `time` (required) — e.g. "6:00pm–8:00pm" (real en-dash `–`, see item 8)
+   - `team` (required) — e.g. "Men's NVL", "Women's LVA", "Juniors"
+   - `venue` (optional) — defaults to "Mulberry Academy Shoreditch" when blank
+   - `form` (optional) — full Google Form sign-up URL; the "Sign up" button only
+     appears when this is filled (otherwise the row shows "Sign-up soon")
+   - `visible` (required) — a checkbox (Insert → Tick box) or the text `TRUE`/`FALSE`
+4. One tryout per row. Example:
+
+   | date | time | team | venue | form | visible |
+   |---|---|---|---|---|---|
+   | 13/09/2026 | 6:00pm–8:00pm | Men's NVL | | https://forms.gle/… | TRUE |
+
+   **A tryout shows only when `visible` is TRUE *and* its date is today or later.**
+   So you can plan the whole pre-season in advance with `visible` un-ticked, then
+   tick a row when you're ready to announce it. Past tryouts drop off automatically.
+
+### 13b. Wire the tab's gid into the site
+
+The "gid" is the numeric ID of the tab. Find it by clicking the Tryouts tab and
+looking at the URL: `...#gid=246813579` — that number is the gid.
+
+1. Locally: add to `.env.local`:
+   ```
+   GOOGLE_TRYOUTS_GID=246813579
+   ```
+2. In Netlify/Vercel: add `GOOGLE_TRYOUTS_GID` as an env var with the same value.
+3. Trigger a redeploy.
+
+The webhook from item 8c already covers this tab — editing the sheet rebuilds
+the site, so newly-ticked tryouts appear (and just-passed ones disappear) on the
+next edit. **Note:** because the site is static, a tryout whose date has passed
+only drops off at the next rebuild. It will clear whenever you next edit the
+sheet or redeploy. If you want past tryouts to expire on the day with no manual
+edit, add a daily scheduled build (e.g. a Netlify/Vercel scheduled deploy or a
+cron-triggered build hook) — optional.
+
+---
+
 ## Image folder structure (for reference)
 
 ```
