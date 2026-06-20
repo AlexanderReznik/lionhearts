@@ -4,6 +4,7 @@ import {
   parseQuotesCSV,
   parseTryoutsCSV,
   formatTryoutDate,
+  getUpcomingTryouts,
   abbreviateDay,
   abbreviateTime,
   to24Hour,
@@ -433,5 +434,55 @@ describe('formatTryoutDate', () => {
     expect(formatTryoutDate(new Date(2026, 8, 13))).toBe('Sun 13 Sep');
     // 1 Jan 2027 is a Friday.
     expect(formatTryoutDate(new Date(2027, 0, 1))).toBe('Fri 1 Jan');
+  });
+});
+
+describe('getUpcomingTryouts', () => {
+  const realFetch = globalThis.fetch;
+  const header = 'date,time,team,venue,form,visible';
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+    vi.restoreAllMocks();
+  });
+
+  it('returns [] when sheet ID or gid is missing (no fetch attempted)', async () => {
+    expect(await getUpcomingTryouts(undefined, 'gid')).toEqual([]);
+    expect(await getUpcomingTryouts('sheet-id', undefined)).toEqual([]);
+  });
+
+  it('returns [] when the fetch fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response);
+    expect(await getUpcomingTryouts('sheet-id', 'gid')).toEqual([]);
+  });
+
+  it('keeps only visible, today-or-future rows and sorts soonest-first', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => [
+        header,
+        '20/09/2026,1:30pm–3:30pm,Juniors,,https://forms.gle/c,TRUE',  // future, visible → keep
+        '13/09/2026,6:00pm–8:00pm,Men,The Castle,https://forms.gle/a,TRUE', // future, visible → keep (earlier)
+        '14/09/2026,2:00pm–4:00pm,Women,,https://forms.gle/b,FALSE', // future but hidden → drop
+        '01/01/2020,6:00pm–8:00pm,Past,,https://forms.gle/d,TRUE',   // past → drop
+      ].join('\n'),
+    } as Response);
+
+    const now = new Date(2026, 8, 1); // 1 Sep 2026
+    const result = await getUpcomingTryouts('sheet-id', 'gid', now);
+
+    expect(result.map(t => t.team)).toEqual(['Men', 'Juniors']);
+  });
+
+  it('treats a tryout happening today as upcoming', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => `${header}\n15/09/2026,6:00pm–8:00pm,Today,,https://forms.gle/a,TRUE`,
+    } as Response);
+    // now is later in the same day; tryout date is midnight today.
+    const now = new Date(2026, 8, 15, 18, 30);
+    const result = await getUpcomingTryouts('sheet-id', 'gid', now);
+    expect(result).toHaveLength(1);
   });
 });

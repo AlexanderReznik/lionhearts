@@ -353,3 +353,30 @@ export function parseTryoutsCSV(csv: string): Tryout[] {
     } satisfies Tryout];
   });
 }
+
+/**
+ * Returns upcoming, visible tryouts from the dedicated tryouts tab (its own gid),
+ * sorted soonest-first. Returns [] when sheetId/gid are unset or the fetch fails
+ * — there is intentionally NO fallback (see the Tryouts section note above).
+ * `now` is injectable for testing.
+ */
+export async function getUpcomingTryouts(
+  sheetId?: string,
+  gid?: string,
+  now: Date = new Date(),
+): Promise<Tryout[]> {
+  if (!sheetId || !gid) return [];
+
+  let csv: string;
+  try {
+    csv = await fetchSheetCSV(sheetId, gid);
+  } catch (e) {
+    console.warn('Google Sheets fetch failed for tryouts, hiding the section:', e);
+    return [];
+  }
+
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return parseTryoutsCSV(csv)
+    .filter(t => t.visible && t.dateObj.getTime() >= startOfToday.getTime())
+    .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+}
