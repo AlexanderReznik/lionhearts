@@ -50,8 +50,11 @@ no Behold widget script are shipped.
   via a navy overlay, 3-line clamp. On touch devices there is no overlay —
   tapping a tile opens the post on Instagram.
 - **Media badge:** small corner badge for video / album (carousel) posts only.
-- **Images:** plain `<img>` with the responsive `srcset`/`sizes` Behold provides
-  from its own CDN. **No** build-time download or `astro:assets` re-optimization.
+- **Images:** plain `<img>` with a `srcset` built from Behold's `sizes` object
+  (`behold.pictures` CDN — stable URLs). **Never** use the post's top-level
+  `mediaUrl`: that is the raw Instagram CDN URL and carries an `oe=` expiry
+  token that would rot between rebuilds. **No** build-time download or
+  `astro:assets` re-optimization.
   Rationale: the `astro:assets` project rule targets images we own in
   `src/assets`; remote Instagram CDN images resolved at build are a documented
   exception, and re-optimizing would add a build-time network dependency that
@@ -73,11 +76,12 @@ export interface BeholdPost {
   id: string;
   permalink: string;
   mediaType: BeholdMediaType;
-  thumbnailSrc: string;   // default src for <img>
-  srcSet: string;         // responsive srcset string
-  caption: string;        // full caption (may be empty)
-  altText: string;        // for alt: Behold altText || first caption line
-  timestamp: string;
+  thumbnailSrc: string;   // default <img> src — sizes.medium.mediaUrl
+  srcSet: string;         // built from sizes.{small,medium,large}
+  caption: string;        // prunedCaption || caption — for hover overlay
+  altText: string;        // altText || first caption line || generic fallback
+  bgColor: string | null; // rgb() from colorPalette.dominant, placeholder tint
+  timestamp: string;      // ISO 8601 string, as Behold returns it
 }
 
 export async function fetchInstagramPosts(): Promise<BeholdPost[]>;
@@ -93,18 +97,28 @@ export async function fetchInstagramPosts(): Promise<BeholdPost[]>;
   invalid JSON, unexpected shape) it `console.warn`s and returns `[]`, so the
   component degrades to the fallback panel — the same degrade-don't-fail policy
   `fetchAllFixtures()` uses.
-- **Defensive parsing:** accepts both a bare array and a `{ posts: [...] }`
-  envelope (the exact Behold shape is confirmed against a real feed during
-  implementation; defensive parsing tolerates either). Per post, derives
-  `thumbnailSrc`/`srcSet` from Behold's `sizes` object, falling back to
-  `mediaUrl` / `thumbnailUrl` (video posts use the thumbnail, not the video
-  file). Clamps the result to 6.
+- **Parsing (shape confirmed against a real feed —
+  `behold-example-feed.json`):** the feed is a top-level object
+  `{ username, biography, …profile fields…, posts: [...] }`. Read `data.posts`;
+  if it is not an array, return `[]`. Per post:
+  - `thumbnailSrc` ← `sizes.medium.mediaUrl` (fallback `large`/`small`).
+  - `srcSet` ← `sizes.small` (400w) + `sizes.medium` (~700w) + `sizes.large`
+    (~1000w). `full` (2000w) is skipped — overkill for grid tiles. `sizes`
+    is present for video/album posts too (poster frame), so it's the single
+    source for the thumbnail regardless of media type.
+  - `caption` ← `prunedCaption` (hashtag block stripped) `|| caption`.
+  - `altText` ← post `altText` (optional — absent on most posts) `||`
+    first line of caption `||` `"Instagram post by @lionhearts_volleyball"`.
+  - `bgColor` ← `rgb(colorPalette.dominant)` if present, else `null`.
+  - `mediaType` ← mapped from `IMAGE|VIDEO|CAROUSEL_ALBUM`.
+  - Skip any post missing `permalink` or a usable `sizes` entry. Clamp to 6.
 
 Small pure helpers are exported for unit testing:
 
-- `buildSrcSet(sizes)` — assembles a `srcset` string from Behold's `sizes`.
+- `buildSrcSet(sizes)` — assembles a `srcset` string from `sizes.{small,medium,large}`.
 - `mapMediaType(raw)` — `IMAGE|VIDEO|CAROUSEL_ALBUM` → `image|video|album`.
-- `firstCaptionLine(caption)` — first line, for alt-text fallback.
+- `firstCaptionLine(caption)` — first line, for the alt-text fallback.
+- `paletteToRgb(dominant)` — `"212,220,140"` → `"rgb(212,220,140)"`.
 
 ### `src/components/InstagramFeed.astro` (rewrite)
 
@@ -115,7 +129,9 @@ Small pure helpers are exported for unit testing:
 - When `posts.length > 0`, renders a `<ul class="ig-grid">` of up to 6
   `<li class="ig-tile">`. Each tile is an `<a>` to `post.permalink`
   (`target="_blank" rel="noopener noreferrer"`) containing:
-  - `<img loading="lazy" srcset={post.srcSet} sizes="(max-width:640px) 50vw, 33vw" alt={post.altText}>`
+  - `<img src={post.thumbnailSrc} srcset={post.srcSet} sizes="(max-width:640px) 50vw, 33vw" loading="lazy" alt={post.altText}>`
+    on a `<li>` whose background is `post.bgColor` (when present) so the tile
+    shows a branded tint instead of a grey flash before the lazy image paints.
   - `.ig-tile__badge` (`aria-hidden="true"`) shown only for `video` / `album`.
   - `.ig-tile__overlay` containing the 3-line-clamped caption, `aria-hidden="true"`
     (the alt text already conveys the content), revealed on hover/focus.
@@ -157,10 +173,15 @@ The build never fails because of Behold.
 
 ## Testing
 
-- **Vitest** unit tests for `behold.ts` pure logic:
-  - `buildSrcSet`, `mapMediaType`, `firstCaptionLine`.
-  - Defensive parsing: bare array vs `{ posts }` envelope vs malformed → `[]`.
-  - 6-item clamp; missing `BEHOLD_FEED_ID` → `[]`; `SKIP_BEHOLD` → `[]`.
+- **Vitest** unit tests for `behold.ts` pure logic, using the real
+  `behold-example-feed.json` as a fixture (relocated into the test tree, e.g.
+  `src/lib/__fixtures__/behold-feed.json`):
+  - `buildSrcSet`, `mapMediaType`, `firstCaptionLine`, `paletteToRgb`.
+  - Parsing the real fixture → 6 normalized `BeholdPost`s with stable
+    `behold.pictures` srcset URLs (not the expiring IG `mediaUrl`),
+    `prunedCaption` preferred, `altText` fallback when absent.
+  - Malformed / missing `posts` → `[]`; 6-item clamp; missing
+    `BEHOLD_FEED_ID` → `[]`; `SKIP_BEHOLD` → `[]`.
 - **Manual:** build with a real feed id; verify in Chrome DevTools MCP at
   320 / 375 / 414 widths in **both light and dark themes** (per the responsive
   verification rule).
