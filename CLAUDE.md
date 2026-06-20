@@ -24,6 +24,11 @@ git commit -m "feat: ..."
 - Vitest for unit tests
 - `@astrojs/sitemap` integration
 - No framework (vanilla Astro components)
+- **Build-time data fetches:** `src/lib/volleyzone.ts` (fixtures) and
+  `src/lib/behold.ts` (Instagram via Behold JSON) fetch at build time and
+  degrade to `[]` on any failure (never fail the build). Each has a
+  `SKIP_*` env escape hatch (`SKIP_VOLLEYZONE`, `SKIP_BEHOLD`) for fast
+  local builds.
 
 ## Design System
 
