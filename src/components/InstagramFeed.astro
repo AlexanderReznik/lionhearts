@@ -171,8 +171,8 @@ const hasPosts = posts.length > 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
-    background: rgba(5, 18, 43, 0.6);
+    color: var(--lh-white);
+    background: color-mix(in srgb, var(--lh-navy-deep) 60%, transparent);
   }
 
   .ig-tile__overlay {
@@ -186,13 +186,13 @@ const hasPosts = posts.length > 0;
     background: linear-gradient(
       to top,
       var(--lh-navy-deep) 0%,
-      rgba(5, 18, 43, 0.1) 55%,
+      color-mix(in srgb, var(--lh-navy-deep) 10%, transparent) 55%,
       transparent 100%
     );
   }
 
   .ig-tile__caption {
-    color: #fff;
+    color: var(--lh-white);
     font-size: var(--text-note);
     line-height: var(--leading-snug);
     display: -webkit-box;
@@ -211,7 +211,7 @@ const hasPosts = posts.length > 0;
 
   /* --- Fallback panel (unchanged) --- */
   .instagram__follow-panel {
-    background: rgba(255,255,255,0.02);
+    background: color-mix(in srgb, var(--lh-white) 2%, transparent);
     border: 1px solid var(--color-border);
     border-radius: 12px;
     padding: 48px 40px;
@@ -233,7 +233,7 @@ const hasPosts = posts.length > 0;
     align-items: center;
     gap: 8px;
     background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
-    color: #fff;
+    color: var(--lh-white);
     font-size: var(--text-note);
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
