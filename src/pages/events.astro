@@ -3,12 +3,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
 import TryoutsSection from '../components/TryoutsSection.astro';
-import { Image } from 'astro:assets';
-import sessionPhoto from '../assets/hero/cats-2025-26-2.jpg';
+import SessionCard from '../components/SessionCard.astro';
+import VenueCard from '../components/VenueCard.astro';
+import SessionsFallbackNotice from '../components/SessionsFallbackNotice.astro';
 import { getSessions, getJuniorSessions, parseSessionSchedule, getUpcomingTryouts } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
-import { INSTAGRAM_URL } from '../data/club';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
 // Set GOOGLE_SHEET_ID in your environment or Netlify/Vercel env vars.
@@ -140,49 +140,11 @@ const teamSections = [
         <p class="section-head__sub">Just turn up and play — every level welcome, every week.</p>
       </header>
 
-      {usingFallback && (
-        <p class="sessions-box__notice">
-          ⚠️ Showing our usual weekly schedule — we couldn't load the latest times.
-          Check our <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">Instagram</a> to confirm before heading down.
-        </p>
-      )}
+      {usingFallback && <SessionsFallbackNotice schedule="weekly schedule" />}
 
       <div class={`session-cards session-cards--${tileCount}`}>
-        {sessions.map(s => (
-          <div class="session-card session-card--photo">
-            <Image
-              class="session-card__bg"
-              src={sessionPhoto}
-              alt=""
-              aria-hidden="true"
-              widths={[240, 360, 480]}
-              sizes="(max-width: 640px) 50vw, 240px"
-              loading="lazy"
-            />
-            <div class="session-card__content">
-              <div class="session-card__day">{s.day}</div>
-              <div class="session-card__time">{s.time}</div>
-              <div class="session-card__level">{s.level}</div>
-              <div class="session-card__venue">📍 {s.venue}<br />{s.price}</div>
-            </div>
-          </div>
-        ))}
-        <div class="session-card session-card--venue section--community">
-          <div class="session-card__venue-label">Venue</div>
-          <strong>Mulberry Academy Shoreditch</strong>
-          <span>Gosset Street, E2 6NW</span>
-          <a
-            href="https://maps.google.com/?q=Mulberry+Academy+Shoreditch"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="session-card__map-link"
-          >
-            Open in Maps ↗
-          </a>
-          <span class="session-card__transport">
-            Short walk from Bethnal Green,<br />Shoreditch High Street or Hoxton
-          </span>
-        </div>
+        {sessions.map(s => <SessionCard session={s} />)}
+        <VenueCard />
       </div>
     </section>
 
@@ -195,49 +157,11 @@ const teamSections = [
         <p class="section-head__sub">Volleyball for our younger players. New juniors always welcome.</p>
       </header>
 
-      {juniorsFallback && (
-        <p class="sessions-box__notice">
-          ⚠️ Showing our usual junior schedule — we couldn't load the latest times.
-          Check our <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">Instagram</a> to confirm before heading down.
-        </p>
-      )}
+      {juniorsFallback && <SessionsFallbackNotice schedule="junior schedule" />}
 
       <div class="junior-cards">
-        {juniorSessions.map(s => (
-          <div class="session-card session-card--photo">
-            <Image
-              class="session-card__bg"
-              src={sessionPhoto}
-              alt=""
-              aria-hidden="true"
-              widths={[240, 360, 480]}
-              sizes="(max-width: 640px) 50vw, 240px"
-              loading="lazy"
-            />
-            <div class="session-card__content">
-              <div class="session-card__day">{s.day}</div>
-              <div class="session-card__time">{s.time}</div>
-              {s.level && <div class="session-card__level">{s.level}</div>}
-              <div class="session-card__venue">📍 {s.venue}<br />{s.price}</div>
-            </div>
-          </div>
-        ))}
-        <div class="session-card session-card--venue section--community">
-          <div class="session-card__venue-label">Venue</div>
-          <strong>Mulberry Academy Shoreditch</strong>
-          <span>Gosset Street, E2 6NW</span>
-          <a
-            href="https://maps.google.com/?q=Mulberry+Academy+Shoreditch"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="session-card__map-link"
-          >
-            Open in Maps ↗
-          </a>
-          <span class="session-card__transport">
-            Short walk from Bethnal Green,<br />Shoreditch High Street or Hoxton
-          </span>
-        </div>
+        {juniorSessions.map(s => <SessionCard session={s} />)}
+        <VenueCard />
       </div>
     </section>
 
@@ -465,33 +389,6 @@ const teamSections = [
     margin: 16px 0 36px;
   }
 
-  /* Caution tone — shown only when the live sheet couldn't load, so the times
-     on display may be stale. Amber sits outside the brand palette but reads as
-     "unconfirmed" without the alarm of the red loss-badges; values are local +
-     AA-checked for both themes (text #875400 on the light tint, #f0c14b on
-     navy). */
-  .sessions-box__notice {
-    font-size: var(--text-note);
-    color: #875400;
-    background: rgba(217,151,30,0.10);
-    border: 1px solid rgba(217,151,30,0.40);
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 20px;
-  }
-
-  .sessions-box__notice a {
-    color: inherit;
-    font-weight: var(--weight-bold);
-    text-decoration: underline;
-  }
-
-  :global(html[data-theme="dark"]) .sessions-box__notice {
-    color: #f0c14b;
-    background: rgba(217,151,30,0.14);
-    border-color: rgba(217,151,30,0.45);
-  }
-
   /* Columns track the tile count (sessions + venue). Shrinking, even counts
      fold to a balanced 2-up grid and odd counts collapse straight to a single
      column — so we never land on an orphaned row (no 3+1 / 2+1). */
@@ -540,67 +437,6 @@ const teamSections = [
   @media (max-width: 420px) {
     .junior-cards { grid-template-columns: 1fr; }
   }
-
-  /* Session cards — community tone: #54a4f7 bg (via .section--community), navy text */
-  .session-card {
-    border: 1px solid rgba(17,35,75,0.18);
-    border-radius: 10px;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  /* S32: photo-backed schedule cards — darkened so they read distinct from the
-     blue filter pills below; text goes white over the overlay. */
-  .session-card--photo {
-    position: relative;
-    overflow: hidden;
-    border-color: rgba(5,18,43,0.4);
-    background: var(--lh-navy-deep);
-  }
-  .session-card__bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .session-card--photo::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, rgba(5,18,43,0.72), rgba(17,35,75,0.84));
-  }
-  .session-card__content {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .session-card__day { font-size: var(--text-body-sm); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--lh-navy); }
-  .session-card__time { font-size: var(--text-lg); font-weight: var(--weight-black); letter-spacing: var(--tracking-display); color: var(--lh-navy); }
-  .session-card__level { font-size: var(--text-eyebrow); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--lh-navy); }
-  .session-card__venue { font-size: var(--text-eyebrow); color: var(--lh-navy); line-height: var(--leading-normal); margin-top: 4px; }
-
-  /* White text on the darkened photo cards (overrides the navy defaults above). */
-  .session-card--photo .session-card__day,
-  .session-card--photo .session-card__time,
-  .session-card--photo .session-card__level,
-  .session-card--photo .session-card__venue { color: var(--lh-white); }
-
-  .session-card--venue {
-    border-color: rgba(17,35,75,0.18);
-    justify-content: center;
-  }
-
-  .session-card__venue-label { font-size: var(--text-eyebrow); color: var(--lh-navy); letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 4px; }
-  .session-card--venue strong { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--lh-navy); }
-  .session-card--venue span { font-size: var(--text-note); color: var(--lh-navy); }
-  .session-card__map-link { color: var(--lh-navy); font-size: var(--text-eyebrow); font-weight: var(--weight-bold); text-decoration: none; margin-top: 8px; }
-  .session-card__transport { font-size: var(--text-eyebrow); color: var(--lh-navy); margin-top: 4px; line-height: var(--leading-normal); }
 
   /* ── Team fixture sections ──*/
   .team-fixture-section {

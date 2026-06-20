@@ -338,6 +338,70 @@ body {
   color: var(--btn-accent-text);
 }
 
+/* ── Session cards ──
+   Shared surface primitives for the SessionCard/VenueCard tiles on /events
+   (the responsive grid that lays them out stays page-local). Community tone:
+   #54a4f7 bg (via .section--community), navy text. */
+.session-card {
+  border: 1px solid rgba(17,35,75,0.18);
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* S32: photo-backed schedule cards — darkened so they read distinct from the
+   blue filter pills below; text goes white over the overlay. */
+.session-card--photo {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(5,18,43,0.4);
+  background: var(--lh-navy-deep);
+}
+.session-card__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.session-card--photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(5,18,43,0.72), rgba(17,35,75,0.84));
+}
+.session-card__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-card__day { font-size: var(--text-body-sm); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-wide); color: var(--lh-navy); }
+.session-card__time { font-size: var(--text-lg); font-weight: var(--weight-black); letter-spacing: var(--tracking-display); color: var(--lh-navy); }
+.session-card__level { font-size: var(--text-eyebrow); font-weight: var(--weight-bold); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--lh-navy); }
+.session-card__venue { font-size: var(--text-eyebrow); color: var(--lh-navy); line-height: var(--leading-normal); margin-top: 4px; }
+
+/* White text on the darkened photo cards (overrides the navy defaults above). */
+.session-card--photo .session-card__day,
+.session-card--photo .session-card__time,
+.session-card--photo .session-card__level,
+.session-card--photo .session-card__venue { color: var(--lh-white); }
+
+.session-card--venue {
+  border-color: rgba(17,35,75,0.18);
+  justify-content: center;
+}
+
+.session-card__venue-label { font-size: var(--text-eyebrow); color: var(--lh-navy); letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 4px; }
+.session-card--venue strong { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--lh-navy); }
+.session-card--venue span { font-size: var(--text-note); color: var(--lh-navy); }
+.session-card__map-link { color: var(--lh-navy); font-size: var(--text-eyebrow); font-weight: var(--weight-bold); text-decoration: none; margin-top: 8px; }
+.session-card__transport { font-size: var(--text-eyebrow); color: var(--lh-navy); margin-top: 4px; line-height: var(--leading-normal); }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   :root {

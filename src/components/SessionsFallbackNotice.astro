@@ -1,0 +1,47 @@
+---
+// src/components/SessionsFallbackNotice.astro
+// Shown above a session grid on /events when the live Google Sheet couldn't
+// load, so the displayed times may be stale. `schedule` names which schedule
+// (e.g. "weekly schedule" / "junior schedule").
+import { INSTAGRAM_URL } from '../data/club';
+
+interface Props {
+  schedule: string;
+}
+
+const { schedule } = Astro.props;
+---
+
+<p class="sessions-box__notice">
+  ⚠️ Showing our usual {schedule} — we couldn't load the latest times.
+  Check our <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">Instagram</a> to confirm before heading down.
+</p>
+
+<style>
+  /* Caution tone — shown only when the live sheet couldn't load, so the times
+     on display may be stale. Amber sits outside the brand palette but reads as
+     "unconfirmed" without the alarm of the red loss-badges; values are local +
+     AA-checked for both themes (text #875400 on the light tint, #f0c14b on
+     navy). */
+  .sessions-box__notice {
+    font-size: var(--text-note);
+    color: #875400;
+    background: rgba(217,151,30,0.10);
+    border: 1px solid rgba(217,151,30,0.40);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+
+  .sessions-box__notice a {
+    color: inherit;
+    font-weight: var(--weight-bold);
+    text-decoration: underline;
+  }
+
+  :global(html[data-theme="dark"]) .sessions-box__notice {
+    color: #f0c14b;
+    background: rgba(217,151,30,0.14);
+    border-color: rgba(217,151,30,0.45);
+  }
+</style>
