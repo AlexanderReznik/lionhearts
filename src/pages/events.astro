@@ -127,7 +127,10 @@ const teamSections = [
 
     <!-- Open Sessions -->
     <section class="sessions-box" aria-labelledby="sessions-heading">
-      <h2 class="eyebrow" id="sessions-heading">Open Sessions</h2>
+      <header class="section-head">
+        <h2 class="section-head__title" id="sessions-heading">Open <em>Sessions</em></h2>
+        <p class="section-head__sub">Just turn up and play — every level welcome, every week.</p>
+      </header>
 
       {usingFallback && (
         <p class="sessions-box__notice">
@@ -175,9 +178,14 @@ const teamSections = [
       </div>
     </section>
 
+    <hr class="section-divider" />
+
     <!-- Junior Sessions -->
     <section class="sessions-box" aria-labelledby="juniors-heading">
-      <h2 class="eyebrow" id="juniors-heading">Junior Sessions</h2>
+      <header class="section-head">
+        <h2 class="section-head__title" id="juniors-heading">Junior <em>Sessions</em></h2>
+        <p class="section-head__sub">Volleyball for our younger players. New juniors always welcome.</p>
+      </header>
 
       {juniorsFallback && (
         <p class="sessions-box__notice">
@@ -225,11 +233,18 @@ const teamSections = [
       </div>
     </section>
 
+    <hr class="section-divider" />
+
+    <header class="section-head section-head--fixtures">
+      <h2 class="section-head__title">Fixtures &amp; <em>Results</em></h2>
+      <p class="section-head__sub">Follow all nine Lionhearts teams through the season — and come down to support them.</p>
+    </header>
+
     <FilterPills statusId="filter-status" label="Filter by team type" />
 
     {teamSections.map(({ label, section, spaced, teams: sectionTeams }) => (
       <>
-        <h2 class:list={['eyebrow section-eyebrow', { 'section-eyebrow--spaced': spaced }]} data-section={section}>{label}</h2>
+        <h3 class:list={['eyebrow section-eyebrow', { 'section-eyebrow--spaced': spaced }]} data-section={section}>{label}</h3>
         {sectionTeams.map(team => (
           <div
             class="team-fixture-section"
@@ -414,6 +429,33 @@ const teamSections = [
      the page hierarchy; the eyebrow heading + cards carry the section on their own. */
   .sessions-box {
     margin-bottom: 36px;
+  }
+
+  /* Section headers — promote the page's three parts (Open Sessions, Junior
+     Sessions, Fixtures & Results) above the small team-group eyebrows. */
+  .section-head { margin-bottom: 20px; }
+  .section-head__title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+  }
+  .section-head__title em { color: var(--color-accent-text); font-style: normal; }
+  .section-head__sub {
+    margin-top: 6px;
+    max-width: 60ch;
+    color: var(--color-text-muted);
+    font-size: var(--text-body);
+    line-height: var(--leading-relaxed);
+  }
+
+  /* Full-width rule that splits the attend-able sessions from the competitive
+     fixtures half of the page. */
+  .section-divider {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 16px 0 36px;
   }
 
   /* Caution tone — shown only when the live sheet couldn't load, so the times
