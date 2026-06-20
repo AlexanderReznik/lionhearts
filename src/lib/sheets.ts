@@ -30,27 +30,36 @@ interface SessionDefaults {
   price?: string;
 }
 
-export function parseSessionsCSV(csv: string, defaults: SessionDefaults = {}): Session[] {
+/**
+ * Parse CSV text into rows keyed by their lowercased header name (cells trimmed,
+ * quoted fields honoured via splitCSVLine). Empty or header-only input → [].
+ * Shared by every parse*CSV below so the line/header/quote handling lives once.
+ */
+function parseCSVRows(csv: string): Record<string, string>[] {
   if (!csv.trim()) return [];
 
   const lines = csv.trim().split('\n');
   if (lines.length < 2) return [];
 
-  const venueDefault = defaults.venue ?? DEFAULT_VENUE;
-  const priceDefault = defaults.price ?? DEFAULT_PRICE;
   const keys = lines[0].split(',').map(k => k.trim().toLowerCase());
 
   return lines.slice(1).map(line => {
     const values = splitCSVLine(line);
-    const raw: Record<string, string> = Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
-    return {
-      day:   raw['day']   ?? '',
-      time:  raw['time']  ?? '',
-      level: raw['level'] ?? '',
-      venue: raw['venue'] || venueDefault,
-      price: raw['price'] || priceDefault,
-    } satisfies Session;
+    return Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
   });
+}
+
+export function parseSessionsCSV(csv: string, defaults: SessionDefaults = {}): Session[] {
+  const venueDefault = defaults.venue ?? DEFAULT_VENUE;
+  const priceDefault = defaults.price ?? DEFAULT_PRICE;
+
+  return parseCSVRows(csv).map(raw => ({
+    day:   raw['day']   ?? '',
+    time:  raw['time']  ?? '',
+    level: raw['level'] ?? '',
+    venue: raw['venue'] || venueDefault,
+    price: raw['price'] || priceDefault,
+  } satisfies Session));
 }
 
 function splitCSVLine(line: string): string[] {
@@ -238,23 +247,12 @@ export const FALLBACK_QUOTES: Quote[] = [
 ];
 
 export function parseQuotesCSV(csv: string): Quote[] {
-  if (!csv.trim()) return [];
-
-  const lines = csv.trim().split('\n');
-  if (lines.length < 2) return [];
-
-  const keys = lines[0].split(',').map(k => k.trim().toLowerCase());
-
-  return lines.slice(1)
-    .map(line => {
-      const values = splitCSVLine(line);
-      const raw: Record<string, string> = Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
-      return {
-        quote: raw['quote'] ?? '',
-        name:  raw['name']  ?? '',
-        team:  raw['team']  ?? '',
-      } satisfies Quote;
-    })
+  return parseCSVRows(csv)
+    .map(raw => ({
+      quote: raw['quote'] ?? '',
+      name:  raw['name']  ?? '',
+      team:  raw['team']  ?? '',
+    } satisfies Quote))
     .filter(q => q.quote.length > 0);
 }
 
@@ -331,15 +329,7 @@ const TRYOUT_TRUTHY = ['true', 'yes', '1'];
  * the page). Blank `venue` falls back to DEFAULT_VENUE.
  */
 export function parseTryoutsCSV(csv: string): Tryout[] {
-  if (!csv.trim()) return [];
-  const lines = csv.trim().split('\n');
-  if (lines.length < 2) return [];
-
-  const keys = lines[0].split(',').map(k => k.trim().toLowerCase());
-
-  return lines.slice(1).flatMap(line => {
-    const values = splitCSVLine(line);
-    const raw: Record<string, string> = Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
+  return parseCSVRows(csv).flatMap(raw => {
     const dateObj = parseUKDate(raw['date'] ?? '');
     if (!dateObj) return [];
     return [{
