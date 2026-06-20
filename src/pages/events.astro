@@ -285,7 +285,7 @@ const teamSections = [
   </div>
 
   <script>
-    import { parseScore, parseHomeAway, formatFixtureDate, formatFixtureTime } from '../lib/volleyzone';
+    import { parseHomeAway, formatFixtureDate, formatFixtureTime, formatMatchResult } from '../lib/volleyzone';
     import type { Match, TeamFixtures } from '../lib/volleyzone';
 
     function esc(s: string): string {
@@ -339,16 +339,15 @@ const teamSections = [
         for (const m of results) {
           const isHome = parseHomeAway(m) === 'Home';
           const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
-          const { home, away } = parseScore(m.homeScore, m.awayScore);
           const resultLabel = isHome ? m.homeResult : m.awayResult;
           const w = resultLabel === 'win';
-          const score = isHome ? `${home}–${away}` : `${away}–${home}`;
+          const result = esc(formatMatchResult(m, isHome ? 'Home' : 'Away'));
           const date = formatFixtureDate(m.fixtureDate);
           html += `
             <div class="tl-row">
               <span class="tl-date">${date}</span>
               <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}</span>
-              <span class="${w ? 'badge-w' : 'badge-l'}">${w ? 'W' : 'L'} ${score}</span>
+              <span class="${w ? 'badge-w' : 'badge-l'}">${result}</span>
             </div>`;
         }
       }
