@@ -12,11 +12,11 @@ const moreCount = tryouts.length - 1;
 ---
 
 {next && (
-  <section class="tryouts-band" aria-label="Pre-season tryouts">
+  <section class="tryouts-band" aria-labelledby="tryouts-band-heading">
     <div class="tryouts-band__inner container">
       <div class="tryouts-band__copy">
         <span class="tryouts-band__pill">Pre-season tryouts</span>
-        <h2 class="tryouts-band__title">Trying out for a team</h2>
+        <h2 class="tryouts-band__title" id="tryouts-band-heading">Trying out for a team</h2>
         <p class="tryouts-band__next">
           Next: <strong>{next.team}</strong> — {formatTryoutDate(next.dateObj)} · {next.time} · {next.venue}
           {moreCount > 0 && <span class="tryouts-band__more"> +{moreCount} more</span>}
