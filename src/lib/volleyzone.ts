@@ -124,6 +124,12 @@ export async function fetchTeamFixtures(
 }
 
 export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Record<string, TeamFixtures>> {
+  // Local-dev escape hatch: SKIP_VOLLEYZONE=true in .env.local skips the (slow)
+  // per-team Volleyzone fetches entirely. Returning an empty map makes each team
+  // fall back to its "fixtures unavailable" state with zero network calls.
+  if (import.meta.env.SKIP_VOLLEYZONE === 'true') {
+    return {};
+  }
 
   const eligible = teamsData.filter(
     t => t.compId && t.seasonId && t.volleyzoneUserId && t.volleyzoneSegment,
