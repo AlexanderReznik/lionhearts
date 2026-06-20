@@ -1,0 +1,67 @@
+---
+// src/components/TryoutsAlertBar.astro
+// Slim homepage teaser bar, shown below the nav and above the hero. Renders
+// nothing when there are no upcoming tryouts.
+import type { Tryout } from '../lib/sheets';
+
+interface Props { tryouts: Tryout[]; }
+const { tryouts } = Astro.props;
+---
+
+{tryouts.length > 0 && (
+  <aside class="tryouts-bar" aria-label="Tryouts announcement">
+    <div class="tryouts-bar__inner container">
+      <span class="tryouts-bar__dot" aria-hidden="true"></span>
+      <span class="tryouts-bar__text"><strong>Tryouts now open</strong> — secure your spot for the new season</span>
+      <a href="/events#tryouts" class="tryouts-bar__link">See dates &amp; sign up →</a>
+    </div>
+  </aside>
+)}
+
+<style>
+  .tryouts-bar {
+    background: var(--lh-navy);
+    color: var(--lh-white);
+  }
+
+  .tryouts-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px var(--page-px);
+    flex-wrap: wrap;
+  }
+
+  .tryouts-bar__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lh-blue);
+    box-shadow: 0 0 0 4px rgba(84, 164, 247, 0.25);
+    flex-shrink: 0;
+  }
+
+  .tryouts-bar__text {
+    font-size: var(--text-note);
+    font-weight: var(--weight-semibold);
+  }
+  .tryouts-bar__text strong { color: var(--lh-blue); font-weight: var(--weight-extrabold); }
+
+  .tryouts-bar__link {
+    font-size: var(--text-eyebrow);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--lh-blue);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .tryouts-bar__link:hover { text-decoration: underline; }
+
+  /* Mobile: the teaser takes its own full-width line, the dot + link sit beneath. */
+  @media (max-width: 560px) {
+    .tryouts-bar__inner { gap: 6px 10px; }
+    .tryouts-bar__text { flex-basis: 100%; text-align: center; }
+  }
+</style>
