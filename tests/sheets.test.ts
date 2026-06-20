@@ -372,8 +372,13 @@ describe('parseUKDate', () => {
 
   it('accepts single-digit day and month', () => {
     const d = parseUKDate('1/2/2026');
-    expect(d!.getMonth()).toBe(1);
+    expect(d!.getMonth()).toBe(1); // '1/2/2026' is 1 February (UK day-first) → month index 1
     expect(d!.getDate()).toBe(1);
+  });
+
+  it('respects leap years', () => {
+    expect(parseUKDate('29/02/2024')).not.toBeNull(); // 2024 is a leap year
+    expect(parseUKDate('29/02/2025')).toBeNull();      // 2025 is not
   });
 
   it('returns null for unparseable or impossible dates', () => {
