@@ -92,6 +92,13 @@ const { tryouts } = Astro.props;
     flex-direction: column;
     gap: 2px;
   }
+
+  /* Dark theme: the row sits on --lh-navy-deep, so a plain --lh-navy chip barely
+     separates. Lift it to raised navy to match the box's strong contrast in
+     light (navy chip on the light-blue row). */
+  :global(html[data-theme="dark"]) .tryout-row__date {
+    background: var(--lh-navy-raised);
+  }
   .tryout-row__day { font-size: var(--text-lg); font-weight: var(--weight-black); line-height: var(--leading-none); }
   .tryout-row__month {
     font-size: var(--text-eyebrow);
