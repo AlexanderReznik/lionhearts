@@ -1,6 +1,7 @@
 ---
 // src/pages/join-success.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { INSTAGRAM_URL } from '../data/club';
 ---
 
 <BaseLayout
@@ -13,7 +14,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h1 class="success-page__title">Thanks for reaching out!</h1>
     <p class="success-page__body">
       We'll get back to you within a few days. In a rush?
-      <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer" class="success-page__link">
+      <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" class="success-page__link">
         DM us on Instagram
       </a>
       for a faster response.

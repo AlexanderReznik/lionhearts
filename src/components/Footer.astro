@@ -5,6 +5,7 @@ const year = new Date().getFullYear();
 
 import { SOCIAL_ICON_PATHS } from '../lib/socialIcons';
 const { instagram: IG_PATH, facebook: FB_PATH, youtube: YT_PATH } = SOCIAL_ICON_PATHS;
+import { INSTAGRAM_URL, INSTAGRAM_HANDLE, CONTACT_EMAIL } from '../data/club';
 
 const clubLinks = [
   { label: 'About Us',          href: '/about' },
@@ -19,8 +20,8 @@ const involvedLinks = [
 ];
 
 const contactLinks = [
-  { label: 'allanzelion@gmail.com',  href: 'mailto:allanzelion@gmail.com' },
-  { label: '@lionhearts_volleyball', href: 'https://instagram.com/lionhearts_volleyball' },
+  { label: CONTACT_EMAIL,    href: `mailto:${CONTACT_EMAIL}` },
+  { label: INSTAGRAM_HANDLE, href: INSTAGRAM_URL },
 ];
 ---
 
@@ -33,7 +34,7 @@ const contactLinks = [
       <div class="footer__follow">
         <h4 class="footer__follow-title">Follow</h4>
         <div class="footer__socials">
-          <a href="https://instagram.com/lionhearts_volleyball" class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
+          <a href={INSTAGRAM_URL} class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
             <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={IG_PATH} /></svg>Instagram
           </a>
           <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill footer__social-pill--facebook" target="_blank" rel="noopener noreferrer">

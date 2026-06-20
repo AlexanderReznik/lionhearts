@@ -4,6 +4,7 @@
 // See src/lib/behold.ts. When the feed is empty/unavailable (or BEHOLD_FEED_ID
 // is unset), this renders the "follow us" fallback panel instead.
 import { fetchInstagramPosts } from '../lib/behold';
+import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '../data/club';
 
 const posts = await fetchInstagramPosts();
 const hasPosts = posts.length > 0;
@@ -14,13 +15,13 @@ const hasPosts = posts.length > 0;
     <div>
       <h2 class="instagram__heading" id="instagram-heading">On Instagram</h2>
       <p class="instagram__handle">
-        <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer">
-          @lionhearts_volleyball
+        <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">
+          {INSTAGRAM_HANDLE}
         </a>
       </p>
     </div>
     <a
-      href="https://instagram.com/lionhearts_volleyball"
+      href={INSTAGRAM_URL}
       class="instagram__view-all"
       target="_blank"
       rel="noopener noreferrer"
@@ -77,12 +78,12 @@ const hasPosts = posts.length > 0;
         follow us to see it all.
       </p>
       <a
-        href="https://instagram.com/lionhearts_volleyball"
+        href={INSTAGRAM_URL}
         class="instagram__follow-btn"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Follow @lionhearts_volleyball →
+        Follow {INSTAGRAM_HANDLE} →
       </a>
     </div>
   )}

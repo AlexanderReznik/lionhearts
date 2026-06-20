@@ -8,6 +8,7 @@ import sessionPhoto from '../assets/hero/cats-2025-26-2.jpg';
 import { getSessions, getJuniorSessions, parseSessionSchedule, getUpcomingTryouts } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
+import { INSTAGRAM_URL } from '../data/club';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
 // Set GOOGLE_SHEET_ID in your environment or Netlify/Vercel env vars.
@@ -142,7 +143,7 @@ const teamSections = [
       {usingFallback && (
         <p class="sessions-box__notice">
           ⚠️ Showing our usual weekly schedule — we couldn't load the latest times.
-          Check our <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer">Instagram</a> to confirm before heading down.
+          Check our <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">Instagram</a> to confirm before heading down.
         </p>
       )}
 
@@ -197,7 +198,7 @@ const teamSections = [
       {juniorsFallback && (
         <p class="sessions-box__notice">
           ⚠️ Showing our usual junior schedule — we couldn't load the latest times.
-          Check our <a href="https://instagram.com/lionhearts_volleyball" target="_blank" rel="noopener noreferrer">Instagram</a> to confirm before heading down.
+          Check our <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer">Instagram</a> to confirm before heading down.
         </p>
       )}
 

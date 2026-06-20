@@ -1,6 +1,7 @@
 ---
 // src/pages/contact.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { INSTAGRAM_URL, INSTAGRAM_HANDLE, CONTACT_EMAIL } from '../data/club';
 
 const contactMethods = [
   {
@@ -8,14 +9,14 @@ const contactMethods = [
     tag: 'Email',
     title: 'Drop Us a Message',
     body: 'For general enquiries, sponsorship, or anything else.',
-    link: { label: 'allanzelion@gmail.com', href: 'mailto:allanzelion@gmail.com' },
+    link: { label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
   },
   {
     icon: '📷',
     tag: 'Fastest Response',
     title: 'Instagram DM',
     body: 'We check our DMs regularly — fastest way to get a reply from us.',
-    link: { label: '@lionhearts_volleyball', href: 'https://instagram.com/lionhearts_volleyball' },
+    link: { label: INSTAGRAM_HANDLE, href: INSTAGRAM_URL },
     featured: true,
   },
   {
@@ -33,8 +34,8 @@ const socials = [
   {
     brand: 'instagram',
     name: 'Instagram',
-    handle: '@lionhearts_volleyball · 2,104 followers',
-    href: 'https://instagram.com/lionhearts_volleyball',
+    handle: `${INSTAGRAM_HANDLE} · 2,104 followers`,
+    href: INSTAGRAM_URL,
   },
   {
     brand: 'facebook',
