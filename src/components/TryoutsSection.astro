@@ -44,7 +44,12 @@ const { tryouts } = Astro.props;
 )}
 
 <style>
-  .tryouts { margin-bottom: 36px; }
+  /* Offset the #tryouts anchor jump so the heading clears the sticky nav
+     (otherwise it lands behind it and you see only the dates). */
+  .tryouts {
+    margin-bottom: 36px;
+    scroll-margin-top: calc(var(--nav-height) + var(--space-sm));
+  }
 
   .tryouts__head { margin-bottom: 20px; }
   .tryouts__title {
