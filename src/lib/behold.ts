@@ -102,3 +102,31 @@ export function normalizeFeed(data: unknown): BeholdPost[] {
     .filter((p): p is BeholdPost => p !== null)
     .slice(0, MAX_POSTS);
 }
+
+/**
+ * Fetch the Behold JSON feed at build time. Never throws and never fails the
+ * build: on any error (no feed id, timeout, non-OK, bad JSON, unexpected
+ * shape) it warns and returns [], so InstagramFeed.astro degrades to its
+ * "follow us" fallback panel. Mirrors fetchAllFixtures() in volleyzone.ts.
+ */
+export async function fetchInstagramPosts(): Promise<BeholdPost[]> {
+  const feedId = import.meta.env.BEHOLD_FEED_ID;
+  if (!feedId || import.meta.env.SKIP_BEHOLD === 'true') return [];
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const res = await fetch(`${FEED_BASE}/${feedId}`, { signal: controller.signal });
+    if (!res.ok) {
+      console.warn(`[behold] HTTP ${res.status} fetching Instagram feed`);
+      return [];
+    }
+    return normalizeFeed(await res.json());
+  } catch (err) {
+    console.warn('[behold] Failed to fetch Instagram feed:', err);
+    return [];
+  } finally {
+    clearTimeout(timeout);
+  }
+}

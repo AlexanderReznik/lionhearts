@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import {
   mapMediaType,
   firstCaptionLine,
@@ -6,6 +6,7 @@ import {
   buildSrcSet,
   normalizePost,
   normalizeFeed,
+  fetchInstagramPosts,
 } from '../src/lib/behold';
 import type { BeholdRawPost } from '../src/lib/behold';
 import feedFixture from '../src/lib/__fixtures__/behold-feed.json';
@@ -126,5 +127,63 @@ describe('normalizeFeed', () => {
   it('clamps to 6 posts', () => {
     const many = { posts: Array.from({ length: 12 }, () => RAW) };
     expect(normalizeFeed(many)).toHaveLength(6);
+  });
+});
+
+describe('fetchInstagramPosts', () => {
+  const realFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
+
+  it('returns [] without fetching when BEHOLD_FEED_ID is unset', async () => {
+    vi.stubEnv('BEHOLD_FEED_ID', '');
+    globalThis.fetch = vi.fn();
+    const posts = await fetchInstagramPosts();
+    expect(posts).toEqual([]);
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
+  it('returns [] without fetching when SKIP_BEHOLD=true', async () => {
+    vi.stubEnv('BEHOLD_FEED_ID', 'abc123');
+    vi.stubEnv('SKIP_BEHOLD', 'true');
+    globalThis.fetch = vi.fn();
+    const posts = await fetchInstagramPosts();
+    expect(posts).toEqual([]);
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+
+  it('fetches the feed URL and returns normalized posts', async () => {
+    vi.stubEnv('BEHOLD_FEED_ID', 'abc123');
+    const feed = {
+      posts: [{
+        id: '1', permalink: 'https://www.instagram.com/p/ABC/', mediaType: 'IMAGE',
+        prunedCaption: 'Hi', sizes: { medium: { width: 700, height: 700, mediaUrl: 'm.jpg' } },
+      }],
+    };
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => feed } as Response);
+
+    const posts = await fetchInstagramPosts();
+
+    const url = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls[0][0];
+    expect(url).toBe('https://feeds.behold.so/abc123');
+    expect(posts).toHaveLength(1);
+    expect(posts[0].thumbnailSrc).toBe('m.jpg');
+  });
+
+  it('returns [] and warns on a non-OK response', async () => {
+    vi.stubEnv('BEHOLD_FEED_ID', 'abc123');
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response);
+    expect(await fetchInstagramPosts()).toEqual([]);
+  });
+
+  it('returns [] and warns when fetch throws', async () => {
+    vi.stubEnv('BEHOLD_FEED_ID', 'abc123');
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('network'));
+    expect(await fetchInstagramPosts()).toEqual([]);
   });
 });
