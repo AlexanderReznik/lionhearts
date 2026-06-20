@@ -10,7 +10,9 @@ import {
   getJuniorSessions,
   getQuotes,
   FALLBACK_QUOTES,
+  parseUKDate,
   type Session,
+  type Tryout,
 } from '../src/lib/sheets';
 
 const makeSession = (over: Partial<Session> = {}): Session => ({
@@ -355,5 +357,29 @@ describe('getQuotes', () => {
     const { quotes, usingFallback } = await getQuotes('sheet-id', '123');
     expect(usingFallback).toBe(true);
     expect(quotes).toEqual(FALLBACK_QUOTES);
+  });
+});
+
+describe('parseUKDate', () => {
+  it('parses DD/MM/YYYY day-first into a local-midnight date', () => {
+    const d = parseUKDate('13/09/2026');
+    expect(d).not.toBeNull();
+    expect(d!.getFullYear()).toBe(2026);
+    expect(d!.getMonth()).toBe(8); // September is month index 8
+    expect(d!.getDate()).toBe(13);
+    expect(d!.getHours()).toBe(0);
+  });
+
+  it('accepts single-digit day and month', () => {
+    const d = parseUKDate('1/2/2026');
+    expect(d!.getMonth()).toBe(1);
+    expect(d!.getDate()).toBe(1);
+  });
+
+  it('returns null for unparseable or impossible dates', () => {
+    expect(parseUKDate('')).toBeNull();
+    expect(parseUKDate('2026-09-13')).toBeNull(); // ISO not accepted
+    expect(parseUKDate('31/02/2026')).toBeNull(); // Feb 31 overflows
+    expect(parseUKDate('13/13/2026')).toBeNull(); // month 13
   });
 });

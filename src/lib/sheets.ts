@@ -280,3 +280,36 @@ export async function getQuotes(sheetId?: string, gid?: string): Promise<{ quote
     return { quotes: FALLBACK_QUOTES, usingFallback: true };
   }
 }
+
+// ── Tryouts ────────────────────────────────────────────────────────────────
+// One-off, dated tryout events for a specific team, managed on a dedicated tab
+// of the same Google Sheet. Unlike sessions there is NO fallback: if the sheet
+// is unreachable or has no upcoming visible rows, nothing renders. We must never
+// advertise a tryout that may not be real, and the empty state is the normal
+// off-season case.
+
+export interface Tryout {
+  date: string;    // raw cell, e.g. "13/09/2026"
+  dateObj: Date;   // parsed, local midnight
+  time: string;    // "6:00pm–8:00pm"
+  team: string;
+  venue: string;   // defaults to DEFAULT_VENUE when blank
+  form: string;    // Google Form URL ("" when blank)
+  visible: boolean;
+}
+
+/** Parse a UK day-first "DD/MM/YYYY" date to a local-midnight Date, or null. */
+export function parseUKDate(input: string): Date | null {
+  const m = input.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!m) return null;
+  const day = parseInt(m[1], 10);
+  const month = parseInt(m[2], 10);
+  const year = parseInt(m[3], 10);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const d = new Date(year, month - 1, day);
+  // Reject overflow rollovers like 31/02 (which JS would shift into March).
+  if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) {
+    return null;
+  }
+  return d;
+}
