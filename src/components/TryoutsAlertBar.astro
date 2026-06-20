@@ -11,8 +11,11 @@ const { tryouts } = Astro.props;
 {tryouts.length > 0 && (
   <aside class="tryouts-bar" aria-label="Tryouts announcement">
     <div class="tryouts-bar__inner container">
-      <span class="tryouts-bar__dot" aria-hidden="true"></span>
-      <span class="tryouts-bar__text"><strong>Tryouts now open</strong> — secure your spot for the new season</span>
+      <span class="tryouts-bar__lead">
+        <span class="tryouts-bar__dot" aria-hidden="true"></span>
+        <strong class="tryouts-bar__title">Tryouts now open</strong>
+      </span>
+      <span class="tryouts-bar__text">Secure your spot for the new season</span>
       <a href="/events#tryouts" class="tryouts-bar__link">See dates &amp; sign up →</a>
     </div>
   </aside>
@@ -28,9 +31,16 @@ const { tryouts } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 6px 14px;
     padding: 10px var(--page-px);
     flex-wrap: wrap;
+  }
+
+  /* Dot + "Tryouts now open" stay together as one unit (line 1 when stacked). */
+  .tryouts-bar__lead {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .tryouts-bar__dot {
@@ -42,11 +52,16 @@ const { tryouts } = Astro.props;
     flex-shrink: 0;
   }
 
+  .tryouts-bar__title {
+    font-size: var(--text-note);
+    font-weight: var(--weight-extrabold);
+    color: var(--lh-blue);
+  }
+
   .tryouts-bar__text {
     font-size: var(--text-note);
     font-weight: var(--weight-semibold);
   }
-  .tryouts-bar__text strong { color: var(--lh-blue); font-weight: var(--weight-extrabold); }
 
   .tryouts-bar__link {
     font-size: var(--text-eyebrow);
@@ -64,9 +79,12 @@ const { tryouts } = Astro.props;
     border-radius: 2px;
   }
 
-  /* Mobile: the teaser takes its own full-width line, the dot + link sit beneath. */
+  /* Narrow screens: stack into three centred lines —
+     1) dot + "Tryouts now open"  2) the sentence  3) the link. */
   @media (max-width: 560px) {
-    .tryouts-bar__inner { gap: 6px 10px; }
-    .tryouts-bar__text { flex-basis: 100%; text-align: center; }
+    .tryouts-bar__inner {
+      flex-direction: column;
+      gap: 4px;
+    }
   }
 </style>
