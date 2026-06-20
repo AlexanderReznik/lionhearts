@@ -280,3 +280,103 @@ export async function getQuotes(sheetId?: string, gid?: string): Promise<{ quote
     return { quotes: FALLBACK_QUOTES, usingFallback: true };
   }
 }
+
+// ── Tryouts ────────────────────────────────────────────────────────────────
+// One-off, dated tryout events for a specific team, managed on a dedicated tab
+// of the same Google Sheet. Unlike sessions there is NO fallback: if the sheet
+// is unreachable or has no upcoming visible rows, nothing renders. We must never
+// advertise a tryout that may not be real, and the empty state is the normal
+// off-season case.
+
+export interface Tryout {
+  date: string;    // raw cell, e.g. "13/09/2026"
+  dateObj: Date;   // parsed, local midnight
+  time: string;    // "6:00pm–8:00pm"
+  team: string;
+  venue: string;   // defaults to DEFAULT_VENUE when blank
+  form: string;    // Google Form URL ("" when blank)
+  visible: boolean;
+}
+
+/** Parse a UK day-first "DD/MM/YYYY" date to a local-midnight Date, or null. */
+export function parseUKDate(input: string): Date | null {
+  const m = input.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!m) return null;
+  const day = parseInt(m[1], 10);
+  const month = parseInt(m[2], 10);
+  const year = parseInt(m[3], 10);
+  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+  const d = new Date(year, month - 1, day);
+  // Reject overflow rollovers like 31/02 (which JS would shift into March).
+  if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) {
+    return null;
+  }
+  return d;
+}
+
+const TRYOUT_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const TRYOUT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** Format a tryout date for display, e.g. "Sat 13 Sep". Components may split on
+ *  spaces to reuse the parts (weekday / day / month) without re-deriving them. */
+export function formatTryoutDate(d: Date): string {
+  return `${TRYOUT_WEEKDAYS[d.getDay()]} ${d.getDate()} ${TRYOUT_MONTHS[d.getMonth()]}`;
+}
+
+const TRYOUT_TRUTHY = ['true', 'yes', '1'];
+
+/**
+ * Parse the tryouts tab CSV into Tryout objects. Rows whose `date` cell can't be
+ * parsed as UK day-first are dropped (so a half-filled planning row never breaks
+ * the page). Blank `venue` falls back to DEFAULT_VENUE.
+ */
+export function parseTryoutsCSV(csv: string): Tryout[] {
+  if (!csv.trim()) return [];
+  const lines = csv.trim().split('\n');
+  if (lines.length < 2) return [];
+
+  const keys = lines[0].split(',').map(k => k.trim().toLowerCase());
+
+  return lines.slice(1).flatMap(line => {
+    const values = splitCSVLine(line);
+    const raw: Record<string, string> = Object.fromEntries(keys.map((k, i) => [k, (values[i] ?? '').trim()]));
+    const dateObj = parseUKDate(raw['date'] ?? '');
+    if (!dateObj) return [];
+    return [{
+      date:    raw['date'] ?? '',
+      dateObj,
+      time:    raw['time'] ?? '',
+      team:    raw['team'] ?? '',
+      venue:   raw['venue'] || DEFAULT_VENUE,
+      form:    raw['form'] ?? '',
+      visible: TRYOUT_TRUTHY.includes((raw['visible'] ?? '').toLowerCase()),
+    } satisfies Tryout];
+  });
+}
+
+/**
+ * Returns upcoming, visible tryouts from the dedicated tryouts tab (its own gid),
+ * sorted soonest-first. Returns [] when sheetId/gid are unset or the fetch fails
+ * — there is intentionally NO fallback (see the Tryouts section note above).
+ * `now` is injectable for testing.
+ */
+export async function getUpcomingTryouts(
+  sheetId?: string,
+  gid?: string,
+  now: Date = new Date(),
+): Promise<Tryout[]> {
+  if (!sheetId || !gid) return [];
+
+  let csv: string;
+  try {
+    csv = await fetchSheetCSV(sheetId, gid);
+  } catch (e) {
+    console.warn('Google Sheets fetch failed for tryouts, hiding the section:', e);
+    return [];
+  }
+
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  return parseTryoutsCSV(csv)
+    .filter(t => t.visible && t.dateObj.getTime() >= startOfToday.getTime())
+    .sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+}

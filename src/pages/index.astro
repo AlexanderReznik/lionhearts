@@ -9,6 +9,9 @@ import ClubBridge from '../components/ClubBridge.astro';
 import JoinCTA from '../components/JoinCTA.astro';
 import SponsorsSection from '../components/SponsorsSection.astro';
 import InstagramFeed from '../components/InstagramFeed.astro';
+import TryoutsAlertBar from '../components/TryoutsAlertBar.astro';
+import TryoutsBand from '../components/TryoutsBand.astro';
+import { getUpcomingTryouts } from '../lib/sheets';
 
 // Hero images are processed at build time by Astro's <Picture> component,
 // which generates AVIF + WebP + JPEG variants at 640/960/1280/1920/2560 widths.
@@ -20,6 +23,10 @@ import heroCats2 from '../assets/hero/cats-2025-26-2.jpg';
 // import heroLvaPremier from '../assets/hero/02-lva-premier.jpg';
 // import heroOpenSession from '../assets/hero/03-open-session.jpg';
 // import heroCommunity   from '../assets/hero/04-community.jpg';
+
+// Pre-season tryouts — fetched once and shared by both homepage promos. Empty
+// array = nothing renders (no fallback).
+const tryouts = await getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_TRYOUTS_GID);
 
 const heroSlides = [
   {
@@ -83,7 +90,9 @@ const orgSchema = {
   description="East London's volleyball club — competing from the NVL Super League to your first ever session. Open sessions 3× a week at Mulberry Academy, Shoreditch E2."
   jsonLd={orgSchema}
 >
+  <TryoutsAlertBar tryouts={tryouts} />
   <Hero slides={heroSlides} />
+  <TryoutsBand tryouts={tryouts} />
   <SessionsStrip />
   <AboutIntro />
   <ClubBridge />

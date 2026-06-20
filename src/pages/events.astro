@@ -2,9 +2,10 @@
 // src/pages/events.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
+import TryoutsSection from '../components/TryoutsSection.astro';
 import { Image } from 'astro:assets';
 import sessionPhoto from '../assets/hero/cats-2025-26-2.jpg';
-import { getSessions, getJuniorSessions, parseSessionSchedule } from '../lib/sheets';
+import { getSessions, getJuniorSessions, parseSessionSchedule, getUpcomingTryouts } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
 
@@ -23,6 +24,10 @@ const tileCount = sessions.length + 1;
 // GOOGLE_JUNIORS_GID to its gid. day + time only (no level/venue tile).
 const { sessions: juniorSessions, usingFallback: juniorsFallback } =
   await getJuniorSessions(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_JUNIORS_GID);
+
+// Pre-season tryouts — dedicated tab (GOOGLE_TRYOUTS_GID). Empty array = nothing
+// renders (no fallback), so the section self-hides outside tryout season.
+const tryouts = await getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_TRYOUTS_GID);
 
 const fixturesMap = await fetchAllFixtures();
 const buildTimestamp = new Date().toLocaleDateString('en-GB', {
@@ -124,6 +129,8 @@ const teamSections = [
   </div>
 
   <div class="page-content">
+
+    <TryoutsSection tryouts={tryouts} />
 
     <!-- Open Sessions -->
     <section class="sessions-box" aria-labelledby="sessions-heading">

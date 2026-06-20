@@ -1,0 +1,137 @@
+---
+// src/components/TryoutsSection.astro
+// Pre-season tryouts section for the /events page. Renders nothing (no section,
+// no divider) when there are no upcoming tryouts — see getUpcomingTryouts.
+import type { Tryout } from '../lib/sheets';
+import { formatTryoutDate } from '../lib/sheets';
+
+interface Props { tryouts: Tryout[]; }
+const { tryouts } = Astro.props;
+---
+
+{tryouts.length > 0 && (
+  <>
+    <section class="tryouts" id="tryouts" aria-labelledby="tryouts-heading">
+      <header class="tryouts__head">
+        <h2 class="tryouts__title" id="tryouts-heading">Pre-season <em>Tryouts</em></h2>
+        <p class="tryouts__sub">Trying out for a competitive team? Pick a date and sign up below.</p>
+      </header>
+
+      <ul class="tryout-rows" role="list">
+        {tryouts.map(t => {
+          const [weekday, day, month] = formatTryoutDate(t.dateObj).split(' ');
+          return (
+            <li class="tryout-row">
+              <div class="tryout-row__date" aria-hidden="true">
+                <span class="tryout-row__day">{day}</span>
+                <span class="tryout-row__month">{month}</span>
+              </div>
+              <div class="tryout-row__meta">
+                <span class="tryout-row__team">{t.team}</span>
+                <span class="tryout-row__when">{weekday} · {t.time} · 📍 {t.venue}</span>
+              </div>
+              {t.form
+                ? <a class="btn btn--accent tryout-row__cta" href={t.form} target="_blank" rel="noopener noreferrer">Sign up →</a>
+                : <span class="tryout-row__tbc">Sign-up soon</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+
+    <hr class="tryouts-divider" />
+  </>
+)}
+
+<style>
+  .tryouts { margin-bottom: 36px; }
+
+  .tryouts__head { margin-bottom: 20px; }
+  .tryouts__title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+  }
+  .tryouts__title em { color: var(--color-accent-text); font-style: normal; }
+  .tryouts__sub {
+    margin-top: 6px;
+    max-width: 60ch;
+    color: var(--color-text-muted);
+    font-size: var(--text-body);
+    line-height: var(--leading-relaxed);
+  }
+
+  .tryout-rows { list-style: none; margin: 0; padding: 0; }
+
+  .tryout-row {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    background: var(--color-bg-alt);
+  }
+
+  .tryout-row__date {
+    background: var(--lh-navy);
+    color: var(--lh-white);
+    border-radius: 8px;
+    text-align: center;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .tryout-row__day { font-size: var(--text-lg); font-weight: var(--weight-black); line-height: 1; }
+  .tryout-row__month {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
+
+  .tryout-row__meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .tryout-row__team {
+    font-size: var(--text-body);
+    font-weight: var(--weight-extrabold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-body);
+    color: var(--color-text);
+  }
+  .tryout-row__when { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+
+  .tryout-row__cta { flex-shrink: 0; }
+  .tryout-row__tbc {
+    font-size: var(--text-note);
+    color: var(--color-text-faint);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    white-space: nowrap;
+  }
+
+  .tryouts-divider {
+    border: 0;
+    border-top: 1px solid var(--color-border);
+    margin: 16px 0 36px;
+  }
+
+  /* Mobile: date-box + meta stay side by side; the button drops full-width below. */
+  @media (max-width: 560px) {
+    .tryout-row {
+      grid-template-columns: 56px 1fr;
+      row-gap: 12px;
+    }
+    .tryout-row__cta,
+    .tryout-row__tbc {
+      grid-column: 1 / -1;
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>

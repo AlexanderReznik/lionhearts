@@ -1,0 +1,79 @@
+---
+// src/components/TryoutsBand.astro
+// Homepage accent band between the hero and the sessions strip. Shows the soonest
+// upcoming tryout and links to the full list. Renders nothing when empty.
+import type { Tryout } from '../lib/sheets';
+import { formatTryoutDate } from '../lib/sheets';
+
+interface Props { tryouts: Tryout[]; }
+const { tryouts } = Astro.props;
+const next = tryouts[0];
+const moreCount = tryouts.length - 1;
+---
+
+{next && (
+  <section class="tryouts-band" aria-labelledby="tryouts-band-heading">
+    <div class="tryouts-band__inner container">
+      <div class="tryouts-band__copy">
+        <span class="tryouts-band__pill">Pre-season tryouts</span>
+        <h2 class="tryouts-band__title" id="tryouts-band-heading">Trying out for a team</h2>
+        <p class="tryouts-band__next">
+          Next: <strong>{next.team}</strong> — {formatTryoutDate(next.dateObj)} · {next.time} · {next.venue}
+          {moreCount > 0 && <span class="tryouts-band__more"> +{moreCount} more</span>}
+        </p>
+      </div>
+      <a href="/events#tryouts" class="btn btn--accent tryouts-band__cta">See all dates &amp; sign up →</a>
+    </div>
+  </section>
+)}
+
+<style>
+  .tryouts-band {
+    background: linear-gradient(135deg, rgba(84, 164, 247, 0.12), rgba(84, 164, 247, 0.03));
+    border-top: 1px solid var(--color-border-blue);
+    border-bottom: 1px solid var(--color-border-blue);
+  }
+
+  .tryouts-band__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px var(--page-px);
+    flex-wrap: wrap;
+  }
+
+  .tryouts-band__pill {
+    display: inline-block;
+    background: var(--lh-blue);
+    color: var(--lh-navy);
+    font-size: var(--text-eyebrow);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .tryouts-band__title {
+    margin: 8px 0 4px;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+    color: var(--color-text);
+  }
+
+  .tryouts-band__next { font-size: var(--text-body-sm); color: var(--color-text-muted); }
+  .tryouts-band__next strong { color: var(--color-text); font-weight: var(--weight-bold); }
+  .tryouts-band__more { color: var(--color-accent-text); font-weight: var(--weight-bold); }
+
+  .tryouts-band__cta { flex-shrink: 0; }
+
+  /* Mobile: stack the copy and let the button span full width. */
+  @media (max-width: 640px) {
+    .tryouts-band__inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .tryouts-band__cta { width: 100%; justify-content: center; }
+  }
+</style>

@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   parseSessionsCSV,
   parseQuotesCSV,
+  parseTryoutsCSV,
+  formatTryoutDate,
+  getUpcomingTryouts,
   abbreviateDay,
   abbreviateTime,
   to24Hour,
@@ -10,7 +13,9 @@ import {
   getJuniorSessions,
   getQuotes,
   FALLBACK_QUOTES,
+  parseUKDate,
   type Session,
+  type Tryout,
 } from '../src/lib/sheets';
 
 const makeSession = (over: Partial<Session> = {}): Session => ({
@@ -355,5 +360,129 @@ describe('getQuotes', () => {
     const { quotes, usingFallback } = await getQuotes('sheet-id', '123');
     expect(usingFallback).toBe(true);
     expect(quotes).toEqual(FALLBACK_QUOTES);
+  });
+});
+
+describe('parseUKDate', () => {
+  it('parses DD/MM/YYYY day-first into a local-midnight date', () => {
+    const d = parseUKDate('13/09/2026');
+    expect(d).not.toBeNull();
+    expect(d!.getFullYear()).toBe(2026);
+    expect(d!.getMonth()).toBe(8); // September is month index 8
+    expect(d!.getDate()).toBe(13);
+    expect(d!.getHours()).toBe(0);
+  });
+
+  it('accepts single-digit day and month', () => {
+    const d = parseUKDate('1/2/2026');
+    expect(d!.getMonth()).toBe(1); // '1/2/2026' is 1 February (UK day-first) → month index 1
+    expect(d!.getDate()).toBe(1);
+  });
+
+  it('respects leap years', () => {
+    expect(parseUKDate('29/02/2024')).not.toBeNull(); // 2024 is a leap year
+    expect(parseUKDate('29/02/2025')).toBeNull();      // 2025 is not
+  });
+
+  it('returns null for unparseable or impossible dates', () => {
+    expect(parseUKDate('')).toBeNull();
+    expect(parseUKDate('2026-09-13')).toBeNull(); // ISO not accepted
+    expect(parseUKDate('31/02/2026')).toBeNull(); // Feb 31 overflows
+    expect(parseUKDate('13/13/2026')).toBeNull(); // month 13
+  });
+});
+
+describe('parseTryoutsCSV', () => {
+  const header = 'date,time,team,venue,form,visible';
+
+  it('parses a row into a Tryout, parsing visible truthiness', () => {
+    const csv = `${header}\n13/09/2026,6:00pm–8:00pm,Men's NVL,The Castle,https://forms.gle/abc,TRUE`;
+    const result = parseTryoutsCSV(csv);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject<Partial<Tryout>>({
+      date: '13/09/2026',
+      time: '6:00pm–8:00pm',
+      team: "Men's NVL",
+      venue: 'The Castle',
+      form: 'https://forms.gle/abc',
+      visible: true,
+    });
+    expect(result[0].dateObj.getDate()).toBe(13);
+  });
+
+  it('defaults a blank venue to the club default and marks non-truthy visible false', () => {
+    const csv = `${header}\n14/09/2026,2:00pm–4:00pm,Women's LVA,,https://forms.gle/xyz,FALSE`;
+    const result = parseTryoutsCSV(csv);
+    expect(result[0].venue).toBe('Mulberry Academy Shoreditch');
+    expect(result[0].visible).toBe(false);
+  });
+
+  it('drops rows whose date will not parse', () => {
+    const csv = `${header}\nTBC,6:00pm–8:00pm,Men's NVL,The Castle,https://forms.gle/abc,TRUE`;
+    expect(parseTryoutsCSV(csv)).toHaveLength(0);
+  });
+
+  it('returns [] for empty or header-only input', () => {
+    expect(parseTryoutsCSV('')).toEqual([]);
+    expect(parseTryoutsCSV(header)).toEqual([]);
+  });
+});
+
+describe('formatTryoutDate', () => {
+  it('formats a date as "Wkd D Mon" deterministically', () => {
+    // 13 Sep 2026 is a Sunday.
+    expect(formatTryoutDate(new Date(2026, 8, 13))).toBe('Sun 13 Sep');
+    // 1 Jan 2027 is a Friday.
+    expect(formatTryoutDate(new Date(2027, 0, 1))).toBe('Fri 1 Jan');
+  });
+});
+
+describe('getUpcomingTryouts', () => {
+  const realFetch = globalThis.fetch;
+  const header = 'date,time,team,venue,form,visible';
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+    vi.restoreAllMocks();
+  });
+
+  it('returns [] when sheet ID or gid is missing (no fetch attempted)', async () => {
+    expect(await getUpcomingTryouts(undefined, 'gid')).toEqual([]);
+    expect(await getUpcomingTryouts('sheet-id', undefined)).toEqual([]);
+  });
+
+  it('returns [] when the fetch fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 500 } as Response);
+    expect(await getUpcomingTryouts('sheet-id', 'gid')).toEqual([]);
+  });
+
+  it('keeps only visible, today-or-future rows and sorts soonest-first', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => [
+        header,
+        '20/09/2026,1:30pm–3:30pm,Juniors,,https://forms.gle/c,TRUE',  // future, visible → keep
+        '13/09/2026,6:00pm–8:00pm,Men,The Castle,https://forms.gle/a,TRUE', // future, visible → keep (earlier)
+        '14/09/2026,2:00pm–4:00pm,Women,,https://forms.gle/b,FALSE', // future but hidden → drop
+        '01/01/2020,6:00pm–8:00pm,Past,,https://forms.gle/d,TRUE',   // past → drop
+      ].join('\n'),
+    } as Response);
+
+    const now = new Date(2026, 8, 1); // 1 Sep 2026
+    const result = await getUpcomingTryouts('sheet-id', 'gid', now);
+
+    expect(result.map(t => t.team)).toEqual(['Men', 'Juniors']);
+  });
+
+  it('treats a tryout happening today as upcoming', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      text: async () => `${header}\n15/09/2026,6:00pm–8:00pm,Today,,https://forms.gle/a,TRUE`,
+    } as Response);
+    // now is later in the same day; tryout date is midnight today.
+    const now = new Date(2026, 8, 15, 18, 30);
+    const result = await getUpcomingTryouts('sheet-id', 'gid', now);
+    expect(result).toHaveLength(1);
   });
 });
