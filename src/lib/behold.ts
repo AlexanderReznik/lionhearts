@@ -68,3 +68,37 @@ export function buildSrcSet(sizes: BeholdSizes | undefined): string {
   if (sizes.large) entries.push(`${sizes.large.mediaUrl} ${sizes.large.width}w`);
   return entries.join(', ');
 }
+
+function thumbnailFrom(sizes: BeholdSizes | undefined): string | null {
+  return sizes?.medium?.mediaUrl ?? sizes?.large?.mediaUrl ?? sizes?.small?.mediaUrl ?? null;
+}
+
+export function normalizePost(raw: BeholdRawPost): BeholdPost | null {
+  if (!raw.permalink) return null;
+  const thumbnailSrc = thumbnailFrom(raw.sizes);
+  if (!thumbnailSrc) return null;
+
+  const caption = (raw.prunedCaption ?? raw.caption ?? '').trim();
+  const altText = raw.altText?.trim() || firstCaptionLine(caption) || FALLBACK_ALT;
+
+  return {
+    id: raw.id ?? raw.permalink,
+    permalink: raw.permalink,
+    mediaType: mapMediaType(raw.mediaType),
+    thumbnailSrc,
+    srcSet: buildSrcSet(raw.sizes),
+    caption,
+    altText,
+    bgColor: paletteToRgb(raw.colorPalette?.dominant),
+    timestamp: raw.timestamp ?? '',
+  };
+}
+
+export function normalizeFeed(data: unknown): BeholdPost[] {
+  const posts = (data as BeholdFeed | null)?.posts;
+  if (!Array.isArray(posts)) return [];
+  return posts
+    .map(normalizePost)
+    .filter((p): p is BeholdPost => p !== null)
+    .slice(0, MAX_POSTS);
+}
