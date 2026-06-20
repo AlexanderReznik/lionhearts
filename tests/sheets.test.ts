@@ -3,6 +3,7 @@ import {
   parseSessionsCSV,
   parseQuotesCSV,
   parseTryoutsCSV,
+  formatTryoutDate,
   abbreviateDay,
   abbreviateTime,
   to24Hour,
@@ -423,5 +424,14 @@ describe('parseTryoutsCSV', () => {
   it('returns [] for empty or header-only input', () => {
     expect(parseTryoutsCSV('')).toEqual([]);
     expect(parseTryoutsCSV(header)).toEqual([]);
+  });
+});
+
+describe('formatTryoutDate', () => {
+  it('formats a date as "Wkd D Mon" deterministically', () => {
+    // 13 Sep 2026 is a Sunday.
+    expect(formatTryoutDate(new Date(2026, 8, 13))).toBe('Sun 13 Sep');
+    // 1 Jan 2027 is a Friday.
+    expect(formatTryoutDate(new Date(2027, 0, 1))).toBe('Fri 1 Jan');
   });
 });

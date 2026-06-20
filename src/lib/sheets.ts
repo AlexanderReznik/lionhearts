@@ -314,6 +314,15 @@ export function parseUKDate(input: string): Date | null {
   return d;
 }
 
+const TRYOUT_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const TRYOUT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** Format a tryout date for display, e.g. "Sat 13 Sep". Components may split on
+ *  spaces to reuse the parts (weekday / day / month) without re-deriving them. */
+export function formatTryoutDate(d: Date): string {
+  return `${TRYOUT_WEEKDAYS[d.getDay()]} ${d.getDate()} ${TRYOUT_MONTHS[d.getMonth()]}`;
+}
+
 const TRYOUT_TRUTHY = ['true', 'yes', '1'];
 
 /**
