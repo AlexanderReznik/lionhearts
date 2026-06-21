@@ -12,6 +12,7 @@ import InstagramFeed from '../components/InstagramFeed.astro';
 import TryoutsAlertBar from '../components/TryoutsAlertBar.astro';
 import TryoutsBand from '../components/TryoutsBand.astro';
 import { getUpcomingTryouts } from '../lib/sheets';
+import { INSTAGRAM_URL } from '../data/club';
 
 // Hero images are processed at build time by Astro's <Picture> component,
 // which generates AVIF + WebP + JPEG variants at 640/960/1280/1920/2560 widths.
@@ -58,7 +59,7 @@ const orgSchema = {
   url: 'https://lionhearts.vercel.app',
   logo: 'https://lionhearts.vercel.app/images/og-default.jpg',
   sameAs: [
-    'https://www.instagram.com/lionhearts_volleyball/',
+    INSTAGRAM_URL,
     'https://www.facebook.com/lionheartsvolleyball',
     'https://www.youtube.com/@londonlionheartsvolleyball5826',
   ],

@@ -285,6 +285,8 @@ const isActive = (href: string) =>
 </style>
 
 <script>
+  import { THEME_KEY } from '../lib/theme';
+
   const hamburger = document.querySelector<HTMLButtonElement>('.nav__hamburger');
   const overlay   = document.getElementById('nav-overlay') as HTMLElement | null;
   const closeBtn  = overlay?.querySelector<HTMLButtonElement>('.nav__overlay-close');
@@ -330,8 +332,8 @@ const isActive = (href: string) =>
   });
 
   // ── Theme toggle ──────────────────────────────────────────────
-  const THEME_KEY = 'lh-theme';
-
+  // THEME_KEY is imported from lib/theme so the storage key lives in one place
+  // (the BaseHead boot script can't import it — it runs pre-hydration inline).
   function currentTheme(): 'light' | 'dark' {
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
   }

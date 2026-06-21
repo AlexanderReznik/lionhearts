@@ -1,0 +1,23 @@
+---
+// src/components/VenueCard.astro
+// Venue tile that closes both session grids on /events. Static content; the
+// venue name is shown in display context (with address + transport) so it
+// stays literal rather than using DEFAULT_VENUE. Styling lives in global.css.
+---
+
+<div class="session-card session-card--venue section--community">
+  <div class="session-card__venue-label">Venue</div>
+  <strong>Mulberry Academy Shoreditch</strong>
+  <span>Gosset Street, E2 6NW</span>
+  <a
+    href="https://maps.google.com/?q=Mulberry+Academy+Shoreditch"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="session-card__map-link"
+  >
+    Open in Maps ↗
+  </a>
+  <span class="session-card__transport">
+    Short walk from Bethnal Green,<br />Shoreditch High Street or Hoxton
+  </span>
+</div>

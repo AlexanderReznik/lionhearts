@@ -1,0 +1,33 @@
+---
+// src/components/SessionCard.astro
+// Photo-backed schedule tile, shared by the Open Sessions and Junior Sessions
+// grids on /events. `level` is optional (juniors omit it). Card styling lives
+// in global.css alongside the other shared surface primitives.
+import { Image } from 'astro:assets';
+import sessionPhoto from '../assets/hero/cats-2025-26-2.jpg';
+import type { Session } from '../lib/sheets';
+
+interface Props {
+  session: Session;
+}
+
+const { session } = Astro.props;
+---
+
+<div class="session-card session-card--photo">
+  <Image
+    class="session-card__bg"
+    src={sessionPhoto}
+    alt=""
+    aria-hidden="true"
+    widths={[240, 360, 480]}
+    sizes="(max-width: 640px) 50vw, 240px"
+    loading="lazy"
+  />
+  <div class="session-card__content">
+    <div class="session-card__day">{session.day}</div>
+    <div class="session-card__time">{session.time}</div>
+    {session.level && <div class="session-card__level">{session.level}</div>}
+    <div class="session-card__venue">📍 {session.venue}<br />{session.price}</div>
+  </div>
+</div>
