@@ -2,14 +2,7 @@
 // src/pages/sponsorship.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { CONTACT_EMAIL } from '../data/club';
-
-// TODO: Replace with actual sponsor data supplied by client
-const sponsor = {
-  name:        'Vinarius London',
-  description: 'East London\'s independent wine merchant — curating small-production wines from 15+ countries, hosting tastings and supper clubs in Shoreditch.',
-  url:         'https://vinarius.london',
-  logo:        '/brand/vinarius-logo-burgundy.svg',
-};
+import { SPONSORS } from '../data/sponsors';
 
 const perks = [
   { icon: '📱', title: 'Social Media Exposure',   body: 'Featured across our Instagram, Facebook, and YouTube — reaching 2,000+ engaged followers and growing.' },
@@ -35,21 +28,25 @@ const perks = [
 
   <div class="page-content">
 
-    <!-- Title sponsor -->
-    <h2 class="eyebrow section-eyebrow">Title Sponsor</h2>
+    <!-- Sponsors -->
+    <h2 class="eyebrow section-eyebrow">Our Sponsors</h2>
 
-    <div class="sponsor-hero">
-      <span class="sponsor-hero__badge">Title Sponsor</span>
-      <div class="sponsor-hero__logo">
-        {sponsor.logo
-          ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
-          : <span class="sponsor-hero__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
-        }
-      </div>
-      <div class="sponsor-hero__details">
-        <p class="sponsor-hero__desc">{sponsor.description}</p>
-        <a href={sponsor.url} class="btn btn--accent sponsor-hero__link" target="_blank" rel="noopener noreferrer">Visit Vinarius ↗</a>
-      </div>
+    <div class="sponsor-grid">
+      {SPONSORS.map(sponsor => (
+        <div class="sponsor-hero">
+          <span class="sponsor-hero__badge">{sponsor.tier}</span>
+          <div class={`sponsor-hero__logo sponsor-hero__logo--${sponsor.slug}`}>
+            {sponsor.logo
+              ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
+              : <span class="sponsor-hero__logo-placeholder" aria-label={`${sponsor.name} logo`}></span>
+            }
+          </div>
+          <div class="sponsor-hero__details">
+            <p class="sponsor-hero__desc">{sponsor.description}</p>
+            <a href={sponsor.url} class="btn btn--accent sponsor-hero__link" target="_blank" rel="noopener noreferrer">{sponsor.cta} ↗</a>
+          </div>
+        </div>
+      ))}
     </div>
 
     <!-- Become a Sponsor CTA -->
@@ -82,7 +79,20 @@ const perks = [
 </BaseLayout>
 
 <style>
-  /* ── Title sponsor hero — site-native panel; logo on a white chip ── */
+  /* ── Sponsors — two equal tiles side by side; stack on mobile ── */
+  .sponsor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(16px, 3vw, 28px);
+    align-items: stretch;
+    margin-bottom: 48px;
+  }
+
+  @media (max-width: 720px) {
+    .sponsor-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Site-native sponsor panel; logo on a white chip ── */
   .sponsor-hero {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -92,7 +102,6 @@ const perks = [
     flex-direction: column;
     align-items: center;
     gap: clamp(20px, 3vw, 30px);
-    margin-bottom: 48px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(5, 18, 43, 0.06);
   }
@@ -108,18 +117,31 @@ const perks = [
     border-radius: 20px;
   }
 
+  /* Fixed-ratio chip so both sponsor logos sit in an identically-sized white
+     box; each logo is contained + centred regardless of its aspect ratio. */
   .sponsor-hero__logo {
     background: #fff;
     border: 1px solid rgba(17, 35, 75, 0.06);
     border-radius: 12px;
     padding: clamp(22px, 3vw, 32px) clamp(26px, 4vw, 44px);
     width: min(460px, 86%);
+    height: clamp(128px, 14vw, 172px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     box-shadow: 0 8px 24px rgba(5, 18, 43, 0.12);
   }
   .sponsor-hero__logo img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
     display: block;
+  }
+
+  /* Taste's wordmark is a wide, short lockup — trim padding so it renders at a
+     size comparable to Vinarius's chunkier mark inside the same-size box. */
+  .sponsor-hero__logo--taste-catering {
+    padding: clamp(14px, 2vw, 20px) clamp(20px, 3vw, 32px);
   }
 
   .sponsor-hero__logo-placeholder {
