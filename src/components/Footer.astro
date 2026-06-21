@@ -242,6 +242,17 @@ const contactLinks = [
       gap: 24px 32px;
     }
 
+    /* Logo + Follow sit on one row, wrapping to stack when too narrow */
+    .footer__brand {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px 32px;
+    }
+
+    .footer__crest,
+    .footer__follow { flex: 0 1 auto; }
+
     .footer__crest :global(.brand-logo__img) { height: 72px; }
 
     .footer__bottom {
