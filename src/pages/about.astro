@@ -1,6 +1,7 @@
 ---
 // src/pages/about.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon, { type IconName } from '../components/Icon.astro';
 
 const orgSchema = {
   '@context': 'https://schema.org',
@@ -19,28 +20,25 @@ const orgSchema = {
   },
 };
 
-// Our Values — Allan's copy (slides 40–41). `iconSvg` is an optional path to a
-// future custom SVG (S42); while null we render the emoji fallback.
+// Our Values — Allan's copy (slides 40–41). `icon` names a glyph from the
+// designer's brand icon set (see Icon.astro).
 const valuesIntro =
   'As a friendly local club, we have social values and community as top of mind.';
 
-const values = [
+const values: { icon: IconName; title: string; body: string; featured?: boolean }[] = [
   {
-    icon: '🤝',
-    iconSvg: null as string | null,
+    icon: 'inclusivity',
     title: 'Inclusivity',
     body: 'We act as catalysts for change for a truly inclusive society by promoting safe, accessible and fair participation, and inspiring physical activity for all.',
   },
   {
-    icon: '⚖️',
-    iconSvg: null as string | null,
+    icon: 'respect',
     title: 'Respect',
     body: 'We value and celebrate unique and diverse talents, experiences and perspectives. We treat our participants, partners, donors, and each other with sensitivity and respect.',
     featured: true,
   },
   {
-    icon: '🤲',
-    iconSvg: null as string | null,
+    icon: 'collaboration',
     title: 'Collaboration',
     body: 'We work and win together, individually and collectively, as distinct and diverse individuals.',
   },
@@ -116,9 +114,7 @@ const mission =
         {values.map(v => (
           <div class:list={['value-card', { 'value-card--featured': v.featured }]}>
             <div class="value-card__icon" aria-hidden="true">
-              {v.iconSvg
-                ? <img class="value-card__icon-svg" src={v.iconSvg} alt="" />
-                : v.icon}
+              <Icon name={v.icon} />
             </div>
             <h3 class="value-card__title">{v.title}</h3>
             <p class="value-card__body">{v.body}</p>
@@ -222,7 +218,7 @@ const mission =
     border-color: rgba(84,164,247,0.45);
   }
 
-  .value-card__icon { font-size: var(--text-2xl); margin-bottom: 14px; }
+  .value-card__icon { font-size: var(--text-2xl); margin-bottom: 14px; color: var(--color-accent-text); line-height: 1; }
   .value-card__title { font-size: var(--text-body); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-display); margin-bottom: 8px; }
   .value-card__body { font-size: var(--text-body-sm); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
 
@@ -234,7 +230,6 @@ const mission =
     margin-bottom: 28px;
   }
 
-  .value-card__icon-svg { width: 1.75rem; height: 1.75rem; display: block; }
 
   /* Label on the left, statement filling the right — uses the full band width
      instead of a narrow left-hand column. */

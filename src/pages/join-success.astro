@@ -1,6 +1,7 @@
 ---
 // src/pages/join-success.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { INSTAGRAM_URL } from '../data/club';
 ---
 
@@ -10,7 +11,7 @@ import { INSTAGRAM_URL } from '../data/club';
   noindex={true}
 >
   <div class="success-page">
-    <div class="success-page__icon" aria-hidden="true">🏐</div>
+    <div class="success-page__icon" aria-hidden="true"><Icon name="session" /></div>
     <h1 class="success-page__title">Thanks for reaching out!</h1>
     <p class="success-page__body">
       We'll get back to you within a few days. In a rush?
@@ -35,7 +36,7 @@ import { INSTAGRAM_URL } from '../data/club';
     text-align: center;
   }
 
-  .success-page__icon { font-size: var(--text-3xl); }
+  .success-page__icon { font-size: var(--text-3xl); color: var(--color-accent-text); line-height: 1; }
 
   .success-page__title {
     font-size: var(--text-sub);

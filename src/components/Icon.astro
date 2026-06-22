@@ -1,0 +1,74 @@
+---
+// src/components/Icon.astro — the designer's brand icon set (Icons_SVG).
+//
+// Uses Astro's native SVG-as-component import (stable since 5.7): each .svg in
+// src/assets/icons is inlined + SVGO-optimised at build, so the icons add no
+// HTTP requests and inherit `currentColor` — meaning they theme automatically
+// in both light and dark, as long as the surrounding `color` is a semantic
+// --color-* token. Sizing is `1em`, so callers control size with `font-size`.
+import Champion from '../assets/icons/champion.svg';
+import Collaboration from '../assets/icons/collaboration.svg';
+import CommunityReach from '../assets/icons/community-reach.svg';
+import Email from '../assets/icons/email.svg';
+import EventPresence from '../assets/icons/event-presence.svg';
+import Inclusivity from '../assets/icons/inclusivity.svg';
+import InstagramDm from '../assets/icons/instagram-dm.svg';
+import Instagram from '../assets/icons/instagram.svg';
+import KitBranding from '../assets/icons/kit-branding.svg';
+import Location from '../assets/icons/location.svg';
+import Respect from '../assets/icons/respect.svg';
+import Session from '../assets/icons/session.svg';
+import SocialMediaExposure from '../assets/icons/social-media-exposure.svg';
+import WebsitePresence from '../assets/icons/website-presence.svg';
+
+const ICONS = {
+  champion: Champion,
+  collaboration: Collaboration,
+  'community-reach': CommunityReach,
+  email: Email,
+  'event-presence': EventPresence,
+  inclusivity: Inclusivity,
+  'instagram-dm': InstagramDm,
+  instagram: Instagram,
+  'kit-branding': KitBranding,
+  location: Location,
+  respect: Respect,
+  session: Session,
+  'social-media-exposure': SocialMediaExposure,
+  'website-presence': WebsitePresence,
+} as const;
+
+export type IconName = keyof typeof ICONS;
+
+interface Props {
+  name: IconName;
+  /** Extra class(es) on the <svg> — e.g. for bespoke sizing/colour. */
+  class?: string;
+  /** Accessible label. Omit for purely decorative icons (renders aria-hidden). */
+  title?: string;
+}
+
+const { name, class: className, title } = Astro.props;
+const Glyph = ICONS[name];
+const cls = ['brand-icon', className].filter(Boolean).join(' ');
+---
+
+<Glyph
+  class={cls}
+  fill="currentColor"
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+/>
+
+<style is:global>
+  /* Component invocations don't receive Astro's scope attribute, so this base
+     utility must be global. Icons are 1em square and align to the text. */
+  .brand-icon {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: -0.125em;
+    flex: none;
+  }
+</style>

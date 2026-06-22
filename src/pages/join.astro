@@ -1,6 +1,7 @@
 ---
 // src/pages/join.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '../data/club';
 ---
 
@@ -25,7 +26,7 @@ import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '../data/club';
       <!-- 1: Open session -->
       <div class="pathway pathway--featured section--community">
         <p class="pathway__rec">Best way in</p>
-        <div class="pathway__icon" aria-hidden="true">🏐</div>
+        <div class="pathway__icon" aria-hidden="true"><Icon name="session" /></div>
         <h2 class="pathway__title">Come to an Open Session</h2>
         <p class="pathway__body">
           The easiest way in — just show up and play. No booking, no commitment, no experience
@@ -36,7 +37,7 @@ import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '../data/club';
 
       <!-- 2: Instagram -->
       <div class="pathway">
-        <div class="pathway__icon" aria-hidden="true">📷</div>
+        <div class="pathway__icon" aria-hidden="true"><Icon name="instagram" /></div>
         <h2 class="pathway__title">Say Hi on Instagram</h2>
         <p class="pathway__body">
           Drop us a DM — we love hearing from new people. Ask us anything: which team might
@@ -48,13 +49,13 @@ import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '../data/club';
           target="_blank"
           rel="noopener noreferrer"
         >
-          📷 &nbsp;{INSTAGRAM_HANDLE}
+          <Icon name="instagram" />&nbsp;{INSTAGRAM_HANDLE}
         </a>
       </div>
 
       <!-- 3: Form -->
       <div class="pathway">
-        <div class="pathway__icon" aria-hidden="true">✉️</div>
+        <div class="pathway__icon" aria-hidden="true"><Icon name="email" /></div>
         <h2 class="pathway__title">Tell Us About Yourself</h2>
         <p class="pathway__body">
           Want us to find the right fit for you? Fill in the short form below and we'll reach
@@ -221,7 +222,10 @@ import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from '../data/club';
     pointer-events: none;
   }
 
-  .pathway__icon { font-size: var(--text-3xl); }
+  .pathway__icon { font-size: var(--text-3xl); color: var(--color-accent-text); line-height: 1; }
+  /* Featured pathway sits on the blue .section--community surface — inherit its
+     navy text colour instead of the accent blue (which would be blue-on-blue). */
+  .pathway--featured .pathway__icon { color: inherit; }
 
   .pathway__title {
     font-size: var(--text-lead);

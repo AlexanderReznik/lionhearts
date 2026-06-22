@@ -212,6 +212,16 @@ const teamSections = [
   <script>
     import { parseHomeAway, formatFixtureDate, formatFixtureTime, formatMatchResult } from '../lib/volleyzone';
     import type { Match, TeamFixtures } from '../lib/volleyzone';
+    import locationRaw from '../assets/icons/location.svg?raw';
+
+    // The timeline is rendered client-side as HTML strings, so the <Icon>
+    // component can't be used. Inline the location glyph as a raw string
+    // (sized/coloured by the .tl-pin rule in the is:global block).
+    const PIN = locationRaw
+      .replace(/<\?xml[\s\S]*?\?>/, '')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace('<svg ', '<svg class="tl-pin" fill="currentColor" aria-hidden="true" ')
+      .trim();
 
     function esc(s: string): string {
       return s
@@ -285,7 +295,7 @@ const teamSections = [
           const venue = esc(m.venue ?? '');
           const date = formatFixtureDate(m.fixtureDate);
           const time = formatFixtureTime(m.fixtureDate);
-          const venueStr = venue ? `📍 ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
+          const venueStr = venue ? `${PIN} ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
           const ha = isHome ? 'Home' : 'Away';
           const isNext = i === 0;
           html += `
@@ -556,6 +566,9 @@ const teamSections = [
   .tl-up-opp { color: var(--color-text); }
   .tl-row-up--next .tl-up-opp { color: var(--lh-navy); font-weight: var(--weight-bold); }
   .tl-up-venue { color: var(--color-text-faint); font-size: var(--text-note); }
+  /* Location glyph injected into the venue string (see PIN). Plain selector —
+     set:html markup carries no scoped attribute. Inherits currentColor. */
+  .tl-pin { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
   .tl-row-up--next .tl-up-venue { color: var(--color-text-muted); }
 
   .tl-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }

@@ -1,18 +1,26 @@
 ---
 // src/pages/contact.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon, { type IconName } from '../components/Icon.astro';
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE, CONTACT_EMAIL } from '../data/club';
 
-const contactMethods = [
+const contactMethods: {
+  icon: IconName;
+  tag: string;
+  title: string;
+  body: string;
+  link: { label: string; href: string };
+  featured?: boolean;
+}[] = [
   {
-    icon: '✉️',
+    icon: 'email',
     tag: 'Email',
     title: 'Drop Us a Message',
     body: 'For general enquiries, sponsorship, or anything else.',
     link: { label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
   },
   {
-    icon: '📷',
+    icon: 'instagram-dm',
     tag: 'Fastest Response',
     title: 'Instagram DM',
     body: 'We check our DMs regularly — fastest way to get a reply from us.',
@@ -20,7 +28,7 @@ const contactMethods = [
     featured: true,
   },
   {
-    icon: '🏐',
+    icon: 'session',
     tag: 'In Person',
     title: 'Come to a Session',
     body: 'The best way to meet us — join an open session and say hello on court.',
@@ -70,7 +78,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     <div class="contact-cards">
       {contactMethods.map(c => (
         <div class:list={['contact-card', { 'contact-card--featured': c.featured }]}>
-          <div class="contact-card__icon" aria-hidden="true">{c.icon}</div>
+          <div class="contact-card__icon" aria-hidden="true"><Icon name={c.icon} /></div>
           <div class="contact-card__text">
             <span class="contact-card__tag">{c.tag}</span>
             <h3 class="contact-card__title">{c.title}</h3>
@@ -172,6 +180,8 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     justify-content: center;
     font-size: var(--text-lead);
     flex-shrink: 0;
+    /* Navy-on-blue, matching the brand's .btn--accent pairing. */
+    color: var(--btn-accent-text);
   }
 
   .contact-card__text {

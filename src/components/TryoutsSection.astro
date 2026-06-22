@@ -4,6 +4,7 @@
 // no divider) when there are no upcoming tryouts — see getUpcomingTryouts.
 import type { Tryout } from '../lib/sheets';
 import { formatTryoutDate } from '../lib/sheets';
+import Icon from './Icon.astro';
 
 interface Props { tryouts: Tryout[]; }
 const { tryouts } = Astro.props;
@@ -28,7 +29,7 @@ const { tryouts } = Astro.props;
               </div>
               <div class="tryout-row__meta">
                 <span class="tryout-row__team">{t.team}</span>
-                <span class="tryout-row__when">{weekday} · {t.time} · 📍 {t.venue}</span>
+                <span class="tryout-row__when">{weekday} · {t.time} · <Icon name="location" /> {t.venue}</span>
               </div>
               {t.form
                 ? <a class="btn btn--accent tryout-row__cta" href={t.form} target="_blank" rel="noopener noreferrer">Sign up →</a>

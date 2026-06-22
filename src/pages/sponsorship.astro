@@ -1,16 +1,17 @@
 ---
 // src/pages/sponsorship.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon, { type IconName } from '../components/Icon.astro';
 import { CONTACT_EMAIL } from '../data/club';
 import { SPONSORS } from '../data/sponsors';
 
-const perks = [
-  { icon: '📱', title: 'Social Media Exposure',   body: 'Featured across our Instagram, Facebook, and YouTube — reaching 2,000+ engaged followers and growing.' },
-  { icon: '🌐', title: 'Website Presence',         body: 'Logo and profile on the Sponsorship page, linked from our homepage. Permanent backlink.' },
-  { icon: '👕', title: 'Kit Branding',             body: 'Your logo on team kit — visible at every match, training session, and event throughout the season.' },
-  { icon: '🎉', title: 'Event Presence',           body: 'Banners and branding at club events, tournaments, and open sessions at Mulberry Academy.' },
-  { icon: '🏆', title: 'Champion Association',     body: 'Align your brand with 9× LVA Champions and an NVL Super League club — elite sport, East London.' },
-  { icon: '🤝', title: 'Community Reach',          body: 'Connect directly with an international community of 200+ players and their networks in Shoreditch, E2.' },
+const perks: { icon: IconName; title: string; body: string }[] = [
+  { icon: 'social-media-exposure', title: 'Social Media Exposure',   body: 'Featured across our Instagram, Facebook, and YouTube — reaching 2,000+ engaged followers and growing.' },
+  { icon: 'website-presence',      title: 'Website Presence',         body: 'Logo and profile on the Sponsorship page, linked from our homepage. Permanent backlink.' },
+  { icon: 'kit-branding',          title: 'Kit Branding',             body: 'Your logo on team kit — visible at every match, training session, and event throughout the season.' },
+  { icon: 'event-presence',        title: 'Event Presence',           body: 'Banners and branding at club events, tournaments, and open sessions at Mulberry Academy.' },
+  { icon: 'champion',              title: 'Champion Association',     body: 'Align your brand with 9× LVA Champions and an NVL Super League club — elite sport, East London.' },
+  { icon: 'community-reach',       title: 'Community Reach',          body: 'Connect directly with an international community of 200+ players and their networks in Shoreditch, E2.' },
 ];
 ---
 
@@ -68,7 +69,7 @@ const perks = [
     <div class="perks-grid">
       {perks.map(p => (
         <div class="perk-card">
-          <div class="perk-card__icon" aria-hidden="true">{p.icon}</div>
+          <div class="perk-card__icon" aria-hidden="true"><Icon name={p.icon} /></div>
           <h3 class="perk-card__title">{p.title}</h3>
           <p class="perk-card__body">{p.body}</p>
         </div>
@@ -239,7 +240,7 @@ const perks = [
 
   .perk-card:hover { border-color: var(--color-border-blue); }
 
-  .perk-card__icon { font-size: var(--text-xl); margin-bottom: 12px; }
+  .perk-card__icon { font-size: var(--text-xl); margin-bottom: 12px; color: var(--color-accent-text); line-height: 1; }
   .perk-card__title { font-size: var(--text-body-sm); font-weight: var(--weight-bold); text-transform: uppercase; letter-spacing: var(--tracking-display); margin-bottom: 6px; }
   .perk-card__body { font-size: var(--text-note); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
 </style>

@@ -6,6 +6,7 @@
 import { Image } from 'astro:assets';
 import sessionPhoto from '../assets/hero/cats-2025-26-2.jpg';
 import type { Session } from '../lib/sheets';
+import Icon from './Icon.astro';
 
 interface Props {
   session: Session;
@@ -28,6 +29,6 @@ const { session } = Astro.props;
     <div class="session-card__day">{session.day}</div>
     <div class="session-card__time">{session.time}</div>
     {session.level && <div class="session-card__level">{session.level}</div>}
-    <div class="session-card__venue">📍 {session.venue}<br />{session.price}</div>
+    <div class="session-card__venue"><Icon name="location" /> {session.venue}<br />{session.price}</div>
   </div>
 </div>

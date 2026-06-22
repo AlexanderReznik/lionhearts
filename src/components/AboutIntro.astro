@@ -1,5 +1,6 @@
 ---
 // src/components/AboutIntro.astro
+import Icon from './Icon.astro';
 const stats = [
   { value: '9×',    label: 'LVA Champions' },
   { value: '9',     label: 'Teams' },
@@ -26,7 +27,7 @@ const stats = [
     <div class="about-intro__cards">
       <!-- Shoreditch location card -->
       <div class="about-intro__location-card">
-        <div class="about-intro__pin" aria-hidden="true">📍</div>
+        <div class="about-intro__pin" aria-hidden="true"><Icon name="location" /></div>
         <div>
           <h3>Shoreditch, <span class="about-intro__postcode">E2</span></h3>
           <p>Mulberry Academy · East London<br />No other club owns this postcode.</p>
@@ -124,6 +125,8 @@ const stats = [
     align-items: center;
     justify-content: center;
     font-size: var(--text-lead);
+    /* Navy-on-blue, matching the brand's .btn--accent pairing. */
+    color: var(--btn-accent-text);
   }
 
   .about-intro__location-card h3 { font-size: var(--text-body); font-weight: var(--weight-extrabold); margin-bottom: 2px; }
