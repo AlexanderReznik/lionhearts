@@ -1,10 +1,9 @@
 ---
 // src/components/Footer.astro
 import BrandLogo from './BrandLogo.astro';
+import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 
-import { SOCIAL_ICON_PATHS } from '../lib/socialIcons';
-const { instagram: IG_PATH, facebook: FB_PATH, youtube: YT_PATH } = SOCIAL_ICON_PATHS;
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE, CONTACT_EMAIL } from '../data/club';
 
 const clubLinks = [
@@ -35,13 +34,13 @@ const contactLinks = [
         <h4 class="footer__follow-title">Follow</h4>
         <div class="footer__socials">
           <a href={INSTAGRAM_URL} class="footer__social-pill footer__social-pill--instagram" target="_blank" rel="noopener noreferrer">
-            <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={IG_PATH} /></svg>Instagram
+            <span class="footer__social-icon"><Icon name="instagram" /></span>Instagram
           </a>
           <a href="https://facebook.com/lionheartsvolleyball" class="footer__social-pill footer__social-pill--facebook" target="_blank" rel="noopener noreferrer">
-            <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={FB_PATH} /></svg>Facebook
+            <span class="footer__social-icon"><Icon name="facebook" /></span>Facebook
           </a>
           <a href="https://youtube.com/@londonlionheartsvolleyball5826" class="footer__social-pill footer__social-pill--youtube" target="_blank" rel="noopener noreferrer">
-            <svg class="footer__social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d={YT_PATH} /></svg>YouTube
+            <span class="footer__social-icon"><Icon name="youtube" /></span>YouTube
           </a>
         </div>
       </div>
@@ -167,22 +166,13 @@ const contactLinks = [
   }
 
   .footer__social-icon {
-    width: 10px;
-    height: 10px;
+    display: inline-flex;
+    /* The <Icon> svg is 1em, so font-size drives its size. */
+    font-size: 14px;
     flex-shrink: 0;
+    /* Site brand accent (themed), matching every other icon — not per-platform. */
+    color: var(--color-accent-text);
   }
-
-  .footer__social-pill--instagram .footer__social-icon { color: #e1306c; }
-  .footer__social-pill--facebook  .footer__social-icon { color: #4a9ef5; }
-  .footer__social-pill--youtube   .footer__social-icon { color: #ff4444; }
-
-  .footer__social-pill--instagram:hover { border-color: rgba(225,48,108,0.3); }
-  .footer__social-pill--facebook:hover  { border-color: rgba(74,158,245,0.3); }
-  .footer__social-pill--youtube:hover   { border-color: rgba(255,68,68,0.3); }
-
-  .footer__social-pill--instagram:hover .footer__social-icon { color: #e1306c; }
-  .footer__social-pill--facebook:hover  .footer__social-icon { color: #4a9ef5; }
-  .footer__social-pill--youtube:hover   .footer__social-icon { color: #ff4444; }
 
   .footer__col { flex: 1; }
 

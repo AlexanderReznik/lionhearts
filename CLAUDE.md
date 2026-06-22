@@ -82,6 +82,11 @@ SVGO-optimised, and carry `fill="currentColor"`, so they **theme automatically**
 inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
 `.brand-icon` rule), so callers size via the wrapper's `font-size`.
 
+- **Footer socials:** the designer only supplied **Instagram** (a flat camera
+  silhouette). `facebook.svg` (an `f`) and `youtube.svg` (rounded play button with a
+  knockout triangle) were **hand-drawn to match** that flat single-path-with-knockout
+  style. The footer social icons use the site accent (`--color-accent-text`, themed),
+  like every other icon — not per-platform brand colours.
 - This is the deliberate exception to the "serve via `astro:assets`" rule below:
   monochrome icons that must recolour with the theme use native SVG-component import
   + `currentColor`, NOT `<Image>` (which can't recolour). **Photos still use
