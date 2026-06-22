@@ -24,7 +24,7 @@ export const teams: Team[] = [
   // Women's
   {
     name: 'Vinarius', gender: "Women's", division: 'NVL Super League',
-    badge: '⚡ Super League', volleyzoneSlug: 'lionhearts-vinarius',
+    badge: 'Super League', volleyzoneSlug: 'lionhearts-vinarius',
     compId: '206206', seasonId: '3852', volleyzoneUserId: '279580', volleyzoneSegment: 'nvl',
   },
   {
