@@ -36,9 +36,7 @@ const contactMethods: {
   },
 ];
 
-import { SOCIAL_ICON_PATHS as BRAND_ICONS } from '../lib/socialIcons';
-
-const socials = [
+const socials: { brand: IconName; name: string; handle: string; href: string }[] = [
   {
     brand: 'instagram',
     name: 'Instagram',
@@ -123,7 +121,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
       {socials.map(s => (
         <a href={s.href} class={`social-card social-card--${s.brand}`} target="_blank" rel="noopener noreferrer">
           <span class="social-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d={BRAND_ICONS[s.brand]} /></svg>
+            <Icon name={s.brand} />
           </span>
           <div>
             <h3 class="social-card__name">{s.name}</h3>
@@ -315,11 +313,13 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    /* Site brand accent (themed), matching the footer and every other icon —
+       the <Icon> svg is 1em, so font-size drives its size. */
+    font-size: 20px;
+    color: var(--color-accent-text);
+    background: color-mix(in srgb, var(--color-accent-text) 12%, transparent);
   }
 
-  .social-card--instagram .social-card__icon { background: rgba(225,48,108,0.12); color: #e1306c; }
-  .social-card--facebook  .social-card__icon { background: rgba(24,119,242,0.12); color: #1877f2; }
-  .social-card--youtube   .social-card__icon { background: rgba(255,0,0,0.10);    color: #cc0000; }
   .social-card__name { font-size: var(--text-body-sm); font-weight: var(--weight-bold); margin-bottom: 2px; }
   .social-card__handle { font-size: var(--text-note); color: var(--color-text-muted); }
 
