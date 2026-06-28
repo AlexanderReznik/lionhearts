@@ -16,7 +16,6 @@ const sessions = raw.map(s => ({
 <aside class="sessions-strip section--community" aria-label="Weekly open sessions">
   <div class="sessions-strip__inner container">
     <div class="sessions-strip__lead">
-      <span class="sessions-strip__dot" aria-hidden="true"></span>
       <span class="sessions-strip__lead-text">
         <strong>Open sessions every week.</strong>
         <span>No Booking · No Experience Needed · Mulberry Academy, E2</span>
@@ -59,19 +58,6 @@ const sessions = raw.map(s => ({
   }
 
   .sessions-strip__lead {
-    flex-shrink: 0;
-    display: flex;
-    align-items: flex-start;  /* dot + text align to the first line, not the block centre */
-    gap: 12px;
-  }
-
-  .sessions-strip__dot {
-    width: 8px;
-    height: 8px;
-    margin-top: 6px;          /* centre the dot on the heading's first line */
-    border-radius: 50%;
-    background: var(--lh-green);
-    box-shadow: 0 0 0 4px rgba(118, 205, 84, 0.18);
     flex-shrink: 0;
   }
 
@@ -190,6 +176,22 @@ const sessions = raw.map(s => ({
   }
 
   @media (max-width: 560px) {
+    /* One full-width column: lead (with room for the subtext to breathe),
+       the session rows, then a full-width CTA — no squeezed side-by-side. */
+    .sessions-strip__inner {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "lead"
+        "list"
+        "link";
+      row-gap: 18px;
+    }
+
+    .sessions-strip__link {
+      justify-self: stretch;
+      text-align: center;
+    }
+
     .sessions-strip__list {
       flex-direction: column;
       align-items: stretch;
