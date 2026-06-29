@@ -1,0 +1,75 @@
+<!doctype html>
+<!--
+  Source template for public/images/og-default.jpg (1200x630 social share card).
+  Paths are relative to this file (scripts/og/), so open it directly in a browser:
+  file://…/lionhearts/scripts/og/og-card.html — Barlow + the brand crest load
+  via ../../node_modules and ../../public. See README.md for the capture steps.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: 'Barlow'; font-style: normal; font-weight: 900;
+    src: url('../../node_modules/@fontsource/barlow/files/barlow-latin-900-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Barlow'; font-style: normal; font-weight: 700;
+    src: url('../../node_modules/@fontsource/barlow/files/barlow-latin-700-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Barlow'; font-style: normal; font-weight: 600;
+    src: url('../../node_modules/@fontsource/barlow/files/barlow-latin-600-normal.woff2') format('woff2');
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+
+  .card {
+    width: 1200px; height: 630px;
+    background: linear-gradient(155deg, #05122b 0%, #11234b 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'Barlow', sans-serif;
+    position: relative;
+  }
+
+  /* faint oversized crest watermark bleeding off the right edge */
+  .watermark {
+    position: absolute; right: -90px; top: 50%;
+    transform: translateY(-50%);
+    height: 760px; opacity: 0.05;
+  }
+
+  .crest { height: 150px; margin-bottom: 30px; position: relative; }
+
+  .wordmark {
+    font-weight: 900; font-size: 118px; line-height: 0.9;
+    letter-spacing: 0.005em; color: #ffffff;
+    text-transform: uppercase; position: relative;
+  }
+
+  .accent {
+    width: 92px; height: 6px; border-radius: 3px;
+    background: #54a4f7; margin: 26px 0 22px;
+    position: relative;
+  }
+
+  .tagline {
+    font-weight: 700; font-size: 30px;
+    letter-spacing: 0.3em; text-transform: uppercase;
+    color: #54a4f7; position: relative;
+    padding-left: 0.3em; /* optical balance for tracking */
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="watermark" src="../../public/brand/logo-submark.svg" alt="">
+    <img class="crest" src="../../public/brand/logo-submark.svg" alt="">
+    <div class="wordmark">Lionhearts</div>
+    <div class="accent"></div>
+    <div class="tagline">Together We Roar</div>
+  </div>
+</body>
+</html>
