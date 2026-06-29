@@ -28,7 +28,12 @@ git commit -m "feat: ..."
   `src/lib/behold.ts` (Instagram via Behold JSON) fetch at build time and
   degrade to `[]` on any failure (never fail the build). Each has a
   `SKIP_*` env escape hatch (`SKIP_VOLLEYZONE`, `SKIP_BEHOLD`) for fast
-  local builds.
+  local builds. **When you're NOT working on the fixtures or Instagram
+  sections, run dev/build with both flags so the slow network fetches are
+  skipped:** `SKIP_VOLLEYZONE=true SKIP_BEHOLD=true npm run dev`. The guards
+  are strict string compares (`import.meta.env.SKIP_* === 'true'`), so the
+  value MUST be the literal `true` — `SKIP_*=1` silently does NOT skip and
+  still fetches.
 
 ## Design System
 
