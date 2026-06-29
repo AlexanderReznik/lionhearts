@@ -458,7 +458,9 @@ const teamSections = [
 
   .team-fixture-section__header {
     background: var(--color-bg-alt);
-    padding: 16px 20px;
+    /* Horizontal padding matches the rows/labels/footer (18px) so the team name
+       lines up with the dates and section labels below it. */
+    padding: 16px 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -506,6 +508,7 @@ const teamSections = [
       flex-direction: column;
       align-items: flex-start;
       gap: 6px;
+      padding: 12px 14px;   /* match the 14px mobile padding of rows/labels/footer */
     }
 
     .team-fixture-section__right {
