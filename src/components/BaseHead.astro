@@ -9,12 +9,14 @@ import '@fontsource/barlow/900.css';
 import '@fontsource/barlow-condensed/600.css';
 import '@fontsource/barlow-condensed/700.css';
 import '../styles/global.css';
+import { SITE_URL } from '../data/club';
 
 interface Props {
   title: string;
   description: string;
   canonicalURL?: string;
   ogImage?: string;
+  ogImageAlt?: string;
   jsonLd?: object | object[];
   noindex?: boolean;
 }
@@ -24,13 +26,14 @@ const {
   description,
   canonicalURL,
   ogImage,
+  ogImageAlt,
   jsonLd,
   noindex = false,
 } = Astro.props;
 
-const SITE = 'https://lionhearts.vercel.app';
-const canonical = canonicalURL ?? SITE + Astro.url.pathname;
-const image = ogImage ?? `${SITE}/images/og-default.jpg`;
+const canonical = canonicalURL ?? SITE_URL + Astro.url.pathname;
+const image = ogImage ?? `${SITE_URL}/images/og-default.jpg`;
+const imageAlt = ogImageAlt ?? 'London Lionhearts Volleyball Club — Together We Roar';
 const fullTitle = title.includes('London Lionhearts')
   ? title
   : `${title} | London Lionhearts VBC`;
@@ -66,18 +69,24 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 <meta property="og:url"         content={canonical} />
 <meta property="og:title"       content={fullTitle} />
 <meta property="og:description" content={description} />
+<meta property="og:locale"      content="en_GB" />
 <meta property="og:image"       content={image} />
+<meta property="og:image:alt"   content={imageAlt} />
+{!ogImage && <meta property="og:image:width" content="1200" />}
+{!ogImage && <meta property="og:image:height" content="630" />}
 
 <!-- Twitter -->
 <meta name="twitter:card"        content="summary_large_image" />
 <meta name="twitter:title"       content={fullTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image"       content={image} />
+<meta name="twitter:image:alt"   content={imageAlt} />
 
 <!-- Favicon — official Lionhearts submark -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" media="(prefers-color-scheme: light)" />
 <link rel="icon" type="image/svg+xml" href="/favicon-submark-white.svg" media="(prefers-color-scheme: dark)" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
 <!-- JSON-LD structured data -->
 {schemas.map(schema => (

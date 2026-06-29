@@ -9,6 +9,13 @@
 export const DEFAULT_VENUE = 'Mulberry Academy Shoreditch';
 export const DEFAULT_PRICE = '£8 cash / £10 card';
 
+/**
+ * Canonical production origin (no trailing slash). Single source of truth for
+ * canonical/OG URLs, JSON-LD `url`/`logo`, the form redirect, robots.txt and
+ * the Astro `site` config — change the domain HERE and everything follows.
+ */
+export const SITE_URL = 'https://lionhearts.vercel.app';
+
 /** Public Instagram profile + handle — used for every "follow us" link. */
 export const INSTAGRAM_URL = 'https://instagram.com/lionhearts_volleyball';
 export const INSTAGRAM_HANDLE = '@lionhearts_volleyball';

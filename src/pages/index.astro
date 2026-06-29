@@ -12,7 +12,7 @@ import InstagramFeed from '../components/InstagramFeed.astro';
 import TryoutsAlertBar from '../components/TryoutsAlertBar.astro';
 import TryoutsBand from '../components/TryoutsBand.astro';
 import { getUpcomingTryouts } from '../lib/sheets';
-import { INSTAGRAM_URL, FACEBOOK_URL, WHATSAPP_URL } from '../data/club';
+import { INSTAGRAM_URL, FACEBOOK_URL, WHATSAPP_URL, SITE_URL } from '../data/club';
 
 // Hero images are processed at build time by Astro's <Picture> component,
 // which generates AVIF + WebP + JPEG variants at 640/960/1280/1920/2560 widths.
@@ -56,8 +56,8 @@ const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'SportsOrganization',
   name: 'London Lionhearts Volleyball Club',
-  url: 'https://lionhearts.vercel.app',
-  logo: 'https://lionhearts.vercel.app/images/logo-lionhearts-512.png',
+  url: SITE_URL,
+  logo: `${SITE_URL}/images/logo-lionhearts-512.png`,
   sameAs: [
     INSTAGRAM_URL,
     FACEBOOK_URL,
@@ -81,6 +81,11 @@ const orgSchema = {
       addressLocality: 'London',
       postalCode: 'E2 6NW',
       addressCountry: 'GB',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 51.527392,
+      longitude: -0.069586,
     },
   },
 };

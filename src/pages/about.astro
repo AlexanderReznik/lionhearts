@@ -2,12 +2,13 @@
 // src/pages/about.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon, { type IconName } from '../components/Icon.astro';
+import { SITE_URL } from '../data/club';
 
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'SportsOrganization',
   name: 'London Lionhearts Volleyball Club',
-  url: 'https://lionhearts.vercel.app',
+  url: SITE_URL,
   foundingDate: '1998',
   founder: { '@type': 'Person', name: 'Alvin Spencer' },
   sport: 'Volleyball',

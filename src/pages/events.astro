@@ -9,6 +9,7 @@ import SessionsFallbackNotice from '../components/SessionsFallbackNotice.astro';
 import { getSessions, getJuniorSessions, parseSessionSchedule, getUpcomingTryouts } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
+import { SITE_URL } from '../data/club';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
 // Set GOOGLE_SHEET_ID in your environment or Netlify/Vercel env vars.
@@ -74,12 +75,17 @@ const VENUE = {
     postalCode: 'E2 6NW',
     addressCountry: 'GB',
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 51.527392,
+    longitude: -0.069586,
+  },
 };
 
 const ORGANIZER = {
   '@type': 'SportsOrganization',
   name: 'London Lionhearts Volleyball Club',
-  url: 'https://lionhearts.vercel.app',
+  url: SITE_URL,
 };
 
 // Derived from the live session data (single source of truth) so the
