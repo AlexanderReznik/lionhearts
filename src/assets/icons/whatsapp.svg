@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" xml:space="preserve">
+<!-- Monochrome WhatsApp mark derived from the designer-supplied Whatsapp.svg:
+     a solid chat bubble with the phone handset knocked out (fill-rule evenodd),
+     a single currentColor path so it themes like the rest of the set. Matches the
+     flat instagram/youtube/facebook construction. The transform recentres + scales
+     the bubble to the other social glyphs' ~490px footprint. -->
+<g transform="translate(300 300) scale(1.4045) translate(-311.93 -295.33)">
+	<path fill-rule="evenodd" d="M313.63,120.88c-95.01,0-172.32,77.3-172.32,172.32,0,29.06,7.45,57.69,21.62,83.25l-25.02,93.32,93.81-25.13c25.21,13.68,53.39,20.88,81.91,20.88,95.02,0,172.32-77.3,172.32-172.32s-77.3-172.32-172.32-172.32Z M377.73,317.16c-7.09-4.24-16.32-8.98-24.68-5.56-6.41,2.62-10.5,12.66-14.66,17.78-2.13,2.63-4.68,3.04-7.95,1.72-24.06-9.58-42.5-25.65-55.78-47.78-2.25-3.44-1.85-6.15.86-9.34,4.01-4.72,9.05-10.09,10.14-16.45,1.08-6.36-1.9-13.8-4.53-19.47-3.36-7.24-7.12-17.57-14.38-21.67-6.67-3.77-15.45-1.66-21.39,3.18-10.25,8.35-15.2,21.43-15.05,34.4.04,3.69.49,7.36,1.35,10.92,2.07,8.56,6.02,16.54,10.47,24.14,3.35,5.73,7,11.28,10.93,16.63,12.87,17.48,28.88,32.68,47.42,44.03,9.26,5.67,19.24,10.65,29.58,14.06,11.59,3.83,21.91,7.81,34.42,5.44,13.1-2.49,26.02-10.6,31.22-23.22,1.54-3.74,2.31-7.9,1.45-11.85-1.78-8.16-12.83-13.02-19.43-16.96Z"/>
+</g>
+</svg>

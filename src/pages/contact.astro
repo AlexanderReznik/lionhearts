@@ -2,7 +2,7 @@
 // src/pages/contact.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon, { type IconName } from '../components/Icon.astro';
-import { INSTAGRAM_URL, INSTAGRAM_HANDLE, CONTACT_EMAIL } from '../data/club';
+import { INSTAGRAM_URL, INSTAGRAM_HANDLE, FACEBOOK_URL, WHATSAPP_URL, CONTACT_EMAIL } from '../data/club';
 
 const contactMethods: {
   icon: IconName;
@@ -47,13 +47,13 @@ const socials: { brand: IconName; name: string; handle: string; href: string }[]
     brand: 'facebook',
     name: 'Facebook',
     handle: 'londonlionhearts.volleyball',
-    href: 'https://facebook.com/lionheartsvolleyball',
+    href: FACEBOOK_URL,
   },
   {
-    brand: 'youtube',
-    name: 'YouTube',
-    handle: '@londonlionheartsvolleyball5826',
-    href: 'https://youtube.com/@londonlionheartsvolleyball5826',
+    brand: 'whatsapp',
+    name: 'WhatsApp',
+    handle: 'Join our community group chat',
+    href: WHATSAPP_URL,
   },
 ];
 

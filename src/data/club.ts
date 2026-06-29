@@ -13,5 +13,11 @@ export const DEFAULT_PRICE = '£8 cash / £10 card';
 export const INSTAGRAM_URL = 'https://instagram.com/lionhearts_volleyball';
 export const INSTAGRAM_HANDLE = '@lionhearts_volleyball';
 
+/** Public Facebook page — used for "follow us" links. */
+export const FACEBOOK_URL = 'https://facebook.com/lionheartsvolleyball';
+
+/** Community WhatsApp group invite — used for "follow us" / community links. */
+export const WHATSAPP_URL = 'https://chat.whatsapp.com/Bgmlpd9vxXW0JvHa2NsRyU?mode=gi_t';
+
 /** Primary contact inbox — used for mailto links and displayed addresses. */
 export const CONTACT_EMAIL = 'allanzelion@gmail.com';
