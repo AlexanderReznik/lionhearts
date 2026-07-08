@@ -8,6 +8,9 @@ interface Slide {
   image: ImageMetadata;
   label: string;
   alt: string;
+  /** Horizontal focal point for the cover-crop (matters on narrow/portrait
+   *  screens where the landscape photo is cropped left/right). Default center. */
+  focus?: 'left' | 'center' | 'right';
 }
 
 interface Props {
@@ -25,7 +28,11 @@ const { slides } = Astro.props;
   <div class="hero__slides">
     {slides.map((slide, i) => (
       <div
-        class:list={['hero__slide', { 'hero__slide--active': i === 0 }]}
+        class:list={[
+          'hero__slide',
+          { 'hero__slide--active': i === 0 },
+          slide.focus && slide.focus !== 'center' && `hero__slide--focus-${slide.focus}`,
+        ]}
         data-index={i}
       >
         <Picture
@@ -120,6 +127,11 @@ const { slides } = Astro.props;
     object-fit: cover;
     display: block;
   }
+
+  /* Per-slide focal point for the cover-crop (default is centre). Chooses which
+     part stays in frame when the landscape photo is cropped on narrow screens. */
+  .hero__slide--focus-left :global(img)  { object-position: left center; }
+  .hero__slide--focus-right :global(img) { object-position: right center; }
 
   /* ── Overlays ── */
   .hero__texture {

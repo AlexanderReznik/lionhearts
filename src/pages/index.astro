@@ -18,12 +18,11 @@ import { INSTAGRAM_URL, FACEBOOK_URL, WHATSAPP_URL, SITE_URL } from '../data/clu
 // which generates AVIF + WebP + JPEG variants at 640/960/1280/1920/2560 widths.
 // Drop your real photos into src/assets/hero/ and swap the imports below.
 // See human-todo.md § 11 for size/format guidance.
-import heroPlaceholder from '../assets/hero/placeholder.jpg';
-import heroCats2 from '../assets/hero/cats-2025-26-2.jpg';
-// import heroSuperLeague from '../assets/hero/01-super-league.jpg';
-// import heroLvaPremier from '../assets/hero/02-lva-premier.jpg';
-// import heroOpenSession from '../assets/hero/03-open-session.jpg';
-// import heroCommunity   from '../assets/hero/04-community.jpg';
+import vinariusHug from '../assets/hero/vinarius_hug.jpg';
+import vinariusCelebration from '../assets/hero/vinarius_celebration.jpg';
+import vinariusSet from '../assets/hero/vinarius_set.jpg';
+import martynasDig from '../assets/hero/martynas_dig.jpg';
+import catsCelebration from '../assets/hero/cats_celebration.jpg';
 
 // Pre-season tryouts — fetched once and shared by both homepage promos. Empty
 // array = nothing renders (no fallback).
@@ -31,24 +30,29 @@ const tryouts = await getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import
 
 const heroSlides = [
   {
-    image: heroCats2, // swap to heroSuperLeague
-    label: 'SUPER LEAGUE 2025/26',
-    alt: 'Lionhearts players in action at the NVL Super League',
+    image: vinariusHug,
+    label: 'Photo by Nathaniel Macrae',
+    alt: 'Lionhearts players celebrating together during a match',
   },
   {
-    image: heroPlaceholder, // swap to heroLvaPremier
-    label: 'LVA PREMIER LEAGUE',
-    alt: 'Lionhearts women celebrating a win',
+    image: vinariusCelebration,
+    label: 'Photo by Nathaniel Macrae',
+    alt: 'Lionhearts women celebrating a point at the NVL Super League',
   },
   {
-    image: heroPlaceholder, // swap to heroOpenSession
-    label: 'OPEN SESSIONS · SHOREDITCH E2',
-    alt: 'Open session at Mulberry Academy Shoreditch',
+    image: martynasDig,
+    label: "Photo by Michal Kocián",
+    alt: 'Lionhearts men’s player digging the ball during a match',
   },
   {
-    image: heroPlaceholder, // swap to heroCommunity
-    label: 'TOGETHER WE ROAR',
-    alt: 'Lionhearts club community',
+    image: catsCelebration,
+    label: 'Photo by Michal Kocián',
+    alt: 'Lionhearts players in action',
+  },
+  {
+    image: vinariusSet,
+    label: 'Photo by Nathaniel Macrae',
+    alt: 'Lionhearts setter rising for a set during a match',
   },
 ];
 
