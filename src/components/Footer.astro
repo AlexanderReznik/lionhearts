@@ -223,14 +223,24 @@ const contactLinks = [
   @media (max-width: 768px) {
     .footer__inner {
       flex-direction: column;
+      /* Desktop's flex-start would shrink-wrap children's widths once the
+         cross axis becomes horizontal — stretch them to the full column. */
+      align-items: stretch;
       gap: 32px;
     }
 
     .footer__cols {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      /* minmax(0, 1fr): a plain 1fr can't shrink below its content's
+         min-content width, so the long unbreakable Contact email inflates
+         its track and squeezes the other column. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 24px 32px;
     }
+
+    /* 3 columns in a 2-column grid: give Contact (long email + address)
+       its own full-width row instead of a half-width cell + empty cell. */
+    .footer__col:last-child { grid-column: 1 / -1; }
 
     /* Logo + Follow sit on one row, wrapping to stack when too narrow */
     .footer__brand {
