@@ -14,7 +14,7 @@ export const DEFAULT_PRICE = '£8 cash / £10 card';
  * canonical/OG URLs, JSON-LD `url`/`logo`, the form redirect, robots.txt and
  * the Astro `site` config — change the domain HERE and everything follows.
  */
-export const SITE_URL = 'https://lionhearts.vercel.app';
+export const SITE_URL = 'https://lionheartslondon.com';
 
 /** Public Instagram profile + handle — used for every "follow us" link. */
 export const INSTAGRAM_URL = 'https://instagram.com/lionhearts_volleyball';
