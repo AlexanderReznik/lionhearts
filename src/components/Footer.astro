@@ -242,18 +242,32 @@ const contactLinks = [
        its own full-width row instead of a half-width cell + empty cell. */
     .footer__col:last-child { grid-column: 1 / -1; }
 
-    /* Logo + Follow sit on one row, wrapping to stack when too narrow */
+    /* Centered identity block: crest above a horizontal social-pill row.
+       The crest is a tall shield (no horizontal wordmark asset), so any
+       left placement strands the rest of the row — centred, the leftover
+       space reads as symmetric padding instead. */
     .footer__brand {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       align-items: center;
-      gap: 16px 32px;
+      gap: 18px;
     }
 
     .footer__crest,
     .footer__follow { flex: 0 1 auto; }
 
-    .footer__crest :global(.brand-logo__img) { height: 72px; }
+    .footer__crest :global(.brand-logo__img) { height: 88px; }
+
+    .footer__follow-title {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .footer__socials {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
     .footer__bottom {
       flex-direction: column;
