@@ -27,4 +27,4 @@ export const FACEBOOK_URL = 'https://facebook.com/lionheartsvolleyball';
 export const WHATSAPP_URL = 'https://chat.whatsapp.com/Bgmlpd9vxXW0JvHa2NsRyU?mode=gi_t';
 
 /** Primary contact inbox — used for mailto links and displayed addresses. */
-export const CONTACT_EMAIL = 'londonlionheartsvolleyball@gmail.com';
+export const CONTACT_EMAIL = 'hello@lionheartslondon.com';
