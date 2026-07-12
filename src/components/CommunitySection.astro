@@ -1,5 +1,6 @@
 ---
 // src/components/CommunitySection.astro
+import { Image } from 'astro:assets';
 import { flags } from '../data/flags';
 import OverheardArchive from './OverheardArchive.astro';
 ---
@@ -20,13 +21,13 @@ import OverheardArchive from './OverheardArchive.astro';
     <!-- Flag mosaic -->
     <div class="community__mosaic" aria-label="Flags representing club member nationalities">
       {flags.map(f => (
-        <img
+        <Image
           class="community__flag"
-          src={`https://flagcdn.com/${f.iso}.svg`}
-          alt={f.country}
-          title={f.country}
-          width="44"
-          height="32"
+          src={f.src}
+          alt={f.name}
+          title={f.name}
+          width={44}
+          height={32}
           loading="lazy"
         />
       ))}
