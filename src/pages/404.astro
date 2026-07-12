@@ -1,6 +1,7 @@
 ---
 // src/pages/404.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Session from '../assets/icons/session.svg';
 ---
 
 <BaseLayout
@@ -29,7 +30,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <ellipse class="oob__shadow" cx="300" cy="194" rx="32" ry="7" />
         <g transform="translate(300 152)">
           <g class="oob__ball">
-            <image href="/brand/volleyball.svg" x="-42" y="-42" width="84" height="84" />
+            <Session x="-42" y="-42" width="84" height="84" fill="currentColor" />
           </g>
         </g>
       </svg>
@@ -85,6 +86,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .oob__ball {
     transform-box: fill-box;
     transform-origin: center bottom;
+    color: var(--color-accent-text);
     filter: drop-shadow(0 6px 10px rgba(5, 18, 43, 0.28));
   }
 
