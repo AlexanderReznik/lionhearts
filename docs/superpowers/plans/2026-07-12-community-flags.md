@@ -94,6 +94,10 @@ result if it renders correctly in Step 5; if svgo mangles the emblem (visual
 check), re-download and commit the unoptimized file instead — correctness
 beats bytes.
 
+*(Post-review note: Astro passes SVGs through unoptimized, so svgo every
+downloaded flag regardless of size — the >100KB heuristic mispredicted;
+serbia/spain were the heavy ones.)*
+
 - [ ] **Step 5: Visually verify the two unofficial flags are the RIGHT flags**
 
 Open both files in Chrome (DevTools MCP: `navigate_page` to
