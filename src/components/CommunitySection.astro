@@ -111,6 +111,12 @@ import OverheardArchive from './OverheardArchive.astro';
 
   .community__flag:hover { transform: scale(1.12); }
 
+  /* On narrow screens flex-start dumps each row's leftover space on the
+     right, so the mosaic reads as off-centre — centre the rows instead. */
+  @media (max-width: 768px) {
+    .community__mosaic { justify-content: center; }
+  }
+
   .community__divider {
     display: flex;
     align-items: center;
