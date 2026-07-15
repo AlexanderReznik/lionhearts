@@ -1,15 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import { flags } from '../src/data/flags';
 
-// flags.txt order, members' own wording (spec: alt text does not editorialize).
+// In the order members added them, members' own wording (spec: alt text does not editorialize).
 const EXPECTED_NAMES = [
   'Scotland', 'Hong Kong', 'Thailand', 'Spain', 'Vietnam', 'Denmark',
   'Italy', 'Belgium', 'France', 'Australia', 'Serbia', 'UK',
   'Lithuania', 'Croatia', 'Turkey', 'Belarus', 'Iran',
+  'Czech Republic', 'Brazil', 'Jamaica', 'Guyana', 'Pakistan',
+  'New Zealand', 'Canada', 'China', 'USA',
 ];
 
 describe('community flags', () => {
-  it('lists the 17 member flags in flags.txt order', () => {
+  it('lists the 26 member flags in the order they were added', () => {
     expect(flags.map((f) => f.name)).toEqual(EXPECTED_NAMES);
   });
 

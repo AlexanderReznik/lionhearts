@@ -1,6 +1,6 @@
 // src/data/flags.ts — member-chosen flags for the community mosaic.
 //
-// Source of truth: flags.txt (repo root), in the order members added them.
+// Listed in the order members added them.
 // Two entries are deliberately NOT the current official state flag — the
 // white-red-white Belarus flag and the lion-and-sun Iran flag. We show what
 // members asked for, so these are self-hosted like every other flag (no
@@ -24,6 +24,15 @@ import croatia from '../assets/flags/croatia.svg';
 import turkey from '../assets/flags/turkey.svg';
 import belarusWrw from '../assets/flags/belarus-wrw.svg';
 import iranLionSun from '../assets/flags/iran-lion-sun.svg';
+import czechRepublic from '../assets/flags/czech-republic.svg';
+import brazil from '../assets/flags/brazil.svg';
+import jamaica from '../assets/flags/jamaica.svg';
+import guyana from '../assets/flags/guyana.svg';
+import pakistan from '../assets/flags/pakistan.svg';
+import newZealand from '../assets/flags/new-zealand.svg';
+import canada from '../assets/flags/canada.svg';
+import china from '../assets/flags/china.svg';
+import usa from '../assets/flags/usa.svg';
 
 export interface Flag {
   /** Display name in members' own wording — used as alt and title text. */
@@ -50,4 +59,13 @@ export const flags: Flag[] = [
   { name: 'Turkey', src: turkey },
   { name: 'Belarus', src: belarusWrw },
   { name: 'Iran', src: iranLionSun },
+  { name: 'Czech Republic', src: czechRepublic },
+  { name: 'Brazil', src: brazil },
+  { name: 'Jamaica', src: jamaica },
+  { name: 'Guyana', src: guyana },
+  { name: 'Pakistan', src: pakistan },
+  { name: 'New Zealand', src: newZealand },
+  { name: 'Canada', src: canada },
+  { name: 'China', src: china },
+  { name: 'USA', src: usa },
 ];
