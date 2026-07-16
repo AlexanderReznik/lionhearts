@@ -40,13 +40,9 @@ npm install
 
 > **Peer-dependency note:** `@vercel/analytics` lists `@sveltejs/kit` as an
 > optional peer, which pulls a Vite 8 beta that clashes with this project's
-> Vite 7. It's harmless for Astro, but a plain `npm install` may fail the peer
-> resolution. If that happens, install with `--legacy-peer-deps`, or make it
-> permanent by adding to `.npmrc`:
->
-> ```
-> legacy-peer-deps=true
-> ```
+> Vite 7. It's harmless for Astro, but strict peer resolution would fail a
+> plain `npm install`. A committed `.npmrc` sets `legacy-peer-deps=true` so
+> installs (locally and on Vercel) just work — no extra flags needed.
 
 ### Dev server
 
