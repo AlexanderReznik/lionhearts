@@ -211,6 +211,20 @@ export interface SessionSchedule {
 }
 
 /**
+ * Parse a "7:00pm–9:00pm" range (en-dash or hyphen) into 24-hour start/end
+ * times. Returns null when either end can't be parsed. Shared by the session
+ * schedule and the tryout occurrence so the range/`to24Hour` handling lives once.
+ */
+export function parseTimeRange(time: string): { startTime: string; endTime: string } | null {
+  const range = time.match(/^(.+?)\s*[–-]\s*(.+)$/);
+  if (!range) return null;
+  const startTime = to24Hour(range[1]);
+  const endTime = to24Hour(range[2]);
+  if (!startTime || !endTime) return null;
+  return { startTime, endTime };
+}
+
+/**
  * Convert a Session's day + "7:00pm–9:00pm" time into schema.org Schedule
  * parts. Returns null when the day or time can't be parsed, so callers can
  * skip emitting an invalid Event rather than producing broken JSON-LD.
@@ -218,12 +232,119 @@ export interface SessionSchedule {
 export function parseSessionSchedule(session: Session): SessionSchedule | null {
   const byDay = DAY_SCHEMA_URL[session.day.trim().toLowerCase()];
   if (!byDay) return null;
-  const range = session.time.match(/^(.+?)\s*[–-]\s*(.+)$/);
+  const range = parseTimeRange(session.time);
   if (!range) return null;
-  const startTime = to24Hour(range[1]);
-  const endTime = to24Hour(range[2]);
-  if (!startTime || !endTime) return null;
-  return { byDay, startTime, endTime };
+  return { byDay, ...range };
+}
+
+// Google's Event rich-result validation requires a concrete `startDate` on
+// every Event; a Schedule alone gets flagged ("Missing field startDate") in
+// Search Console. nextOccurrences() turns a weekly SessionSchedule into the
+// next N dated occurrences so each can be emitted as a full Event.
+
+// Weekday names in JS getDay() order (Sunday = 0) — the single source for the
+// short-name lookups (Intl weekday matching here, tryout date formatting below)
+// and the day-name → index map used when expanding a weekly schedule.
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
+const WEEKDAYS_SHORT = WEEKDAYS.map(d => d.slice(0, 3)); // ['Sun', 'Mon', …]
+const DAY_INDEX: Record<string, number> = Object.fromEntries(
+  WEEKDAYS.map((d, i) => [d.toLowerCase(), i]),
+);
+
+/** Wall-clock date/time in Europe/London for a given instant. */
+function londonParts(instant: Date): { y: number; m: number; d: number; time: string; dow: number } {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', weekday: 'short',
+    hourCycle: 'h23',
+  }).formatToParts(instant);
+  const get = (type: string) => parts.find(p => p.type === type)?.value ?? '';
+  return {
+    y: parseInt(get('year'), 10),
+    m: parseInt(get('month'), 10),
+    d: parseInt(get('day'), 10),
+    time: `${get('hour')}:${get('minute')}`,
+    dow: WEEKDAYS_SHORT.indexOf(get('weekday')),
+  };
+}
+
+/** UTC offset ("+01:00" / "+00:00") in effect in London at a given instant. */
+function londonOffsetAt(instant: Date): string {
+  const name = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/London', timeZoneName: 'longOffset' })
+    .formatToParts(instant)
+    .find(p => p.type === 'timeZoneName')?.value ?? 'GMT';
+  return name.match(/GMT([+-]\d{2}:\d{2})/)?.[1] ?? '+00:00';
+}
+
+/**
+ * UTC offset in effect in London at a London-local wall time. Guesses the
+ * instant as if the wall time were UTC, then corrects once — sessions are in
+ * the evening, well clear of the 01:00 DST transitions, so one pass settles.
+ */
+function offsetForLocal(y: number, m: number, d: number, time: string): string {
+  const [hh, mm] = time.split(':').map(n => parseInt(n, 10));
+  const guess = Date.UTC(y, m - 1, d, hh, mm);
+  const offsetMin = (off: string) => {
+    const sign = off.startsWith('-') ? -1 : 1;
+    const [oh, om] = off.slice(1).split(':').map(n => parseInt(n, 10));
+    return sign * (oh * 60 + om);
+  };
+  const first = londonOffsetAt(new Date(guess));
+  return londonOffsetAt(new Date(guess - offsetMin(first) * 60_000));
+}
+
+export interface Occurrence {
+  startDate: string; // ISO 8601 with London offset, e.g. "2026-07-20T19:00:00+01:00"
+  endDate: string;
+}
+
+/**
+ * Build an Occurrence for a given calendar date (y/m/d) and 24-hour start/end
+ * times, stamping the Europe/London UTC offset in effect on that date. The
+ * offset is derived once from the start time and applied to both ends — evening
+ * sessions never straddle the 01:00 DST switch, so start and end share it.
+ */
+function toOccurrence(y: number, m: number, d: number, startTime: string, endTime: string): Occurrence {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const date = `${y}-${pad(m)}-${pad(d)}`;
+  const offset = offsetForLocal(y, m, d, startTime);
+  return {
+    startDate: `${date}T${startTime}:00${offset}`,
+    endDate: `${date}T${endTime}:00${offset}`,
+  };
+}
+
+/**
+ * The next `count` dated occurrences of a weekly SessionSchedule, computed in
+ * Europe/London wall-clock time (so builds on UTC servers resolve "today"
+ * correctly). Today's occurrence is included while the session hasn't ended
+ * yet. Returns [] when byDay isn't a recognised schema.org day URL.
+ */
+export function nextOccurrences(schedule: SessionSchedule, count: number, from: Date = new Date()): Occurrence[] {
+  const dayName = schedule.byDay.split('/').pop()?.toLowerCase() ?? '';
+  const targetDow = DAY_INDEX[dayName];
+  if (targetDow === undefined) return [];
+
+  const today = londonParts(from);
+  let daysAhead = (targetDow - today.dow + 7) % 7;
+  if (daysAhead === 0 && today.time >= schedule.endTime) daysAhead = 7;
+
+  return Array.from({ length: count }, (_, i) => {
+    // Calendar arithmetic in UTC space (no DST there), then read the parts back.
+    const dt = new Date(Date.UTC(today.y, today.m - 1, today.d + daysAhead + i * 7));
+    return toOccurrence(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate(), schedule.startTime, schedule.endTime);
+  });
+}
+
+/**
+ * Extract the first GBP amount from a price cell as a bare number string, for
+ * the schema.org Offer `price` field. Compound cells ("£8 cash / £10 card")
+ * yield the first (cash) amount; cells with no £ value (e.g. "Free") → null so
+ * callers can omit the Offer rather than emit a bogus price.
+ */
+export function parsePriceGBP(raw: string): string | null {
+  return raw.match(/£\s*(\d+(?:\.\d{1,2})?)/)?.[1] ?? null;
 }
 
 // ── Overheard quotes ──────────────────────────────────────────────────────
@@ -312,13 +433,26 @@ export function parseUKDate(input: string): Date | null {
   return d;
 }
 
-const TRYOUT_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const TRYOUT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 /** Format a tryout date for display, e.g. "Sat 13 Sep". Components may split on
  *  spaces to reuse the parts (weekday / day / month) without re-deriving them. */
 export function formatTryoutDate(d: Date): string {
-  return `${TRYOUT_WEEKDAYS[d.getDay()]} ${d.getDate()} ${TRYOUT_MONTHS[d.getMonth()]}`;
+  return `${WEEKDAYS_SHORT[d.getDay()]} ${d.getDate()} ${TRYOUT_MONTHS[d.getMonth()]}`;
+}
+
+/**
+ * Convert a Tryout (a one-off dated event) into a schema.org Occurrence with a
+ * concrete startDate/endDate, so /events can emit it as an Event alongside the
+ * recurring sessions. Returns null when the tryout's time range can't be parsed
+ * (the date itself is already validated at parse time). Uses the tryout's local
+ * calendar date — parseUKDate builds it at local midnight — plus its time.
+ */
+export function tryoutOccurrence(tryout: Tryout): Occurrence | null {
+  const range = parseTimeRange(tryout.time);
+  if (!range) return null;
+  const d = tryout.dateObj;
+  return toOccurrence(d.getFullYear(), d.getMonth() + 1, d.getDate(), range.startTime, range.endTime);
 }
 
 const TRYOUT_TRUTHY = ['true', 'yes', '1'];

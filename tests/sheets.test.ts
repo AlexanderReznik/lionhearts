@@ -9,6 +9,9 @@ import {
   abbreviateTime,
   to24Hour,
   parseSessionSchedule,
+  nextOccurrences,
+  tryoutOccurrence,
+  parsePriceGBP,
   getSessions,
   getJuniorSessions,
   getQuotes,
@@ -169,6 +172,123 @@ describe('parseSessionSchedule', () => {
 
   it('returns null for an unparseable time', () => {
     expect(parseSessionSchedule(makeSession({ time: 'TBC' }))).toBeNull();
+  });
+});
+
+describe('parsePriceGBP', () => {
+  it('extracts the first GBP amount from a plain price', () => {
+    expect(parsePriceGBP('£3')).toBe('3');
+  });
+
+  it('takes the first (cash) amount from a compound price', () => {
+    expect(parsePriceGBP('£8 cash / £10 card')).toBe('8');
+  });
+
+  it('handles decimals', () => {
+    expect(parsePriceGBP('£7.50')).toBe('7.50');
+  });
+
+  it('returns null when there is no GBP amount', () => {
+    expect(parsePriceGBP('Free')).toBeNull();
+    expect(parsePriceGBP('')).toBeNull();
+  });
+});
+
+describe('nextOccurrences', () => {
+  // Monday 19:00–21:00, the standard adult session.
+  const monday = {
+    byDay: 'https://schema.org/Monday',
+    startTime: '19:00',
+    endTime: '21:00',
+  };
+
+  it('returns the next N weekly occurrences with GMT offset in winter', () => {
+    // Wed 7 Jan 2026, midday UTC — London is on GMT (+00:00).
+    const from = new Date('2026-01-07T12:00:00Z');
+    expect(nextOccurrences(monday, 2, from)).toEqual([
+      { startDate: '2026-01-12T19:00:00+00:00', endDate: '2026-01-12T21:00:00+00:00' },
+      { startDate: '2026-01-19T19:00:00+00:00', endDate: '2026-01-19T21:00:00+00:00' },
+    ]);
+  });
+
+  it('uses the BST offset in summer', () => {
+    // Wed 15 Jul 2026 — London is on BST (+01:00).
+    const from = new Date('2026-07-15T12:00:00Z');
+    expect(nextOccurrences(monday, 1, from)).toEqual([
+      { startDate: '2026-07-20T19:00:00+01:00', endDate: '2026-07-20T21:00:00+01:00' },
+    ]);
+  });
+
+  it('includes today when the session has not ended yet', () => {
+    // Monday 5 Jan 2026, 18:00 London (GMT) — session starts at 19:00.
+    const from = new Date('2026-01-05T18:00:00Z');
+    expect(nextOccurrences(monday, 1, from)[0].startDate).toBe('2026-01-05T19:00:00+00:00');
+  });
+
+  it('skips today once the session has ended', () => {
+    // Monday 5 Jan 2026, 21:30 London — session ended at 21:00.
+    const from = new Date('2026-01-05T21:30:00Z');
+    expect(nextOccurrences(monday, 1, from)[0].startDate).toBe('2026-01-12T19:00:00+00:00');
+  });
+
+  it('crosses the GMT→BST transition with per-date offsets', () => {
+    // DST starts Sun 29 Mar 2026. Friday session, from Wed 25 Mar 2026.
+    const friday = { byDay: 'https://schema.org/Friday', startTime: '20:00', endTime: '22:00' };
+    const from = new Date('2026-03-25T12:00:00Z');
+    expect(nextOccurrences(friday, 2, from)).toEqual([
+      { startDate: '2026-03-27T20:00:00+00:00', endDate: '2026-03-27T22:00:00+00:00' },
+      { startDate: '2026-04-03T20:00:00+01:00', endDate: '2026-04-03T22:00:00+01:00' },
+    ]);
+  });
+
+  it('resolves "today" in London time, not UTC', () => {
+    // 23:30 UTC on Mon 13 Jul 2026 is already 00:30 Tue in London (BST),
+    // so the Monday session must resolve to the following Monday.
+    const from = new Date('2026-07-13T23:30:00Z');
+    expect(nextOccurrences(monday, 1, from)[0].startDate).toBe('2026-07-20T19:00:00+01:00');
+  });
+
+  it('returns [] for an unknown byDay URL', () => {
+    const bad = { ...monday, byDay: 'https://schema.org/Someday' };
+    expect(nextOccurrences(bad, 2, new Date('2026-01-07T12:00:00Z'))).toEqual([]);
+  });
+});
+
+describe('tryoutOccurrence', () => {
+  const makeTryout = (over: Partial<Tryout> = {}): Tryout => ({
+    date: '13/09/2026',
+    dateObj: new Date(2026, 8, 13), // 13 Sep 2026, local midnight
+    time: '6:00pm–8:00pm',
+    team: "Men's Pride",
+    venue: 'Mulberry Academy Shoreditch',
+    form: 'https://forms.gle/abc',
+    visible: true,
+    ...over,
+  });
+
+  it('builds a dated occurrence from the tryout date + time (BST in September)', () => {
+    expect(tryoutOccurrence(makeTryout())).toEqual({
+      startDate: '2026-09-13T18:00:00+01:00',
+      endDate: '2026-09-13T20:00:00+01:00',
+    });
+  });
+
+  it('uses the GMT offset for a winter tryout', () => {
+    expect(tryoutOccurrence(makeTryout({ dateObj: new Date(2026, 11, 5), date: '05/12/2026' }))).toEqual({
+      startDate: '2026-12-05T18:00:00+00:00',
+      endDate: '2026-12-05T20:00:00+00:00',
+    });
+  });
+
+  it('handles a plain hyphen separator and minutes', () => {
+    expect(tryoutOccurrence(makeTryout({ time: '6:30pm-8:30pm' }))).toEqual({
+      startDate: '2026-09-13T18:30:00+01:00',
+      endDate: '2026-09-13T20:30:00+01:00',
+    });
+  });
+
+  it('returns null when the time is unparseable', () => {
+    expect(tryoutOccurrence(makeTryout({ time: 'TBC' }))).toBeNull();
   });
 });
 

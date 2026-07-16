@@ -6,7 +6,7 @@ import TryoutsSection from '../components/TryoutsSection.astro';
 import SessionCard from '../components/SessionCard.astro';
 import VenueCard from '../components/VenueCard.astro';
 import SessionsFallbackNotice from '../components/SessionsFallbackNotice.astro';
-import { getSessions, getJuniorSessions, parseSessionSchedule, getUpcomingTryouts } from '../lib/sheets';
+import { getSessions, getJuniorSessions, parseSessionSchedule, nextOccurrences, tryoutOccurrence, parsePriceGBP, getUpcomingTryouts, type Session } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
 import { SITE_URL } from '../data/club';
@@ -90,30 +90,94 @@ const ORGANIZER = {
 
 // Derived from the live session data (single source of truth) so the
 // structured data can never drift from the schedule shown on the page.
-// Sessions whose day/time can't be parsed are skipped rather than emitted
-// as invalid Events.
-const sessionSchemas = sessions.flatMap(s => {
-  const schedule = parseSessionSchedule(s);
-  if (!schedule) return [];
+// Google's Event rich results require a concrete `startDate`, so instead of a
+// single Schedule-based Event per session we expand each weekly session into
+// its next few dated occurrences (nextOccurrences). Sessions whose day/time
+// can't be parsed are skipped rather than emitted as invalid Events. Because
+// the dates are computed at build time, they stay fresh only if the site is
+// rebuilt regularly (the sheet-edit webhook + periodic deploys cover this).
+const OCCURRENCES_AHEAD = 6;
+
+// Recommended (non-required) Event fields. `image` reuses the site's stable
+// social-preview photo (absolute URL, no asset hashing needed). `offers` is
+// built from the session's door price — omitted when the cell has no £ amount
+// so we never emit a bogus price. `performer` is intentionally NOT set: an open
+// training session has participants, not an act an audience watches, so that
+// field doesn't apply.
+const EVENT_IMAGE = `${SITE_URL}/images/og-default.jpg`;
+
+function offerFor(s: Session) {
+  const price = parsePriceGBP(s.price);
+  if (!price) return {};
+  return {
+    offers: {
+      '@type': 'Offer',
+      price,
+      priceCurrency: 'GBP',
+      availability: 'https://schema.org/InStock',
+      url: `${SITE_URL}/events/`,
+    },
+  };
+}
+
+function sessionEvents(list: typeof sessions, name: (s: Session) => string, description: (s: Session) => string) {
+  return list.flatMap(s => {
+    const schedule = parseSessionSchedule(s);
+    if (!schedule) return [];
+    return nextOccurrences(schedule, OCCURRENCES_AHEAD).map(occ => ({
+      '@context': 'https://schema.org',
+      '@type': 'Event',
+      name: name(s),
+      description: description(s),
+      image: EVENT_IMAGE,
+      startDate: occ.startDate,
+      endDate: occ.endDate,
+      location: VENUE,
+      organizer: ORGANIZER,
+      ...offerFor(s),
+      eventStatus: 'https://schema.org/EventScheduled',
+      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    }));
+  });
+}
+
+// Tryouts are one-off dated events, so each maps straight to a single Event.
+// The full VENUE block (with address + geo) applies only when the tryout is at
+// the usual venue; elsewhere we emit a name-only Place. The registration form,
+// when present, becomes the Event `url`. No `offers` — a tryout isn't a paid
+// drop-in, and `performer` is omitted for the same reason as the sessions.
+const tryoutSchemas = tryouts.flatMap(t => {
+  const occ = tryoutOccurrence(t);
+  if (!occ) return [];
   return [{
     '@context': 'https://schema.org',
     '@type': 'Event',
-    name: `London Lionhearts — Open Training (${s.level})`,
-    description: `Open volleyball session at ${s.venue} — ${s.level}. No booking required.`,
-    location: VENUE,
+    name: `London Lionhearts — ${t.team ? `${t.team} ` : ''}Tryout`,
+    description: `Volleyball tryout${t.team ? ` for ${t.team}` : ''} at ${t.venue}.`,
+    image: EVENT_IMAGE,
+    startDate: occ.startDate,
+    endDate: occ.endDate,
+    location: t.venue === VENUE.name ? VENUE : { '@type': 'Place', name: t.venue },
     organizer: ORGANIZER,
+    ...(t.form ? { url: t.form } : {}),
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-    eventSchedule: {
-      '@type': 'Schedule',
-      byDay: [schedule.byDay],
-      startTime: schedule.startTime,
-      endTime: schedule.endTime,
-      repeatFrequency: 'P1W',
-      scheduleTimezone: 'Europe/London',
-    },
   }];
 });
+
+const eventSchemas = [
+  ...sessionEvents(
+    sessions,
+    s => `London Lionhearts — Open Training (${s.level})`,
+    s => `Open volleyball session at ${s.venue} — ${s.level}. No booking required.`,
+  ),
+  ...sessionEvents(
+    juniorSessions,
+    () => 'London Lionhearts — Junior Volleyball',
+    s => `Junior volleyball session at ${s.venue}. New juniors always welcome.`,
+  ),
+  ...tryoutSchemas,
+];
 
 const teamSections = [
   { label: "Women's Teams", section: 'womens', spaced: false, teams: teams.filter(t => t.gender === "Women's") },
@@ -124,7 +188,7 @@ const teamSections = [
 <BaseLayout
   title="Sessions & Fixtures"
   description="Open volleyball sessions for adults and juniors at Mulberry Academy, Shoreditch E2. Plus league fixtures for all 9 Lionhearts teams — NVL Super League and LVA."
-  jsonLd={sessionSchemas}
+  jsonLd={eventSchemas}
 >
   <!-- Page hero -->
   <div class="page-hero">
