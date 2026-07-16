@@ -33,6 +33,7 @@ import newZealand from '../assets/flags/new-zealand.svg';
 import canada from '../assets/flags/canada.svg';
 import china from '../assets/flags/china.svg';
 import usa from '../assets/flags/usa.svg';
+import nigeria from '../assets/flags/nigeria.svg';
 
 export interface Flag {
   /** Display name in members' own wording — used as alt and title text. */
@@ -68,4 +69,5 @@ export const flags: Flag[] = [
   { name: 'Canada', src: canada },
   { name: 'China', src: china },
   { name: 'USA', src: usa },
+  { name: 'Nigeria', src: nigeria },
 ];

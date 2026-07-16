@@ -7,11 +7,11 @@ const EXPECTED_NAMES = [
   'Italy', 'Belgium', 'France', 'Australia', 'Serbia', 'UK',
   'Lithuania', 'Croatia', 'Turkey', 'Belarus', 'Iran',
   'Czech Republic', 'Brazil', 'Jamaica', 'Guyana', 'Pakistan',
-  'New Zealand', 'Canada', 'China', 'USA',
+  'New Zealand', 'Canada', 'China', 'USA', 'Nigeria',
 ];
 
 describe('community flags', () => {
-  it('lists the 26 member flags in the order they were added', () => {
+  it('lists the 27 member flags in the order they were added', () => {
     expect(flags.map((f) => f.name)).toEqual(EXPECTED_NAMES);
   });
 
