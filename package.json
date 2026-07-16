@@ -19,6 +19,7 @@
     "@fontsource/barlow": "^5.2.8",
     "@fontsource/barlow-condensed": "^5.2.8",
     "@fontsource/playfair-display": "^5.2.8",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^6.3.7"
   },
   "devDependencies": {
