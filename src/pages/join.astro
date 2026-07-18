@@ -13,7 +13,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 
 <BaseLayout
   title="Play Volleyball in East London — Join Us"
-  description={`Come play volleyball in Shoreditch, East London. Open sessions ${sessions.length}× a week at Mulberry Academy — no experience needed, no booking required. Or DM us on Instagram.`}
+  description={`Come play volleyball in Shoreditch, East London. Beginner-friendly open sessions ${sessions.length}× a week at Mulberry Academy — no booking required. Or DM us on Instagram.`}
 >
   <div class="page-hero">
     <p class="eyebrow page-hero__eyebrow">All levels welcome</p>
@@ -35,8 +35,8 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
         <div class="pathway__icon" aria-hidden="true"><Icon name="session" /></div>
         <h2 class="pathway__title">Come to an Open Session</h2>
         <p class="pathway__body">
-          The easiest way in — just show up and play. No booking, no commitment, no experience
-          needed. Meet the community and see if it's for you.
+          The easiest way in — just show up and play. Sessions are beginner-friendly: no booking,
+          no commitment, no experience needed. Meet the community and see if it's for you.
         </p>
         <a href="/events" class="btn btn--white pathway__cta">See Full Schedule</a>
       </div>
