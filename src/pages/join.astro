@@ -3,11 +3,17 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE, SITE_URL } from '../data/club';
+import { getSessions } from '../lib/sheets';
+
+// Session count for the meta description comes from the live sheet (same
+// source as /events and the homepage strip), so it can't drift from the
+// schedule shown on the site.
+const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 ---
 
 <BaseLayout
   title="Join Us"
-  description="Come play volleyball in Shoreditch, East London. Open sessions Mon, Thu & Fri at Mulberry Academy — no experience needed, no booking required. Or DM us on Instagram."
+  description={`Come play volleyball in Shoreditch, East London. Open sessions ${sessions.length}× a week at Mulberry Academy — no experience needed, no booking required. Or DM us on Instagram.`}
 >
   <div class="page-hero">
     <p class="eyebrow page-hero__eyebrow">All levels welcome</p>
