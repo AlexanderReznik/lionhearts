@@ -1,6 +1,11 @@
 ---
 // src/components/JoinCTA.astro
 import Icon from './Icon.astro';
+import { getSessions } from '../lib/sheets';
+
+// Session count from the live sheet (same source as the strip and /events),
+// so the promise here can't drift from the schedule shown on the site.
+const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 ---
 
 <section class="join-cta" aria-label="Join the club">
@@ -8,7 +13,7 @@ import Icon from './Icon.astro';
     <div class="join-cta__copy">
       <p class="eyebrow join-cta__kicker">Shoreditch · All Levels · All Backgrounds</p>
       <h2 class="join-cta__headline">Ready <span class="gradient-text">to play?</span></h2>
-      <p class="join-cta__sub">Beginner-friendly open sessions 3× a week. New to London? You'll fit right in.</p>
+      <p class="join-cta__sub">Beginner-friendly open sessions {sessions.length}× a week. New to London? You'll fit right in.</p>
       <p class="join-cta__location">
         <span class="join-cta__pin" aria-hidden="true"><Icon name="location" /></span>
         <span class="join-cta__venue">Mulberry Academy, Shoreditch E2</span>

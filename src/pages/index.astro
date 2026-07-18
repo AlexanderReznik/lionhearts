@@ -11,7 +11,7 @@ import SponsorsSection from '../components/SponsorsSection.astro';
 import InstagramFeed from '../components/InstagramFeed.astro';
 import TryoutsAlertBar from '../components/TryoutsAlertBar.astro';
 import TryoutsBand from '../components/TryoutsBand.astro';
-import { getUpcomingTryouts } from '../lib/sheets';
+import { getSessions, getUpcomingTryouts } from '../lib/sheets';
 import { INSTAGRAM_URL, FACEBOOK_URL, WHATSAPP_URL, SITE_URL } from '../data/club';
 
 // Hero images are processed at build time by Astro's <Picture> component,
@@ -27,6 +27,11 @@ import catsCelebration from '../assets/hero/cats_celebration.jpg';
 // Pre-season tryouts — fetched once and shared by both homepage promos. Empty
 // array = nothing renders (no fallback).
 const tryouts = await getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_TRYOUTS_GID);
+
+// Session count for the meta description comes from the live sheet (same
+// source as /join, /events and the sessions strip), so it can't drift from
+// the schedule shown on the site.
+const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 
 const heroSlides = [
   {
@@ -97,7 +102,7 @@ const orgSchema = {
 
 <BaseLayout
   title="London Lionhearts Volleyball Club — Shoreditch, East London"
-  description="East London's volleyball club — from the NVL Super League to your first ever session. Open sessions 3× a week at Mulberry Academy, Shoreditch E2."
+  description={`East London's volleyball club — from the NVL Super League to your first ever session. Open sessions ${sessions.length}× a week at Mulberry Academy, Shoreditch E2.`}
   jsonLd={orgSchema}
 >
   <TryoutsAlertBar tryouts={tryouts} />
