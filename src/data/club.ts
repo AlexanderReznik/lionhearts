@@ -21,7 +21,7 @@ export const INSTAGRAM_URL = 'https://instagram.com/lionhearts_volleyball';
 export const INSTAGRAM_HANDLE = '@lionhearts_volleyball';
 
 /** Public Facebook page — used for "follow us" links. */
-export const FACEBOOK_URL = 'https://facebook.com/lionheartsvolleyball';
+export const FACEBOOK_URL = 'https://facebook.com/londonlionhearts.volleyball';
 
 /** Community WhatsApp group invite — used for "follow us" / community links. */
 export const WHATSAPP_URL = 'https://chat.whatsapp.com/Bgmlpd9vxXW0JvHa2NsRyU?mode=gi_t';
