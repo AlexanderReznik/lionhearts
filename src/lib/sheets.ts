@@ -458,6 +458,18 @@ export function tryoutOccurrence(tryout: Tryout): Occurrence | null {
 const TRYOUT_TRUTHY = ['true', 'yes', '1'];
 
 /**
+ * The sheet's `form` cell is often pasted without a scheme ("forms.gle/xyz");
+ * rendered as-is in an href, the browser would resolve it relative to the site
+ * (https://lionheartslondon.com/forms.gle/xyz). Prepend https:// so consumers
+ * always get an absolute URL. Blank cells stay blank (no form → no CTA).
+ */
+function normalizeFormUrl(raw: string): string {
+  const url = raw.trim();
+  if (!url || /^https?:\/\//i.test(url)) return url;
+  return `https://${url}`;
+}
+
+/**
  * Parse the tryouts tab CSV into Tryout objects. Rows whose `date` cell can't be
  * parsed as UK day-first are dropped (so a half-filled planning row never breaks
  * the page). Blank `venue` falls back to DEFAULT_VENUE.
@@ -472,7 +484,7 @@ export function parseTryoutsCSV(csv: string): Tryout[] {
       time:    raw['time'] ?? '',
       team:    raw['team'] ?? '',
       venue:   raw['venue'] || DEFAULT_VENUE,
-      form:    raw['form'] ?? '',
+      form:    normalizeFormUrl(raw['form'] ?? ''),
       visible: TRYOUT_TRUTHY.includes((raw['visible'] ?? '').toLowerCase()),
     } satisfies Tryout];
   });

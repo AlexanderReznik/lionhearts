@@ -546,6 +546,22 @@ describe('parseTryoutsCSV', () => {
     expect(parseTryoutsCSV('')).toEqual([]);
     expect(parseTryoutsCSV(header)).toEqual([]);
   });
+
+  it('prepends https:// to a scheme-less form URL so it cannot render as a relative link', () => {
+    const csv = `${header}\n13/09/2026,6:00pm–8:00pm,Men's NVL,The Castle,forms.gle/abc,TRUE`;
+    expect(parseTryoutsCSV(csv)[0].form).toBe('https://forms.gle/abc');
+  });
+
+  it('leaves absolute form URLs and blank cells untouched', () => {
+    const csv = [
+      header,
+      `13/09/2026,6:00pm–8:00pm,Men,The Castle,http://forms.gle/abc,TRUE`,
+      `14/09/2026,2:00pm–4:00pm,Women,The Castle,,TRUE`,
+    ].join('\n');
+    const result = parseTryoutsCSV(csv);
+    expect(result[0].form).toBe('http://forms.gle/abc');
+    expect(result[1].form).toBe('');
+  });
 });
 
 describe('formatTryoutDate', () => {
