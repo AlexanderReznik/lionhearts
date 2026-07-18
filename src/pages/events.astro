@@ -311,7 +311,7 @@ const teamSections = [
       const updated = section.dataset.updated ?? '';
 
       if (data.error && data.matches.length === 0) {
-        target.innerHTML = `<div class="tl-error">Fixtures unavailable — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">view on Volleyzone →</a></div>`;
+        target.innerHTML = `<div class="tl-error">Fixtures unavailable — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">View on Volleyzone →</a></div>`;
         return;
       }
 
@@ -333,7 +333,7 @@ const teamSections = [
         .slice(0, 3);
 
       if (matches.length > 0 && results.length === 0 && upcoming.length === 0) {
-        target.innerHTML = `<div class="tl-error">Season complete — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">full schedule on Volleyzone →</a></div>`;
+        target.innerHTML = `<div class="tl-error">Season complete — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full Schedule on Volleyzone →</a></div>`;
         return;
       }
 
@@ -386,7 +386,7 @@ const teamSections = [
       html += `
         <div class="tl-footer">
           <span class="tl-updated">${updated ? `Updated ${esc(updated)}` : ''}</span>
-          <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full schedule on Volleyzone →</a>
+          <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full Schedule on Volleyzone →</a>
         </div>`;
 
       target.innerHTML = html;
