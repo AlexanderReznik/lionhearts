@@ -86,7 +86,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
       <input type="hidden" name="subject" value="New enquiry — London Lionhearts VBC" />
       <input type="hidden" name="from_name" value="Lionhearts Website" />
       <input type="hidden" name="redirect" value={`${SITE_URL}/join-success`} />
-      <input type="checkbox" name="botcheck" style="display:none" />
+      <input type="checkbox" name="botcheck" class="join-form__botcheck" />
 
       <!-- Section 1: Your details -->
       <div class="join-form__section">
@@ -169,6 +169,9 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 </BaseLayout>
 
 <style>
+  /* Web3Forms honeypot — hidden from people, present for bots. */
+  .join-form__botcheck { display: none; }
+
   /* ── Pathways ── */
   .pathways {
     display: grid;
