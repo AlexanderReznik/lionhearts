@@ -1,14 +1,14 @@
 # London Lionhearts Volleyball Club
 
-Website for [London Lionhearts VBC](https://lionheartsvolleyball.com) — East London's volleyball club, founded 1998, based in Shoreditch E2.
+Website for [London Lionhearts VBC](https://lionheartslondon.com) — East London's volleyball club, founded 1998, based in Shoreditch E2.
 
 ## Stack
 
 - **[Astro 6](https://astro.build)** — static site generator, zero JS by default
 - **TypeScript** (strict)
-- **Vitest** — unit tests for data utilities
+- **Vitest** — unit tests for the build-time data utilities
 - **Vercel** — hosting and environment variables
-- **[Formspree](https://formspree.io)** — sign-up form submissions
+- **[Web3Forms](https://web3forms.com)** — sign-up form submissions
 - **Vanilla CSS** with custom properties (no framework)
 
 ## Pages
@@ -17,10 +17,10 @@ Website for [London Lionhearts VBC](https://lionheartsvolleyball.com) — East L
 |---|---|
 | `/` | Home — hero carousel, stats, about intro, community, sponsors, Instagram feed, join CTA |
 | `/about` | Club history, founders, values |
-| `/events` | Open sessions (Google Sheets or fallback), Volleyzone fixture links per team |
-| `/teams` | 9-team grid — NVL: Vinarius (W), Alpha (M), Leo (M) · LVA: Cats, Fury, Beats (W), Predators, Pride, Roar (M) |
-| `/sponsorship` | Title sponsor, partnership CTA, sponsorship perks |
-| `/join` | 3 join pathways + Formspree sign-up form |
+| `/events` | Open sessions (live Google Sheet or fallback), Volleyzone fixture links per team |
+| `/teams` | 9-team grid — NVL: Vinarius (W), Leo (M) · LVA: Alpha, Fury (Premier), Cats, Beats, Predators (Div 1), Pride (Div 2), Roar (Div 3) |
+| `/sponsorship` | Sponsors, partnership CTA, sponsorship perks |
+| `/join` | 3 join pathways + Web3Forms sign-up form |
 | `/contact` | Contact cards, location block, social links |
 
 ---
@@ -52,13 +52,21 @@ npm run dev
 
 Opens at `http://localhost:4321`. Hot module replacement is enabled by default.
 
+The `/` and `/events` pages fetch fixtures and the Instagram feed at build time.
+When you aren't working on those sections, skip the slow network calls with the
+literal `true` (a `1` will **not** skip):
+
+```bash
+SKIP_VOLLEYZONE=true SKIP_BEHOLD=true npm run dev
+```
+
 ### Build
 
 ```bash
 npm run build
 ```
 
-Output goes to `dist/`. Astro also generates `dist/sitemap-index.xml` and `dist/sitemap-0.xml` from the site's page routes.
+Output goes to `dist/`. Astro also generates `dist/sitemap-index.xml` and `dist/sitemap-0.xml` from the site's page routes. Build-time data fetches degrade to empty on any failure, so a network hiccup never fails the build.
 
 ### Preview built site
 
@@ -74,7 +82,10 @@ Serves the `dist/` directory locally — useful for checking the 404 page and si
 npm test
 ```
 
-Unit tests for the Google Sheets CSV parser (`src/lib/sheets.ts`). Run with Vitest.
+Vitest unit tests for the build-time data utilities: the Google Sheets CSV
+parser (`sheets.ts`), the Volleyzone fixtures fetch (`volleyzone.ts`), the
+Behold Instagram feed (`behold.ts`), the theme resolver (`lib/theme.ts`), and
+the flag data (`flags.ts`).
 
 ---
 
@@ -103,18 +114,13 @@ The site deploys to Vercel. Vercel auto-detects Astro — no config file needed.
 - **Output directory:** `dist` (auto-detected)
 - **404 handling:** Vercel automatically serves `dist/404.html` for unmatched routes
 
-### Formspree setup
+### Sign-up form (Web3Forms)
 
-The join form (`/join`) submits to Formspree:
-
-1. Create a free account at [formspree.io](https://formspree.io)
-2. Create a new form and copy the form ID
-3. In `src/pages/join.astro`, replace `REPLACE_WITH_FORM_ID` in the form `action` with your ID:
-   ```html
-   action="https://formspree.io/f/YOUR_FORM_ID"
-   ```
-
-Formspree emails submissions to the address on the account and provides a dashboard. The free tier allows 50 submissions/month.
+The join form (`/join`) submits to [Web3Forms](https://web3forms.com). The
+`access_key` in `src/pages/join.astro` ties submissions to the club inbox, and a
+`botcheck` honeypot filters spam. Web3Forms emails each submission and redirects
+to `/join-success` on completion. To point the form at a different inbox, swap
+the `access_key` for one issued to that email address.
 
 ### Deploy steps
 
@@ -123,20 +129,10 @@ Formspree emails submissions to the address on the account and provides a dashbo
 3. Add environment variables under **Project Settings → Environment Variables**
 4. Click **Deploy**
 
-For the custom domain (`lionheartsvolleyball.com`), add it under **Project Settings → Domains** in Vercel and follow the DNS instructions.
+For the custom domain (`lionheartslondon.com`), add it under **Project Settings → Domains** in Vercel and follow the DNS instructions.
 
----
-
-## Pre-launch checklist
-
-- [ ] Set up Formspree account and replace `REPLACE_WITH_FORM_ID` in `src/pages/join.astro`
-- [ ] Set `GOOGLE_SHEET_ID` in Vercel env vars and publish the Google Sheet as CSV
-- [ ] Set `BEHOLD_FEED_ID` from the Behold.so dashboard (linked to `@lionhearts_volleyball`)
-- [ ] Verify Volleyzone team URL slugs in `src/data/teams.ts` (current values are unverified guesses)
-- [ ] Replace sponsor placeholder data in `src/pages/sponsorship.astro`
-- [ ] Supply team photos as `public/images/team-<name>.jpg` (e.g. `team-vinarius.jpg`)
-- [ ] Replace `public/images/og-default.jpg` with a real 1200×630 club photo
-- [ ] Confirm open session times with club (Mon/Thu 7–9pm, Fri 8–10pm — hardcoded in fallback data and JSON-LD)
+To rebuild automatically when the Google Sheet schedule changes, wire a Vercel
+Deploy Hook to the sheet's Apps Script trigger — see `human-todo.md`.
 
 ---
 
@@ -144,22 +140,28 @@ For the custom domain (`lionheartsvolleyball.com`), add it under **Project Setti
 
 ```
 src/
+  assets/           # Images served via astro:assets (hero, teams, icons, flags)
   components/       # Shared UI components (Nav, Footer, Hero, TeamCard, etc.)
-  data/             # Static data (teams, flags)
+  data/             # Static data — club constants, teams, sponsors, flags
   layouts/          # BaseLayout wrapping every page
-  lib/              # Utilities — sheets.ts for Google Sheets CSV parsing
+  lib/              # Build-time utilities — sheets, volleyzone, behold, theme
   pages/            # One file per route
   styles/           # global.css — design tokens and base styles
 public/
-  images/           # Static assets (OG image, team photos when provided)
-  robots.txt
+  brand/            # Logo / favicon / wordmark SVGs
+  images/           # OG image and other static raster assets
 tests/              # Vitest unit tests
 ```
 
 ## Design system
 
-Dark navy theme. All CSS tokens are in `src/styles/global.css`:
+Light-led brand theme with a light/dark toggle. All CSS tokens live in
+`src/styles/global.css`, in two layers:
 
-- Background: `--color-bg: #050d1a`
-- Accent gradient: `--color-accent-from: #0050e0` → `--color-accent-to: #0090ff`
-- Typography, spacing, and button variants all use custom properties
+- **Brand tokens** (`--lh-*`, fixed): navy `#11234b`, deep navy `#05122b`, white, flat brand blue `#54a4f7`, plus secondary/tint ramps.
+- **Semantic tokens** (`--color-*`): each declared once as `light-dark(LIGHT, DARK)`, so a single `color-scheme` flip drives the whole theme. `:root[data-theme="dark"]` and a `prefers-color-scheme: dark` fallback (for no-JS users) select the dark side.
+
+The accent is a single flat brand blue (`--color-accent`, no gradients).
+Accent-coloured **text** uses `--color-accent-text` (a darker blue in light
+theme) so it passes WCAG AA. Typography is **Barlow**, self-hosted via
+Fontsource. See `CLAUDE.md` for the full theming and accessibility conventions.
