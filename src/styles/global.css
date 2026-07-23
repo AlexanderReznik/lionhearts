@@ -32,7 +32,7 @@ a { color: inherit; }
      there is no longer a second copy to keep in sync.
      NOTE: the legacy --color-* names ARE the semantic layer; components
      reference these, so re-pointing them re-themes the whole site.
-     accent-from/to and btn-accent-* are theme-independent (one brand blue),
+     --color-accent and btn-accent-* are theme-independent (one brand blue),
      so they stay as plain values. */
   color-scheme: light;
   --color-bg:           light-dark(var(--lh-white), var(--lh-navy));
@@ -41,8 +41,7 @@ a { color: inherit; }
   /* (a few intermediate tints below are semantic-only by design — no --lh-* equivalent) */
   --color-surface-2:    light-dark(#f4f8fd, #0c1d40);
   --color-surface-3:    light-dark(#eaf1fb, var(--lh-navy-deep));
-  --color-accent-from:  var(--lh-blue);   /* gradients flatten to one brand blue */
-  --color-accent-to:    var(--lh-blue);
+  --color-accent:       var(--lh-blue);   /* flat brand accent (no gradients) */
   --color-text:         light-dark(var(--lh-navy), var(--lh-white));
   --color-text-muted:   light-dark(#5a6b86, var(--lh-slate-200));
   --color-text-faint:   light-dark(#5e6c88, #94a1c0);
@@ -166,16 +165,16 @@ body {
 }
 .skip-link:focus-visible {
   transform: none;
-  outline: 2px solid var(--color-accent-to);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
-/* ── Accent utilities (flat per brand — no gradients) ── */
-.gradient-text {
-  color: var(--color-accent-to);
-}
-.gradient-bg {
-  background: var(--color-accent-to);
+/* ── Accent utility (flat per brand — no gradients) ──
+   Colours the highlighted word of a display headline brand blue. Only for
+   dark surfaces (hero photo, community band) — for accent text on light
+   surfaces use --color-accent-text, which is AA-safe. */
+.headline-accent {
+  color: var(--color-accent);
 }
 
 /* ── Buttons ── */
@@ -197,7 +196,7 @@ body {
 .btn:active { transform: scale(0.98); }
 
 .btn:focus-visible {
-  outline: 2px solid var(--color-accent-to);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
@@ -319,7 +318,7 @@ body {
 }
 
 .filter-pill:focus-visible {
-  outline: 2px solid var(--color-accent-to);
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 

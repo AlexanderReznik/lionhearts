@@ -63,7 +63,7 @@ const { slides } = Astro.props;
     </div>
 
     <h1 class="hero__headline">
-      Together<span class="gradient-text">We Roar.</span>
+      Together<span class="headline-accent">We Roar.</span>
     </h1>
 
     <p class="hero__sub">
@@ -186,7 +186,7 @@ const { slides } = Astro.props;
     margin-bottom: 20px;
   }
 
-  .hero__headline .gradient-text { display: block; }
+  .hero__headline .headline-accent { display: block; }
 
   .hero__sub {
     color: var(--color-text-muted);
@@ -235,11 +235,11 @@ const { slides } = Astro.props;
   .hero__dot--active {
     width: 24px;
     border-radius: 3px;
-    background: var(--color-accent-to);
+    background: var(--color-accent);
   }
 
   .hero__dot:focus-visible {
-    outline: 2px solid var(--color-accent-to);
+    outline: 2px solid var(--color-accent);
     outline-offset: 3px;
   }
 

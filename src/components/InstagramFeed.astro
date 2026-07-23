@@ -157,7 +157,7 @@ const hasPosts = posts.length > 0;
   }
 
   .ig-tile__link:focus-visible {
-    outline: 2px solid var(--color-accent-to);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
 
@@ -240,7 +240,7 @@ const hasPosts = posts.length > 0;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(90deg, var(--color-accent-from), var(--color-accent-to));
+    background: var(--color-accent);
     color: var(--lh-white);
     font-size: var(--text-note);
     font-weight: var(--weight-bold);
@@ -255,7 +255,7 @@ const hasPosts = posts.length > 0;
   }
 
   .instagram__follow-btn:hover { opacity: 0.85; }
-  .instagram__follow-btn:focus-visible { outline: 2px solid var(--color-accent-to); outline-offset: 3px; }
+  .instagram__follow-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
 
   @media (max-width: 640px) {
     .instagram__header {
