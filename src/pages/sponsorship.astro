@@ -179,11 +179,11 @@ const perks: { icon: IconName; title: string; body: string }[] = [
     --color-accent-text: var(--lh-blue);
   }
 
-  /* Dark theme: navy CTA on the navy page — add a brand light-blue (#54A4F7)
-     hairline so it stays a distinct panel. Light theme keeps its borderless
-     navy-on-white pop. */
-  :global([data-theme="dark"]) .become-sponsor {
-    border: 1px solid var(--color-border-blue);
+  /* Dark theme: navy CTA on the navy page — a brand light-blue (#54A4F7)
+     hairline (--color-border-blue's dark arm) keeps it a distinct panel.
+     Light theme keeps its borderless navy-on-white pop. */
+  .become-sponsor {
+    border: 1px solid light-dark(transparent, rgba(84,164,247,0.30));
   }
 
   .become-sponsor::after {

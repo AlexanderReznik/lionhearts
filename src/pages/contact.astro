@@ -212,20 +212,17 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
 
   /* ── Location block ── */
   /* location-block is an intentional dark feature surface — navy bg, white text */
+  /* Dark theme: the navy panel sits on the navy page, so the brand light-blue
+     (#54A4F7) hairline strengthens (mirrors --color-border-blue's dark arm)
+     so it still reads as a distinct panel. */
   .location-block {
     background: linear-gradient(160deg, var(--lh-navy-deep), var(--lh-navy));
-    border: 1px solid rgba(84,164,247,0.15);
+    border: 1px solid light-dark(rgba(84,164,247,0.15), rgba(84,164,247,0.30));
     border-radius: 16px;
     overflow: hidden;
     display: grid;
     grid-template-columns: 1fr 1.4fr;
     margin-bottom: 32px;
-  }
-
-  /* Dark theme: navy panel sits on the navy page, so strengthen the brand
-     light-blue (#54A4F7) hairline so it still reads as a distinct panel. */
-  :global([data-theme="dark"]) .location-block {
-    border-color: var(--color-border-blue);
   }
 
   .location-info {

@@ -25,9 +25,9 @@ const { schedule } = Astro.props;
      navy). */
   .sessions-box__notice {
     font-size: var(--text-note);
-    color: #875400;
-    background: rgba(217,151,30,0.10);
-    border: 1px solid rgba(217,151,30,0.40);
+    color: light-dark(#875400, #f0c14b);
+    background: light-dark(rgba(217,151,30,0.10), rgba(217,151,30,0.14));
+    border: 1px solid light-dark(rgba(217,151,30,0.40), rgba(217,151,30,0.45));
     border-radius: 6px;
     padding: 10px 14px;
     margin-bottom: 20px;
@@ -37,11 +37,5 @@ const { schedule } = Astro.props;
     color: inherit;
     font-weight: var(--weight-bold);
     text-decoration: underline;
-  }
-
-  :global(html[data-theme="dark"]) .sessions-box__notice {
-    color: #f0c14b;
-    background: rgba(217,151,30,0.14);
-    border-color: rgba(217,151,30,0.45);
   }
 </style>

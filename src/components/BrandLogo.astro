@@ -24,8 +24,15 @@ const onDark = variant === 'submark' ? '/brand/logo-submark.svg' : '/brand/logo-
 <style>
   .brand-logo { display: inline-flex; line-height: 0; }
   .brand-logo__img { display: block; height: auto; }
-  /* Default (light theme): show navy/base, hide white */
+  /* Default (light theme): show navy/base, hide white. `display` can't use
+     light-dark(), so key the swap on data-theme and mirror the no-JS
+     OS-preference guard from global.css — otherwise a no-JS dark user gets
+     the navy logo on the navy background. */
   .brand-logo__img--dark { display: none; }
-  :global([data-theme="dark"]) .brand-logo__img--light { display: none; }
-  :global([data-theme="dark"]) .brand-logo__img--dark { display: block; }
+  :global(html[data-theme="dark"]) .brand-logo__img--light { display: none; }
+  :global(html[data-theme="dark"]) .brand-logo__img--dark { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :global(html:not([data-theme="light"])) .brand-logo__img--light { display: none; }
+    :global(html:not([data-theme="light"])) .brand-logo__img--dark { display: block; }
+  }
 </style>

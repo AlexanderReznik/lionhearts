@@ -146,14 +146,10 @@ const isActive = (href: string) =>
   .nav__cta {
     flex-shrink: 0;
     font-size: var(--text-note);
-    background: var(--lh-navy);
-    color: var(--lh-white);
+    background: light-dark(var(--lh-navy), var(--lh-white));
+    color: light-dark(var(--lh-white), var(--lh-navy));
   }
   .nav__cta:hover { opacity: 0.9; }
-  :global(html[data-theme="dark"]) .nav__cta {
-    background: var(--lh-white);
-    color: var(--lh-navy);
-  }
 
   /* ── Hamburger (hidden on desktop) ── */
   .nav__hamburger {
