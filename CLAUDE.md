@@ -44,9 +44,15 @@ Brand-compliant theme per the designer's brand book (assets in
 - **Brand tokens** (`--lh-*`, fixed): navy `#11234b`, deep navy `#05122b`,
   white, flat light-blue `#54a4f7`, plus secondary/tint ramps.
 - **Semantic tokens** (`--color-*`, theme-dependent): components reference ONLY
-  these. `:root` = light (default); `[data-theme="dark"]` = dark. There is also a
-  `@media (prefers-color-scheme: dark)` block that **duplicates** the dark values
-  for no-JS users — **keep the two dark blocks in sync.**
+  these. Each is declared **once** as `light-dark(LIGHT, DARK)` in `:root`; the
+  active side follows `color-scheme`. Theme selection is the only place light vs
+  dark is chosen: `:root[data-theme="dark"]` sets `color-scheme: dark`, and a
+  `@media (prefers-color-scheme: dark)` block does the same for no-JS users who
+  haven't explicitly picked light. There is **no second copy of the dark values
+  to keep in sync** — re-point a token once and both themes follow.
+- The single flat brand accent is `--color-accent` (one blue, theme-independent).
+  `.headline-accent` colours the highlighted word of a display headline on dark
+  surfaces; for accent **text** on light surfaces use `--color-accent-text` (below).
 
 Typography is **Barlow** (self-hosted via Fontsource) — an open substitute for the
 brand's DIN 2014; swap is a `--font-sans` change. Accents are flat brand blue (no
@@ -57,15 +63,14 @@ gradients). Official logo/favicon/team-wordmark SVGs live in `public/brand/`.
 Flat brand blue `#54a4f7` only reaches ~2.2–2.6:1 on white, so it **fails AA as
 text** in the light theme. Use the dedicated `--color-accent-text` semantic token
 for any accent-coloured **text** (eyebrows, heading `<em>`, links, labels, footer
-headings): `:root` = `#0050b8` (~7.5:1), `[data-theme="dark"]` = `var(--lh-blue)`
-(`#54a4f7`, passes on navy). Dark surfaces inside the light theme re-assert the
+headings): `light-dark(#0050b8, var(--lh-blue))` — light `#0050b8` (~7.5:1), dark
+`#54a4f7` (passes on navy). Dark surfaces inside the light theme re-assert the
 light-blue locally — `.section--feature` sets it, and page-specific dark panels
 (`location-info`, `become-sponsor`) carry a local
 `--color-accent-text: var(--lh-blue)`. **Backgrounds** (buttons `.btn--accent`,
-`.filter-pill--active`, gradients, toggle knob, page-hero radial) keep `#54a4f7`
-directly — only text moved. When adding accent-coloured text, reach for
-`--color-accent-text`, never `--lh-blue`/`#54a4f7`. (Mirror the token in the no-JS
-`@media (prefers-color-scheme: dark)` block too.) The community white-on-`#54a4f7`
+`.filter-pill--active`, toggle knob, page-hero radial) keep `#54a4f7` directly —
+only text moved. When adding accent-coloured text, reach for
+`--color-accent-text`, never `--lh-blue`/`#54a4f7`. The community white-on-`#54a4f7`
 headings are a deliberate brand Style-#2 exception (~2.62:1, accepted, commented).
 
 ### Theming (light/dark toggle)
@@ -74,8 +79,16 @@ headings are a deliberate brand Style-#2 exception (~2.62:1, accepted, commented
   script in `BaseHead.astro` (resolves stored choice → device preference → light;
   mirrors `resolveInitialTheme()` in `src/lib/theme.ts`). The `ThemeToggle`
   pill-slider (in `Nav.astro`, desktop + overlay) flips it and persists to
-  `localStorage['lh-theme']`. Knob position is pure-CSS-driven from
-  `html[data-theme]`, so instances stay in sync.
+  `localStorage['lh-theme']`. Knob position is pure-CSS-driven, so instances
+  stay in sync.
+- **Component-level dark overrides:** prefer a `light-dark(LIGHT, DARK)` value so
+  the override follows `color-scheme` and reaches no-JS OS-dark users for free —
+  do NOT gate a colour on a bare `html[data-theme="dark"]` selector (it only
+  applies when the boot script ran). The **only** exceptions are non-colour
+  properties `light-dark()` can't express (e.g. `display` swaps in `BrandLogo`,
+  the knob's `left` in `ThemeToggle`): those key on `html[data-theme="dark"]` AND
+  must **mirror** the `@media (prefers-color-scheme: dark) { html:not([data-theme="light"]) … }`
+  guard so no-JS dark users get them too.
 
 ### Icons
 
@@ -87,9 +100,9 @@ SVGO-optimised, and carry `fill="currentColor"`, so they **theme automatically**
 inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
 `.brand-icon` rule), so callers size via the wrapper's `font-size`.
 
-- **Footer socials:** the designer only supplied **Instagram** (a flat camera
-  silhouette). `facebook.svg` (an `f`) and `youtube.svg` (rounded play button with a
-  knockout triangle) were **hand-drawn to match** that flat single-path-with-knockout
+- **Footer socials** (Instagram, Facebook, WhatsApp): the designer only supplied
+  **Instagram** (a flat camera silhouette). `facebook.svg` (an `f`) and
+  `whatsapp.svg` were **hand-drawn to match** that flat single-path-with-knockout
   style. The footer social icons use the site accent (`--color-accent-text`, themed),
   like every other icon — not per-platform brand colours.
 - This is the deliberate exception to the "serve via `astro:assets`" rule below:
@@ -115,10 +128,12 @@ Astro's `:global(...)` directive is only processed inside **scoped** `<style>`
 blocks. In a `<style is:global>` block it is emitted **verbatim as an invalid
 selector** and silently ignored. Likewise, markup injected via `set:html`
 (e.g. the fixtures/result badges in `events.astro`) carries **no Astro scope
-attribute**, so scoped selectors don't match it. So for theme overrides on such
-elements, use a **plain** selector — `html[data-theme="dark"] .badge-w { ... }` —
-NOT `:global(html[data-theme="dark"]) .badge-w`. (In normal scoped style blocks,
-the `:global(html[data-theme="dark"]) .my-class` ancestor pattern IS correct.)
+attribute**, so scoped selectors don't match it. Colour overrides here should
+still be a `light-dark()` value (the badges do this) — but if you ever need a
+`data-theme` **selector** in such a block, use a **plain** one —
+`html[data-theme="dark"] .badge-w { ... }` — NOT
+`:global(html[data-theme="dark"]) .badge-w`. (In normal scoped style blocks, the
+`:global(html[data-theme="dark"]) .my-class` ancestor pattern IS correct.)
 
 ### Brand work — specs & plans
 
@@ -153,7 +168,9 @@ Phase 3-C — photography (real photos + navy duotone), not yet started.
   the exception — see Icons above.)
 - Other established patterns: `noindex={true}` on BaseLayout for 404/join-success;
   sitemap filter excludes `/join-success/`; `<select>` options carry explicit
-  `value` attrs (Netlify form integrity); keyboard focus uses `:focus-visible`.
+  `value` attrs (Web3Forms submission integrity); keyboard focus uses
+  `:focus-visible`; `BaseLayout` renders a `.skip-link` → `<main id="main">` as
+  the first focusable element on every page.
 
 ## Verifying UI / responsive changes
 
