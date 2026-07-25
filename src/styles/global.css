@@ -177,7 +177,18 @@ body {
   color: var(--color-accent);
 }
 
-/* ── Buttons ── */
+/* ── Buttons ──
+   One shared shape (.btn), four variants. Pick by role, then let surface
+   contrast override:
+     --primary  the page's main "join / act" CTA (navy solid; blue in dark)
+     --accent   tryouts & sponsor CTAs (blue solid, navy text — AA on blue)
+     --ghost    secondary action alongside a primary (outline)
+     --white    ANY CTA sitting on a dark/navy or saturated-blue surface
+   Precedence: SURFACE CONTRAST WINS OVER ROLE. On a dark/navy or blue band,
+   use --white even for a primary/accent-role CTA (e.g. the navy "Partner
+   With Lionhearts" panel, the blue featured pathway) — accent-on-blue or
+   navy-on-navy would wash out. Off-system buttons (hand-rolled solids) are a
+   bug: reach for a variant, never re-implement .btn. */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -211,9 +222,6 @@ body {
 
 .btn--white { background: var(--lh-white); color: var(--lh-navy); }
 .btn--white:hover { opacity: 0.9; }
-
-.btn--outline-white { background: transparent; color: var(--lh-white); border: 2px solid rgba(255,255,255,0.4); }
-.btn--outline-white:hover { border-color: rgba(255,255,255,0.7); }
 
 /* ── Section eyebrow ── */
 .eyebrow {

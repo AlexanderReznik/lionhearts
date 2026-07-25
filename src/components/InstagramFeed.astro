@@ -79,7 +79,7 @@ const hasPosts = posts.length > 0;
       </p>
       <a
         href={INSTAGRAM_URL}
-        class="instagram__follow-btn"
+        class="btn btn--accent instagram__follow-btn"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -236,26 +236,9 @@ const hasPosts = posts.length > 0;
     max-width: 480px;
   }
 
-  .instagram__follow-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--color-accent);
-    color: var(--lh-white);
-    font-size: var(--text-note);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: opacity 0.15s;
-  }
-
-  .instagram__follow-btn:hover { opacity: 0.85; }
-  .instagram__follow-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+  /* Shape, accent colour (navy-on-blue, AA), hover and focus all come from
+     .btn + .btn--accent; only the panel-row flex-shrink is bespoke. */
+  .instagram__follow-btn { flex-shrink: 0; }
 
   @media (max-width: 640px) {
     .instagram__header {
