@@ -1,4 +1,3 @@
-// src/lib/volleyzone.ts
 import { teams } from '../data/teams';
 import type { Team } from '../data/teams';
 

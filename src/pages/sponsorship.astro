@@ -1,5 +1,4 @@
 ---
-// src/pages/sponsorship.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon, { type IconName } from '../components/Icon.astro';
 import { CONTACT_EMAIL } from '../data/club';
@@ -29,7 +28,6 @@ const perks: { icon: IconName; title: string; body: string }[] = [
 
   <div class="page-content">
 
-    <!-- Sponsors -->
     <h2 class="eyebrow section-eyebrow">Our Sponsors</h2>
 
     <div class="sponsor-grid">
@@ -50,7 +48,6 @@ const perks: { icon: IconName; title: string; body: string }[] = [
       ))}
     </div>
 
-    <!-- Become a Sponsor CTA -->
     <div class="become-sponsor">
       <div class="become-sponsor__copy">
         <p class="become-sponsor__headline">Partner With<br />Lionhearts</p>
@@ -64,7 +61,6 @@ const perks: { icon: IconName; title: string; body: string }[] = [
       </a>
     </div>
 
-    <!-- Perks grid -->
     <h2 class="eyebrow section-eyebrow section-eyebrow--spaced">What Sponsorship Includes</h2>
     <div class="perks-grid">
       {perks.map(p => (

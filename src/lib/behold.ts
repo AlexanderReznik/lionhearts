@@ -1,4 +1,3 @@
-// src/lib/behold.ts
 // Behold.so JSON feed, fetched ONCE at build time (not in the browser).
 // Visitors hit static HTML, so Behold's per-view cap is never approached.
 // Behold handles the Instagram Graph API token refresh.

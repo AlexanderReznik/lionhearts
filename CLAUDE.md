@@ -147,6 +147,9 @@ Phase 3-C — photography (real photos + navy duotone), not yet started.
 
 ## Code Conventions (enforced in review)
 
+- **Minimize comments.** Only keep comments that add value — don't state the
+  obvious or narrate what the code already says. Prefer self-explanatory code;
+  reserve comments for non-obvious rationale ("why", not "what").
 - **No inline styles.** Never write `style="..."` on elements. Any spacing/visual
   override goes in a scoped `<style>` block — create a BEM modifier class
   (e.g. `.section-eyebrow--spaced`) even for one-off margins.

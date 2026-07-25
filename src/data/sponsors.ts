@@ -1,4 +1,3 @@
-// src/data/sponsors.ts
 // Single source of truth for the club's sponsors. Rendered on the homepage
 // (SponsorsSection) and the sponsorship page — keep both in sync via this list.
 // Order matters: sponsors render in array order (higher tier first).

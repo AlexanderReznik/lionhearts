@@ -1,5 +1,4 @@
 ---
-// src/pages/events.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
 import TryoutsSection from '../components/TryoutsSection.astro';
@@ -190,7 +189,6 @@ const teamSections = [
   description="Open volleyball sessions for adults and juniors at Mulberry Academy, Shoreditch E2. Plus league fixtures for all 9 Lionhearts teams — NVL Super League and LVA."
   jsonLd={eventSchemas}
 >
-  <!-- Page hero -->
   <div class="page-hero">
     <p class="eyebrow page-hero__eyebrow">Mulberry Academy · Shoreditch E2</p>
     <h1 class="page-hero__title">Volleyball<br />Sessions & <em>Fixtures</em></h1>
@@ -203,7 +201,6 @@ const teamSections = [
 
     <TryoutsSection tryouts={tryouts} />
 
-    <!-- Open Sessions -->
     <section class="sessions-box" aria-labelledby="sessions-heading">
       <header class="section-head">
         <h2 class="section-head__title" id="sessions-heading">Open <em>Sessions</em></h2>
@@ -220,7 +217,6 @@ const teamSections = [
 
     <hr class="section-divider" />
 
-    <!-- Junior Sessions -->
     <section class="sessions-box" aria-labelledby="juniors-heading">
       <header class="section-head">
         <h2 class="section-head__title" id="juniors-heading">Junior <em>Sessions</em></h2>

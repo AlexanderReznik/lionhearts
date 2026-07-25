@@ -1,5 +1,4 @@
 ---
-// src/pages/contact.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon, { type IconName } from '../components/Icon.astro';
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE, FACEBOOK_URL, WHATSAPP_URL, CONTACT_EMAIL } from '../data/club';
@@ -72,7 +71,6 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
 
   <div class="page-content">
 
-    <!-- Contact method cards -->
     <div class="contact-cards">
       {contactMethods.map(c => (
         <div class:list={['contact-card', { 'contact-card--featured': c.featured }]}>
@@ -90,7 +88,6 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
       ))}
     </div>
 
-    <!-- Location block -->
     <div class="location-block">
       <div class="location-info">
         <h2 class="location-info__headline">Find <em>Us</em></h2>
@@ -115,7 +112,6 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
       </div>
     </div>
 
-    <!-- Social row -->
     <h2 class="eyebrow section-eyebrow">Follow Us</h2>
     <div class="social-row">
       {socials.map(s => (

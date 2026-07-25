@@ -1,4 +1,3 @@
-// src/data/club.ts
 // Central constants for the club. Venue/price are used as defaults when the
 // Google Sheet leaves those columns blank; the social/contact handles are the
 // single source of truth for links rendered across the site.

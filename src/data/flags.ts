@@ -1,6 +1,5 @@
-// src/data/flags.ts — member-chosen flags for the community mosaic.
+// Member-chosen flags for the community mosaic, in the order members added them.
 //
-// Listed in the order members added them.
 // Two entries are deliberately NOT the current official state flag — the
 // white-red-white Belarus flag and the lion-and-sun Iran flag. We show what
 // members asked for, so these are self-hosted like every other flag (no

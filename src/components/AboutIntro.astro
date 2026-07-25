@@ -1,5 +1,4 @@
 ---
-// src/components/AboutIntro.astro
 import Icon from './Icon.astro';
 const stats = [
   { value: '9×',    label: "LVA Women's Champions" },
@@ -25,7 +24,6 @@ const stats = [
     </div>
 
     <div class="about-intro__cards">
-      <!-- Shoreditch location card -->
       <div class="about-intro__location-card">
         <div class="about-intro__pin" aria-hidden="true"><Icon name="location" /></div>
         <div>
@@ -34,7 +32,6 @@ const stats = [
         </div>
       </div>
 
-      <!-- By the numbers -->
       <div class="about-intro__numbers" aria-label="Club by the numbers">
         {stats.map(s => (
           <div class="about-intro__stat">

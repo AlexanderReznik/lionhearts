@@ -1,4 +1,3 @@
-// src/data/teams.ts
 export interface Team {
   name: string;
   gender: "Women's" | "Men's";
