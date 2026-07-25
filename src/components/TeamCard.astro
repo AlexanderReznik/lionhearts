@@ -119,12 +119,14 @@ const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.defa
     margin-bottom: 10px;
   }
 
+  /* Tinted chip, not a solid fill — a solid accent fill reads as a button. */
   .team-card__badge {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    background: var(--lh-blue);
-    color: var(--lh-navy);
+    background: color-mix(in srgb, var(--lh-blue) 15%, transparent);
+    border: 1px solid var(--color-border-blue);
+    color: var(--color-accent-text);
     border-radius: 3px;
     padding: 3px 10px;
     font-size: var(--text-micro);

@@ -43,10 +43,13 @@ const moreCount = tryouts.length - 1;
     flex-wrap: wrap;
   }
 
+  /* Tinted chip, not a solid fill — this label sits inline beside a real
+     .btn--accent CTA, so a solid blue fill would read as a second button. */
   .tryouts-band__pill {
     display: inline-block;
-    background: var(--lh-blue);
-    color: var(--lh-navy);
+    background: color-mix(in srgb, var(--lh-blue) 15%, transparent);
+    border: 1px solid var(--color-border-blue);
+    color: var(--color-accent-text);
     font-size: var(--text-eyebrow);
     font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-wide);
