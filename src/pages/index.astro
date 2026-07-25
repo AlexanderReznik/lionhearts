@@ -2,7 +2,7 @@
 // src/pages/index.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import SessionsStrip from '../components/SessionsStrip.astro';
+import PromoCards from '../components/PromoCards.astro';
 import AboutIntro from '../components/AboutIntro.astro';
 import CommunitySection from '../components/CommunitySection.astro';
 import ClubBridge from '../components/ClubBridge.astro';
@@ -10,8 +10,7 @@ import JoinCTA from '../components/JoinCTA.astro';
 import SponsorsSection from '../components/SponsorsSection.astro';
 import InstagramFeed from '../components/InstagramFeed.astro';
 import TryoutsAlertBar from '../components/TryoutsAlertBar.astro';
-import TryoutsBand from '../components/TryoutsBand.astro';
-import { getSessions, getUpcomingTryouts } from '../lib/sheets';
+import { getSessions, getJuniorSessions, getUpcomingTryouts } from '../lib/sheets';
 import { INSTAGRAM_URL, FACEBOOK_URL, WHATSAPP_URL, SITE_URL } from '../data/club';
 
 // Hero images are processed at build time by Astro's <Picture> component,
@@ -32,6 +31,9 @@ const tryouts = await getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import
 // source as /join, /events and the sessions strip), so it can't drift from
 // the schedule shown on the site.
 const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
+
+// Junior schedule for the third promo card (lives on its own sheet tab).
+const { sessions: juniors } = await getJuniorSessions(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_JUNIORS_GID);
 
 const heroSlides = [
   {
@@ -107,8 +109,7 @@ const orgSchema = {
 >
   <TryoutsAlertBar tryouts={tryouts} />
   <Hero slides={heroSlides} />
-  <TryoutsBand tryouts={tryouts} />
-  <SessionsStrip />
+  <PromoCards tryouts={tryouts} sessions={sessions} juniors={juniors} />
   <AboutIntro />
   <ClubBridge />
   <SponsorsSection />

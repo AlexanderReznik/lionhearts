@@ -1,0 +1,288 @@
+---
+// src/components/PromoCards.astro
+// Homepage "get involved" block: three tall portrait promo cards that replace
+// the old thin TryoutsBand + SessionsStrip. Implements the designer's comp
+// (Lionhearts_Website_Assets/image.png) 1:1 —
+//   • Try Out (deep-navy card)     — soonest pre-season tryout, links to /events
+//   • Open Session (blue card)     — the weekly adult schedule
+//   • Junior Sessions (green card) — the weekly junior schedule
+//
+// Each card is a self-contained flat brand-colour block with its own fixed text
+// colours, so it renders IDENTICALLY in light and dark themes — only the page
+// behind it themes. Data is passed in from index.astro (already fetched there),
+// so this component does no fetching of its own.
+import type { Tryout, Session } from '../lib/sheets';
+import { abbreviateDay, abbreviateTime, formatTryoutDate } from '../lib/sheets';
+
+interface Props {
+  tryouts: Tryout[];
+  sessions: Session[];
+  juniors: Session[];
+}
+const { tryouts, sessions, juniors } = Astro.props;
+
+const next = tryouts[0];
+const moreCount = tryouts.length - 1;
+
+// Abbreviate day + time for the compact schedule rows (same helpers the strip
+// used). Juniors carry no `level`, so it's rendered conditionally.
+const toRow = (s: Session) => ({ day: abbreviateDay(s.day), time: abbreviateTime(s.time), level: s.level });
+const adultRows = sessions.map(toRow);
+const juniorRows = juniors.map(toRow);
+---
+
+<section class="section promo" aria-labelledby="promo-heading">
+  <div class="container promo__inner">
+    <header class="promo__head">
+      <h2 class="eyebrow section-eyebrow promo__eyebrow" id="promo-heading">Get involved</h2>
+      <p class="promo__lead">First time on court or ready to compete — here's how to play with us.</p>
+    </header>
+
+    <div class="promo__grid">
+      {/* ── Try Out (deep-navy) ─────────────────────────────────────────── */}
+      <article class="promo-card promo-card--tryout">
+        <div class="promo-card__body">
+          <p class="promo-card__eyebrow">Pre-season</p>
+          <h3 class="promo-card__title">Try out<br />for a team</h3>
+          {next ? (
+            <p class="promo-card__lead">
+              Next: <strong>{next.team}</strong> — {formatTryoutDate(next.dateObj)} · {next.time}
+              {moreCount > 0 && <> <a class="promo-card__more" href="/events#tryouts">+{moreCount} more</a></>}
+            </p>
+          ) : (
+            <p class="promo-card__lead">Trials run before each season — new dates land here first.</p>
+          )}
+        </div>
+        <a class="promo-card__cta" href="/events#tryouts">See all dates &amp; sign up →</a>
+        <div class="promo-card__photo" aria-hidden="true">
+          {/* Cut-out athlete PNG (transparent bg, anchored bottom) drops in here. */}
+        </div>
+      </article>
+
+      {/* ── Open Session (blue) ─────────────────────────────────────────── */}
+      <article class="promo-card promo-card--open">
+        <div class="promo-card__body">
+          <p class="promo-card__eyebrow">{sessions.length} weekly</p>
+          <h3 class="promo-card__title">Open<br />session</h3>
+          <p class="promo-card__lead">No booking · No experience needed</p>
+          <ul class="promo-card__schedule" role="list">
+            {adultRows.map(r => (
+              <li class="promo-card__row">
+                <span class="promo-card__when">
+                  <span class="promo-card__day">{r.day}</span>
+                  <span class="promo-card__time">{r.time.range}{r.time.meridiem && (
+                    <span class="promo-card__meridiem">{r.time.meridiem}</span>
+                  )}</span>
+                </span>
+                {r.level && <span class="promo-card__level">{r.level}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <a class="promo-card__cta" href="/events">Full schedule →</a>
+        <div class="promo-card__photo" aria-hidden="true"></div>
+      </article>
+
+      {/* ── Junior Sessions (green) ─────────────────────────────────────── */}
+      <article class="promo-card promo-card--junior">
+        <div class="promo-card__body">
+          <p class="promo-card__eyebrow">Grow together</p>
+          <h3 class="promo-card__title">Junior<br />sessions</h3>
+          <p class="promo-card__lead">No booking · No experience needed</p>
+          <ul class="promo-card__schedule" role="list">
+            {juniorRows.map(r => (
+              <li class="promo-card__row">
+                <span class="promo-card__when">
+                  <span class="promo-card__day">{r.day}</span>
+                  <span class="promo-card__time">{r.time.range}{r.time.meridiem && (
+                    <span class="promo-card__meridiem">{r.time.meridiem}</span>
+                  )}</span>
+                </span>
+                {r.level && <span class="promo-card__level">{r.level}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <a class="promo-card__cta" href="/events">Junior info →</a>
+        <div class="promo-card__photo" aria-hidden="true"></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .promo__inner { padding: 56px var(--page-px); }
+
+  .promo__head { margin-bottom: 1.5rem; }
+  .promo__eyebrow { margin-bottom: 0.75rem; }
+  .promo__lead {
+    font-size: var(--text-lead);
+    color: var(--color-text-muted);
+    line-height: var(--leading-snug);
+    max-width: 46ch;
+  }
+
+  .promo__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* ── Card shell ──
+     Each card is a fixed brand-colour block: self-contained text colours below
+     mean it renders the same in both themes. Only the shadow (for light-theme
+     separation) and the navy card's hairline border frame it against the page. */
+  .promo-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    padding: 32px;
+    min-height: 460px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 34px color-mix(in srgb, var(--lh-navy-deep) 12%, transparent);
+  }
+
+  .promo-card--tryout { background: var(--lh-navy-deep); border: 1px solid rgba(255, 255, 255, 0.08); }
+  .promo-card--open   { background: var(--lh-blue); }
+  .promo-card--junior { background: var(--lh-green); }
+
+  .promo-card__body { position: relative; z-index: 1; }
+
+  /* ── Eyebrow ── letter-spaced label; colour keyed per card surface. */
+  .promo-card__eyebrow {
+    font-size: var(--text-note);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .promo-card--tryout .promo-card__eyebrow { color: var(--lh-blue); }
+  .promo-card--open   .promo-card__eyebrow,
+  .promo-card--junior .promo-card__eyebrow { color: var(--lh-navy); }
+
+  /* ── Headline ── the star: heavy condensed uppercase, two lines. Uses the
+     site's display-title recipe (--tracking-display / --leading-display, as
+     .page-hero__title), only swapping in the condensed face and the --text-sub
+     step so the two-line headline fits a 3-column card down to tablet.
+     White on blue/green is ~2.6:1 — the deliberate brand Style-#2 exception
+     already accepted elsewhere (community headings). */
+  .promo-card__title {
+    font-family: var(--font-condensed);
+    font-size: var(--text-sub);
+    font-weight: var(--weight-black);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    color: var(--lh-white);
+    margin: 0 0 1rem;
+  }
+
+  /* ── Lead / benefit line ── */
+  .promo-card__lead {
+    font-size: var(--text-body);
+    line-height: var(--leading-snug);
+    margin: 0;
+  }
+  .promo-card--tryout .promo-card__lead { color: var(--lh-slate-200); }
+  .promo-card--tryout .promo-card__lead strong { color: var(--lh-white); font-weight: var(--weight-bold); }
+  /* On the light blue/green surfaces a deep-navy tint keeps the benefit line AA-legible. */
+  .promo-card--open   .promo-card__lead,
+  .promo-card--junior .promo-card__lead { color: color-mix(in srgb, var(--lh-navy) 82%, transparent); }
+
+  .promo-card__more {
+    color: var(--lh-blue);
+    font-weight: var(--weight-bold);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .promo-card__more:hover { text-decoration: underline; }
+
+  /* ── Schedule list ── day label + time, quiet level underneath, hairline rules. */
+  .promo-card__schedule {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+  }
+  .promo-card__row {
+    padding: 0.75rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--lh-navy) 22%, transparent);
+  }
+  .promo-card__row:first-child { border-top: none; }
+
+  .promo-card__when { display: flex; align-items: baseline; gap: 0.5rem; }
+  .promo-card__day {
+    font-size: var(--text-body);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--lh-navy);
+  }
+  .promo-card__time {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-display);
+    color: var(--lh-white);
+  }
+  .promo-card__meridiem {
+    margin-left: 0.2em;
+    font-size: var(--text-note);
+    font-weight: var(--weight-semibold);
+    opacity: 0.75;
+  }
+  .promo-card__level {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--text-eyebrow);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--lh-navy) 70%, transparent);
+  }
+
+  /* ── CTA ── quiet arrow link pinned to the bottom of the card body flow. */
+  .promo-card__cta {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    font-size: var(--text-note);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    text-decoration: none;
+    align-self: flex-start;
+  }
+  .promo-card--tryout .promo-card__cta { color: var(--lh-blue); }
+  .promo-card--open   .promo-card__cta,
+  .promo-card--junior .promo-card__cta { color: var(--lh-navy); }
+  .promo-card__cta:hover { text-decoration: underline; }
+
+  /* ── Photo slot ── absolutely positioned, bleeds off the bottom edge.
+     Empty until cut-out athlete PNGs are supplied; sits behind the copy. */
+  .promo-card__photo {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .promo-card__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: bottom center;
+  }
+
+  /* ── Responsive ──
+     Cards need room for the big headline; drop to 1 column below ~880px. */
+  @media (max-width: 880px) {
+    .promo__grid { grid-template-columns: 1fr; }
+    .promo-card { min-height: 0; }
+  }
+
+  @media (max-width: 560px) {
+    .promo__inner { padding: 40px var(--page-px); }
+    .promo-card { padding: 24px; }
+  }
+</style>
