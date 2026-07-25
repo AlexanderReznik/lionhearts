@@ -27,11 +27,37 @@ const { tryouts } = Astro.props;
      dot's bright blue still reads on white. light-dark() follows color-scheme,
      so no-JS users on OS dark get the flip too. */
   .tryouts-bar {
+    position: relative;
+    overflow: hidden;
     background: light-dark(var(--lh-navy), var(--lh-white));
     color: light-dark(var(--lh-white), var(--lh-navy));
   }
 
+  /* Slow breathing glow: a brand-blue wash fades in and out behind the text.
+     Theme-independent — lightens the navy bar toward blue in light theme and
+     adds a blue tint to the white bar in dark theme. */
+  .tryouts-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--lh-blue);
+    opacity: 0;
+    pointer-events: none;
+    animation: tryouts-bar-glow 1.8s ease-in-out infinite alternate;
+  }
+
+  @keyframes tryouts-bar-glow {
+    from { opacity: 0.05; }
+    to   { opacity: 0.38; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tryouts-bar::before { animation: none; }
+  }
+
   .tryouts-bar__inner {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
