@@ -141,6 +141,8 @@ const juniorRows = juniors.map(toRow);
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 34px color-mix(in srgb, var(--lh-navy-deep) 12%, transparent);
+    /* Max rendered height of the athlete cut-out (see the photo slot below). */
+    --promo-photo-max: 300px;
   }
 
   .promo-card--tryout { background: var(--lh-navy-deep); border: 1px solid rgba(255, 255, 255, 0.08); }
@@ -258,27 +260,54 @@ const juniorRows = juniors.map(toRow);
   .promo-card--junior .promo-card__cta { color: var(--lh-navy); }
   .promo-card__cta:hover { text-decoration: underline; }
 
-  /* ── Photo slot ── absolutely positioned, bleeds off the bottom edge.
-     Empty until cut-out athlete PNGs are supplied; sits behind the copy. */
+  /* Focus ring keyed per surface — the site's default --color-accent (blue)
+     outline would vanish on the blue card, so give navy cards a light ring and
+     the blue/green cards a navy one. */
+  .promo-card a:focus-visible {
+    outline: 2px solid var(--lh-navy);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .promo-card--tryout a:focus-visible { outline-color: var(--lh-white); }
+
+  /* ── Photo slot ── bottom-anchored athlete cut-out that bleeds off the card's
+     bottom edge, behind the copy (z-index 0 / pointer-events none). Empty until
+     transparent-background PNGs are supplied.
+
+     ASSET CONTRACT — keeps the trio consistent once photos land:
+       • Transparent PNG (or WebP), subject cropped tight and anchored to the
+         BOTTOM of the frame (feet/waist at the image's bottom edge).
+       • Roughly portrait (≈2:3), exported ~600–800px wide.
+     RESPONSIVE: the image is sized by HEIGHT (capped at --promo-photo-max), with
+     width:auto + max-width:100%. So the athlete keeps a consistent rendered size
+     across a narrow 3-col column, a full-width single column on tablet, and
+     mobile — it never balloons with card width, and never overflows a narrow
+     card. Anchored bottom-centre via flex; nudge per-card with object-position
+     once the real assets exist. Cards reserve a matching min-height ONLY when a
+     photo is present (:has), so the empty state stays compact. */
   .promo-card__photo {
     position: absolute;
     inset: auto 0 0 0;
     z-index: 0;
     pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
   }
   .promo-card__photo :global(img) {
-    display: block;
-    width: 100%;
+    width: auto;
     height: auto;
-    object-fit: contain;
-    object-position: bottom center;
+    max-width: 100%;
+    max-height: var(--promo-photo-max);
   }
 
   /* ── Responsive ──
      Cards need room for the big headline; drop to 1 column below ~880px. */
   @media (max-width: 880px) {
     .promo__grid { grid-template-columns: 1fr; }
+    /* Empty state stays compact; a card with a photo keeps a home for it. */
     .promo-card { min-height: 0; }
+    .promo-card:has(.promo-card__photo img) { min-height: 420px; }
   }
 
   @media (max-width: 560px) {
