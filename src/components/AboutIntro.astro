@@ -83,6 +83,9 @@ const stats = [
     margin-bottom: 24px;
   }
 
+  /* Underlined text CTA — persistent border-bottom underline (soft at rest,
+     darkens on hover), matching the .join-cta__secondary idiom but in the
+     accent-text colour. */
   .about-intro__link {
     display: inline-flex;
     align-items: center;
@@ -93,9 +96,12 @@ const stats = [
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-accent-text) 40%, transparent);
+    padding-bottom: 2px;
+    transition: border-color 0.15s;
   }
 
-  .about-intro__link:hover { text-decoration: underline; }
+  .about-intro__link:hover { border-color: var(--color-accent-text); }
 
   .about-intro__cards {
     width: 360px;
