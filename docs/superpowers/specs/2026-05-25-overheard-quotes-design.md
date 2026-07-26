@@ -38,7 +38,7 @@ Replace the single quote with a small **"Overheard at Training"** archive — a 
 - Card with subtle navy bg + thin accent-blue border + rounded corners (14px) — matches the existing card vocabulary.
 - Quote text large (`clamp(1rem, 2.5vw, 1.3rem)`), weight 600, white.
 - Attribution row: `<strong>Name</strong> · Team` in small uppercase letter-spaced text.
-- Pagination row at the card bottom: `№ NN / NN` counter on the left, prev/next arrow buttons on the right. Thin divider above.
+- Pagination row at the card bottom: `# NN / NN` counter on the left, prev/next arrow buttons on the right. Thin divider above.
 - **No new ghost numeral.** The OverheardArchive component renders inside CommunitySection, which already carries the `02` numeral. The pattern (01 AboutIntro, 02 Community, 03 Bridge) is preserved.
 
 **Copy (final):**
@@ -125,7 +125,7 @@ A tiny built-in fallback so the section never renders empty in dev or if the she
 ### Navigation
 
 - **Prev / next** arrow buttons wrap at both ends (modulo length).
-- **Counter** updates in lock-step with the visible quote: `№ 03 / 14`.
+- **Counter** updates in lock-step with the visible quote: `# 03 / 14`.
 - **Keyboard:** when focus is anywhere within the section, `ArrowLeft` / `ArrowRight` navigate; matches the hero carousel pattern.
 - **Mobile swipe:** `touchstart` / `touchend` with a ~50px horizontal threshold. Ignore short flicks and vertical drags (don't hijack page scrolling).
 - **Auto-rotate:** advance every **7 seconds**.
@@ -164,7 +164,7 @@ A tiny built-in fallback so the section never renders empty in dev or if the she
 - Quote text rendered as `<blockquote>`; attribution as `<footer><cite>…</cite></footer>` inside it.
 - `aria-live="polite"` on the blockquote so screen readers announce changes after nav or auto-rotate.
 - Prev/next buttons: `aria-label="Previous quote"` / `"Next quote"`. Min touch target 44×44px.
-- Counter: `aria-label="Quote 3 of 14"`; visually `№ 03 / 14`.
+- Counter: `aria-label="Quote 3 of 14"`; visually `# 03 / 14`.
 - Auto-rotate respects `prefers-reduced-motion: reduce`.
 - Focus-visible outline already inherited from the project's button styles.
 

@@ -442,7 +442,7 @@ const first = quotes[0];
             class="overheard__counter"
             data-overheard-counter
             aria-label={`Quote 1 of ${total}`}
-          >№ 01 / {String(total).padStart(2, '0')}</span>
+          ># 01 / {String(total).padStart(2, '0')}</span>
           <div class="overheard__nav">
             <button
               type="button"
@@ -651,7 +651,7 @@ Add this just before the closing of the file (after the `<style>` block) in `src
           attribEl.innerHTML = q.team
             ? `<strong>${escapeHtml(q.name)}</strong> · ${escapeHtml(q.team)}`
             : `<strong>${escapeHtml(q.name)}</strong>`;
-          counterEl.textContent = `№ ${String(idx + 1).padStart(2, '0')} / ${String(quotes.length).padStart(2, '0')}`;
+          counterEl.textContent = `# ${String(idx + 1).padStart(2, '0')} / ${String(quotes.length).padStart(2, '0')}`;
           counterEl.setAttribute('aria-label', `Quote ${idx + 1} of ${quotes.length}`);
         };
 
@@ -975,7 +975,7 @@ With dev server running, open `http://localhost:4324/`. Confirm:
 
 If `GOOGLE_SHEET_ID` and `GOOGLE_SHEET_GID_QUOTES` are set in `.env.local`:
 - Quotes from the sheet render
-- Counter shows `№ 01 / NN` where NN is the row count
+- Counter shows `# 01 / NN` where NN is the row count
 - Prev/next buttons advance the quote
 - Counter updates in sync
 
