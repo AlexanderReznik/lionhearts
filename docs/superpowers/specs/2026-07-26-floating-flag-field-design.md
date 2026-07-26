@@ -2,98 +2,111 @@
 
 **Date:** 2026-07-26
 **Component:** `src/components/CommunitySection.astro`
-**Status:** Approved (design), pending implementation
+**Status:** Implemented
 
 ## Goal
 
 Replace the community section's static wrapped grid of member-nationality flags
 with a living **floating flag field**: the same rectangular rounded-chip flags,
-scattered in an organic cluster, gently drifting and softly reacting to the
-cursor. Header stays stacked above the field (current layout), navy
-`.section--feature` surface, no concentric rings.
+scattered organically, gently drifting and softly reacting to the cursor.
 
-Reference: `Lionhearts_Website_Assets/Screenshot 2026-07-26 at 11.04.25.png`
-(approximate inspiration — we keep rectangular chips, drop the rings, and keep
-the header above rather than beside).
+Reference: `Lionhearts_Website_Assets/Screenshot 2026-07-26 at 11.04.25.png` — a
+round cluster of flags beside the headline, over concentric rings.
 
-## Decisions (from brainstorming)
+## Decisions (as built)
 
-- **Layout:** keep header stacked above; replace only the grid card with the
-  floating cluster.
-- **Flag shape:** keep the current rounded-rectangle chips (no circular crop).
+- **Flag shape:** rounded-rectangle chips (no circular crop).
 - **Motion:** gentle continuous drift **plus** soft cursor repulsion (chips
   nudge away from the pointer, ease back).
-- **Backdrop:** no rings — plain navy feature surface + existing blue radial
-  glow (`.community::before`).
+- **Layout:** two-column on wide screens — headline left, round flag cluster
+  right (matches the reference). Stacks to one column below 900px.
+- **Cluster shape:** a disc where there's room; a full-width rectangular field
+  on narrow screens (a circle can't hold ~27 chips on a phone without heavy
+  overlap).
+- **Backdrop:** the brand **Pride Circle** concentric rings
+  (`src/assets/decor/pride-circle.svg`, light-blue at 12% opacity) centred
+  behind the cluster — circle mode only.
 
 ## Architecture
 
 ### Progressive enhancement (core structural choice)
 
-The flags render in today's `flex-wrap` grid card by default. A client
-`<script>` upgrades the container into an absolutely-positioned floating field
-**only when** JS runs **and** `prefers-reduced-motion` is not set.
+Flags render in a `flex-wrap` grid card by default. A client `<script>` upgrades
+the container into an absolutely-positioned floating field **only when** JS runs
+**and** `prefers-reduced-motion` is not set.
 
-- **No JS / reduced-motion:** current tidy grid — fully accessible, no motion,
-  no layout-shift risk. This is the graceful fallback, not a separate codepath
-  to maintain.
-- **JS + motion OK:** container gets an `is-floating` class; scoped CSS switches
-  it to `position: relative` with a derived height; the script positions each
-  chip and runs the animation loop.
+- **No JS / reduced-motion:** the static grid card — fully accessible, no motion,
+  no layout-shift risk.
+- **JS + motion OK:** the container gets `is-floating`; the script measures,
+  positions each chip, and runs the animation loop.
 
-This keeps authored markup free of inline styles — all positions/transforms are
-applied by the script at runtime (the accepted animation exception, like the
-theme boot script), never hand-written `style="..."`.
+All positions/transforms are applied by the script at runtime (the accepted
+animation exception, like the theme boot script), never hand-written
+`style="..."`.
 
-### Layout: jittered grid (deterministic)
+### Layout: blue-noise scatter with a guaranteed min gap
 
-Pure random scatter overlaps badly with 27 chips. Instead:
+Pure random or jittered-grid placement either overlaps or still reads as a grid.
+Instead, `src/lib/flagField.ts` provides two deterministic scatterers (no
+`Math.random`, so layout is stable across reloads and unit-testable), both using
+**Mitchell's best-candidate** (blue-noise) placement:
 
-1. Choose column count from the field's measured width (~6 desktop, ~4 mobile).
-2. Lay chips on that loose grid (cell = chip + gap).
-3. Offset each cell by a fixed **per-index** jitter (deterministic, derived from
-   the index — **no `Math.random`**), so it reads as organic scatter but is
-   stable across reloads and unit-testable.
-4. Field height derives from the row count → responsive, never overflows at
-   320 / 375 / 414.
+- `scatterPositions(count, width, height, candidates, minDist)` — rectangular
+  field.
+- `scatterInCircle(count, radius, candidates, minDist)` — disc.
+
+Both finish with a **relaxation pass** (`separate`) that pushes any pair closer
+than `minDist` apart and pulls each point back inside the field. The component
+passes `minDist = √(44² + 32²) + 12 ≈ 66px` — beyond the chip diagonal (two
+44×32 chips can't overlap past ~55px of centre spacing) plus headroom for the
+±5px ambient drift — so the resting layout is provably overlap-free and stays
+clean while drifting.
+
+### Layout selection (`layout()`)
+
+1. Target disc `diameter = 2·√(count · AREA_PER_FLAG / π)` (density-constant, so
+   it grows with the flag count).
+2. If `diameter` fits the field width → **circle mode**: `is-circle` sheds the
+   card chrome, the disc is centred, and the Pride Circle rings show behind it.
+3. Otherwise (narrow screens) → **rectangular scatter**: cols/rows only size the
+   field height; flags fill it freely.
+
+Recomputed on debounced resize; the rAF loop pauses when the section is offscreen
+(IntersectionObserver).
 
 ### Motion: two layers combined per frame (rAF loop)
 
-1. **Drift:** each chip orbits its home cell on a tiny Lissajous path with
-   per-index phase/frequency offsets (all out of sync), ~±6px, slow.
-2. **Cursor repulsion:** chips within a radius of the pointer are pushed
-   radially outward with distance falloff; the offset eases back to zero when
-   the pointer leaves.
+1. **Drift:** each chip orbits its home on a tiny Lissajous path with per-index
+   phase/frequency (all out of sync), ~±5px.
+2. **Cursor repulsion:** chips within a radius of the pointer are pushed radially
+   outward with distance falloff (`repulse`), easing back when it leaves.
 
-Drift + repulsion are summed and applied as one `transform: translate()` lerped
-toward its target each frame — GPU-friendly, no reflow. The loop pauses when the
-section is offscreen (IntersectionObserver) to save cycles.
+Summed and applied as one `transform: translate()` lerped toward target each
+frame — GPU-friendly, no reflow.
 
 ### Files
 
-- `src/lib/flagField.ts` (new) — pure, testable helpers:
-  - `computeHomePositions(count, cols, cellW, cellH, jitter)` → `{x, y}[]`
-  - `repulse(pointer, home, radius, strength)` → `{dx, dy}` offset vector
-- `src/components/CommunitySection.astro` — class hooks on the mosaic +
-  per-flag wrapper, scoped `.is-floating` styles, and the client `<script>`
-  that measures, positions, and animates using the helpers.
+- `src/lib/flagField.ts` — pure helpers: `scatterPositions`, `scatterInCircle`,
+  `separate` (relaxation), `repulse`.
+- `src/assets/decor/pride-circle.svg` — brand rings backdrop (astro:assets
+  inline SVG component; decorative, `aria-hidden`, `pointer-events: none`).
+- `src/components/CommunitySection.astro` — two-column `__top` grid, class hooks,
+  scoped styles, and the client animation script.
 
 ## Testing
 
-- **Vitest (`src/lib/flagField.ts`):**
-  - `computeHomePositions`: returns exactly `count` positions; all within the
-    field bounds; deterministic (same inputs → same output); row/column count
-    correct for given `cols`.
-  - `repulse`: zero offset beyond `radius`; monotonic falloff (closer → larger
-    push); pushes directly away from the pointer; zero when pointer coincides
-    with home (no divide-by-zero / NaN).
-- **Manual (Chrome DevTools MCP):** verify no horizontal overflow at 320/375/414
-  (`emulate` mobile viewport), drift + cursor repulsion feel right on desktop,
-  and reduced-motion / no-JS falls back to the static grid.
-- `npm test` stays green.
+- **Vitest (`tests/lib/flagField.test.ts`):** count, in-bounds, determinism,
+  spread (no clumping), not-a-grid, and the guaranteed min gap for both
+  scatterers; `repulse` falloff/direction/edge cases.
+- **Manual (Chrome DevTools MCP):** verified circle (desktop) and rectangle
+  (mobile) modes, 0 resting overlaps, no horizontal overflow at 320/375/414,
+  drift + repulsion, rings shown only in circle mode, and reduced-motion / no-JS
+  falling back to the static grid.
+- `npm test` green; production build compiles the SVG import.
 
 ## Non-goals / YAGNI
 
-- No circular flag crop, no concentric rings, no two-column relayout.
-- No physics between flags (no chip-to-chip collision) — only pointer repulsion.
+- No circular flag crop, no two-column relayout on mobile.
+- No chip-to-chip collision physics — only pointer repulsion (which may briefly
+  overlap a neighbour while actively shoving it; resting state stays clean).
 - No per-load randomness — layout is deterministic.

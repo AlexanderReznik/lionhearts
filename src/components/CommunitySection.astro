@@ -1,34 +1,40 @@
 ---
 import { Image } from 'astro:assets';
 import { flags } from '../data/flags';
+import PrideCircle from '../assets/decor/pride-circle.svg';
 import OverheardArchive from './OverheardArchive.astro';
 ---
 
 <section class="community section--feature">
   <div class="community__inner container">
 
-    <div class="community__header">
-      <p class="eyebrow">Our Community</p>
-      <h2 class="community__headline">
-        Volleyball brings<br />the <em>world</em> to E2.
-      </h2>
-      <p class="community__sub">
-        New to London? Looking for your people? You've found us.
-      </p>
-    </div>
+    <div class="community__top">
+      <div class="community__header">
+        <p class="eyebrow">Our Community</p>
+        <h2 class="community__headline">
+          Volleyball brings<br />the <em>world</em> to E2.
+        </h2>
+        <p class="community__sub">
+          New to London? Looking for your people? You've found us.
+        </p>
+      </div>
 
-    <div class="community__mosaic" aria-label="Flags representing club member nationalities">
-      {flags.map(f => (
-        <Image
-          class="community__flag"
-          src={f.src}
-          alt={f.name}
-          title={f.name}
-          width={44}
-          height={32}
-          loading="lazy"
-        />
-      ))}
+      <div class="community__mosaic" data-flag-field aria-label="Flags representing club member nationalities">
+        <PrideCircle class="community__rings" aria-hidden="true" />
+        {flags.map(f => (
+          <span class="community__flag-wrap">
+            <Image
+              class="community__flag"
+              src={f.src}
+              alt={f.name}
+              title={f.name}
+              width={44}
+              height={32}
+              loading="lazy"
+            />
+          </span>
+        ))}
+      </div>
     </div>
 
     <div class="community__divider" aria-hidden="true">
@@ -64,8 +70,21 @@ import OverheardArchive from './OverheardArchive.astro';
 
   .community__inner { position: relative; }
 
-  .community__header {
-    margin-bottom: 40px;
+  .community__top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  /* Stack the headline above the flags once the two columns get cramped —
+     below this width the flags render as the rectangular scatter fallback. */
+  @media (max-width: 900px) {
+    .community__top {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
   }
 
   .community__headline {
@@ -91,11 +110,16 @@ import OverheardArchive from './OverheardArchive.astro';
     flex-wrap: wrap;
     gap: 12px;
     align-items: center;
-    margin-bottom: 32px;
     padding: 28px;
     background: rgba(255,255,255,0.02);
     border: 1px solid rgba(255,255,255,0.05);
     border-radius: 14px;
+  }
+
+  .community__flag-wrap {
+    display: inline-flex;
+    width: 44px;
+    height: 32px;
   }
 
   .community__flag {
@@ -113,6 +137,51 @@ import OverheardArchive from './OverheardArchive.astro';
      right, so the mosaic reads as off-centre — centre the rows instead. */
   @media (max-width: 768px) {
     .community__mosaic { justify-content: center; }
+  }
+
+  /* Floating-field mode: the client script switches the tidy grid into a
+     free-positioned field only when JS runs and motion is allowed. Each wrap is
+     placed absolutely (left/top set in JS); its transform carries the animated
+     drift + cursor-repulsion offset. Default grid above is the fallback. */
+  .community__mosaic.is-floating {
+    display: block;
+    position: relative;
+    padding: 20px;
+  }
+
+  /* Round-cluster mode: shed the card chrome so the disc floats on the navy
+     surface rather than sitting in a wide, mostly-empty box. */
+  .community__mosaic.is-circle {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .community__mosaic.is-floating .community__flag-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: transform;
+    z-index: 1;
+  }
+
+  /* Concentric brand rings behind the round cluster — only in circle mode, so
+     the flex/grid fallback and the rectangular scatter never render it. */
+  .community__rings {
+    display: none;
+  }
+
+  .community__mosaic.is-circle .community__rings {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   .community__divider {
@@ -135,6 +204,147 @@ import OverheardArchive from './OverheardArchive.astro';
     text-transform: uppercase;
     white-space: nowrap;
   }
-
-
 </style>
+
+<script>
+  import { scatterPositions, scatterInCircle, repulse, type Point } from '../lib/flagField';
+
+  const CHIP_W = 44;
+  const CHIP_H = 32;
+  const CHIP_R = 28; // half-diagonal — keeps a whole chip inside the disc edge
+  // Centre spacing that rules out chip overlap: the chip diagonal (√(44²+32²))
+  // plus headroom for the ±5px ambient drift on each of two neighbours.
+  const MIN_GAP = Math.hypot(CHIP_W, CHIP_H) + 12;
+  const PAD = 14; // inner gutter so chips never touch the card edge
+  const TARGET_CELL = 82; // sets the rectangular field's density/height
+  const CELL_H = 60;
+  const AREA_PER_FLAG = 6700; // disc area per flag → sets the circle's diameter
+
+  const DRIFT_AMP = 5; // px — gentle ambient orbit
+  const DRIFT_SPEED = 0.0007; // rad per ms
+  const REPEL_RADIUS = 100; // px — how near the cursor before a chip reacts
+  const REPEL_STRENGTH = 30; // px — max push at the cursor
+  const LERP = 0.1; // easing toward each frame's target
+
+  interface FlagNode {
+    el: HTMLElement;
+    center: Point; // home centre in field coords (for repulsion)
+    fx: number;
+    fy: number;
+    px: number;
+    py: number;
+    curX: number;
+    curY: number;
+  }
+
+  function init(field: HTMLElement) {
+    const wraps = Array.from(
+      field.querySelectorAll<HTMLElement>('.community__flag-wrap'),
+    );
+    if (wraps.length === 0) return;
+
+    const clamp = (v: number, min: number, max: number) =>
+      Math.min(Math.max(v, min), max);
+
+    const nodes: FlagNode[] = wraps.map((el, i) => ({
+      el,
+      center: { x: 0, y: 0 },
+      fx: 0.6 + (i % 5) * 0.13,
+      fy: 0.7 + (i % 7) * 0.09,
+      px: i * 1.7,
+      py: i * 2.3,
+      curX: 0,
+      curY: 0,
+    }));
+
+    function place(i: number, cx: number, cy: number) {
+      const left = cx - CHIP_W / 2;
+      const top = cy - CHIP_H / 2;
+      nodes[i].el.style.left = `${left}px`;
+      nodes[i].el.style.top = `${top}px`;
+      nodes[i].center = { x: cx, y: cy };
+    }
+
+    function layout() {
+      const containerW = field.clientWidth;
+      const usableW = containerW - PAD * 2;
+      if (usableW <= 0) return;
+
+      // Prefer a round cluster; use it only where the disc is wide enough to
+      // hold every flag. Narrow screens fall back to the rectangular scatter.
+      const diameter = 2 * Math.sqrt((nodes.length * AREA_PER_FLAG) / Math.PI);
+
+      if (diameter <= usableW) {
+        field.classList.add('is-circle');
+        const r = diameter / 2;
+        const homes = scatterInCircle(nodes.length, Math.max(r - CHIP_R, 0), 30, MIN_GAP);
+        const baseX = (containerW - diameter) / 2;
+        nodes.forEach((_, i) => place(i, baseX + r + homes[i].x, r + homes[i].y));
+        field.style.height = `${diameter}px`;
+        return;
+      }
+      field.classList.remove('is-circle');
+
+      // Rectangular scatter: cols/rows only size the field; flags fill it freely.
+      const cols = clamp(Math.round(usableW / TARGET_CELL), 3, 7);
+      const contentH = Math.ceil(nodes.length / cols) * CELL_H;
+      const homes = scatterPositions(nodes.length, usableW - CHIP_W, contentH - CHIP_H, 30, MIN_GAP);
+      nodes.forEach((_, i) =>
+        place(i, PAD + homes[i].x + CHIP_W / 2, PAD + homes[i].y + CHIP_H / 2),
+      );
+      field.style.height = `${contentH + PAD * 2}px`;
+    }
+
+    const pointer: Point = { x: -9999, y: -9999 };
+    field.addEventListener('pointermove', (e) => {
+      const rect = field.getBoundingClientRect();
+      pointer.x = e.clientX - rect.left;
+      pointer.y = e.clientY - rect.top;
+    });
+    field.addEventListener('pointerleave', () => {
+      pointer.x = -9999;
+      pointer.y = -9999;
+    });
+
+    let raf = 0;
+    function frame(now: number) {
+      for (const node of nodes) {
+        const driftX = DRIFT_AMP * Math.sin(now * DRIFT_SPEED * node.fx + node.px);
+        const driftY = DRIFT_AMP * Math.cos(now * DRIFT_SPEED * node.fy + node.py);
+        const rep = repulse(pointer, node.center, REPEL_RADIUS, REPEL_STRENGTH);
+        const targetX = driftX + rep.dx;
+        const targetY = driftY + rep.dy;
+        node.curX += (targetX - node.curX) * LERP;
+        node.curY += (targetY - node.curY) * LERP;
+        node.el.style.transform = `translate(${node.curX}px, ${node.curY}px)`;
+      }
+      raf = requestAnimationFrame(frame);
+    }
+
+    field.classList.add('is-floating');
+    layout();
+
+    let resizeTimer = 0;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(layout, 150);
+    });
+
+    // Only animate while the field is on screen.
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting && raf === 0) {
+          raf = requestAnimationFrame(frame);
+        } else if (!entry.isIntersecting && raf !== 0) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      }
+    });
+    io.observe(field);
+  }
+
+  const field = document.querySelector<HTMLElement>('[data-flag-field]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (field && !reduceMotion) init(field);
+</script>
