@@ -1,9 +1,22 @@
 ---
 // Two halves of the club, side by side: competitive cred + open community.
+import { Picture } from 'astro:assets';
+import competeImg from '../assets/bridge/compete.jpg';
+import connectImg from '../assets/bridge/connect.jpg';
 ---
 
 <section class="bridge" aria-label="The club in two halves">
   <div class="bridge__col bridge__col--compete section--feature">
+    <div class="bridge__bg" aria-hidden="true">
+      <Picture
+        src={competeImg}
+        formats={['avif', 'webp']}
+        widths={[480, 720, 960, 1280]}
+        sizes="(max-width: 768px) 100vw, 50vw"
+        alt=""
+        loading="lazy"
+      />
+    </div>
     <p class="eyebrow bridge__eyebrow">On the Court</p>
     <h2 class="bridge__label">Compete</h2>
     <ul class="bridge__points" role="list">
@@ -19,6 +32,16 @@
   </div>
 
   <div class="bridge__col bridge__col--connect section--community">
+    <div class="bridge__bg" aria-hidden="true">
+      <Picture
+        src={connectImg}
+        formats={['avif', 'webp']}
+        widths={[480, 720, 960, 1280]}
+        sizes="(max-width: 768px) 100vw, 50vw"
+        alt=""
+        loading="lazy"
+      />
+    </div>
     <p class="eyebrow bridge__eyebrow">Off the Court</p>
     <h2 class="bridge__label">Connect</h2>
     <ul class="bridge__points" role="list">
@@ -47,6 +70,23 @@
     flex-direction: column;
     position: relative;
     z-index: 1;
+    overflow: hidden;
+  }
+
+  /* Photo layer sits behind the text (negative z-index keeps the copy above it
+     without lifting every child). The images are already navy / light-blue
+     brand duotones, so no scrim is needed to stay on-theme. */
+  .bridge__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .bridge__bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .bridge__col--compete {
