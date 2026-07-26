@@ -243,6 +243,10 @@ body {
   border-radius: 1px;
   background: var(--color-accent-text);
   flex-shrink: 0;
+  /* Keep the dash on the FIRST line when the label wraps: pin to the row top
+     and drop it to the vertical centre of a single text line. */
+  align-self: flex-start;
+  margin-top: calc((1lh - 2px) / 2);
 }
 /* Centered eyebrow (e.g. above a centered section card) — drop the leading tick. */
 .eyebrow--center { justify-content: center; text-align: center; }
