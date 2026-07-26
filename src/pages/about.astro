@@ -26,7 +26,7 @@ const orgSchema = {
 const valuesIntro =
   "We're a friendly local club — community comes first, on and off the court.";
 
-const values: { icon: IconName; title: string; body: string; featured?: boolean }[] = [
+const values: { icon: IconName; title: string; body: string }[] = [
   {
     icon: 'inclusivity',
     title: 'Inclusivity',
@@ -36,7 +36,6 @@ const values: { icon: IconName; title: string; body: string; featured?: boolean 
     icon: 'respect',
     title: 'Respect',
     body: 'We value and celebrate unique and diverse talents, experiences and perspectives. We treat our participants, partners, donors, and each other with sensitivity and respect.',
-    featured: true,
   },
   {
     icon: 'collaboration',
@@ -45,8 +44,11 @@ const values: { icon: IconName; title: string; body: string; featured?: boolean 
   },
 ];
 
-const mission =
-  'To develop, promote growth and increase the quality of volleyball for everyone within our community. Together, we can create positive opportunities that generate sustainable societal change.';
+// Mission — Allan's copy, split into a lead statement + a bolded call to action.
+const missionLead =
+  'To develop, promote growth and increase the quality of volleyball for everyone within our community.';
+const missionStatement =
+  'Together, we can create positive opportunities that generate sustainable societal change.';
 ---
 
 <BaseLayout
@@ -107,24 +109,33 @@ const mission =
   <!-- Values band — dark feature surface; copy from Allan (slides 40–41) -->
   <section class="about-values section--feature">
     <div class="about-values__inner container">
-      <p class="eyebrow">Our Values</p>
-      <p class="about-values__intro">{valuesIntro}</p>
-      <div class="values-row">
+      <div class="about-values__lede">
+        <Eyebrow class="about-values__eyebrow" text="Our Values" as="h2" />
+        <p class="about-values__intro">{valuesIntro}</p>
+      </div>
+      <ul class="values-list" role="list">
         {values.map(v => (
-          <div class:list={['value-card', { 'value-card--featured': v.featured }]}>
-            <div class="value-card__icon" aria-hidden="true">
+          <li class="value-card">
+            <span class="value-card__icon" aria-hidden="true">
               <Icon name={v.icon} />
-            </div>
-            <h3 class="value-card__title">{v.title}</h3>
-            <p class="value-card__body">{v.body}</p>
-          </div>
+            </span>
+            <span class="value-card__text">
+              <h3 class="value-card__title">{v.title}</h3>
+              <span class="value-card__body">{v.body}</span>
+            </span>
+          </li>
         ))}
-      </div>
+      </ul>
+    </div>
+  </section>
 
-      <div class="about-mission">
-        <h3 class="eyebrow about-mission__eyebrow">Our Mission</h3>
-        <p class="about-mission__text">{mission}</p>
-      </div>
+  <!-- Mission band — full-bleed navy-duotone training photo (to be provided) -->
+  <section class="about-mission section--feature">
+    <div class="about-mission__media" aria-hidden="true"></div>
+    <div class="about-mission__inner">
+      <Eyebrow class="about-mission__eyebrow" text="Our Mission" as="h2" />
+      <p class="about-mission__lead">{missionLead}</p>
+      <p class="about-mission__statement">{missionStatement}</p>
     </div>
   </section>
 </BaseLayout>
@@ -191,63 +202,87 @@ const mission =
     margin-bottom: 12px;
   }
 
-  /* Values — dark feature band; cards are white-alpha glass on navy */
-  .about-values { padding: 56px var(--page-px); }
-  .about-values__inner .eyebrow { margin-bottom: 24px; }
-
-  .values-row {
+  /* Values — dark feature band. Intro lede on the left, a vertical stack of
+     icon+text cards on the right (mirrors the brand deck, slides 40–41). */
+  .about-values { padding: 72px var(--page-px); }
+  .about-values__inner {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 48px 56px;
+    align-items: start;
+  }
+
+  .about-values__eyebrow { margin-bottom: 20px; }
+  .about-values__intro {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    color: var(--color-text);
+    max-width: 18ch;
+  }
+
+  .values-list {
+    display: flex;
+    flex-direction: column;
     gap: 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .value-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: 12px;
-    padding: 28px;
-    transition: border-color 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 28px 32px;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  }
+  .value-card:hover {
+    border-color: var(--color-border-blue);
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-2px);
   }
 
-  .value-card:hover { border-color: var(--color-border-blue); transform: translateY(-2px); }
+  /* Large decorative brand glyph — sits above the type scale, no token exists
+     at this display size. */
+  .value-card__icon { font-size: 5.25rem; color: var(--color-accent-text); line-height: 1; flex: none; }
+  .value-card__text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .value-card__title { font-size: var(--text-lg); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-display); line-height: var(--leading-none); }
+  .value-card__body { font-size: var(--text-body); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
 
-  /* Featured ("Competitive") is the vivid accent on the dark band */
-  .value-card--featured {
-    background: rgba(84,164,247,0.14);
-    border-color: rgba(84,164,247,0.45);
-  }
-
-  .value-card__icon { font-size: var(--text-2xl); margin-bottom: 14px; color: var(--color-accent-text); line-height: 1; }
-  .value-card__title { font-size: var(--text-body); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-display); margin-bottom: 8px; }
-  .value-card__body { font-size: var(--text-body-sm); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
-
-  .about-values__intro {
-    color: var(--color-text-muted);
-    font-size: var(--text-body);
-    line-height: var(--leading-relaxed);
-    max-width: 60ch;
-    margin-bottom: 28px;
-  }
-
-
-  /* Label on the left, statement filling the right — uses the full band width
-     instead of a narrow left-hand column. */
+  /* Mission — full-bleed band. A navy-duotone training photo drops into
+     .about-mission__media later; the overlay keeps text AA over any photo. */
   .about-mission {
-    margin-top: 48px;
-    padding-top: 40px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    display: grid;
-    grid-template-columns: minmax(150px, 220px) 1fr;
-    gap: 20px 64px;
-    align-items: start;
+    position: relative;
+    padding: clamp(72px, 12vw, 140px) var(--page-px);
+    overflow: hidden;
+    isolation: isolate;
   }
-  .about-mission__eyebrow { margin-bottom: 0; }
-  .about-mission__text {
+  .about-mission__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(5, 18, 43, 0.55), rgba(5, 18, 43, 0.9)),
+      linear-gradient(140deg, var(--lh-navy), var(--lh-navy-deep));
+  }
+  .about-mission__eyebrow { margin-bottom: 28px; }
+  .about-mission__lead,
+  .about-mission__statement {
     font-size: var(--text-sub);
-    font-weight: var(--weight-bold);
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-display);
   }
+  .about-mission__lead {
+    font-weight: var(--weight-regular);
+    color: var(--color-text-muted);
+    margin-bottom: 32px;
+  }
+  /* Lead spans the full band; the bolded call-to-action stays a tighter column. */
+  .about-mission__statement { font-weight: var(--weight-black); color: var(--color-text); max-width: 46rem; }
 
   @media (max-width: 768px) {
     .about-history__inner {
@@ -263,13 +298,25 @@ const mission =
       line-height: var(--leading-display);
     }
 
-    .values-row {
+    .about-values { padding: 52px var(--page-px); }
+    .about-values__inner {
       grid-template-columns: 1fr;
+      gap: 32px;
     }
+    .about-values__intro { max-width: none; }
 
-    .about-mission {
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
+    .value-card { gap: 20px; padding: 24px; }
+    .value-card__icon { font-size: 3.25rem; }
+
+    .about-mission__lead { font-size: var(--text-xl); }
+  }
+
+  /* Below ~365px the long "Collaboration" title can't sit beside the icon at
+     full size — tighten the icon, gap and title just enough to keep the word
+     alongside the icon (never stacked below it). */
+  @media (max-width: 364px) {
+    .value-card { gap: 16px; padding: 20px; }
+    .value-card__icon { font-size: 3rem; }
+    .value-card__title { font-size: var(--text-lead); }
   }
 </style>
