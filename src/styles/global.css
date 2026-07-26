@@ -248,6 +248,11 @@ body {
 .eyebrow--center { justify-content: center; text-align: center; }
 .eyebrow--center::before { display: none; }
 
+/* Keep a "·"-separated part whole when a strip wraps: wrap each segment in
+   .nowrap and leave a plain (breakable) space before the "·", so a separator
+   always travels onto the next line with its own words. */
+.nowrap { white-space: nowrap; }
+
 /* ── Container ──
    Max-width + centering only. Edge padding belongs to the section
    wrapper so we don't double-pad when nested. */

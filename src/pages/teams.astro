@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import TeamCard from '../components/TeamCard.astro';
 import FilterPills from '../components/FilterPills.astro';
 import { teams } from '../data/teams';
+import Eyebrow from '../components/Eyebrow.astro';
 
 // All 9 teams, women's first then men's (per club convention).
 const sortedTeams = [
@@ -16,7 +17,7 @@ const sortedTeams = [
   description="9 teams competing across the NVL Super League and LVA — Women's: Vinarius, Cats, Fury, Beats. Men's: Alpha, Predators, Pride, Roar, Leo. East London's most competitive volleyball club."
 >
   <div class="page-hero">
-    <p class="eyebrow page-hero__eyebrow">9 Teams · NVL & LVA</p>
+    <Eyebrow class="page-hero__eyebrow" text="9 Teams · NVL & LVA" />
     <h1 class="page-hero__title">Meet Our<br /><em>Teams</em></h1>
     <p class="page-hero__sub">
       2 NVL teams, 7 LVA teams — 9 competitive squads, one club.

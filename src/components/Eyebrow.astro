@@ -1,0 +1,31 @@
+---
+// Eyebrow label whose "·"-separated segments never split across lines.
+// The whole label stays a single flex item (so the .eyebrow tick + gap still
+// apply); each segment is nowrap, and the only break opportunity is the space
+// before a "·", so a separator always travels onto the next line with its word.
+interface Props {
+  text: string;
+  class?: string;
+  as?: 'p' | 'h2' | 'h3';
+}
+const { text, class: className, as: Tag = 'p' } = Astro.props;
+const segments = text.split('·').map((s) => s.trim()).filter(Boolean);
+---
+
+<Tag class:list={['eyebrow', className]}>
+  <span class="eyebrow__parts">
+    {segments.map((seg, i) =>
+      i === 0 ? (
+        <span class="eyebrow__seg">{seg}</span>
+      ) : (
+        <>{' '}<span class="eyebrow__seg">· {seg}</span></>
+      )
+    )}
+  </span>
+</Tag>
+
+<style>
+  .eyebrow__seg {
+    white-space: nowrap;
+  }
+</style>

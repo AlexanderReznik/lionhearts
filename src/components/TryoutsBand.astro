@@ -17,7 +17,7 @@ const moreCount = tryouts.length - 1;
         <span class="tryouts-band__pill">Pre-season tryouts</span>
         <h2 class="tryouts-band__title" id="tryouts-band-heading">Try out for a team</h2>
         <p class="tryouts-band__next">
-          Next: <strong>{next.team}</strong> — {formatTryoutDate(next.dateObj)} · {next.time} · {next.venue}
+          Next: <strong>{next.team}</strong>{' '}<span class="nowrap">— {formatTryoutDate(next.dateObj)}</span>{' '}<span class="nowrap">· {next.time}</span> ·&nbsp;{next.venue}
           {moreCount > 0 && <span class="tryouts-band__more"> +{moreCount} more</span>}
         </p>
       </div>

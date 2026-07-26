@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon, { type IconName } from '../components/Icon.astro';
+import Eyebrow from '../components/Eyebrow.astro';
 import { SITE_URL } from '../data/club';
 
 const orgSchema = {
@@ -54,7 +55,7 @@ const mission =
   jsonLd={orgSchema}
 >
   <div class="page-hero">
-    <p class="eyebrow page-hero__eyebrow">London Lionhearts · Since 1998</p>
+    <Eyebrow class="page-hero__eyebrow" text="London Lionhearts · Since 1998" />
     <h1 class="page-hero__title">About <em>Us</em></h1>
     <p class="page-hero__sub">
       The story of Shoreditch's volleyball club — 25+ years of community, competition,
@@ -67,7 +68,7 @@ const mission =
       <div class="about-history__photo" aria-label="Team photo — to be provided"></div>
 
       <div class="about-history__story">
-        <p class="eyebrow">Est. 1998 · Shoreditch, East London</p>
+        <Eyebrow text="Est. 1998 · Shoreditch, East London" />
         <h2 class="about-history__headline">
           From community club to the <em>Super League</em>.
         </h2>
