@@ -6,6 +6,10 @@ import SessionCard from '../components/SessionCard.astro';
 import VenueCard from '../components/VenueCard.astro';
 import SessionsFallbackNotice from '../components/SessionsFallbackNotice.astro';
 import Eyebrow from '../components/Eyebrow.astro';
+import openSession1 from '../assets/sessions/open_session_1.jpg';
+import openSession2 from '../assets/sessions/open_session_2.jpg';
+import openSession3 from '../assets/sessions/open_session_3.jpg';
+import juniorBall from '../assets/sessions/junior_ball.jpg';
 import { getSessions, getJuniorSessions, parseSessionSchedule, nextOccurrences, tryoutOccurrence, parsePriceGBP, getUpcomingTryouts, type Session } from '../lib/sheets';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
@@ -21,6 +25,10 @@ import { SITE_URL } from '../data/club';
 const { sessions, usingFallback } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 // Tile count = sessions + the venue tile; drives the responsive grid columns.
 const tileCount = sessions.length + 1;
+
+// Session-tile backgrounds: each open-session card gets its own photo (cycled
+// by index so extra sessions still get a background); juniors share one.
+const openPhotos = [openSession1, openSession2, openSession3];
 
 // Junior sessions live on a separate tab of the same sheet — set
 // GOOGLE_JUNIORS_GID to its gid. day + time only (no level/venue tile).
@@ -211,7 +219,7 @@ const teamSections = [
       {usingFallback && <SessionsFallbackNotice schedule="weekly schedule" />}
 
       <div class={`session-cards session-cards--${tileCount}`}>
-        {sessions.map(s => <SessionCard session={s} />)}
+        {sessions.map((s, i) => <SessionCard session={s} photo={openPhotos[i % openPhotos.length]} />)}
         <VenueCard />
       </div>
     </section>
@@ -227,7 +235,7 @@ const teamSections = [
       {juniorsFallback && <SessionsFallbackNotice schedule="junior schedule" />}
 
       <div class="junior-cards">
-        {juniorSessions.map(s => <SessionCard session={s} />)}
+        {juniorSessions.map(s => <SessionCard session={s} photo={juniorBall} />)}
         <VenueCard />
       </div>
     </section>

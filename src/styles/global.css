@@ -364,6 +364,9 @@ body {
 .session-card--photo {
   position: relative;
   overflow: hidden;
+  /* Taller than a text tile so the portrait action shots aren't cropped down
+     to a zoomed-in strip. */
+  min-height: 240px;
   border-color: rgba(5,18,43,0.4);
   background: var(--lh-navy-deep);
 }
@@ -373,12 +376,17 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: 50% 30%;
 }
+/* The photos are already brand-blue, so this is only a legibility scrim for the
+   white text — a light top-weighted darken, not a full blue wash. */
 .session-card--photo::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(160deg, rgba(5,18,43,0.72), rgba(17,35,75,0.84));
+  background: linear-gradient(160deg,
+    color-mix(in srgb, var(--lh-navy-deep) 32%, transparent),
+    color-mix(in srgb, var(--lh-navy-deep) 6%, transparent));
 }
 .session-card__content {
   position: relative;

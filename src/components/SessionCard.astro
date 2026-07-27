@@ -3,25 +3,27 @@
 // grids on /events. `level` is optional (juniors omit it). Card styling lives
 // in global.css alongside the other shared surface primitives.
 import { Image } from 'astro:assets';
-import sessionPhoto from '../assets/hero/cats_celebration.jpg';
+import type { ImageMetadata } from 'astro';
+import fallbackPhoto from '../assets/hero/cats_celebration.jpg';
 import type { Session } from '../lib/sheets';
 import Icon from './Icon.astro';
 
 interface Props {
   session: Session;
+  photo?: ImageMetadata;
 }
 
-const { session } = Astro.props;
+const { session, photo = fallbackPhoto } = Astro.props;
 ---
 
 <div class="session-card session-card--photo">
   <Image
     class="session-card__bg"
-    src={sessionPhoto}
+    src={photo}
     alt=""
     aria-hidden="true"
-    widths={[240, 360, 480]}
-    sizes="(max-width: 640px) 50vw, 240px"
+    widths={[320, 480, 720]}
+    sizes="(max-width: 560px) 92vw, (max-width: 1120px) 46vw, 290px"
     loading="lazy"
   />
   <div class="session-card__content">
