@@ -189,3 +189,25 @@ Before claiming a UI fix is done:
    than one cause; measure and fix every offender. (In dev the InstagramFeed shows
    its **fallback panel** because `BEHOLD_FEED_ID` is unset.)
 
+### Don't kill the user's dev server
+
+The user often has their own `npm run dev` running. **Never** clean up with
+`pkill -f "astro dev"` (or any broad pattern kill) — it matches by command line
+and takes down *their* server too, not just one you launched.
+
+Instead:
+
+1. **Reuse a running server first.** Check the default port before spawning —
+   `curl -s -o /dev/null http://localhost:4321` — and if it answers, just point
+   Chrome DevTools at it. Start nothing, kill nothing.
+2. **If you must start your own, kill only your PID.** Capture it when you
+   background the process and kill that one process, never a name pattern:
+   ```bash
+   SKIP_VOLLEYZONE=true SKIP_BEHOLD=true npm run dev > /tmp/lh-dev.log 2>&1 &
+   MY_DEV_PID=$!
+   # … work …
+   kill "$MY_DEV_PID"
+   ```
+   (Astro auto-picks the next free port, e.g. 4322, so your server never
+   collides with theirs — grep the log for the `http://localhost:PORT` line.)
+
