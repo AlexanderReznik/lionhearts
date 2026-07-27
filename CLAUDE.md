@@ -1,21 +1,35 @@
 # Lionhearts Volleyball — Claude Code Notes
 
-## Working Directory
-
 All work happens in `/Users/alex/projects/lionhearts`.
 
-## Git Commands
-
-Run git commands from the project root — do NOT use `git -C <path>`. The working directory is already set correctly between shell calls.
+## Commands
 
 ```bash
-# WRONG
-git -C /Users/alex/projects/lionhearts add src/foo.ts
-
-# RIGHT
-git add src/foo.ts
-git commit -m "feat: ..."
+npm test        # Vitest — must stay green before claiming a fix is done
+npm run dev     # local dev server
+npm run build   # production build (runs the build-time fetches unless skipped)
+SKIP_VOLLEYZONE=true SKIP_BEHOLD=true npm run dev   # skip slow fetches (see Project Stack)
 ```
+
+## Git
+
+Run git from the project root — do NOT use `git -C <path>`. The working directory is
+already correct between shell calls.
+
+```bash
+git add src/foo.ts        # RIGHT
+git -C /path add src/foo.ts   # WRONG
+```
+
+**Commit messages** — conventional commits, matching the repo's 400+ commit history:
+`type(scope): imperative subject`.
+
+- Types: `feat` `fix` `style` `refactor` `docs` `chore` `perf` `test`.
+- Scope = page/area: `copy` `seo` `a11y` `events` `community` `about` `teams` `join`
+  `sponsors` `instagram` `theme` `footer` `hero` …
+- Body explains the **why** and notes verification (e.g. "Verified no overflow at 320/375"),
+  matching the density of recent `git log` bodies.
+- Commit only when asked; branch first if on `main`.
 
 ## Project Stack
 
@@ -34,6 +48,10 @@ git commit -m "feat: ..."
   are strict string compares (`import.meta.env.SKIP_* === 'true'`), so the
   value MUST be the literal `true` — `SKIP_*=1` silently does NOT skip and
   still fetches.
+- **Content data** lives in `src/data/` as the single source of truth —
+  `sponsors.ts`, `teams.ts`, `flags.ts`, `club.ts` (items render in array order).
+  Live sessions come from a Google Sheet via `src/lib/sheets.ts`; keep its
+  `FALLBACK_CSV` in sync with the real schedule so pages never render an empty one.
 
 ## Design System
 
