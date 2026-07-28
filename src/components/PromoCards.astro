@@ -11,8 +11,12 @@
 // colours, so it renders IDENTICALLY in light and dark themes — only the page
 // behind it themes. Data is passed in from index.astro (already fetched there),
 // so this component does no fetching of its own.
+import { Image } from 'astro:assets';
 import type { Tryout, Session } from '../lib/sheets';
 import { abbreviateDay, abbreviateTime, formatTryoutDate } from '../lib/sheets';
+import jonasPhoto from '../assets/promo/jonas.png';
+import liannaPhoto from '../assets/promo/lianna.png';
+import nathanPhoto from '../assets/promo/nathan.png';
 
 interface Props {
   tryouts: Tryout[];
@@ -55,7 +59,7 @@ const juniorRows = juniors.map(toRow);
         </div>
         <a class="promo-card__cta" href="/events#tryouts">See all dates &amp; sign up →</a>
         <div class="promo-card__photo" aria-hidden="true">
-          {/* Cut-out athlete PNG (transparent bg, anchored bottom) drops in here. */}
+          <Image src={jonasPhoto} alt="" widths={[240, 360, 480, 720]} sizes="260px" loading="lazy" />
         </div>
       </article>
 
@@ -80,7 +84,9 @@ const juniorRows = juniors.map(toRow);
           </ul>
         </div>
         <a class="promo-card__cta" href="/events">Full schedule →</a>
-        <div class="promo-card__photo" aria-hidden="true"></div>
+        <div class="promo-card__photo" aria-hidden="true">
+          <Image src={liannaPhoto} alt="" widths={[220, 330, 440, 660]} sizes="230px" loading="lazy" />
+        </div>
       </article>
 
       {/* ── Junior Sessions (green) ─────────────────────────────────────── */}
@@ -104,7 +110,9 @@ const juniorRows = juniors.map(toRow);
           </ul>
         </div>
         <a class="promo-card__cta" href="/events">Junior info →</a>
-        <div class="promo-card__photo" aria-hidden="true"></div>
+        <div class="promo-card__photo" aria-hidden="true">
+          <Image src={nathanPhoto} alt="" widths={[200, 300, 400, 600]} sizes="210px" loading="lazy" />
+        </div>
       </article>
     </div>
   </div>
@@ -141,15 +149,18 @@ const juniorRows = juniors.map(toRow);
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 34px color-mix(in srgb, var(--lh-navy-deep) 12%, transparent);
+    background: var(--promo-surface);
     /* Max rendered height of the athlete cut-out (see the photo slot below). */
-    --promo-photo-max: 300px;
+    --promo-photo-max: 320px;
   }
 
-  .promo-card--tryout { background: var(--lh-navy-deep); border: 1px solid rgba(255, 255, 255, 0.08); }
-  .promo-card--open   { background: var(--lh-blue); }
-  .promo-card--junior { background: var(--lh-green); }
+  .promo-card--tryout { --promo-surface: var(--lh-navy-deep); border: 1px solid rgba(255, 255, 255, 0.08); }
+  .promo-card--open   { --promo-surface: var(--lh-blue); }
+  .promo-card--junior { --promo-surface: var(--lh-green); }
 
-  .promo-card__body { position: relative; z-index: 1; }
+  /* Text sits in a left column above both the photo (z0) and the scrim (z1), so
+     the schedule/headline never share space with the athlete on the right. */
+  .promo-card__body { position: relative; z-index: 2; max-width: 62%; }
 
   /* ── Eyebrow ── letter-spaced label; colour keyed per card surface. */
   .promo-card__eyebrow {
@@ -245,7 +256,7 @@ const juniorRows = juniors.map(toRow);
   /* ── CTA ── quiet arrow link pinned to the bottom of the card body flow. */
   .promo-card__cta {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     margin-top: auto;
     padding-top: 1.5rem;
     font-size: var(--text-note);
@@ -270,29 +281,22 @@ const juniorRows = juniors.map(toRow);
   }
   .promo-card--tryout a:focus-visible { outline-color: var(--lh-white); }
 
-  /* ── Photo slot ── bottom-anchored athlete cut-out that bleeds off the card's
-     bottom edge, behind the copy (z-index 0 / pointer-events none). Empty until
-     transparent-background PNGs are supplied.
-
-     ASSET CONTRACT — keeps the trio consistent once photos land:
-       • Transparent PNG (or WebP), subject cropped tight and anchored to the
-         BOTTOM of the frame (feet/waist at the image's bottom edge).
-       • Roughly portrait (≈2:3), exported ~600–800px wide.
-     RESPONSIVE: the image is sized by HEIGHT (capped at --promo-photo-max), with
-     width:auto + max-width:100%. So the athlete keeps a consistent rendered size
-     across a narrow 3-col column, a full-width single column on tablet, and
-     mobile — it never balloons with card width, and never overflows a narrow
-     card. Anchored bottom-centre via flex; nudge per-card with object-position
-     once the real assets exist. Cards reserve a matching min-height ONLY when a
-     photo is present (:has), so the empty state stays compact. */
+  /* ── Photo slot ── transparent athlete cut-out anchored to the card's
+     bottom-RIGHT corner and bleeding off the bottom edge, behind the copy
+     (z0, pointer-events none). Sized by HEIGHT (capped at --promo-photo-max)
+     with width:auto, so the athlete keeps a consistent rendered size across a
+     narrow 3-col column, a full-width single column on tablet, and mobile — it
+     never balloons with card width. The text block (max-width:62%) forms a left
+     column; the athlete owns the right. --promo-photo-nudge slides a subject
+     that reads off-centre back toward the corner (per-card, below). */
   .promo-card__photo {
     position: absolute;
-    inset: auto 0 0 0;
+    inset: auto 0 0 auto;
     z-index: 0;
     pointer-events: none;
     display: flex;
-    justify-content: center;
     align-items: flex-end;
+    transform: translateX(var(--promo-photo-nudge, 0px));
   }
   .promo-card__photo :global(img) {
     width: auto;
@@ -301,17 +305,44 @@ const juniorRows = juniors.map(toRow);
     max-height: var(--promo-photo-max);
   }
 
+  /* ── Scrim ── card-colour wash between photo (z0) and text (z2). Fades from the
+     solid surface on the left (backing the text column) to transparent on the
+     right (athlete shows through), plus a bottom lift — so a seam never shows and
+     text stays legible even where it nears the figure. */
+  .promo-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(to right,
+        var(--promo-surface) 34%,
+        color-mix(in srgb, var(--promo-surface) 55%, transparent) 58%,
+        transparent 88%),
+      linear-gradient(to top,
+        var(--promo-surface) 4%,
+        transparent 42%);
+  }
+
+  /* Per-card horizontal tuning: Jonas is symmetric (sit central-right); Lianna
+     leans right already; Nathan's mass is left of frame, so pull him rightward. */
+  .promo-card--tryout { --promo-photo-nudge: 18px; }
+  .promo-card--open   { --promo-photo-nudge: 8px; }
+  .promo-card--junior { --promo-photo-nudge: 10px; }
+
   /* ── Responsive ──
      Cards need room for the big headline; drop to 1 column below ~880px. */
   @media (max-width: 880px) {
     .promo__grid { grid-template-columns: 1fr; }
-    /* Empty state stays compact; a card with a photo keeps a home for it. */
-    .promo-card { min-height: 0; }
-    .promo-card:has(.promo-card__photo img) { min-height: 420px; }
+    .promo-card { min-height: 420px; }
   }
 
   @media (max-width: 560px) {
     .promo__inner { padding: 40px var(--page-px); }
     .promo-card { padding: 24px; }
+    /* Narrower cards: keep text readable by shrinking the figure a touch. */
+    .promo-card { --promo-photo-max: 280px; }
+    .promo-card__body { max-width: 66%; }
   }
 </style>
