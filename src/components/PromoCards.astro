@@ -283,12 +283,18 @@ const juniorRows = juniors.map(toRow);
 
   /* ── Photo slot ── transparent athlete cut-out anchored to the card's
      bottom-RIGHT corner and bleeding off the bottom edge, behind the copy
-     (z0, pointer-events none). Sized by HEIGHT (capped at --promo-photo-max)
-     with width:auto, so the athlete keeps a consistent rendered size across a
-     narrow 3-col column, a full-width single column on tablet, and mobile — it
-     never balloons with card width. The text block (max-width:62%) forms a left
-     column; the athlete owns the right. --promo-photo-nudge slides a subject
-     that reads off-centre back toward the corner (per-card, below). */
+     (z0, pointer-events none). Sized by a DEFINITE height (--promo-photo-max)
+     with width:auto, so width resolves from the intrinsic aspect ratio and the
+     athlete keeps a consistent rendered size across a narrow 3-col column, a
+     full-width single column on tablet, and mobile — it never balloons with card
+     width. The text block (max-width:62%) forms a left column; the athlete owns
+     the right. --promo-photo-nudge slides a subject that reads off-centre back
+     toward the corner (per-card, below).
+     WHY NOT height:auto + max-height: the container is an absolutely-positioned
+     shrink-to-fit box (width:auto), so an image whose width is itself derived
+     from the container is circular. Chrome resolves it via the intrinsic ratio,
+     but WebKit/Safari collapses the image to 0×0 (it loads, paints nothing). A
+     definite height breaks the cycle in every engine. */
   .promo-card__photo {
     position: absolute;
     inset: auto 0 0 auto;
@@ -299,10 +305,9 @@ const juniorRows = juniors.map(toRow);
     transform: translateX(var(--promo-photo-nudge, 0px));
   }
   .promo-card__photo :global(img) {
+    height: var(--promo-photo-max);
     width: auto;
-    height: auto;
     max-width: 100%;
-    max-height: var(--promo-photo-max);
   }
 
   /* ── Scrim ── card-colour wash between photo (z0) and text (z2). Fades from the
