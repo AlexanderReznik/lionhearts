@@ -13,11 +13,16 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     <div class="join-cta__copy">
       <Eyebrow class="join-cta__kicker" text="Shoreditch · All Levels · All Backgrounds" />
       <h2 class="join-cta__headline">Ready <span class="headline-accent">to play?</span></h2>
-      <p class="join-cta__sub">Beginner-friendly open sessions {sessions.length}× a week. New to London? You'll fit right in.</p>
+      <p class="join-cta__sub">
+        <span class="join-cta__line">Beginner-friendly open sessions {sessions.length}× a week.</span>
+        <span class="join-cta__line">New to London? You'll fit right in.</span>
+      </p>
       <p class="join-cta__location">
-        <span class="join-cta__pin" aria-hidden="true"><Icon name="location" /></span>
-        <span class="join-cta__venue">Mulberry Academy, Shoreditch E2</span>
-        · Short walk from Bethnal Green, Shoreditch High Street or Hoxton
+        <span class="join-cta__line">
+          <span class="join-cta__pin" aria-hidden="true"><Icon name="location" /></span>
+          <span class="join-cta__venue">Mulberry Academy, Shoreditch E2</span>
+        </span>
+        <span class="join-cta__line">Short walk from Bethnal Green, Shoreditch High Street or Hoxton</span>
       </p>
     </div>
     <div class="join-cta__actions">
@@ -98,6 +103,9 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     font-size: var(--text-note);
     line-height: var(--leading-relaxed);
   }
+
+  /* Each clause gets its own line instead of one flowing block. */
+  .join-cta__line { display: block; }
 
   .join-cta__pin { margin-right: 4px; }
   .join-cta__venue {
