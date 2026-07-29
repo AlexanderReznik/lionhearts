@@ -236,11 +236,13 @@ const juniorRows = juniors.map(toRow);
     text-transform: uppercase;
     color: var(--lh-navy);
   }
+  /* Schedules only render on the light blue/green cards, so the time — like the
+     adjacent day label — is navy for AA contrast (white was ~1.8:1 on green). */
   .promo-card__time {
     font-size: var(--text-lg);
     font-weight: var(--weight-black);
     letter-spacing: var(--tracking-display);
-    color: var(--lh-white);
+    color: var(--lh-navy);
   }
   .promo-card__meridiem {
     margin-left: 0.2em;
