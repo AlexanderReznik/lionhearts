@@ -28,6 +28,11 @@ const { tryouts, sessions, juniors } = Astro.props;
 const next = tryouts[0];
 const moreCount = tryouts.length - 1;
 
+// Off-season the tryouts anchor on /events doesn't render, so the fallback CTA
+// points at the sessions instead — matching the "come to an open session" copy.
+const tryoutHref = next ? '/events#tryouts' : '/events';
+const tryoutCta = next ? 'See all dates & sign up →' : 'See sessions →';
+
 // Abbreviate day + time for the compact schedule rows (same helpers the strip
 // used). Juniors carry no `level`, so it's rendered conditionally.
 const toRow = (s: Session) => ({ day: abbreviateDay(s.day), time: abbreviateTime(s.time), level: s.level });
@@ -54,10 +59,10 @@ const juniorRows = juniors.map(toRow);
               {moreCount > 0 && <> <a class="promo-card__more" href="/events#tryouts">+{moreCount} more</a></>}
             </p>
           ) : (
-            <p class="promo-card__lead">Trials run before each season — new dates land here first.</p>
+            <p class="promo-card__lead">No trials scheduled right now. To join a team, come to an open session and tell a coach you'd like to play competitively.</p>
           )}
         </div>
-        <a class="promo-card__cta" href="/events#tryouts">See all dates &amp; sign up →</a>
+        <a class="promo-card__cta" href={tryoutHref}>{tryoutCta}</a>
         <div class="promo-card__photo" aria-hidden="true">
           <Image src={jonasPhoto} alt="" widths={[240, 360, 480, 720]} sizes="260px" loading="lazy" />
         </div>
