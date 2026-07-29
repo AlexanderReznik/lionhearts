@@ -38,6 +38,14 @@ const tryoutCta = next ? 'See all dates & sign up →' : 'See sessions →';
 const toRow = (s: Session) => ({ day: abbreviateDay(s.day), time: abbreviateTime(s.time), level: s.level });
 const adultRows = sessions.map(toRow);
 const juniorRows = juniors.map(toRow);
+
+// Cap the schedule so a growing sheet can't stretch the equal-height card grid;
+// overflow collapses into a "+N more" link, mirroring the tryouts "+N more".
+const MAX_ROWS = 3;
+const adultVisible = adultRows.slice(0, MAX_ROWS);
+const juniorVisible = juniorRows.slice(0, MAX_ROWS);
+const adultMore = adultRows.length - adultVisible.length;
+const juniorMore = juniorRows.length - juniorVisible.length;
 ---
 
 <section class="section promo" aria-labelledby="promo-heading">
@@ -75,7 +83,7 @@ const juniorRows = juniors.map(toRow);
           <h3 class="promo-card__title">Open<br />session</h3>
           <p class="promo-card__lead">No booking · No experience needed</p>
           <ul class="promo-card__schedule" role="list">
-            {adultRows.map(r => (
+            {adultVisible.map(r => (
               <li class="promo-card__row">
                 <span class="promo-card__when">
                   <span class="promo-card__day">{r.day}</span>
@@ -87,6 +95,7 @@ const juniorRows = juniors.map(toRow);
               </li>
             ))}
           </ul>
+          {adultMore > 0 && <a class="promo-card__schedule-more" href="/events">+{adultMore} more</a>}
         </div>
         <a class="promo-card__cta" href="/events">Full schedule →</a>
         <div class="promo-card__photo" aria-hidden="true">
@@ -101,7 +110,7 @@ const juniorRows = juniors.map(toRow);
           <h3 class="promo-card__title">Junior<br />sessions</h3>
           <p class="promo-card__lead">No booking · No experience needed</p>
           <ul class="promo-card__schedule" role="list">
-            {juniorRows.map(r => (
+            {juniorVisible.map(r => (
               <li class="promo-card__row">
                 <span class="promo-card__when">
                   <span class="promo-card__day">{r.day}</span>
@@ -113,6 +122,7 @@ const juniorRows = juniors.map(toRow);
               </li>
             ))}
           </ul>
+          {juniorMore > 0 && <a class="promo-card__schedule-more" href="/events">+{juniorMore} more</a>}
         </div>
         <a class="promo-card__cta" href="/events">Junior info →</a>
         <div class="promo-card__photo" aria-hidden="true">
@@ -259,6 +269,17 @@ const juniorRows = juniors.map(toRow);
     text-transform: uppercase;
     color: color-mix(in srgb, var(--lh-navy) 70%, transparent);
   }
+
+  /* Overflow link when the schedule is capped — navy on the blue/green cards. */
+  .promo-card__schedule-more {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: var(--text-note);
+    font-weight: var(--weight-bold);
+    color: var(--lh-navy);
+    text-decoration: none;
+  }
+  .promo-card__schedule-more:hover { text-decoration: underline; }
 
   /* ── CTA ── quiet arrow link pinned to the bottom of the card body flow. */
   .promo-card__cta {
