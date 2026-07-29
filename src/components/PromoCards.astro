@@ -70,9 +70,9 @@ const scheduleCards = [
           <p class="promo-card__eyebrow">Pre-season</p>
           <h3 class="promo-card__title">Try out<br />for a team</h3>
           {next ? (
-            <p class="promo-card__lead">
-              Next: <strong>{next.team}</strong> — {formatTryoutDate(next.dateObj)} · {next.time}
-              {moreCount > 0 && <> <a class="promo-card__more" href="/events#tryouts">+{moreCount} more</a></>}
+            <p class="promo-card__lead promo-card__next">
+              <span class="promo-card__next-team">Next: <strong>{next.team}</strong></span>
+              <span class="promo-card__next-meta"><span class="nowrap">{formatTryoutDate(next.dateObj)}</span> <span class="nowrap">· {next.time}</span>{moreCount > 0 && <> <span class="nowrap">· <a class="promo-card__more" href="/events#tryouts">+{moreCount} more</a></span></>}</span>
             </p>
           ) : (
             <p class="promo-card__lead">No trials scheduled right now. To join a team, come to an open session and tell a coach you'd like to play competitively.</p>
@@ -197,6 +197,11 @@ const scheduleCards = [
   }
   .promo-card--tryout .promo-card__lead { color: var(--lh-slate-200); }
   .promo-card--tryout .promo-card__lead strong { color: var(--lh-white); font-weight: var(--weight-bold); }
+
+  /* Tryout "Next" line: team on its own line, then date · time · more as atomic
+     units (each .nowrap) that only break BETWEEN items, never mid-token — so
+     "4:00pm-6:00pm" and "Sun 16 Aug" never split. */
+  .promo-card__next { display: flex; flex-direction: column; gap: 0.35rem; }
   /* On the light blue/green surfaces a deep-navy tint keeps the benefit line AA-legible. */
   .promo-card--open   .promo-card__lead,
   .promo-card--junior .promo-card__lead { color: color-mix(in srgb, var(--lh-navy) 82%, transparent); }
