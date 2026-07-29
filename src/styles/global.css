@@ -463,6 +463,22 @@ body {
 .section--community .eyebrow::before { background: var(--lh-navy); }
 
 /* ── Decorative brand motifs ── */
+
+/* Flat light-blue bar capping the bottom edge of a panel or photo frame.
+   Host must clip its own overflow so the bar follows the corner radius; the
+   z-index lifts it over absolutely-positioned content (e.g. carousel slides).
+   Height is overridable via --underbar-height. */
+.accent-underbar { position: relative; }
+.accent-underbar::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--underbar-height, 10px);
+  background: var(--lh-blue-300);
+  z-index: 2;
+  pointer-events: none;
+}
+
 .graphic-accent {
   position: absolute;
   width: 220px;

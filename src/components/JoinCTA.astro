@@ -9,7 +9,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 ---
 
 <section class="join-cta" aria-label="Join the club">
-  <div class="join-cta__inner section--community">
+  <div class="join-cta__inner section--community accent-underbar">
     <div class="join-cta__copy">
       <Eyebrow class="join-cta__kicker" text="Shoreditch · All Levels · All Backgrounds" />
       <h2 class="join-cta__headline">Ready <span class="headline-accent">to play?</span></h2>
@@ -48,15 +48,6 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     align-items: center;
     gap: 48px;
     box-shadow: 0 24px 60px -20px rgba(17, 35, 75, 0.35);
-  }
-
-  .join-cta__inner::before {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 10px;
-    background: var(--lh-blue-300);
-    pointer-events: none;
   }
 
   .join-cta__inner::after {

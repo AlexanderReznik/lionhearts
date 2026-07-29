@@ -18,7 +18,7 @@ const { photos, label, sizes = '(max-width: 768px) 100vw, 540px' } = Astro.props
 
 {photos.length > 0 && (
   <div
-    class="photo-carousel"
+    class="photo-carousel accent-underbar"
     role="group"
     aria-roledescription="carousel"
     aria-label={label}
@@ -158,9 +158,10 @@ const { photos, label, sizes = '(max-width: 768px) 100vw, 540px' } = Astro.props
   .photo-carousel__arrow--prev { left: 12px; }
   .photo-carousel__arrow--next { right: 12px; }
 
+  /* Clears the .accent-underbar bar rather than sitting on top of it. */
   .photo-carousel__dots {
     position: absolute;
-    bottom: 14px;
+    bottom: 20px;
     left: 0;
     right: 0;
     display: flex;
