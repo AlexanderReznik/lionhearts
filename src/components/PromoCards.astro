@@ -46,6 +46,14 @@ const adultVisible = adultRows.slice(0, MAX_ROWS);
 const juniorVisible = juniorRows.slice(0, MAX_ROWS);
 const adultMore = adultRows.length - adultVisible.length;
 const juniorMore = juniorRows.length - juniorVisible.length;
+
+// The Open and Junior cards are the same schedule card with different data, so
+// they render from one template below. (Try Out differs structurally and stays
+// inline.) href is /events for both — the full schedule / junior info live there.
+const scheduleCards = [
+  { modifier: 'open',   eyebrow: `${sessions.length} weekly`, title: ['Open', 'session'],    rows: adultVisible,  more: adultMore,  cta: 'Full schedule →', photo: liannaPhoto, widths: [220, 330, 440, 660], sizes: '230px' },
+  { modifier: 'junior', eyebrow: 'Grow together',             title: ['Junior', 'sessions'], rows: juniorVisible, more: juniorMore, cta: 'Junior info →',   photo: nathanPhoto, widths: [200, 300, 400, 600], sizes: '210px' },
+];
 ---
 
 <section class="section promo" aria-labelledby="promo-heading">
@@ -76,59 +84,34 @@ const juniorMore = juniorRows.length - juniorVisible.length;
         </div>
       </article>
 
-      {/* ── Open Session (blue) ─────────────────────────────────────────── */}
-      <article class="promo-card promo-card--open">
-        <div class="promo-card__body">
-          <p class="promo-card__eyebrow">{sessions.length} weekly</p>
-          <h3 class="promo-card__title">Open<br />session</h3>
-          <p class="promo-card__lead">No booking · No experience needed</p>
-          <ul class="promo-card__schedule" role="list">
-            {adultVisible.map(r => (
-              <li class="promo-card__row">
-                <span class="promo-card__when">
-                  <span class="promo-card__day">{r.day}</span>
-                  <span class="promo-card__time">{r.time.range}{r.time.meridiem && (
-                    <span class="promo-card__meridiem">{r.time.meridiem}</span>
-                  )}</span>
-                </span>
-                {r.level && <span class="promo-card__level">{r.level}</span>}
-              </li>
-            ))}
-          </ul>
-          {adultMore > 0 && <a class="promo-card__schedule-more" href="/events">+{adultMore} more</a>}
-        </div>
-        <a class="btn btn--white promo-card__cta" href="/events">Full schedule →</a>
-        <div class="promo-card__photo" aria-hidden="true">
-          <Image src={liannaPhoto} alt="" widths={[220, 330, 440, 660]} sizes="230px" loading="lazy" />
-        </div>
-      </article>
-
-      {/* ── Junior Sessions (green) ─────────────────────────────────────── */}
-      <article class="promo-card promo-card--junior">
-        <div class="promo-card__body">
-          <p class="promo-card__eyebrow">Grow together</p>
-          <h3 class="promo-card__title">Junior<br />sessions</h3>
-          <p class="promo-card__lead">No booking · No experience needed</p>
-          <ul class="promo-card__schedule" role="list">
-            {juniorVisible.map(r => (
-              <li class="promo-card__row">
-                <span class="promo-card__when">
-                  <span class="promo-card__day">{r.day}</span>
-                  <span class="promo-card__time">{r.time.range}{r.time.meridiem && (
-                    <span class="promo-card__meridiem">{r.time.meridiem}</span>
-                  )}</span>
-                </span>
-                {r.level && <span class="promo-card__level">{r.level}</span>}
-              </li>
-            ))}
-          </ul>
-          {juniorMore > 0 && <a class="promo-card__schedule-more" href="/events">+{juniorMore} more</a>}
-        </div>
-        <a class="btn btn--white promo-card__cta" href="/events">Junior info →</a>
-        <div class="promo-card__photo" aria-hidden="true">
-          <Image src={nathanPhoto} alt="" widths={[200, 300, 400, 600]} sizes="210px" loading="lazy" />
-        </div>
-      </article>
+      {/* ── Open Session (blue) + Junior Sessions (green) ───────────────── */}
+      {scheduleCards.map(card => (
+        <article class={`promo-card promo-card--${card.modifier}`}>
+          <div class="promo-card__body">
+            <p class="promo-card__eyebrow">{card.eyebrow}</p>
+            <h3 class="promo-card__title">{card.title[0]}<br />{card.title[1]}</h3>
+            <p class="promo-card__lead">No booking · No experience needed</p>
+            <ul class="promo-card__schedule" role="list">
+              {card.rows.map(r => (
+                <li class="promo-card__row">
+                  <span class="promo-card__when">
+                    <span class="promo-card__day">{r.day}</span>
+                    <span class="promo-card__time">{r.time.range}{r.time.meridiem && (
+                      <span class="promo-card__meridiem">{r.time.meridiem}</span>
+                    )}</span>
+                  </span>
+                  {r.level && <span class="promo-card__level">{r.level}</span>}
+                </li>
+              ))}
+            </ul>
+            {card.more > 0 && <a class="promo-card__schedule-more" href="/events">+{card.more} more</a>}
+          </div>
+          <a class="btn btn--white promo-card__cta" href="/events">{card.cta}</a>
+          <div class="promo-card__photo" aria-hidden="true">
+            <Image src={card.photo} alt="" widths={card.widths} sizes={card.sizes} loading="lazy" />
+          </div>
+        </article>
+      ))}
     </div>
   </div>
 </section>
