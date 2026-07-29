@@ -31,7 +31,7 @@ const moreCount = tryouts.length - 1;
 // Off-season the tryouts anchor on /events doesn't render, so the fallback CTA
 // points at the sessions instead — matching the "come to an open session" copy.
 const tryoutHref = next ? '/events#tryouts' : '/events';
-const tryoutCta = next ? 'See all dates & sign up →' : 'See sessions →';
+const tryoutCta = next ? 'See dates →' : 'See sessions →';
 
 // Abbreviate day + time for the compact schedule rows (same helpers the strip
 // used). Juniors carry no `level`, so it's rendered conditionally.
@@ -70,7 +70,7 @@ const juniorMore = juniorRows.length - juniorVisible.length;
             <p class="promo-card__lead">No trials scheduled right now. To join a team, come to an open session and tell a coach you'd like to play competitively.</p>
           )}
         </div>
-        <a class="promo-card__cta" href={tryoutHref}>{tryoutCta}</a>
+        <a class="btn btn--white promo-card__cta" href={tryoutHref}>{tryoutCta}</a>
         <div class="promo-card__photo" aria-hidden="true">
           <Image src={jonasPhoto} alt="" widths={[240, 360, 480, 720]} sizes="260px" loading="lazy" />
         </div>
@@ -97,7 +97,7 @@ const juniorMore = juniorRows.length - juniorVisible.length;
           </ul>
           {adultMore > 0 && <a class="promo-card__schedule-more" href="/events">+{adultMore} more</a>}
         </div>
-        <a class="promo-card__cta" href="/events">Full schedule →</a>
+        <a class="btn btn--white promo-card__cta" href="/events">Full schedule →</a>
         <div class="promo-card__photo" aria-hidden="true">
           <Image src={liannaPhoto} alt="" widths={[220, 330, 440, 660]} sizes="230px" loading="lazy" />
         </div>
@@ -124,7 +124,7 @@ const juniorMore = juniorRows.length - juniorVisible.length;
           </ul>
           {juniorMore > 0 && <a class="promo-card__schedule-more" href="/events">+{juniorMore} more</a>}
         </div>
-        <a class="promo-card__cta" href="/events">Junior info →</a>
+        <a class="btn btn--white promo-card__cta" href="/events">Junior info →</a>
         <div class="promo-card__photo" aria-hidden="true">
           <Image src={nathanPhoto} alt="" widths={[200, 300, 400, 600]} sizes="210px" loading="lazy" />
         </div>
@@ -281,23 +281,15 @@ const juniorMore = juniorRows.length - juniorVisible.length;
   }
   .promo-card__schedule-more:hover { text-decoration: underline; }
 
-  /* ── CTA ── quiet arrow link pinned to the bottom of the card body flow. */
+  /* ── CTA ── a .btn--white button (white fill / navy text reads on all three
+     surfaces per the button system's "surface contrast wins" rule). This class
+     only positions it: bottom-left of the card, above the photo + scrim. */
   .promo-card__cta {
+    align-self: flex-start;
+    margin-top: auto;
     position: relative;
     z-index: 2;
-    margin-top: auto;
-    padding-top: 1.5rem;
-    font-size: var(--text-note);
-    font-weight: var(--weight-extrabold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    text-decoration: none;
-    align-self: flex-start;
   }
-  .promo-card--tryout .promo-card__cta { color: var(--lh-blue); }
-  .promo-card--open   .promo-card__cta,
-  .promo-card--junior .promo-card__cta { color: var(--lh-navy); }
-  .promo-card__cta:hover { text-decoration: underline; }
 
   /* Focus ring keyed per surface — the site's default --color-accent (blue)
      outline would vanish on the blue card, so give navy cards a light ring and
