@@ -2,7 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon, { type IconName } from '../components/Icon.astro';
 import Eyebrow from '../components/Eyebrow.astro';
+import PhotoCarousel from '../components/PhotoCarousel.astro';
 import { SITE_URL } from '../data/club';
+import womensSquad from '../assets/heritage/womens_squad.jpg';
+import mensSquad from '../assets/heritage/mens_squad.jpg';
+import bowlingSocial from '../assets/heritage/bowling_social.jpg';
 
 const orgSchema = {
   '@context': 'https://schema.org',
@@ -49,6 +53,22 @@ const missionLead =
   'To develop, promote growth and increase the quality of volleyball for everyone within our community.';
 const missionStatement =
   'Together, we can create positive opportunities that generate sustainable societal change.';
+
+// Heritage photos from the club archive (designer's set, shots 8 / 4 / 2).
+const heritagePhotos = [
+  {
+    image: womensSquad,
+    alt: "Lionhearts women's squad and coaches in blue kit, posed on court after a match",
+  },
+  {
+    image: mensSquad,
+    alt: "Lionhearts men's squad in white and blue kit, posed on court after a match",
+  },
+  {
+    image: bowlingSocial,
+    alt: 'Lionhearts players clowning around on the lanes at a club bowling social',
+  },
+];
 ---
 
 <BaseLayout
@@ -67,7 +87,7 @@ const missionStatement =
 
   <section class="about-history page-content">
     <div class="about-history__inner">
-      <div class="about-history__photo" aria-label="Team photo — to be provided"></div>
+      <PhotoCarousel photos={heritagePhotos} label="Club heritage photos" />
 
       <div class="about-history__story">
         <Eyebrow text="Est. 1998 · Shoreditch, East London" />
@@ -146,20 +166,6 @@ const missionStatement =
     grid-template-columns: 1fr 1fr;
     gap: 56px;
     align-items: start;
-  }
-
-  .about-history__photo {
-    aspect-ratio: 4/3;
-    background: linear-gradient(160deg, var(--color-surface-2), var(--color-surface));
-    border-radius: 14px;
-    border: 1px solid var(--color-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-faint);
-    font-size: var(--text-note);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
   }
 
   .about-history__headline {
@@ -287,10 +293,6 @@ const missionStatement =
     .about-history__inner {
       grid-template-columns: 1fr;
       gap: 28px;
-    }
-
-    .about-history__photo {
-      aspect-ratio: 16 / 9;
     }
 
     .about-history__headline {
