@@ -23,17 +23,16 @@ import vinariusSet from '../assets/hero/vinarius_set.jpg';
 import martynasDig from '../assets/hero/martynas_dig.jpg';
 import catsCelebration from '../assets/hero/cats_celebration.jpg';
 
-// Pre-season tryouts — fetched once and shared by both homepage promos. Empty
-// array = nothing renders (no fallback).
-const tryouts = await getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_TRYOUTS_GID);
-
-// Session count for the meta description comes from the live sheet (same
-// source as /join, /events and the sessions strip), so it can't drift from
-// the schedule shown on the site.
-const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
-
-// Junior schedule for the third promo card (lives on its own sheet tab).
-const { sessions: juniors } = await getJuniorSessions(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_JUNIORS_GID);
+// Homepage build-time data. Three independent sheet reads, fetched in parallel:
+//   • tryouts  — pre-season tryouts shared by the promo card (empty = nothing).
+//   • sessions — adult schedule; its count also feeds the meta description, so
+//     it can't drift from what /join, /events and the promo card show.
+//   • juniors  — junior schedule (its own sheet tab) for the third promo card.
+const [tryouts, { sessions }, { sessions: juniors }] = await Promise.all([
+  getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_TRYOUTS_GID),
+  getSessions(import.meta.env.GOOGLE_SHEET_ID),
+  getJuniorSessions(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_JUNIORS_GID),
+]);
 
 const heroSlides = [
   {
