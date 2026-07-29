@@ -1,0 +1,356 @@
+---
+// src/components/PromoCards.astro
+// Homepage "get involved" block: three tall portrait promo cards that replaced
+// the earlier thin tryouts band + sessions strip. Implements the designer's comp
+// (Lionhearts_Website_Assets/image.png) 1:1 —
+//   • Try Out (deep-navy card)     — soonest pre-season tryout, links to /events
+//   • Open Session (blue card)     — the weekly adult schedule
+//   • Junior Sessions (green card) — the weekly junior schedule
+//
+// Each card is a self-contained flat brand-colour block with its own fixed text
+// colours, so it renders IDENTICALLY in light and dark themes — only the page
+// behind it themes. Data is passed in from index.astro (already fetched there),
+// so this component does no fetching of its own.
+import { Image } from 'astro:assets';
+import type { Tryout, Session } from '../lib/sheets';
+import { abbreviateDay, abbreviateTime, formatTryoutDate } from '../lib/sheets';
+import jonasPhoto from '../assets/promo/jonas.png';
+import liannaPhoto from '../assets/promo/lianna.png';
+import nathanPhoto from '../assets/promo/nathan.png';
+
+interface Props {
+  tryouts: Tryout[];
+  sessions: Session[];
+  juniors: Session[];
+}
+const { tryouts, sessions, juniors } = Astro.props;
+
+const next = tryouts[0];
+const moreCount = tryouts.length - 1;
+
+// Off-season the tryouts anchor on /events doesn't render, so the fallback CTA
+// points at the sessions instead — matching the "come to an open session" copy.
+const tryoutHref = next ? '/events#tryouts' : '/events';
+const tryoutCta = next ? 'See dates →' : 'See sessions →';
+
+// Abbreviate day + time for the compact schedule rows (same helpers the strip
+// used). Juniors carry no `level`, so it's rendered conditionally.
+const toRow = (s: Session) => ({ day: abbreviateDay(s.day), time: abbreviateTime(s.time), level: s.level });
+const adultRows = sessions.map(toRow);
+const juniorRows = juniors.map(toRow);
+
+// Cap the schedule so a growing sheet can't stretch the equal-height card grid;
+// overflow collapses into a "+N more" link, mirroring the tryouts "+N more".
+const MAX_ROWS = 3;
+const adultVisible = adultRows.slice(0, MAX_ROWS);
+const juniorVisible = juniorRows.slice(0, MAX_ROWS);
+const adultMore = adultRows.length - adultVisible.length;
+const juniorMore = juniorRows.length - juniorVisible.length;
+
+// The Open and Junior cards are the same schedule card with different data, so
+// they render from one template below. (Try Out differs structurally and stays
+// inline.) href is /events for both — the full schedule / junior info live there.
+const scheduleCards = [
+  { modifier: 'open',   eyebrow: `${sessions.length} weekly`, title: ['Open', 'session'],    rows: adultVisible,  more: adultMore,  cta: 'Full schedule →', photo: liannaPhoto, widths: [220, 330, 440, 660], sizes: '230px' },
+  { modifier: 'junior', eyebrow: 'Grow together',             title: ['Junior', 'sessions'], rows: juniorVisible, more: juniorMore, cta: 'Junior info →',   photo: nathanPhoto, widths: [200, 300, 400, 600], sizes: '210px' },
+];
+---
+
+<section class="section promo" aria-labelledby="promo-heading">
+  <div class="container promo__inner">
+    <header class="promo__head">
+      <h2 class="eyebrow section-eyebrow promo__eyebrow" id="promo-heading">Get involved</h2>
+      <p class="promo__lead">First time on court or ready to compete — here's how to play with us.</p>
+    </header>
+
+    <div class="promo__grid">
+      {/* ── Try Out (deep-navy) ─────────────────────────────────────────── */}
+      <article class="promo-card promo-card--tryout">
+        <div class="promo-card__body">
+          <p class="promo-card__eyebrow">Pre-season</p>
+          <h3 class="promo-card__title">Try out<br />for a team</h3>
+          {next ? (
+            <p class="promo-card__lead">
+              Next: <strong>{next.team}</strong> — {formatTryoutDate(next.dateObj)} · {next.time}
+              {moreCount > 0 && <> <a class="promo-card__more" href="/events#tryouts">+{moreCount} more</a></>}
+            </p>
+          ) : (
+            <p class="promo-card__lead">No trials scheduled right now. To join a team, come to an open session and tell a coach you'd like to play competitively.</p>
+          )}
+        </div>
+        <a class="btn btn--white promo-card__cta" href={tryoutHref}>{tryoutCta}</a>
+        <div class="promo-card__photo" aria-hidden="true">
+          <Image src={jonasPhoto} alt="" widths={[240, 360, 480, 720]} sizes="260px" loading="lazy" />
+        </div>
+      </article>
+
+      {/* ── Open Session (blue) + Junior Sessions (green) ───────────────── */}
+      {scheduleCards.map(card => (
+        <article class={`promo-card promo-card--${card.modifier}`}>
+          <div class="promo-card__body">
+            <p class="promo-card__eyebrow">{card.eyebrow}</p>
+            <h3 class="promo-card__title">{card.title[0]}<br />{card.title[1]}</h3>
+            <p class="promo-card__lead">No booking · No experience needed</p>
+            <ul class="promo-card__schedule" role="list">
+              {card.rows.map(r => (
+                <li class="promo-card__row">
+                  <span class="promo-card__when">
+                    <span class="promo-card__day">{r.day}</span>
+                    <span class="promo-card__time">{r.time.range}{r.time.meridiem && (
+                      <span class="promo-card__meridiem">{r.time.meridiem}</span>
+                    )}</span>
+                  </span>
+                  {r.level && <span class="promo-card__level">{r.level}</span>}
+                </li>
+              ))}
+            </ul>
+            {card.more > 0 && <a class="promo-card__schedule-more" href="/events">+{card.more} more</a>}
+          </div>
+          <a class="btn btn--white promo-card__cta" href="/events">{card.cta}</a>
+          <div class="promo-card__photo" aria-hidden="true">
+            <Image src={card.photo} alt="" widths={card.widths} sizes={card.sizes} loading="lazy" />
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .promo__inner { padding: 56px var(--page-px); }
+
+  .promo__head { margin-bottom: 1.5rem; }
+  .promo__eyebrow { margin-bottom: 0.75rem; }
+  .promo__lead {
+    font-size: var(--text-lead);
+    color: var(--color-text-muted);
+    line-height: var(--leading-snug);
+    max-width: 46ch;
+  }
+
+  .promo__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  /* ── Card shell ──
+     Each card is a fixed brand-colour block: self-contained text colours below
+     mean it renders the same in both themes. Only the shadow (for light-theme
+     separation) and the navy card's hairline border frame it against the page. */
+  .promo-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    padding: 32px;
+    min-height: 460px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 34px color-mix(in srgb, var(--lh-navy-deep) 12%, transparent);
+    background: var(--promo-surface);
+    /* Max rendered height of the athlete cut-out (see the photo slot below). */
+    --promo-photo-max: 320px;
+  }
+
+  .promo-card--tryout { --promo-surface: var(--lh-navy-deep); border: 1px solid color-mix(in srgb, var(--lh-white) 8%, transparent); }
+  .promo-card--open   { --promo-surface: var(--lh-blue); }
+  .promo-card--junior { --promo-surface: var(--lh-green); }
+
+  /* Text sits in a left column above both the photo (z0) and the scrim (z1), so
+     the schedule/headline never share space with the athlete on the right. */
+  .promo-card__body { position: relative; z-index: 2; max-width: 62%; }
+
+  /* ── Eyebrow ── letter-spaced label; colour keyed per card surface. */
+  .promo-card__eyebrow {
+    font-size: var(--text-note);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .promo-card--tryout .promo-card__eyebrow { color: var(--lh-blue); }
+  .promo-card--open   .promo-card__eyebrow,
+  .promo-card--junior .promo-card__eyebrow { color: var(--lh-navy); }
+
+  /* ── Headline ── the star: heavy condensed uppercase, two lines. Uses the
+     site's display-title recipe (--tracking-display / --leading-display, as
+     .page-hero__title), only swapping in the condensed face and the --text-sub
+     step so the two-line headline fits a 3-column card down to tablet.
+     White on blue/green is ~2.6:1 — the deliberate brand Style-#2 exception
+     already accepted elsewhere (community headings). */
+  .promo-card__title {
+    font-family: var(--font-condensed);
+    font-size: var(--text-sub);
+    font-weight: var(--weight-black);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    color: var(--lh-white);
+    margin: 0 0 1rem;
+  }
+
+  /* ── Lead / benefit line ── */
+  .promo-card__lead {
+    font-size: var(--text-body);
+    line-height: var(--leading-snug);
+    margin: 0;
+  }
+  .promo-card--tryout .promo-card__lead { color: var(--lh-slate-200); }
+  .promo-card--tryout .promo-card__lead strong { color: var(--lh-white); font-weight: var(--weight-bold); }
+  /* On the light blue/green surfaces a deep-navy tint keeps the benefit line AA-legible. */
+  .promo-card--open   .promo-card__lead,
+  .promo-card--junior .promo-card__lead { color: color-mix(in srgb, var(--lh-navy) 82%, transparent); }
+
+  .promo-card__more {
+    color: var(--lh-blue);
+    font-weight: var(--weight-bold);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .promo-card__more:hover { text-decoration: underline; }
+
+  /* ── Schedule list ── day label + time, quiet level underneath, hairline rules. */
+  .promo-card__schedule {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+  }
+  .promo-card__row {
+    padding: 0.75rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--lh-navy) 22%, transparent);
+  }
+  .promo-card__row:first-child { border-top: none; }
+
+  .promo-card__when { display: flex; align-items: baseline; gap: 0.5rem; }
+  .promo-card__day {
+    font-size: var(--text-body);
+    font-weight: var(--weight-extrabold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--lh-navy);
+  }
+  /* Schedules only render on the light blue/green cards, so the time — like the
+     adjacent day label — is navy for AA contrast (white was ~1.8:1 on green). */
+  .promo-card__time {
+    font-size: var(--text-lg);
+    font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-display);
+    color: var(--lh-navy);
+  }
+  .promo-card__meridiem {
+    margin-left: 0.2em;
+    font-size: var(--text-note);
+    font-weight: var(--weight-semibold);
+    opacity: 0.75;
+  }
+  .promo-card__level {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--text-eyebrow);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--lh-navy) 70%, transparent);
+  }
+
+  /* Overflow link when the schedule is capped — navy on the blue/green cards. */
+  .promo-card__schedule-more {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: var(--text-note);
+    font-weight: var(--weight-bold);
+    color: var(--lh-navy);
+    text-decoration: none;
+  }
+  .promo-card__schedule-more:hover { text-decoration: underline; }
+
+  /* ── CTA ── a .btn--white button (white fill / navy text reads on all three
+     surfaces per the button system's "surface contrast wins" rule). This class
+     only positions it: bottom-left of the card, above the photo + scrim. */
+  .promo-card__cta {
+    align-self: flex-start;
+    margin-top: auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Focus ring keyed per surface — the site's default --color-accent (blue)
+     outline would vanish on the blue card, so give navy cards a light ring and
+     the blue/green cards a navy one. */
+  .promo-card a:focus-visible {
+    outline: 2px solid var(--lh-navy);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .promo-card--tryout a:focus-visible { outline-color: var(--lh-white); }
+
+  /* ── Photo slot ── transparent athlete cut-out anchored to the card's
+     bottom-RIGHT corner and bleeding off the bottom edge, behind the copy
+     (z0, pointer-events none). Sized by a DEFINITE height (--promo-photo-max)
+     with width:auto, so width resolves from the intrinsic aspect ratio and the
+     athlete keeps a consistent rendered size across a narrow 3-col column, a
+     full-width single column on tablet, and mobile — it never balloons with card
+     width. The text block (max-width:62%) forms a left column; the athlete owns
+     the right. --promo-photo-nudge slides a subject that reads off-centre back
+     toward the corner (per-card, below).
+     WHY NOT height:auto + max-height: the container is an absolutely-positioned
+     shrink-to-fit box (width:auto), so an image whose width is itself derived
+     from the container is circular. Chrome resolves it via the intrinsic ratio,
+     but WebKit/Safari collapses the image to 0×0 (it loads, paints nothing). A
+     definite height breaks the cycle in every engine. */
+  .promo-card__photo {
+    position: absolute;
+    inset: auto 0 0 auto;
+    z-index: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+    transform: translateX(var(--promo-photo-nudge, 0px));
+  }
+  .promo-card__photo :global(img) {
+    height: var(--promo-photo-max);
+    width: auto;
+    max-width: 100%;
+  }
+
+  /* ── Scrim ── card-colour wash between photo (z0) and text (z2). Fades from the
+     solid surface on the left (backing the text column) to transparent on the
+     right (athlete shows through), plus a bottom lift — so a seam never shows and
+     text stays legible even where it nears the figure. */
+  .promo-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(to right,
+        var(--promo-surface) 34%,
+        color-mix(in srgb, var(--promo-surface) 55%, transparent) 58%,
+        transparent 88%),
+      linear-gradient(to top,
+        var(--promo-surface) 4%,
+        transparent 42%);
+  }
+
+  /* Per-card horizontal tuning: Jonas is symmetric (sit central-right); Lianna
+     leans right already; Nathan's mass is left of frame, so pull him rightward. */
+  .promo-card--tryout { --promo-photo-nudge: 18px; }
+  .promo-card--open   { --promo-photo-nudge: 8px; }
+  .promo-card--junior { --promo-photo-nudge: 10px; }
+
+  /* ── Responsive ──
+     Cards need room for the big headline; drop to 1 column below ~880px. */
+  @media (max-width: 880px) {
+    .promo__grid { grid-template-columns: 1fr; }
+    .promo-card { min-height: 420px; }
+  }
+
+  @media (max-width: 560px) {
+    .promo__inner { padding: 40px var(--page-px); }
+    .promo-card { padding: 24px; }
+    /* Narrower cards: keep text readable by shrinking the figure a touch. */
+    .promo-card { --promo-photo-max: 280px; }
+    .promo-card__body { max-width: 66%; }
+  }
+</style>
