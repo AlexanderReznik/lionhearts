@@ -359,8 +359,8 @@ body {
   gap: 4px;
 }
 
-/* S32: photo-backed schedule cards — darkened so they read distinct from the
-   blue filter pills below; text goes white over the overlay. */
+/* S32: photo-backed schedule cards — the source photos are already a flat
+   brand-blue duotone, so they carry the tone themselves; text goes white. */
 .session-card--photo {
   position: relative;
   overflow: hidden;
@@ -377,16 +377,6 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: 50% 30%;
-}
-/* The photos are already brand-blue, so this is only a legibility scrim for the
-   white text — a light top-weighted darken, not a full blue wash. */
-.session-card--photo::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(160deg,
-    color-mix(in srgb, var(--lh-navy-deep) 32%, transparent),
-    color-mix(in srgb, var(--lh-navy-deep) 6%, transparent));
 }
 .session-card__content {
   position: relative;
