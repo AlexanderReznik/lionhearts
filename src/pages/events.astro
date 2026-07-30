@@ -263,7 +263,7 @@ const teamSections = [
             <div class="team-fixture-section__header">
               <div>
                 <span class="team-fixture-section__name">{team.name}</span>
-                {team.badge && <span class="team-fixture-section__badge">{team.badge}</span>}
+                {team.badge && <span class="chip-accent team-fixture-section__badge">{team.badge}</span>}
               </div>
               <div class="team-fixture-section__right">
                 <span class="team-fixture-section__division">{team.division}</span>
@@ -550,15 +550,8 @@ const teamSections = [
     letter-spacing: var(--tracking-display);
   }
 
+  /* Chip styling comes from the shared .chip-accent utility. */
   .team-fixture-section__badge {
-    font-size: var(--text-eyebrow);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-accent-text);
-    background: rgba(84,164,247,0.15);
-    padding: 3px 10px;
-    border-radius: 3px;
     margin-left: 10px;
   }
 

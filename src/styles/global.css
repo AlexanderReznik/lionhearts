@@ -354,6 +354,23 @@ body {
   color: var(--btn-accent-text);
 }
 
+/* ── Accent chip ──
+   Small non-interactive label (the "Super League" badge on /teams and
+   /events). Tinted, never a solid fill, so it can't be read as a button. */
+.chip-accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: color-mix(in srgb, var(--lh-blue) 15%, transparent);
+  color: var(--color-accent-text);
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-size: var(--text-eyebrow);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
 /* ── Session cards ──
    Shared surface primitives for the SessionCard/VenueCard tiles on /events
    (the responsive grid that lays them out stays page-local). */

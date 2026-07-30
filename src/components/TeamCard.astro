@@ -42,7 +42,7 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
     <span class="team-card__gender">{team.gender}</span>
     <h2 class="team-card__name">{team.name}</h2>
     <p class="team-card__division">{team.division}</p>
-    {team.badge && <span class="team-card__badge">{team.badge}</span>}
+    {team.badge && <span class="chip-accent">{team.badge}</span>}
   </div>
 </article>
 
@@ -117,22 +117,6 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
     font-size: var(--text-note);
     color: var(--color-text-muted);
     margin-bottom: 10px;
-  }
-
-  /* Tinted chip, not a solid fill — a solid accent fill reads as a button. */
-  .team-card__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: color-mix(in srgb, var(--lh-blue) 15%, transparent);
-    border: 1px solid var(--color-border-blue);
-    color: var(--color-accent-text);
-    border-radius: 3px;
-    padding: 3px 10px;
-    font-size: var(--text-micro);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
   }
 </style>
 
