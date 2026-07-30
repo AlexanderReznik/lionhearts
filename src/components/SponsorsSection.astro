@@ -8,7 +8,7 @@ import { SPONSORS } from '../data/sponsors';
   <div class="sponsors__grid">
     {SPONSORS.map(sponsor => (
       <div class="sponsors__title-card">
-        <span class="sponsors__badge">{sponsor.tier}</span>
+        <span class="chip-accent">{sponsor.tier}</span>
         <div class={`sponsors__chip sponsors__chip--${sponsor.slug}`}>
           {sponsor.logo
             ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
@@ -58,21 +58,6 @@ import { SPONSORS } from '../data/sponsors';
     align-items: center;
     gap: clamp(20px, 3vw, 30px);
     box-shadow: 0 10px 30px rgba(5, 18, 43, 0.06);
-  }
-
-  /* Tinted chip, NOT a solid fill — a solid accent fill reads as a button.
-     Brand blue tint + hairline + accent-text (AA), matching the site's
-     non-interactive label chips. */
-  .sponsors__badge {
-    background: color-mix(in srgb, var(--lh-blue) 15%, transparent);
-    border: 1px solid var(--color-border-blue);
-    color: var(--color-accent-text);
-    font-size: var(--text-eyebrow);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    padding: 5px 14px;
-    border-radius: 20px;
   }
 
   /* Fixed-ratio chip so both sponsor logos sit in an identically-sized white

@@ -644,12 +644,14 @@ const teamSections = [
 
   .tl-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 
+  /* accent-text, not raw navy — navy on this tint disappears against the dark
+     theme's navy rows. */
   .next-pill {
     font-size: var(--text-micro);
     font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--lh-navy);
+    color: var(--color-accent-text);
     background: rgba(84,164,247,0.18);
     border: 1px solid rgba(84,164,247,0.35);
     border-radius: 4px;

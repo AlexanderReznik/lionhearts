@@ -33,7 +33,7 @@ const perks: { icon: IconName; title: string; body: string }[] = [
     <div class="sponsor-grid">
       {SPONSORS.map(sponsor => (
         <div class="sponsor-hero">
-          <span class="sponsor-hero__badge">{sponsor.tier}</span>
+          <span class="chip-accent">{sponsor.tier}</span>
           <div class={`sponsor-hero__logo sponsor-hero__logo--${sponsor.slug}`}>
             {sponsor.logo
               ? <img src={sponsor.logo} alt={`${sponsor.name} logo`} />
@@ -101,19 +101,6 @@ const perks: { icon: IconName; title: string; body: string }[] = [
     gap: clamp(20px, 3vw, 30px);
     text-align: center;
     box-shadow: 0 10px 30px rgba(5, 18, 43, 0.06);
-  }
-
-  /* Tinted chip, not a solid fill — see SponsorsSection note. */
-  .sponsor-hero__badge {
-    background: color-mix(in srgb, var(--lh-blue) 15%, transparent);
-    border: 1px solid var(--color-border-blue);
-    color: var(--color-accent-text);
-    font-size: var(--text-micro);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    padding: 5px 14px;
-    border-radius: 20px;
   }
 
   /* Fixed-ratio chip so both sponsor logos sit in an identically-sized white
