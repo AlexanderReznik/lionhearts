@@ -117,7 +117,10 @@ const scheduleCards = [
 </section>
 
 <style>
-  .promo__inner { padding: 56px var(--page-px); }
+  /* Gutters belong on the section, not inside .container — inside, they eat
+     into --max-width and the grid ends up narrower than every other band. */
+  .promo { padding-inline: var(--page-px); }
+  .promo__inner { padding-block: 56px; }
 
   .promo__head { margin-bottom: 1.5rem; }
   .promo__eyebrow { margin-bottom: 0.75rem; }
@@ -352,7 +355,7 @@ const scheduleCards = [
   }
 
   @media (max-width: 560px) {
-    .promo__inner { padding: 40px var(--page-px); }
+    .promo__inner { padding-block: 40px; }
     .promo-card { padding: 24px; }
     /* Narrower cards: keep text readable by shrinking the figure a touch. */
     .promo-card { --promo-photo-max: 280px; }
