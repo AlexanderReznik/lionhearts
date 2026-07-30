@@ -23,7 +23,7 @@ Friday,8:00pm–10:00pm,Intermediate / Advanced`;
 
 /**
  * Defaults applied to a parsed session when its `venue`/`price` cells are blank
- * (or the columns are absent). Juniors override the price default to £3.
+ * (or the columns are absent). Juniors override the price default to £3 cash.
  */
 interface SessionDefaults {
   venue?: string;
@@ -131,14 +131,14 @@ export const JUNIOR_FALLBACK_CSV = `day,time
 Saturday,1:30pm–3:30pm`;
 
 /** Juniors are cheaper than the adult open sessions — default when unspecified. */
-export const JUNIOR_DEFAULT_PRICE = '£3';
+export const JUNIOR_DEFAULT_PRICE = '£3 cash';
 const JUNIOR_DEFAULTS: SessionDefaults = { price: JUNIOR_DEFAULT_PRICE };
 
 /**
  * Returns the junior sessions from the dedicated juniors tab (its own gid) if
  * both sheetId and gid are set, otherwise from JUNIOR_FALLBACK_CSV. Mirrors
  * getSessions, resolving `usingFallback` so callers can surface a notice.
- * Blank price cells default to £3 (the junior rate), not the adult default.
+ * Blank price cells default to £3 cash (the junior rate), not the adult default.
  */
 export async function getJuniorSessions(sheetId?: string, gid?: string): Promise<{ sessions: Session[]; usingFallback: boolean }> {
   if (!sheetId || !gid) {
