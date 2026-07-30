@@ -28,7 +28,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 
     <div class="pathways">
 
-      <div class="pathway pathway--featured section--community">
+      <div class="pathway pathway--featured">
         <p class="pathway__rec">Best way in</p>
         <div class="pathway__icon" aria-hidden="true"><Icon name="session" /></div>
         <h2 class="pathway__title">Come to an Open Session</h2>
@@ -36,7 +36,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
           The easiest way in — just show up and play. Sessions are beginner-friendly: no booking,
           no commitment, no experience needed. Meet the community and see if it's for you.
         </p>
-        <a href="/events" class="btn btn--white pathway__cta">See Full Schedule</a>
+        <a href="/events" class="btn pathway__cta">See Full Schedule</a>
       </div>
 
       <div class="pathway">
@@ -48,11 +48,11 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
         </p>
         <a
           href={INSTAGRAM_URL}
-          class="btn btn--ghost pathway__cta"
+          class="btn pathway__cta"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Icon name="instagram" /> DM Us on Instagram
+          DM Us on Instagram
         </a>
       </div>
 
@@ -63,7 +63,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
           Want us to find the right fit for you? Fill in the short form below and we'll reach
           out to match you with the right team or session.
         </p>
-        <a href="#join-form" class="btn btn--ghost pathway__cta">Fill in the Form ↓</a>
+        <a href="#join-form" class="btn pathway__cta">Fill in the Form ↓</a>
       </div>
 
     </div>
@@ -164,11 +164,21 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
   /* Web3Forms honeypot — hidden from people, present for bots. */
   .join-form__botcheck { display: none; }
 
+  /* Page-local: cap the body to the site --max-width container (1120px, so
+     1024px of content inside the page padding) instead of the full viewport.
+     That lands the tiles on the same 328px/20px track as the home page's
+     tryout / open-session / junior promo cards, and keeps the form's fields to
+     a sane measure on the same column. */
+  .page-content {
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+
   /* ── Pathways ── */
   .pathways {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 20px;
     margin-bottom: 52px;
   }
 
@@ -176,11 +186,15 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     .pathways { grid-template-columns: 1fr; }
   }
 
+  /* Portrait proportions per the mock — the min-height pushes the CTA to the
+     foot of a tall card and leaves the body copy breathing room above it.
+     Dropped on mobile, where the cards stack and size to their content. */
   .pathway {
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    border: 1px solid var(--color-border-blue);
     border-radius: 14px;
-    padding: 32px 28px;
+    padding: 36px 32px;
+    min-height: 500px;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -188,26 +202,30 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     overflow: hidden;
   }
 
-  /* featured pathway: force community bg (scoped .pathway wins over global .section--community) */
-  .pathway--featured {
-    background: var(--lh-blue);
-    border-color: rgba(17,35,75,0.3);
+  @media (max-width: 768px) {
+    .pathway {
+      min-height: 0;
+      padding: 32px 28px;
+    }
   }
 
-  /* title inherits --color-text which is navy on light bg; force white on blue card */
-  .pathway--featured .pathway__title { color: var(--lh-white); }
+  /* The recommended path lifts off the other two with the shared tinted-blue
+     wash over the card surface — lighter in dark, pale blue in light. */
+  .pathway--featured {
+    background-image: var(--color-surface-blue);
+  }
 
   /* pinned top-right, out of the flow, so the featured card's icon and title
      sit at the same height as the other two cards */
   .pathway__rec {
     position: absolute;
-    top: 32px;
-    right: 28px;
+    top: 36px;
+    right: 32px;
     font-size: var(--text-micro);
     font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: rgba(255,255,255,0.65);
+    color: var(--color-accent-text);
   }
 
   .form-intro {
@@ -219,20 +237,23 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     max-width: 520px;
   }
 
-  .pathway--featured::before {
-    content: '';
-    position: absolute;
-    top: -50px; right: -50px;
-    width: 200px; height: 200px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-    pointer-events: none;
+  /* Rounded-square brand badge: accent fill with the navy glyph, matching
+     .btn--accent's pairing. Identical on all three cards — the featured one is
+     marked out by its tinted panel, not by a different badge colour. */
+  .pathway__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-2xl);
+    line-height: 1;
+    background: var(--color-accent);
+    color: var(--btn-accent-text);
+    margin-bottom: 10px;
   }
-
-  .pathway__icon { font-size: var(--text-3xl); color: var(--color-accent-text); line-height: 1; }
-  /* Featured pathway sits on the blue .section--community surface — inherit its
-     navy text colour instead of the accent blue (which would be blue-on-blue). */
-  .pathway--featured .pathway__icon { color: inherit; }
 
   .pathway__title {
     font-size: var(--text-lead);
@@ -241,7 +262,6 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     letter-spacing: var(--tracking-display);
   }
 
-  /* non-featured pathways are on a light surface — use dark text tokens */
   .pathway__body {
     font-size: var(--text-body-sm);
     line-height: var(--leading-relaxed);
@@ -249,19 +269,19 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     flex: 1;
   }
 
-  /* featured (community) pathway: body + rec in navy for AA contrast on #54a4f7 */
-  .pathway--featured .pathway__body { color: var(--lh-navy); }
-  .pathway--featured .pathway__rec { color: var(--lh-navy); }
-
-  /* one shared CTA treatment across all three pathway cards; min-height
-     equalises the ghost border / icon line-box differences between variants */
+  /* Full-width inverted CTA on all three cards: white on the dark theme's navy
+     panels, navy on the light theme's pale ones. */
   .pathway__cta {
     margin-top: auto;
     width: 100%;
     box-sizing: border-box;
     justify-content: center;
     min-height: 48px;
+    background: light-dark(var(--lh-navy), var(--lh-white));
+    color: light-dark(var(--lh-white), var(--lh-navy));
   }
+
+  .pathway__cta:hover { opacity: 0.9; }
 
   /* ── Join form ── */
   .join-form {
