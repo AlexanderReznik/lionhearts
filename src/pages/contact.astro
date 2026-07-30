@@ -12,19 +12,19 @@ const contactMethods: {
   featured?: boolean;
 }[] = [
   {
-    icon: 'email',
-    tag: 'Email',
-    title: 'Drop Us a Message',
-    body: 'For general enquiries, sponsorship, or anything else.',
-    link: { label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
-  },
-  {
     icon: 'instagram-dm',
     tag: 'Fastest Response',
     title: 'Instagram DM',
     body: 'We check our DMs regularly — fastest way to get a reply from us.',
     link: { label: INSTAGRAM_HANDLE, href: INSTAGRAM_URL },
     featured: true,
+  },
+  {
+    icon: 'email',
+    tag: 'Email',
+    title: 'Drop Us a Message',
+    body: 'For general enquiries, sponsorship, or anything else.',
+    link: { label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
   },
   {
     icon: 'session',
@@ -61,7 +61,7 @@ const MAPS_URL = 'https://maps.google.com/?q=Mulberry+Academy+Shoreditch+Gosset+
 
 <BaseLayout
   title="Contact — London Lionhearts Volleyball"
-  description="Get in touch with London Lionhearts Volleyball Club. Email, Instagram DM, or come to an open session at Mulberry Academy, Gosset Street, Shoreditch E2 6NW."
+  description="Get in touch with London Lionhearts Volleyball Club. Instagram DM, email, or come to an open session at Mulberry Academy, Gosset Street, Shoreditch E2 6NW."
 >
   <div class="page-hero">
     <p class="eyebrow page-hero__eyebrow">Get in Touch</p>
