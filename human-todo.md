@@ -387,6 +387,27 @@ site rebuilds for any other reason (e.g. a sheet edit or a content change).
 
 ---
 
+## 15. Verify London Lionhearts fixtures after the season rollover
+
+The men's NVL Division 2 team was renamed from **Leo** to **London Lionhearts**.
+Only the display name changed — its Volleyzone identifiers in `src/data/teams.ts`
+(`volleyzoneSlug: 'lionhearts-leo'`, plus `compId` / `seasonId` /
+`volleyzoneUserId`) still point at the old entry, because those are Volleyzone's
+own IDs and not ours to rename.
+
+When the IDs are moved over to the new season, check this team specifically:
+
+1. Open `/events` and find the **London Lionhearts** section under Men's teams.
+2. Confirm real fixtures and results load — not the "Fixtures unavailable" row.
+3. If it's empty, the team's slug or `compId`/`seasonId` on Volleyzone has
+   probably changed with the rename. Re-check them per item 5 and update
+   `src/data/teams.ts`.
+
+The other 8 teams are unaffected by the rename, but a season rollover changes
+`seasonId` for all of them — worth a pass down the whole list at the same time.
+
+---
+
 ## Image folder structure (for reference)
 
 ```
@@ -410,7 +431,7 @@ public/
       predators.jpg
       pride.jpg
       roar.jpg
-      leo.jpg
+      london-lionhearts.jpg
     sponsors/
       vinarius.png
   og-image.jpg

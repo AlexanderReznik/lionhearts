@@ -18,7 +18,7 @@ Website for [London Lionhearts VBC](https://lionheartslondon.com) — East Londo
 | `/` | Home — hero carousel, stats, about intro, community, sponsors, Instagram feed, join CTA |
 | `/about` | Club history, founders, values |
 | `/events` | Open sessions (live Google Sheet or fallback), Volleyzone fixture links per team |
-| `/teams` | 9-team grid — NVL: Vinarius (W), Leo (M) · LVA: Alpha, Fury (Premier), Cats, Beats, Predators (Div 1), Pride (Div 2), Roar (Div 3) |
+| `/teams` | 9-team grid — NVL: Vinarius (W), London Lionhearts (M) · LVA: Alpha, Fury (Premier), Cats, Beats, Predators (Div 1), Pride (Div 2), Roar (Div 3) |
 | `/sponsorship` | Sponsors, partnership CTA, sponsorship perks |
 | `/join` | 3 join pathways + Web3Forms sign-up form |
 | `/contact` | Contact cards, location block, social links |

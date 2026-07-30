@@ -63,7 +63,7 @@ export const teams: Team[] = [
     compId: '209513', seasonId: '3881', volleyzoneUserId: '298568', volleyzoneSegment: 'lva',
   },
   {
-    name: 'Leo', gender: "Men's", division: 'NVL Division 2',
+    name: 'London Lionhearts', gender: "Men's", division: 'NVL Division 2',
     volleyzoneSlug: 'lionhearts-leo',
     compId: '206204', seasonId: '3852', volleyzoneUserId: '279580', volleyzoneSegment: 'nvl',
   },

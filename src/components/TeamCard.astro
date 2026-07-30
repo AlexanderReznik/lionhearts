@@ -9,13 +9,14 @@ interface Props {
 
 const { team } = Astro.props;
 
-// Team photos live in src/assets/teams/<name>.jpg and are optimised at build
-// time by Astro's <Picture> (AVIF/WebP + responsive srcset). Resolve by name.
+// Team photos live in src/assets/teams/<name>.jpg (kebab-cased) and are
+// optimised at build time by Astro's <Picture> (AVIF/WebP + responsive srcset).
 const teamPhotos = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/teams/*.jpg',
   { eager: true },
 );
-const photo = teamPhotos[`../assets/teams/${team.name.toLowerCase()}.jpg`]?.default;
+const slug = team.name.toLowerCase().replace(/\s+/g, '-');
+const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
 ---
 
 <article
