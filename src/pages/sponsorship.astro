@@ -48,7 +48,7 @@ const perks: { icon: IconName; title: string; body: string }[] = [
       ))}
     </div>
 
-    <div class="become-sponsor">
+    <div class="become-sponsor accent-underbar">
       <div class="become-sponsor__copy">
         <p class="become-sponsor__headline">Partner With<br />Lionhearts</p>
         <p class="become-sponsor__sub">
@@ -184,13 +184,13 @@ const perks: { icon: IconName; title: string; body: string }[] = [
     border: 1px solid light-dark(transparent, rgba(84,164,247,0.30));
   }
 
+  /* Same corner motif as the home page's "Ready to play?" panel (JoinCTA). */
   .become-sponsor::after {
     content: '';
     position: absolute;
-    top: -60px; right: -60px;
-    width: 300px; height: 300px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.06);
+    top: -150px; right: -150px;
+    width: 460px; height: 460px;
+    background: url('/brand/graphics/pride-3.svg') no-repeat center / contain;
     pointer-events: none;
   }
 
