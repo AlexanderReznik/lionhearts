@@ -1,9 +1,11 @@
 ---
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon, { type IconName } from '../components/Icon.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import PhotoCarousel from '../components/PhotoCarousel.astro';
 import { SITE_URL } from '../data/club';
+import missionPhoto from '../assets/mission/allan_training_blue.jpg';
 import womensSquad from '../assets/heritage/womens_squad.jpg';
 import mensSquad from '../assets/heritage/mens_squad.jpg';
 import bowlingSocial from '../assets/heritage/bowling_social.jpg';
@@ -149,9 +151,18 @@ const heritagePhotos = [
     </div>
   </section>
 
-  <!-- Mission band — full-bleed navy-duotone training photo (to be provided) -->
+  <!-- Mission band — full-bleed navy-duotone training photo -->
   <section class="about-mission section--feature">
-    <div class="about-mission__media" aria-hidden="true"></div>
+    <div class="about-mission__media" aria-hidden="true">
+      <Picture
+        src={missionPhoto}
+        formats={['avif', 'webp']}
+        widths={[640, 960, 1280, 1920, 2560]}
+        sizes="100vw"
+        alt=""
+        loading="lazy"
+      />
+    </div>
     <div class="about-mission__inner">
       <Eyebrow class="about-mission__eyebrow" text="Our Mission" as="h2" />
       <p class="about-mission__lead">{missionLead}</p>
@@ -259,8 +270,9 @@ const heritagePhotos = [
   .value-card__title { font-size: var(--text-lg); font-weight: var(--weight-black); text-transform: uppercase; letter-spacing: var(--tracking-display); line-height: var(--leading-none); }
   .value-card__body { font-size: var(--text-body); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
 
-  /* Mission — full-bleed band. A navy-duotone training photo drops into
-     .about-mission__media later; the overlay keeps text AA over any photo. */
+  /* Mission — full-bleed band behind a navy-duotone training photo. The base
+     gradient shows while the photo loads; the ::after overlay keeps text AA
+     over the photo's bright upper half. */
   .about-mission {
     position: relative;
     padding: clamp(72px, 12vw, 140px) var(--page-px);
@@ -271,9 +283,21 @@ const heritagePhotos = [
     position: absolute;
     inset: 0;
     z-index: -1;
-    background:
-      linear-gradient(180deg, rgba(5, 18, 43, 0.55), rgba(5, 18, 43, 0.9)),
-      linear-gradient(140deg, var(--lh-navy), var(--lh-navy-deep));
+    background: linear-gradient(140deg, var(--lh-navy), var(--lh-navy-deep));
+  }
+  /* Focal point sits low in the portrait frame — the coach's shoulders and the
+     court behind him, not the roof trusses. */
+  .about-mission__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 62%;
+  }
+  .about-mission__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(5, 18, 43, 0.6), rgba(5, 18, 43, 0.86));
   }
   .about-mission__eyebrow { margin-bottom: 28px; }
   .about-mission__lead,
