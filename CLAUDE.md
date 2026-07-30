@@ -118,11 +118,15 @@ SVGO-optimised, and carry `fill="currentColor"`, so they **theme automatically**
 inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
 `.brand-icon` rule), so callers size via the wrapper's `font-size`.
 
-- **Footer socials** (Instagram, Facebook, WhatsApp): the designer only supplied
-  **Instagram** (a flat camera silhouette). `facebook.svg` (an `f`) and
-  `whatsapp.svg` were **hand-drawn to match** that flat single-path-with-knockout
-  style. The footer social icons use the site accent (`--color-accent-text`, themed),
-  like every other icon — not per-platform brand colours.
+- **Social marks**: `facebook.svg` and `whatsapp.svg` (the /contact "Follow Us"
+  row) are the designer's `Icons_SVG/Facebook_2.svg` / `Whatsapp_2.svg` — badge
+  marks in the flat single-path-with-knockout style. The footer's separate
+  `footer-facebook.svg` / `footer-whatsapp.svg` are still **hand-drawn to match**
+  that style (the designer's `Footer_*.svg` were never adopted). When importing a
+  designer SVG, strip its wrapper `id` and `<defs><style>.cls-1{…}</style></defs>`
+  — those generic ids/classnames collide once several icons are inlined on a page.
+  Social icons use the site accent (`--color-accent-text`, themed), like every
+  other icon — not per-platform brand colours.
 - This is the deliberate exception to the "serve via `astro:assets`" rule below:
   monochrome icons that must recolour with the theme use native SVG-component import
   + `currentColor`, NOT `<Image>` (which can't recolour). **Photos still use

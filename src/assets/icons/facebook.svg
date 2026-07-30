@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" xml:space="preserve">
-<!-- Drawn to match the designer's flat, solid, currentColor icon set (no official mark supplied). -->
-<g id="Layer_3">
-	<path d="M255,485 L255,322 L168,322 L168,232 L255,232 L255,170
-		C255,128 281,103 327,103 C346,103 366,105 385,108 L385,182
-		C375,181 364,180 354,180 C334,180 327,190 327,210 L327,232 L382,232 L370,322 L327,322 L327,485 Z"/>
-</g>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Designer-supplied (Icons_SVG/Facebook_2.svg); the wrapper id and .cls-1 style
+     block are stripped so several inlined icons can't collide on ids/classnames. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <path d="m447.53,0H152.46C68.39,0,0,68.38,0,152.46v295.08c0,72.92,51.46,134.05,119.98,148.98,10.47,2.28,21.34,3.49,32.48,3.49h154.29v-222.42h-80.12v-91.21h80.12v-69.51c0-79.09,47.11-122.77,119.18-122.77,34.52,0,70.64,6.16,70.64,6.16v77.65h-39.79c-39.2,0-51.42,24.33-51.42,49.28v59.2h87.51l-13.99,91.21h-73.52v222.41h42.17c84.07,0,152.47-68.39,152.47-152.47V152.46C600,68.38,531.6,0,447.53,0Z"/>
 </svg>
