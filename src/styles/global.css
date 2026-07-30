@@ -50,6 +50,14 @@ a { color: inherit; }
   --color-highlight-2:  light-dark(var(--lh-blue-deep), var(--lh-blue));
   --color-border:       light-dark(rgba(17, 35, 75, 0.12), rgba(255, 255, 255, 0.10));
   --color-border-blue:  light-dark(rgba(84, 164, 247, 0.35), rgba(84, 164, 247, 0.30));
+  /* Tinted brand-blue panel — the shared "where we play" location surface
+     (home .about-intro card + the /events venue tile). Theme-independent:
+     a translucent wash that reads over both page backgrounds. */
+  --color-surface-blue: linear-gradient(
+                          135deg,
+                          color-mix(in srgb, var(--lh-blue) 15%, transparent),
+                          color-mix(in srgb, var(--lh-blue) 7%, transparent)
+                        );
 
   /* Button semantics */
   --btn-primary-bg:     light-dark(var(--lh-navy), var(--lh-blue));
@@ -348,8 +356,7 @@ body {
 
 /* ── Session cards ──
    Shared surface primitives for the SessionCard/VenueCard tiles on /events
-   (the responsive grid that lays them out stays page-local). Community tone:
-   #54a4f7 bg (via .section--community), navy text. */
+   (the responsive grid that lays them out stays page-local). */
 .session-card {
   border: 1px solid rgba(17,35,75,0.18);
   border-radius: 10px;
@@ -397,16 +404,35 @@ body {
 .session-card--photo .session-card__level,
 .session-card--photo .session-card__venue { color: var(--lh-white); }
 
+/* Venue tile — the tinted-blue panel + pin badge of the home page's
+   .about-intro location card, so the two read as the same "where we play"
+   object. Theme-following semantic text (not the community navy). */
 .session-card--venue {
-  border-color: rgba(17,35,75,0.18);
+  background: var(--color-surface-blue);
+  border-color: var(--color-border-blue);
   justify-content: center;
 }
 
-.session-card__venue-label { font-size: var(--text-eyebrow); color: var(--lh-navy); letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 4px; }
-.session-card--venue strong { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--lh-navy); }
-.session-card--venue span { font-size: var(--text-note); color: var(--lh-navy); }
-.session-card__map-link { color: var(--lh-navy); font-size: var(--text-eyebrow); font-weight: var(--weight-bold); text-decoration: none; margin-top: 8px; }
-.session-card__transport { font-size: var(--text-eyebrow); color: var(--lh-navy); margin-top: 4px; line-height: var(--leading-normal); }
+.session-card__pin {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lead);
+  /* Navy-on-blue, matching the brand's .btn--accent pairing. */
+  color: var(--btn-accent-text);
+  margin-bottom: 12px;
+}
+
+.session-card__venue-label { font-size: var(--text-eyebrow); color: var(--color-accent-text); letter-spacing: var(--tracking-wide); text-transform: uppercase; margin-bottom: 4px; }
+.session-card--venue strong { font-size: var(--text-body-sm); font-weight: var(--weight-bold); color: var(--color-text); }
+.session-card--venue span { font-size: var(--text-note); color: var(--color-text-muted); }
+.session-card__map-link { color: var(--color-accent-text); font-size: var(--text-eyebrow); font-weight: var(--weight-bold); text-decoration: none; margin-top: 8px; }
+.session-card__transport { font-size: var(--text-eyebrow); color: var(--color-text-muted); margin-top: 4px; line-height: var(--leading-normal); }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {

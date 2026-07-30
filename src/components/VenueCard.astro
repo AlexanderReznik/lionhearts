@@ -2,9 +2,11 @@
 // Venue tile that closes both session grids on /events. Static content; the
 // venue name is shown in display context (with address + transport) so it
 // stays literal rather than using DEFAULT_VENUE. Styling lives in global.css.
+import Icon from './Icon.astro';
 ---
 
-<div class="session-card session-card--venue section--community">
+<div class="session-card session-card--venue">
+  <div class="session-card__pin" aria-hidden="true"><Icon name="location" /></div>
   <div class="session-card__venue-label">Venue</div>
   <strong>Mulberry Academy Shoreditch</strong>
   <span>Gosset Street, E2 6NW</span>
