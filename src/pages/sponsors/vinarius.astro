@@ -1,0 +1,709 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import shopWall from '../../assets/sponsors/vinarius/shop-wall.jpg';
+import glassRed from '../../assets/sponsors/vinarius/glass-red.jpg';
+import glassWhite from '../../assets/sponsors/vinarius/glass-white.jpg';
+import glassRose from '../../assets/sponsors/vinarius/glass-rose.jpg';
+
+// Vinarius's own photography, used with their permission. Deliberately NOT
+// given the Lionhearts navy duotone — that treatment is the club's
+// photographic language and would fight the sub-brand.
+const glasses = [
+  { image: glassRed,   alt: 'A glass of red wine on a table against an East London brick wall' },
+  { image: glassWhite, alt: 'A glass of white wine on a table against an East London brick wall' },
+  { image: glassRose,  alt: 'A glass of rosé wine on a table against an East London brick wall' },
+];
+---
+
+<BaseLayout
+  title="Vinarius London · London Lionhearts VBC"
+  description="Vinarius London — East London's independent wine merchant and title sponsor of London Lionhearts VBC. Small-production wines, tastings, and supper clubs in Shoreditch."
+  noindex={true}
+>
+  <div class="force-light vin-page">
+  <!-- ── HERO ── -->
+  <section class="vin-hero">
+    <Picture
+      src={shopWall}
+      formats={['avif', 'webp']}
+      widths={[640, 960, 1280, 1920, 2560]}
+      sizes="100vw"
+      alt="Floor-to-ceiling shelves of wine bottles in the Vinarius shop in Shoreditch"
+      loading="eager"
+      fetchpriority="high"
+      class="vin-hero__photo"
+    />
+    <div class="vin-hero__scrim" aria-hidden="true"></div>
+    <div class="vin-hero__content">
+      <span class="vin-hero__badge">Title Sponsor · London Lionhearts VBC</span>
+      <h1 class="vin-hero__name">Vinarius</h1>
+      <p class="vin-hero__latin"><em>vinarius, n.</em> — the Latin word for vintner</p>
+      <p class="vin-hero__sub">East London's wine. East London's sport.</p>
+      <a
+        href="https://vinarius.london"
+        class="btn vin-btn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Visit Vinarius London ↗</a>
+    </div>
+  </section>
+
+  <!-- ── MANIFESTO ── -->
+  <section class="vin-manifesto">
+    <div class="vin-manifesto__inner">
+      <h2 class="vin-manifesto__headline">Two passions.<br />One neighbourhood.</h2>
+      <p class="vin-manifesto__body">
+        Vinarius and Lionhearts are both part of the same East London neighbourhood. Both were built on the same belief:
+        that the best communities gather around the things they love most.
+        For us, it's volleyball. For them, it's wine.
+        Together, we celebrate East London at its very best.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section class="vin-about">
+    <div class="vin-about__inner">
+      <div class="vin-about__intro">
+        <div class="vin-about__logo">
+          <img src="/brand/vinarius-logo-burgundy.svg"
+               alt="Vinarius London" width="180" height="48" loading="lazy" />
+        </div>
+        <p class="eyebrow vin-eyebrow">About the Partner</p>
+        <h2 class="vin-about__headline">An Independent<br />Wine Merchant</h2>
+        <p class="vin-about__body">
+          Named from the Latin word for vintner, Vinarius is East London's hub for wine lovers.
+          Founded by Marco, Eugenio, and Philippe — three people united by a common passion for
+          food and wine — they curate small-production bottles from over 15 countries, and host
+          tastings, supper clubs, and bespoke wine experiences from the heart of Shoreditch.
+        </p>
+        <a
+          href="https://vinarius.london"
+          class="vin-about__link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >vinarius.london ↗</a>
+      </div>
+
+      <div class="vin-about__facts">
+        <div class="vin-fact">
+          <span class="vin-fact__icon"><Icon name="website-presence" /></span>
+          <strong class="vin-fact__num">15+</strong>
+          <span class="vin-fact__label">Countries</span>
+        </div>
+        <div class="vin-fact">
+          <span class="vin-fact__icon"><Icon name="collaboration" /></span>
+          <strong class="vin-fact__num">3</strong>
+          <span class="vin-fact__label">Founders</span>
+        </div>
+        <div class="vin-fact">
+          <span class="vin-fact__icon"><Icon name="community-reach" /></span>
+          <strong class="vin-fact__num">∞</strong>
+          <span class="vin-fact__label">Small-production<br />winemakers</span>
+        </div>
+        <div class="vin-fact">
+          <span class="vin-fact__icon"><Icon name="location" /></span>
+          <strong class="vin-fact__num">E1</strong>
+          <span class="vin-fact__label">Shoreditch,<br />East London</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── THE BRIDGE ── -->
+  <section class="vin-bridge" aria-label="Partnership in numbers">
+    <div class="vin-bridge__col vin-bridge__col--sport">
+      <p class="eyebrow vin-eyebrow">On the Court</p>
+      <h3 class="vin-bridge__label">London<br />Lionhearts</h3>
+      <div class="vin-bridge__stats">
+        <div class="vin-bridge__stat">
+          <strong>200+</strong>
+          <span>Members</span>
+        </div>
+        <div class="vin-bridge__stat">
+          <strong>9</strong>
+          <span>Teams</span>
+        </div>
+        <div class="vin-bridge__stat">
+          <strong>1998</strong>
+          <span>Founded</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="vin-bridge__divider" aria-hidden="true">
+      <span>×</span>
+    </div>
+
+    <div class="vin-bridge__col vin-bridge__col--wine">
+      <p class="eyebrow vin-eyebrow">At the Cellar</p>
+      <h3 class="vin-bridge__label">Vinarius<br />London</h3>
+      <div class="vin-bridge__stats">
+        <div class="vin-bridge__stat">
+          <strong>15+</strong>
+          <span>Countries</span>
+        </div>
+        <div class="vin-bridge__stat">
+          <strong>100s</strong>
+          <span>Producers</span>
+        </div>
+        <div class="vin-bridge__stat">
+          <strong>E1</strong>
+          <span>Shoreditch</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── QUOTE ── -->
+  <section class="vin-quote">
+    <blockquote class="vin-quote__block">
+      <p class="vin-quote__mark" aria-hidden="true">"</p>
+      <p class="vin-quote__text">A wine hub for wine lovers in East London.</p>
+      <footer class="vin-quote__credit">Vinarius London</footer>
+    </blockquote>
+  </section>
+
+  <!-- ── VISIT ── -->
+  <section class="vin-visit">
+    <div class="vin-visit__inner">
+      <div class="vin-visit__copy">
+        <p class="eyebrow vin-eyebrow">Discover Our Sponsor</p>
+        <h2 class="vin-visit__headline">Find Your<br /><em>Next Bottle</em></h2>
+        <p class="vin-visit__body">
+          Lionhearts members are warmly welcomed at Vinarius. Explore their exceptional
+          selection of small-production wines, join a tasting, or simply stop by for
+          a conversation with their passionate team.
+        </p>
+        <a
+          href="https://vinarius.london"
+          class="btn btn--white"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Visit Vinarius →</a>
+      </div>
+      <div class="vin-visit__glasses">
+        {glasses.map(g => (
+          <Picture
+            src={g.image}
+            formats={['avif', 'webp']}
+            widths={[200, 300, 400]}
+            sizes="(max-width: 900px) 30vw, 180px"
+            alt={g.alt}
+            loading="lazy"
+            class="vin-visit__glass"
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  </div>
+</BaseLayout>
+
+<style>
+  /* ── Wine palette (scoped to this page) ── */
+  :root {
+    --vin-burgundy:      #6E0833;
+    --vin-burgundy-deep: #4a0622;
+    --vin-beige:         #ECF5D9;
+    --vin-navy:          #11234B;
+    --vin-navy-mid:      #1c2a55;
+    --vin-plum:          #3a1442;
+
+    /* The page's burgundy→navy sweep — the two brands meeting. Sits under the
+       hero photo, and carries the manifesto band on its own. */
+    --vin-gradient: linear-gradient(125deg, #6E0833 0%, #5a1338 38%, #1c2a55 75%, #11234b 100%);
+
+    --vin-font-display: var(--font-sans);
+    --vin-font-serif:   Georgia, 'Times New Roman', serif;
+  }
+
+  .vin-page { font-family: var(--vin-font-display); }
+
+  /* ── HERO ── */
+  .vin-hero {
+    min-height: 92vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--vin-gradient);
+  }
+
+  .vin-hero__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* The bottles run to the right of frame; hold that edge when the
+       landscape shot is cropped hard on portrait screens. */
+    object-position: 70% center;
+  }
+
+  /* Carries the hero's original gradient at alpha over the photo, so the beige
+     wordmark keeps its contrast no matter how the shot crops. */
+  .vin-hero__scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 60% at 78% 38%, rgba(236, 245, 217, 0.06), transparent 70%),
+      /* Extra density behind the copy only, so the wordmark never depends on
+         what the crop happens to put behind it. */
+      linear-gradient(90deg, rgba(74, 6, 34, 0.7) 0%, rgba(74, 6, 34, 0.35) 40%, transparent 62%),
+      linear-gradient(125deg,
+        rgba(110, 8, 51, 0.82) 0%,
+        rgba(90, 19, 56, 0.68) 38%,
+        rgba(28, 42, 85, 0.58) 75%,
+        rgba(17, 35, 75, 0.72) 100%);
+  }
+
+  .vin-hero__content {
+    position: relative;
+    z-index: 2;
+    padding: 0 var(--page-px);
+    max-width: var(--max-width);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Mirrors .chip-accent's tinted-and-bordered recipe in the sub-brand palette,
+     so the badge reads as a label rather than a button. */
+  .vin-hero__badge {
+    display: inline-block;
+    background: rgba(236, 245, 217, 0.12);
+    border: 1px solid rgba(236, 245, 217, 0.4);
+    color: var(--vin-beige);
+    font-size: var(--text-eyebrow);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 3px;
+    margin-bottom: 28px;
+  }
+
+  .vin-hero__name {
+    font-family: var(--vin-font-display);
+    font-size: var(--text-hero);
+    font-weight: var(--weight-extrabold);
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+    text-transform: uppercase;
+    color: var(--vin-beige);
+    margin-bottom: 24px;
+  }
+
+  .vin-hero__latin {
+    font-size: var(--text-body);
+    color: rgba(236, 245, 217, 0.94);
+    font-style: italic;
+    font-family: var(--vin-font-serif);
+    letter-spacing: var(--tracking-body);
+    margin-bottom: 12px;
+  }
+
+  .vin-hero__sub {
+    font-size: var(--text-body);
+    color: rgba(236, 245, 217, 0.9);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: var(--weight-semibold);
+    margin-bottom: 40px;
+  }
+
+  /* Colour-only variant: .btn supplies the geometry the whole site shares. */
+  .vin-btn {
+    background: var(--vin-beige);
+    color: var(--vin-burgundy);
+  }
+  .vin-btn:hover { opacity: 0.9; }
+
+  /* ── MANIFESTO ── */
+  .vin-manifesto {
+    background: var(--vin-gradient);
+    padding: 100px var(--page-px);
+    border-top: 1px solid rgba(236, 245, 217, 0.12);
+    border-bottom: 1px solid rgba(236, 245, 217, 0.12);
+  }
+
+  .vin-manifesto__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .vin-manifesto__headline {
+    font-size: var(--text-display);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+    color: var(--vin-beige);
+  }
+
+  .vin-manifesto__body {
+    font-size: var(--text-body);
+    color: rgba(236, 245, 217, 0.75);
+    line-height: var(--leading-loose);
+  }
+
+  /* ── ABOUT ── */
+  .vin-about {
+    padding: 100px var(--page-px);
+    background: var(--color-bg);
+  }
+
+  .vin-about__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  /* Same white chip the sponsorship page and homepage tile frame this mark in,
+     scaled for the About column. */
+  .vin-about__logo {
+    background: #fff;
+    border: 1px solid rgba(17, 35, 75, 0.06);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(5, 18, 43, 0.12);
+    padding: clamp(16px, 2vw, 22px) clamp(20px, 3vw, 30px);
+    width: min(300px, 100%);
+    height: clamp(104px, 11vw, 128px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .vin-about__logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* The global .eyebrow supplies size, tracking and the accent dash; each
+     surface only re-points --color-accent-text to its sub-brand ink. */
+  .vin-eyebrow { --color-accent-text: var(--vin-burgundy); }
+  .vin-bridge .vin-eyebrow { --color-accent-text: rgba(255, 255, 255, 0.55); }
+  .vin-visit .vin-eyebrow { --color-accent-text: rgba(236, 245, 217, 0.85); }
+
+  .vin-about__headline {
+    font-size: var(--text-sub);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+    margin-bottom: 24px;
+    color: var(--vin-burgundy);
+  }
+
+  .vin-about__body {
+    color: var(--color-text-muted);
+    font-size: var(--text-body);
+    line-height: var(--leading-loose);
+    margin-bottom: 28px;
+  }
+
+  .vin-about__link {
+    color: var(--vin-burgundy);
+    font-size: var(--text-note);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(110, 8, 51, 0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.15s;
+  }
+
+  .vin-about__link:hover { border-color: var(--vin-burgundy); }
+
+  .vin-about__facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: rgba(110, 8, 51, 0.18);
+    border: 1px solid rgba(110, 8, 51, 0.3);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .vin-fact {
+    background: var(--color-bg);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+
+  .vin-fact:hover { background: rgba(110, 8, 51, 0.06); }
+
+  .vin-fact__icon {
+    font-size: var(--text-xl);
+    line-height: var(--leading-none);
+    color: var(--vin-burgundy);
+    opacity: 0.55;
+  }
+
+  .vin-fact__num {
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-black);
+    line-height: var(--leading-none);
+    color: var(--vin-burgundy);
+    letter-spacing: var(--tracking-display);
+  }
+
+  .vin-fact__label {
+    font-size: var(--text-eyebrow);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    line-height: var(--leading-normal);
+  }
+
+  /* ── BRIDGE ── */
+  .vin-bridge {
+    display: grid;
+    grid-template-columns: 1fr 72px 1fr;
+    min-height: 380px;
+  }
+
+  .vin-bridge__col {
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .vin-bridge__col--sport {
+    background: linear-gradient(135deg, #11234b, #1c2a55);
+  }
+
+  .vin-bridge__col--wine {
+    background: linear-gradient(135deg, #4a0622, #6E0833);
+  }
+
+  .vin-bridge__divider {
+    background: var(--vin-navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-black);
+    color: rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .vin-bridge__label {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+    color: #fff;
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .vin-bridge__stats {
+    display: flex;
+    gap: 32px;
+  }
+
+  .vin-bridge__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .vin-bridge__stat strong {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-black);
+    color: #fff;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .vin-bridge__stat span {
+    font-size: var(--text-micro);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  /* ── QUOTE ── */
+  .vin-quote {
+    background: var(--vin-burgundy-deep);
+    padding: 100px var(--page-px);
+    border-top: 1px solid rgba(236, 245, 217, 0.12);
+    border-bottom: 1px solid rgba(236, 245, 217, 0.12);
+  }
+
+  .vin-quote__block {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .vin-quote__mark {
+    font-size: var(--text-hero);
+    line-height: 0.5;  /* optical crop — the glyph carries huge built-in leading */
+    color: rgba(236, 245, 217, 0.5);
+    font-family: var(--vin-font-serif);
+    font-weight: var(--weight-regular);
+    margin-bottom: 16px;
+  }
+
+  .vin-quote__text {
+    font-size: var(--text-sub);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+    color: var(--vin-beige);
+    margin-bottom: 24px;
+  }
+
+  .vin-quote__credit {
+    font-size: var(--text-note);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: rgba(236, 245, 217, 0.75);
+  }
+
+  /* ── VISIT ── */
+  .vin-visit {
+    background: linear-gradient(135deg, #4a0622, #6E0833 50%, #4a0622);
+    padding: 72px var(--page-px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vin-visit__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .vin-visit__headline {
+    font-size: var(--text-display);
+    font-weight: var(--weight-black);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+    color: var(--vin-beige);
+    margin-bottom: 20px;
+  }
+
+  .vin-visit__headline em {
+    color: var(--vin-beige);
+    font-style: normal;
+  }
+
+  .vin-visit__body {
+    color: rgba(236, 245, 217, 0.78);
+    font-size: var(--text-body);
+    line-height: var(--leading-loose);
+    max-width: 480px;
+    margin-bottom: 36px;
+  }
+
+  .vin-visit__glasses {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  /* <Picture> wraps each image in a <picture>, so the grid children — and the
+     stagger below — are the wrappers, not the .vin-visit__glass images. */
+  .vin-visit__glasses picture { display: block; }
+
+  .vin-visit__glass {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  /* Drop the middle glass so the trio reads as a composition, not a filmstrip. */
+  .vin-visit__glasses picture:nth-child(2) { transform: translateY(28px); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .vin-manifesto__inner { grid-template-columns: 1fr; gap: 32px; }
+    .vin-about__inner { grid-template-columns: 1fr; gap: 48px; }
+    .vin-visit__inner { grid-template-columns: 1fr; gap: 48px; }
+
+    /* Stacked, the stagger just knocks the row out of alignment. */
+    .vin-visit__glasses picture:nth-child(2) { transform: none; }
+
+    .vin-bridge {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 48px auto;
+    }
+
+    .vin-bridge__divider {
+      border: none;
+      border-left: 1px solid rgba(255,255,255,0.04);
+      border-right: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .vin-bridge__col { padding: 40px 28px; }
+    .vin-bridge__stats { gap: 20px; }
+  }
+
+  @media (max-width: 640px) {
+    .vin-manifesto { padding: 64px var(--page-px); }
+    .vin-about { padding: 64px var(--page-px); }
+    .vin-quote { padding: 64px var(--page-px); }
+    .vin-visit { padding: 64px var(--page-px); }
+    .vin-about__facts { grid-template-columns: 1fr 1fr; }
+
+    /* Tighter cells so two min-content columns fit 320px — at the desktop
+       padding the tracks exceed the grid and overflow:hidden clips them. */
+    .vin-fact { padding: 24px 18px; }
+
+    /* "Neighbourhood." is unbreakable: at --text-display's 2.5rem floor its
+       min-content width blows out the 1fr track and pushes the column past
+       the viewport. --text-sub's 2rem floor is the largest step that fits. */
+    .vin-manifesto__headline { font-size: var(--text-sub); }
+
+    /* Badge: shorten to fit one line */
+    .vin-hero__badge { white-space: nowrap; font-size: var(--text-micro); }
+
+    /* Sub: drop uppercase so two lines read comfortably */
+    .vin-hero__sub { text-transform: none; letter-spacing: var(--tracking-body); }
+
+    /* Bridge: switch stats to a tighter grid so 3 stats don't crowd */
+    .vin-bridge__stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .vin-bridge__stat strong { font-size: var(--text-lg); }
+
+    /* Bridge label smaller on very narrow */
+    .vin-bridge__label { font-size: var(--text-lg); }
+  }
+</style>

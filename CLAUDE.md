@@ -99,6 +99,8 @@ headings are a deliberate brand Style-#2 exception (~2.62:1, accepted, commented
   pill-slider (in `Nav.astro`, desktop + overlay) flips it and persists to
   `localStorage['lh-theme']`. Knob position is pure-CSS-driven, so instances
   stay in sync.
+- **Per-page light opt-out:** wrap content in `.force-light` (re-asserts light
+  semantic tokens). Its only consumer is the Vinarius sub-brand page.
 - **Component-level dark overrides:** prefer a `light-dark(LIGHT, DARK)` value so
   the override follows `color-scheme` and reaches no-JS OS-dark users for free —
   do NOT gate a colour on a bare `html[data-theme="dark"]` selector (it only
@@ -162,10 +164,17 @@ still be a `light-dark()` value (the badges do this) — but if you ever need a
 Phased rebrand documented under `docs/superpowers/{specs,plans}/`. **Merged:**
 Phase 1 (light-led foundation), Phase 2 (dark theme + toggle), Phase 3-B
 (dual-style `.section--feature`/`--community` mapping), and the light-theme WCAG
-AA pass (`--color-accent-text`). **Removed:** Phase 3-A (the Vinarius
-burgundy/cream sub-brand page) and its `.force-light` opt-out utility — the
-sponsor tile now links straight to `https://vinarius.london`. **Remaining:**
-Phase 3-C — photography (real photos + navy duotone), not yet started.
+AA pass (`--color-accent-text`). **Remaining:** Phase 3-C — photography (real
+photos + navy duotone), not yet started.
+
+Phase 3-A (the Vinarius burgundy/cream sub-brand page) was removed, then
+restored as an **unlisted** page: `/sponsors/vinarius` is reachable by direct
+URL only. Nothing links to it — the sponsor tile and sponsorship hero both point
+at `https://vinarius.london` — it carries `noindex={true}`, and its path sits in
+the `UNLISTED_PATHS` set that drives the sitemap filter in `astro.config.mjs`.
+It uses Barlow rather than its original Hanken Grotesk / Playfair Display (those
+packages were uninstalled in the interim); `--vin-font-serif` is a system serif
+stack because no Barlow italic face is loaded.
 
 ## Code Conventions (enforced in review)
 
