@@ -61,6 +61,17 @@ const heroSlides = [
   },
 ];
 
+// Drives Google's homepage "site name" (the headline shown above the URL in
+// search results). Without it Google falls back to displaying the bare domain —
+// SportsOrganization below does NOT feed this. Must live on the domain root.
+const siteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'London Lionhearts Volleyball Club',
+  alternateName: 'London Lionhearts',
+  url: `${SITE_URL}/`,
+};
+
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'SportsOrganization',
@@ -103,7 +114,7 @@ const orgSchema = {
 <BaseLayout
   title="London Lionhearts Volleyball Club — Shoreditch, East London"
   description={`East London's volleyball club — from the NVL Super League to your first ever session. Open sessions ${sessions.length}× a week at Mulberry Academy, Shoreditch E2.`}
-  jsonLd={orgSchema}
+  jsonLd={[siteSchema, orgSchema]}
 >
   <TryoutsAlertBar tryouts={tryouts} />
   <Hero slides={heroSlides} />
