@@ -181,8 +181,27 @@ interface RotationPuzzle {
 
 Generated ahead of time and committed, following the repo convention that
 `src/data/` is the source of truth, so that a later code change can never rewrite
-which numbers appeared on a day people already played. Roughly two years of
+which puzzle appeared on a day people already played. Roughly two years of
 entries; the client selects by days elapsed in `Europe/London`.
+
+**Daily variation.** Two things change every day:
+
+- **The rotation is shuffled, not cyclic.** Phases are emitted as successive
+  random permutations of 0-5, so each block of six days covers every rotation
+  exactly once with no back-to-back repeats, and the player cannot predict which
+  is coming.
+- **The cast is redrawn** from the 14-player squad — which setter, which
+  opposite, which two outsides and in which order, which two middles, which
+  libero. That is 1,152 distinct casts, so the up-front deduction (rotate the
+  lineup, find the back-row middle, slot the libero) is fresh daily.
+
+**Known and accepted:** neither of these moves the *geometry*. Every constraint
+derives from `phase`, so the positioning problem on any given day is one of six.
+Shuffling makes it unpredictable and re-casting makes the deduction fresh, but a
+regular player will meet the same six squeezes. Accepted deliberately — repetition
+is how rotations are actually learned. If more variety is wanted later, the
+cheapest dial is the mirror lineup cycle (`S → MB → OH → OPP → MB → OH`), which
+is an equally valid 5-1 and doubles the geometric configurations to twelve.
 
 The bank is visible in devtools; so was Wordle's. Not worth obfuscating — but see
 the witnesses below, which are deliberately *not* shipped.
@@ -302,18 +321,6 @@ Serving formations are not "out of scope" so much as nonexistent: under 2025-28
 rule 7.4 the serving team may occupy any position, so there is no puzzle there.
 
 ## Open
-
-**Only six distinct puzzles.** Every constraint derives from `phase`, so the
-geometry repeats on a six-day cycle — the cast changes daily and changes nothing.
-This needs one daily variable that actually moves the geometry. Candidates:
-
-1. **The serve** — "float deep to zone 5", "short to zone 2" — constraining where
-   the passers must shade. Real volleyball, one extra field.
-2. **Squad passing ratings** — the weakest passer of the day must be shaded away
-   from the serve, which would finally make the 14-player roster matter
-   geometrically.
-
-Unresolved; blocks the implementation plan.
 
 **Visual design** — the court, tiles and reveal all need browser mockups shown as
 options before implementation, per the project convention.
