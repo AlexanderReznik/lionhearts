@@ -47,25 +47,29 @@ const buildTimestamp = new Date().toLocaleDateString('en-GB', {
 // Trim match objects to only the fields the client uses before embedding as
 // JSON data islands. Full Volleyzone responses include set scores, referee
 // names, club logos, etc. — trimming cuts the page from ~1 MB to ~20 KB.
-function slimFixtures(tf: { teamName: string; matches: import('../lib/volleyzone').Match[]; error: boolean }) {
+function slimFixtures(
+  tf: { teamName: string; matches: import('../lib/volleyzone').Match[]; error: boolean },
+  volleyzoneTeamName?: string,
+) {
   return {
     teamName: tf.teamName,
+    volleyzoneTeamName,
     error: tf.error,
     matches: tf.matches
       .filter(m =>
         (m.fixtureStatus === 'result' || m.fixtureStatus === 'fixture') &&
         (m.homeTeam.includes('Lionhearts') || m.awayTeam.includes('Lionhearts'))
       )
-      .map(({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue }) =>
-        ({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue })
+      .map(({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue, competitionLabel }) =>
+        ({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue, competitionLabel })
       ),
   };
 }
 
 // ── Volleyzone URL builder ─────────────────────────────────────────────────
-// NOTE: The ?team= parameter format must be verified by visiting Volleyzone,
-// selecting a team, and inspecting the resulting URL. Update volleyzoneSlug
-// values in src/data/teams.ts after verification.
+// The ?team= slug is inert — Volleyzone filters by team client-side, not by
+// URL parameter — so this resolves to the team's division page. See the note
+// in src/data/teams.ts.
 function volleyzoneUrl(slug?: string, segment?: 'lva' | 'nvl'): string {
   const base = segment === 'nvl' ? VOLLEYZONE_BASE_NVL : VOLLEYZONE_BASE_LVA;
   if (!slug) return base;
@@ -273,7 +277,10 @@ const teamSections = [
               type="application/json"
               data-fixtures
               set:html={JSON.stringify(
-                slimFixtures(fixturesMap[team.name] ?? { teamName: team.name, matches: [], error: true })
+                slimFixtures(
+                  fixturesMap[team.name] ?? { teamName: team.name, matches: [], error: true },
+                  team.volleyzoneTeamName,
+                )
               ).replace(/<\//g, '<\\/')}
             />
             <div class="team-fixtures"></div>
@@ -306,17 +313,22 @@ const teamSections = [
         .replace(/"/g, '&quot;');
     }
 
+    function unavailableHtml(vzUrl: string): string {
+      return `<div class="tl-error">Fixtures unavailable — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">View on Volleyzone →</a></div>`;
+    }
+
     function renderFixtures(section: HTMLElement): void {
       const island = section.querySelector<HTMLScriptElement>('script[data-fixtures]');
       const target = section.querySelector<HTMLElement>('.team-fixtures');
       if (!island || !target) return;
 
-      const data = JSON.parse(island.textContent ?? '{}') as TeamFixtures;
+      const data = JSON.parse(island.textContent ?? '{}') as TeamFixtures & { volleyzoneTeamName?: string };
+      const vzName = data.volleyzoneTeamName;
       const vzUrl = section.dataset.volleyzoneUrl ?? '#';
       const updated = section.dataset.updated ?? '';
 
       if (data.error && data.matches.length === 0) {
-        target.innerHTML = `<div class="tl-error">Fixtures unavailable — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">View on Volleyzone →</a></div>`;
+        target.innerHTML = unavailableHtml(vzUrl);
         return;
       }
 
@@ -327,15 +339,17 @@ const teamSections = [
       // build time (see slimFixtures), so here we only split results vs upcoming.
       const matches = data.matches;
 
+      // Full lists: everything past CAP is rendered but hidden behind the
+      // per-list "show more" toggle, so expanding costs no re-render.
+      const CAP = 3;
+
       const results = matches
         .filter((m: Match) => m.fixtureStatus === 'result')
-        .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate)
-        .slice(0, 3);
+        .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate);
 
       const upcoming = matches
         .filter((m: Match) => m.fixtureStatus === 'fixture' && m.fixtureDate * 1000 >= today.getTime())
-        .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate)
-        .slice(0, 3);
+        .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate);
 
       if (matches.length > 0 && results.length === 0 && upcoming.length === 0) {
         target.innerHTML = `<div class="tl-error">Season complete — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full Schedule on Volleyzone →</a></div>`;
@@ -344,40 +358,40 @@ const teamSections = [
 
       let html = '';
 
-      if (results.length > 0) {
-        html += `<div class="tl-section-label">Recent Results</div>`;
-        for (const m of results) {
-          const isHome = parseHomeAway(m) === 'Home';
-          const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
-          const resultLabel = isHome ? m.homeResult : m.awayResult;
-          const w = resultLabel === 'win';
-          const result = esc(formatMatchResult(m, isHome ? 'Home' : 'Away'));
-          const date = formatFixtureDate(m.fixtureDate);
-          html += `
+      const slug = (data.teamName ?? 'team').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+      const compChip = (m: Match) =>
+        m.competitionLabel ? `<span class="tl-comp">${esc(m.competitionLabel)}</span>` : '';
+
+      const resultRow = (m: Match) => {
+        const isHome = parseHomeAway(m, vzName) === 'Home';
+        const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
+        const resultLabel = isHome ? m.homeResult : m.awayResult;
+        const w = resultLabel === 'win';
+        const result = esc(formatMatchResult(m, isHome ? 'Home' : 'Away'));
+        const date = formatFixtureDate(m.fixtureDate);
+        return `
             <div class="tl-row">
               <span class="tl-date">${date}</span>
-              <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}</span>
+              <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}${compChip(m)}</span>
               <span class="${w ? 'badge-w' : 'badge-l'}">${result}</span>
             </div>`;
-        }
-      }
+      };
 
-      if (upcoming.length > 0) {
-        html += `<div class="tl-section-label">Upcoming Fixtures</div>`;
-        upcoming.forEach((m: Match, i: number) => {
-          const isHome = parseHomeAway(m) === 'Home';
-          const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
-          const venue = esc(m.venue ?? '');
-          const date = formatFixtureDate(m.fixtureDate);
-          const time = formatFixtureTime(m.fixtureDate);
-          const venueStr = venue ? `${PIN} ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
-          const ha = isHome ? 'Home' : 'Away';
-          const isNext = i === 0;
-          html += `
+      const upcomingRow = (m: Match, i: number) => {
+        const isHome = parseHomeAway(m, vzName) === 'Home';
+        const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
+        const venue = esc(m.venue ?? '');
+        const date = formatFixtureDate(m.fixtureDate);
+        const time = formatFixtureTime(m.fixtureDate);
+        const venueStr = venue ? `${PIN} ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
+        const ha = isHome ? 'Home' : 'Away';
+        const isNext = i === 0;
+        return `
             <div class="tl-row-up${isNext ? ' tl-row-up--next' : ''}">
               <span class="tl-date">${date}</span>
               <div class="tl-up-meta">
-                <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}</span>
+                <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}${compChip(m)}</span>
                 ${venueStr ? `<span class="tl-up-venue">${venueStr}</span>` : ''}
               </div>
               <div class="tl-right">
@@ -385,7 +399,35 @@ const teamSections = [
                 <span class="home-away">${ha}</span>
               </div>
             </div>`;
-        });
+      };
+
+      // Rows past CAP go in an [hidden] wrapper the button targets by id, so
+      // aria-controls names one element and toggling is a single attribute flip.
+      const listHtml = (
+        items: Match[],
+        rowFn: (m: Match, i: number) => string,
+        key: string,
+        noun: string,
+      ) => {
+        const head = items.slice(0, CAP).map((m, i) => rowFn(m, i)).join('');
+        if (items.length <= CAP) return head;
+        const id = `tl-overflow-${slug}-${key}`;
+        const rest = items.slice(CAP).map((m, i) => rowFn(m, i + CAP)).join('');
+        const more = `Show all ${items.length} ${noun} ▾`;
+        return `${head}
+            <div class="tl-overflow" id="${id}" hidden>${rest}</div>
+            <button type="button" class="tl-more" aria-expanded="false" aria-controls="${id}"
+              data-more="${esc(more)}" data-less="Show fewer ▴">${more}</button>`;
+      };
+
+      if (results.length > 0) {
+        html += `<div class="tl-section-label">Recent Results</div>`;
+        html += listHtml(results, resultRow, 'results', 'results');
+      }
+
+      if (upcoming.length > 0) {
+        html += `<div class="tl-section-label">Upcoming Fixtures</div>`;
+        html += listHtml(upcoming, upcomingRow, 'fixtures', 'fixtures');
       }
 
       html += `
@@ -395,9 +437,31 @@ const teamSections = [
         </div>`;
 
       target.innerHTML = html;
+
+      target.querySelectorAll<HTMLButtonElement>('.tl-more').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panel = document.getElementById(btn.getAttribute('aria-controls') ?? '');
+          if (!panel) return;
+          const open = btn.getAttribute('aria-expanded') === 'true';
+          panel.hidden = open;
+          btn.setAttribute('aria-expanded', String(!open));
+          btn.textContent = open ? btn.dataset.more ?? '' : btn.dataset.less ?? '';
+        });
+      });
     }
 
-    document.querySelectorAll<HTMLElement>('.team-fixture-section').forEach(renderFixtures);
+    // Isolated per section: an unexpected shape in one team's payload would
+    // otherwise abort the loop and leave every panel below it silently blank.
+    document.querySelectorAll<HTMLElement>('.team-fixture-section').forEach(section => {
+      try {
+        renderFixtures(section);
+      } catch (err) {
+        const name = section.querySelector('.team-fixture-section__name')?.textContent ?? '(unknown team)';
+        console.error(`[fixtures] render failed for ${name}:`, err);
+        const target = section.querySelector<HTMLElement>('.team-fixtures');
+        if (target) target.innerHTML = unavailableHtml(section.dataset.volleyzoneUrl ?? '#');
+      }
+    });
   </script>
 </BaseLayout>
 
@@ -635,7 +699,9 @@ const teamSections = [
 
   .tl-up-meta { display: flex; flex-direction: column; gap: 3px; }
   .tl-up-opp { color: var(--color-text); }
-  .tl-row-up--next .tl-up-opp { color: var(--lh-navy); font-weight: var(--weight-bold); }
+  /* light-dark(), not bare navy — navy on the dark theme's tinted next-row is
+     1.18:1, i.e. invisible. */
+  .tl-row-up--next .tl-up-opp { color: light-dark(var(--lh-navy), var(--lh-white)); font-weight: var(--weight-bold); }
   .tl-up-venue { color: var(--color-text-faint); font-size: var(--text-note); }
   /* Location glyph injected into the venue string (see PIN). Plain selector —
      set:html markup carries no scoped attribute. Inherits currentColor. */
@@ -645,13 +711,14 @@ const teamSections = [
   .tl-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 
   /* accent-text, not raw navy — navy on this tint disappears against the dark
-     theme's navy rows. */
+     theme's navy rows. -strong because plain --color-accent-text on this pill
+     tint over the next-row tint is only 3.67:1 at 9px. */
   .next-pill {
     font-size: var(--text-micro);
     font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--color-accent-text);
+    color: var(--color-accent-text-strong);
     background: rgba(84,164,247,0.18);
     border: 1px solid rgba(84,164,247,0.35);
     border-radius: 4px;
@@ -667,6 +734,25 @@ const teamSections = [
     white-space: nowrap;
   }
   .tl-row-up--next .home-away { color: var(--color-text-muted); }
+
+  /* Knockout-competition tag. Deliberately neutral rather than accent blue — a
+     cup tie is informational and must not read as the .next-pill highlight. */
+  .tl-comp {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: light-dark(rgba(17,35,75,0.06), rgba(255,255,255,0.10));
+    /* -strong: plain --color-text-muted reaches only 4.42:1 on the blue-tinted
+       --next row a one-off cup tie usually lands on. */
+    color: var(--color-text-muted-strong);
+    font-size: var(--text-micro);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
 
   /* Result badges — intentional brand colour chips. light-dark() pairs keep
      them AA-legible on light rows and navy rows alike (dark arms are the
@@ -717,6 +803,33 @@ const teamSections = [
     color: var(--color-text-muted);
   }
 
+  .tl-overflow[hidden] { display: none; }
+
+  /* Quiet inline control, not a solid fill — solid accent is reserved for the
+     page's primary buttons. Plain selectors: injected via innerHTML. */
+  .tl-more {
+    display: block;
+    width: 100%;
+    padding: 10px 18px;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-accent-text);
+    font-family: inherit;
+    font-size: var(--text-body-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .tl-more:hover { background: var(--color-bg-alt); }
+
+  .tl-more:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+
   @media (max-width: 640px) {
     .tl-row,
     .tl-row-up {
@@ -726,6 +839,7 @@ const teamSections = [
     }
 
     .tl-section-label { padding: 7px 14px 5px; }
+    .tl-more { padding: 10px 14px; }
     /* Match the header's 12px vertical padding so the tile's top and bottom
        bands are balanced. */
     .tl-footer { padding: 12px 14px; flex-direction: column; align-items: flex-start; gap: 6px; }

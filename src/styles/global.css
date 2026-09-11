@@ -46,6 +46,10 @@ a { color: inherit; }
   --color-text-muted:   light-dark(#5a6b86, var(--lh-slate-200));
   --color-text-faint:   light-dark(#5e6c88, #94a1c0);
   --color-accent-text:  light-dark(#0050b8, var(--lh-blue));
+  /* -strong variants: for small text sitting on a *tinted* surface, where the
+     base token's own tint stacks with it and drops under AA. */
+  --color-accent-text-strong: light-dark(#0050b8, var(--lh-blue-300));
+  --color-text-muted-strong:  light-dark(#4d5d78, var(--lh-slate-200));
   --color-highlight-1:  light-dark(var(--lh-blue), var(--lh-blue-300));
   --color-highlight-2:  light-dark(var(--lh-blue-deep), var(--lh-blue));
   --color-border:       light-dark(rgba(17, 35, 75, 0.12), rgba(255, 255, 255, 0.10));
@@ -485,6 +489,8 @@ body {
   --color-text: var(--lh-white);
   --color-text-muted: var(--lh-slate-200);
   --color-accent-text: var(--lh-blue);
+  --color-accent-text-strong: var(--lh-blue-300);
+  --color-text-muted-strong: var(--lh-slate-200);
 }
 
 .section--community {
@@ -547,6 +553,8 @@ body {
   --color-text-muted:   #5a6b86;
   --color-text-faint:   #5e6c88;
   --color-accent-text:  #0050b8;
+  --color-accent-text-strong: #0050b8;
+  --color-text-muted-strong:  #4d5d78;
   --color-highlight-1:  var(--lh-blue);
   --color-highlight-2:  var(--lh-blue-deep);
   --color-border:       rgba(17, 35, 75, 0.12);

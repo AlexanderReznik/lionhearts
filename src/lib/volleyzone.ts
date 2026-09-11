@@ -1,5 +1,5 @@
-import { teams } from '../data/teams';
-import type { Team } from '../data/teams';
+import { teams, CUP_COMPETITIONS } from '../data/teams';
+import type { Team, CupCompetition } from '../data/teams';
 
 const ENDPOINT =
   'https://competitions.volleyzone.co.uk/wp-admin/admin-ajax.php?action=fetch_fixture_by_competition';
@@ -10,12 +10,15 @@ export interface Match {
   fixtureStatus: 'result' | 'fixture' | 'postponed';
   homeTeam: string;
   awayTeam: string;
-  homeScore: string;
-  awayScore: string;
+  // Volleyzone sends null for both until a result is published.
+  homeScore: string | null;
+  awayScore: string | null;
   homeResult: 'win' | 'lose' | 'draw' | '';
   awayResult: 'win' | 'lose' | 'draw' | '';
   venue: string;
   metaData: { scores: { home: Record<string, string>; away: Record<string, string> } };
+  /** Set only on knockout matches; absent for league fixtures. */
+  competitionLabel?: string;
 }
 
 export interface TeamFixtures {
@@ -24,14 +27,20 @@ export interface TeamFixtures {
   error: boolean;
 }
 
-export function parseHomeAway(match: Pick<Match, 'homeTeam'>): 'Home' | 'Away' {
+export function parseHomeAway(match: Pick<Match, 'homeTeam'>, teamName?: string): 'Home' | 'Away' {
+  // Exact identity whenever the caller knows it. The substring fallback cannot
+  // tell two Lionhearts teams apart, which a cup draw can put on the same court.
+  if (teamName) return match.homeTeam === teamName ? 'Home' : 'Away';
   return match.homeTeam.includes('Lionhearts') ? 'Home' : 'Away';
 }
 
-export function parseScore(homeScore: string, awayScore: string): { home: number; away: number } {
+export function parseScore(
+  homeScore: string | null,
+  awayScore: string | null,
+): { home: number; away: number } {
   return {
-    home: parseInt(homeScore.replace(';', ''), 10) || 0,
-    away: parseInt(awayScore.replace(';', ''), 10) || 0,
+    home: parseInt((homeScore ?? '').replace(';', ''), 10) || 0,
+    away: parseInt((awayScore ?? '').replace(';', ''), 10) || 0,
   };
 }
 
@@ -122,7 +131,28 @@ export async function fetchTeamFixtures(
   return fixtures;
 }
 
-export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Record<string, TeamFixtures>> {
+// Knockout comps are fetched whole and their matches claimed by exact team
+// name, so a team picks up every round it reaches without a code change.
+async function fetchCupMatches(cups: CupCompetition[]): Promise<Match[]> {
+  const settled = await Promise.allSettled(
+    cups.map(c => fetchTeamFixtures(c.compId, c.seasonId, c.userId, c.segment)),
+  );
+
+  return settled.flatMap((result, i) => {
+    if (result.status === 'fulfilled') {
+      return result.value.map(m => ({ ...m, competitionLabel: cups[i].label }));
+    }
+    // A cup that fails must not cost a team its league fixtures, so this is
+    // warned and dropped rather than propagated.
+    console.warn(`[volleyzone] Failed to fetch cup competition ${cups[i].compId}:`, result.reason);
+    return [];
+  });
+}
+
+export async function fetchAllFixtures(
+  teamsData: Team[] = teams,
+  cups: CupCompetition[] = CUP_COMPETITIONS,
+): Promise<Record<string, TeamFixtures>> {
   // Local-dev escape hatch: SKIP_VOLLEYZONE=true in .env.local skips the (slow)
   // per-team Volleyzone fetches entirely. Returning an empty map makes each team
   // fall back to its "fixtures unavailable" state with zero network calls.
@@ -134,9 +164,12 @@ export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Recor
     t => t.compId && t.seasonId && t.volleyzoneUserId && t.volleyzoneSegment,
   );
 
-  const settled = await Promise.allSettled(
-    eligible.map(t => fetchTeamFixtures(t.compId!, t.seasonId!, t.volleyzoneUserId!, t.volleyzoneSegment!)),
-  );
+  const [settled, cupMatches] = await Promise.all([
+    Promise.allSettled(
+      eligible.map(t => fetchTeamFixtures(t.compId!, t.seasonId!, t.volleyzoneUserId!, t.volleyzoneSegment!)),
+    ),
+    eligible.some(t => t.volleyzoneTeamName) ? fetchCupMatches(cups) : Promise.resolve<Match[]>([]),
+  ]);
 
   const map: Record<string, TeamFixtures> = {};
   eligible.forEach((team, i) => {
@@ -148,6 +181,18 @@ export async function fetchAllFixtures(teamsData: Team[] = teams): Promise<Recor
       map[team.name] = { teamName: team.name, matches: [], error: true };
     }
   });
+
+  for (const team of eligible) {
+    const entry = map[team.name];
+    // A team whose league fetch failed keeps its honest "unavailable" state —
+    // showing a lone cup tie would read as the whole season.
+    if (!team.volleyzoneTeamName || entry.error) continue;
+    entry.matches = entry.matches.concat(
+      cupMatches.filter(
+        m => m.homeTeam === team.volleyzoneTeamName || m.awayTeam === team.volleyzoneTeamName,
+      ),
+    );
+  }
 
   return map;
 }
