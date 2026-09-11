@@ -1286,7 +1286,21 @@ import { SQUAD } from '../data/squad';
 </style>
 ```
 
-- [ ] **Step 4: Verify the page renders**
+- [ ] **Step 4: Note the OG image**
+
+The spec asks for the page to have its own OG image. No asset exists yet — the
+site-wide `public/og-image.jpg` is itself still a placeholder (see `human-todo.md`
+item 4), so `/game` inherits it rather than pointing at a file that is not there.
+Add a line to `human-todo.md` under the OG image item:
+
+```markdown
+- A second 1200×630 image for `/game` would help the daily puzzle share well in
+  the group chat: court diagram + "Rotation" + the club crest. Once it exists,
+  save it to `public/og-game.jpg` and pass `ogImage="/og-game.jpg"` on the
+  BaseLayout in `src/pages/game.astro`.
+```
+
+- [ ] **Step 5: Verify the page renders**
 
 Run: `curl -s -o /dev/null -w '%{http_code}' http://localhost:4321` — if that answers, reuse the running server. Otherwise:
 
@@ -1300,10 +1314,10 @@ Load `/game`. Expected: hero, team sheet with the squad listed by role, a line-u
 
 Kill only your own server with `kill "$MY_DEV_PID"` when done — never `pkill -f "astro dev"`.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
-git add src/pages/game.astro src/components/RotationBrief.astro src/components/Nav.astro
+git add src/pages/game.astro src/components/RotationBrief.astro src/components/Nav.astro human-todo.md
 git commit -m "feat(game): add the /game shell, nav entry and team sheet
 
 The site is static, so the page ships the whole bank and the client picks
@@ -1429,7 +1443,7 @@ const pct = (metres: number) => `${(metres / COURT_M) * 100}%`;
 </style>
 ```
 
-The target circle's width is a placeholder proportion here; Task 9 sets it from `SETTER_RADIUS[phase]` at runtime, since the radius is per-rotation.
+The target circle ships at a neutral proportion; Task 11's `reveal()` resizes it from `SETTER_RADIUS[phase]` when the puzzle is unlocked, since the radius is per-rotation and the page is static.
 
 - [ ] **Step 2: Mount it in the page**
 
@@ -1606,10 +1620,6 @@ Add to `src/pages/game.astro`:
       renderMarkers();
       layer.querySelector<HTMLElement>(`[data-slot="${slot}"]`)?.focus();
       app.dispatchEvent(new CustomEvent('rotation:placed'));
-    });
-
-    Object.assign(window as Record<string, unknown>, {
-      __rotation: { placement, phase, puzzle, label, renderMarkers, numberAt, validate, constraintsFor },
     });
   }
 </script>
