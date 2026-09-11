@@ -339,15 +339,17 @@ const teamSections = [
       // build time (see slimFixtures), so here we only split results vs upcoming.
       const matches = data.matches;
 
+      // Full lists: everything past CAP is rendered but hidden behind the
+      // per-list "show more" toggle, so expanding costs no re-render.
+      const CAP = 3;
+
       const results = matches
         .filter((m: Match) => m.fixtureStatus === 'result')
-        .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate)
-        .slice(0, 3);
+        .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate);
 
       const upcoming = matches
         .filter((m: Match) => m.fixtureStatus === 'fixture' && m.fixtureDate * 1000 >= today.getTime())
-        .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate)
-        .slice(0, 3);
+        .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate);
 
       if (matches.length > 0 && results.length === 0 && upcoming.length === 0) {
         target.innerHTML = `<div class="tl-error">Season complete — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full Schedule on Volleyzone →</a></div>`;
@@ -356,39 +358,36 @@ const teamSections = [
 
       let html = '';
 
+      const slug = (data.teamName ?? 'team').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
       const compChip = (m: Match) =>
         m.competitionLabel ? `<span class="tl-comp">${esc(m.competitionLabel)}</span>` : '';
 
-      if (results.length > 0) {
-        html += `<div class="tl-section-label">Recent Results</div>`;
-        for (const m of results) {
-          const isHome = parseHomeAway(m, vzName) === 'Home';
-          const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
-          const resultLabel = isHome ? m.homeResult : m.awayResult;
-          const w = resultLabel === 'win';
-          const result = esc(formatMatchResult(m, isHome ? 'Home' : 'Away'));
-          const date = formatFixtureDate(m.fixtureDate);
-          html += `
+      const resultRow = (m: Match) => {
+        const isHome = parseHomeAway(m, vzName) === 'Home';
+        const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
+        const resultLabel = isHome ? m.homeResult : m.awayResult;
+        const w = resultLabel === 'win';
+        const result = esc(formatMatchResult(m, isHome ? 'Home' : 'Away'));
+        const date = formatFixtureDate(m.fixtureDate);
+        return `
             <div class="tl-row">
               <span class="tl-date">${date}</span>
               <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}${compChip(m)}</span>
               <span class="${w ? 'badge-w' : 'badge-l'}">${result}</span>
             </div>`;
-        }
-      }
+      };
 
-      if (upcoming.length > 0) {
-        html += `<div class="tl-section-label">Upcoming Fixtures</div>`;
-        upcoming.forEach((m: Match, i: number) => {
-          const isHome = parseHomeAway(m, vzName) === 'Home';
-          const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
-          const venue = esc(m.venue ?? '');
-          const date = formatFixtureDate(m.fixtureDate);
-          const time = formatFixtureTime(m.fixtureDate);
-          const venueStr = venue ? `${PIN} ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
-          const ha = isHome ? 'Home' : 'Away';
-          const isNext = i === 0;
-          html += `
+      const upcomingRow = (m: Match, i: number) => {
+        const isHome = parseHomeAway(m, vzName) === 'Home';
+        const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
+        const venue = esc(m.venue ?? '');
+        const date = formatFixtureDate(m.fixtureDate);
+        const time = formatFixtureTime(m.fixtureDate);
+        const venueStr = venue ? `${PIN} ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
+        const ha = isHome ? 'Home' : 'Away';
+        const isNext = i === 0;
+        return `
             <div class="tl-row-up${isNext ? ' tl-row-up--next' : ''}">
               <span class="tl-date">${date}</span>
               <div class="tl-up-meta">
@@ -400,7 +399,35 @@ const teamSections = [
                 <span class="home-away">${ha}</span>
               </div>
             </div>`;
-        });
+      };
+
+      // Rows past CAP go in an [hidden] wrapper the button targets by id, so
+      // aria-controls names one element and toggling is a single attribute flip.
+      const listHtml = (
+        items: Match[],
+        rowFn: (m: Match, i: number) => string,
+        key: string,
+        noun: string,
+      ) => {
+        const head = items.slice(0, CAP).map((m, i) => rowFn(m, i)).join('');
+        if (items.length <= CAP) return head;
+        const id = `tl-overflow-${slug}-${key}`;
+        const rest = items.slice(CAP).map((m, i) => rowFn(m, i + CAP)).join('');
+        const more = `Show all ${items.length} ${noun} ▾`;
+        return `${head}
+            <div class="tl-overflow" id="${id}" hidden>${rest}</div>
+            <button type="button" class="tl-more" aria-expanded="false" aria-controls="${id}"
+              data-more="${esc(more)}" data-less="Show fewer ▴">${more}</button>`;
+      };
+
+      if (results.length > 0) {
+        html += `<div class="tl-section-label">Recent Results</div>`;
+        html += listHtml(results, resultRow, 'results', 'results');
+      }
+
+      if (upcoming.length > 0) {
+        html += `<div class="tl-section-label">Upcoming Fixtures</div>`;
+        html += listHtml(upcoming, upcomingRow, 'fixtures', 'fixtures');
       }
 
       html += `
@@ -410,6 +437,17 @@ const teamSections = [
         </div>`;
 
       target.innerHTML = html;
+
+      target.querySelectorAll<HTMLButtonElement>('.tl-more').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panel = document.getElementById(btn.getAttribute('aria-controls') ?? '');
+          if (!panel) return;
+          const open = btn.getAttribute('aria-expanded') === 'true';
+          panel.hidden = open;
+          btn.setAttribute('aria-expanded', String(!open));
+          btn.textContent = open ? btn.dataset.more ?? '' : btn.dataset.less ?? '';
+        });
+      });
     }
 
     // Isolated per section: an unexpected shape in one team's payload would
@@ -765,6 +803,33 @@ const teamSections = [
     color: var(--color-text-muted);
   }
 
+  .tl-overflow[hidden] { display: none; }
+
+  /* Quiet inline control, not a solid fill — solid accent is reserved for the
+     page's primary buttons. Plain selectors: injected via innerHTML. */
+  .tl-more {
+    display: block;
+    width: 100%;
+    padding: 10px 18px;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-accent-text);
+    font-family: inherit;
+    font-size: var(--text-body-sm);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .tl-more:hover { background: var(--color-bg-alt); }
+
+  .tl-more:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+  }
+
   @media (max-width: 640px) {
     .tl-row,
     .tl-row-up {
@@ -774,6 +839,7 @@ const teamSections = [
     }
 
     .tl-section-label { padding: 7px 14px 5px; }
+    .tl-more { padding: 10px 14px; }
     /* Match the header's 12px vertical padding so the tile's top and bottom
        bands are balanced. */
     .tl-footer { padding: 12px 14px; flex-direction: column; align-items: flex-start; gap: 6px; }
