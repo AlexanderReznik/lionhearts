@@ -206,12 +206,12 @@ is an equally valid 5-1 and doubles the geometric configurations to twelve.
 The bank is visible in devtools; so was Wordle's. Not worth obfuscating — but see
 the witnesses below, which are deliberately *not* shipped.
 
-### Feasibility witnesses — `src/lib/__fixtures__/rotation-witnesses.ts`
+### Feasibility witnesses — `tests/fixtures/rotation-witnesses.ts`
 
 One hand-checked legal formation per rotation, six in total. Because the
 constraint set depends only on `phase`, solvability is a property of the six
 rotations rather than of each puzzle, and is proven once per rotation in the
-tests. Witnesses live in a test fixture and are **never** shipped to the client —
+tests. Witnesses live under `tests/` — not `src/` — and are **never** shipped to the client;
 putting them in the bank would hand every player a ready-made answer.
 
 ## Library — `src/lib/rotation.ts`
