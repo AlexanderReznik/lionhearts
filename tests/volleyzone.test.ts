@@ -272,3 +272,183 @@ describe('fetchTeamFixtures', () => {
     expect(body.get('lastSegment')).toBe('lva');
   });
 });
+
+describe('fetchAllFixtures — cup merge', () => {
+  const realFetch = globalThis.fetch;
+
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+    vi.restoreAllMocks();
+  });
+
+  const makeResponse = (fixtures: Record<string, unknown>[]) => ({
+    ok: true,
+    json: async () => ({ debug: JSON.stringify({ data: { fixtures } }) }),
+  });
+
+  const match = (homeTeam: string, awayTeam: string, fixtureId = '1') => ({
+    fixtureId, fixtureDate: 1746277200, fixtureStatus: 'fixture',
+    homeTeam, awayTeam, homeScore: ';', awayScore: ';',
+    homeResult: '', awayResult: '', venue: 'Gym',
+  });
+
+  const cups = [
+    { compId: '217919', seasonId: '4013', userId: '279580', segment: 'nvl', label: 'Cup' },
+  ] as import('../src/data/teams').CupCompetition[];
+
+  const leoTeam = [
+    { name: 'London Lionhearts', gender: "Men's", division: 'NVL Division 2 South',
+      volleyzoneTeamName: 'London Lionhearts',
+      compId: '216372', seasonId: '4013', volleyzoneUserId: '279580', volleyzoneSegment: 'nvl' },
+  ] as import('../src/data/teams').Team[];
+
+  it('appends a cup match in which the team is the away side', async () => {
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce(makeResponse([match('London Lionhearts', 'Kent Invicta')]))
+      .mockResolvedValueOnce(makeResponse([match('Black Country', 'London Lionhearts', '2')]));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const result = await fetchAllFixtures(leoTeam, cups);
+
+    expect(result['London Lionhearts'].matches).toHaveLength(2);
+    expect(result['London Lionhearts'].matches[1].awayTeam).toBe('London Lionhearts');
+  });
+
+  it('tags cup matches with the competition label and leaves league matches untagged', async () => {
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce(makeResponse([match('London Lionhearts', 'Kent Invicta')]))
+      .mockResolvedValueOnce(makeResponse([match('Black Country', 'London Lionhearts', '2')]));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const result = await fetchAllFixtures(leoTeam, cups);
+
+    const [league, cup] = result['London Lionhearts'].matches;
+    expect(league.competitionLabel).toBeUndefined();
+    expect(cup.competitionLabel).toBe('Cup');
+  });
+
+  it('ignores cup matches belonging to other clubs', async () => {
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce(makeResponse([match('London Lionhearts', 'Kent Invicta')]))
+      .mockResolvedValueOnce(makeResponse([match('Black Country', 'Malory Eagles', '2')]));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const result = await fetchAllFixtures(leoTeam, cups);
+
+    expect(result['London Lionhearts'].matches).toHaveLength(1);
+  });
+
+  it('matches team names exactly, not by substring', async () => {
+    const teamsData = [
+      { name: 'Vinarius', gender: "Women's", division: 'NVL Super League',
+        volleyzoneTeamName: 'Lionhearts Vinarius',
+        compId: '216377', seasonId: '4013', volleyzoneUserId: '279580', volleyzoneSegment: 'nvl' },
+    ] as import('../src/data/teams').Team[];
+
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce(makeResponse([match('Lionhearts Vinarius', 'London Giants')]))
+      .mockResolvedValueOnce(makeResponse([match('Lionhearts Vinarius Development', 'Malory Eagles', '2')]));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const result = await fetchAllFixtures(teamsData, cups);
+
+    expect(result['Vinarius'].matches).toHaveLength(1);
+  });
+
+  it('keeps league matches and error:false when a cup fetch fails', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce(makeResponse([match('London Lionhearts', 'Kent Invicta')]))
+      .mockResolvedValueOnce({ ok: false, status: 500 } as Response);
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const result = await fetchAllFixtures(leoTeam, cups);
+
+    expect(result['London Lionhearts'].error).toBe(false);
+    expect(result['London Lionhearts'].matches).toHaveLength(1);
+  });
+
+  it('fetches each cup competition once regardless of team count', async () => {
+    const twoTeams = [
+      ...leoTeam,
+      { name: 'Vinarius', gender: "Women's", division: 'NVL Super League',
+        volleyzoneTeamName: 'Lionhearts Vinarius',
+        compId: '216377', seasonId: '4013', volleyzoneUserId: '279580', volleyzoneSegment: 'nvl' },
+    ] as import('../src/data/teams').Team[];
+
+    globalThis.fetch = vi.fn().mockResolvedValue(makeResponse([]));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    await fetchAllFixtures(twoTeams, cups);
+
+    // 2 league fetches + 1 cup fetch, not 1 cup fetch per team
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+  });
+
+  it('leaves a team whose league fetch failed in its unavailable state', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    globalThis.fetch = vi.fn()
+      .mockResolvedValueOnce({ ok: false, status: 500 } as Response)
+      .mockResolvedValueOnce(makeResponse([match('Black Country', 'London Lionhearts', '2')]));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    const result = await fetchAllFixtures(leoTeam, cups);
+
+    expect(result['London Lionhearts'].error).toBe(true);
+    expect(result['London Lionhearts'].matches).toEqual([]);
+  });
+
+  it('skips cup fetches entirely when no team declares a Volleyzone name', async () => {
+    const unnamed = [
+      { name: 'Alpha', gender: "Men's", division: 'LVA Premier League',
+        compId: '219574', seasonId: '4015', volleyzoneUserId: '298568', volleyzoneSegment: 'lva' },
+    ] as import('../src/data/teams').Team[];
+
+    globalThis.fetch = vi.fn().mockResolvedValue(makeResponse([]));
+
+    const { fetchAllFixtures } = await import('../src/lib/volleyzone');
+    await fetchAllFixtures(unnamed, cups);
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('parseScore — null handling', () => {
+  it('treats null scores as 0 rather than throwing', () => {
+    expect(parseScore(null, null)).toEqual({ home: 0, away: 0 });
+  });
+
+  it('handles one side null', () => {
+    expect(parseScore('3;', null)).toEqual({ home: 3, away: 0 });
+  });
+});
+
+describe('formatMatchResult — null scores', () => {
+  it('renders a result row without throwing when scores are null', () => {
+    const m = { ...BASE_MATCH, homeScore: null, awayScore: null } as Match;
+    expect(formatMatchResult(m, 'Home')).toBe('W 0–0');
+  });
+});
+
+describe('parseHomeAway — exact team identity', () => {
+  it('returns Home when the team is the named home side', () => {
+    const m = { ...BASE_MATCH, homeTeam: 'Lionhearts Cats', awayTeam: 'Phoenix Nova' };
+    expect(parseHomeAway(m, 'Lionhearts Cats')).toBe('Home');
+  });
+
+  it('returns Away when the team is the named away side', () => {
+    const m = { ...BASE_MATCH, homeTeam: 'Phoenix Nova', awayTeam: 'Lionhearts Cats' };
+    expect(parseHomeAway(m, 'Lionhearts Cats')).toBe('Away');
+  });
+
+  it('resolves a Lionhearts-vs-Lionhearts tie from the perspective of each team', () => {
+    const m = { ...BASE_MATCH, homeTeam: 'Lionhearts Fury', awayTeam: 'Lionhearts Cats' };
+    expect(parseHomeAway(m, 'Lionhearts Fury')).toBe('Home');
+    expect(parseHomeAway(m, 'Lionhearts Cats')).toBe('Away');
+  });
+
+  it('falls back to the substring guess when no team name is supplied', () => {
+    const m = { ...BASE_MATCH, homeTeam: 'Lionhearts Fury', awayTeam: 'Phoenix Nova' };
+    expect(parseHomeAway(m)).toBe('Home');
+  });
+});
