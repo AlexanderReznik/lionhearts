@@ -651,7 +651,6 @@ import {
   passerSlots, setterSlot, validate,
   type Phase, type Placement, type Slot, type Vec2,
 } from '../src/lib/rotation.ts';
-import { SQUAD } from '../src/data/squad.ts';
 
 const PHASES: Phase[] = [0, 1, 2, 3, 4, 5];
 const ATTEMPTS = 400_000;
@@ -717,7 +716,6 @@ writeFileSync('tests/fixtures/rotation-witnesses.ts',
   + `\n};\n`);
 
 console.log('SETTER_RADIUS:', Object.fromEntries(results.map(r => [r.phase, r.radius])));
-console.log(`squad of ${SQUAD.length} loaded`);
 ```
 
 - [ ] **Step 4: Run the generator and paste its radii into the library**
@@ -725,8 +723,6 @@ console.log(`squad of ${SQUAD.length} loaded`);
 Run: `npm run gen:rotations`
 Expected: writes `tests/fixtures/rotation-witnesses.ts` and prints a `SETTER_RADIUS` object.
 Replace the provisional `SETTER_RADIUS` table in `src/lib/rotation.ts` with the printed values verbatim.
-
-Note: Task 5 creates `src/data/squad.ts`. If running this task first, create that file from Task 5 Step 3 before running the generator.
 
 - [ ] **Step 5: Run tests to verify they pass**
 
@@ -899,7 +895,9 @@ writeFileSync('src/data/rotations.ts',
   + `\n];\n`);
 ```
 
-Also add `LINEUP_CYCLE` to the script's import list from `../src/lib/rotation.ts`.
+Also add `LINEUP_CYCLE` to the script's import list from `../src/lib/rotation.ts`, and add
+`import { SQUAD } from '../src/data/squad.ts';` — the witness pass in Task 4 had no use for
+the squad, so this is the first point the generator needs it.
 
 - [ ] **Step 5: Run the generator, then the tests**
 
@@ -1145,7 +1143,10 @@ double-count it."
 - Consumes: `SQUAD`, `ROTATIONS`, `puzzleIndexFor`, `roleAt`, `LINEUP_CYCLE`.
 - Produces: the `#rotation-app` root element and `data-puzzle` JSON payload the client script in Tasks 9-11 reads.
 
-The page is static, so it cannot know the visitor's date at build time. It ships the **whole bank** as JSON and the client picks today's puzzle — the same approach the spec assumes.
+The page is static, so it cannot know the visitor's date at build time. The client script
+(Task 9) imports `ROTATIONS` and `SQUAD` as modules and picks today's puzzle itself; Astro
+bundles them. Do **not** also serialise the bank into a `data-` attribute — that would ship
+every puzzle twice, once as HTML and once as JS.
 
 - [ ] **Step 1: Add the nav entry**
 
@@ -1245,8 +1246,6 @@ const roleName: Record<string, string> = {
 // src/pages/game.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RotationBrief from '../components/RotationBrief.astro';
-import { ROTATIONS } from '../data/rotations';
-import { SQUAD } from '../data/squad';
 ---
 
 <BaseLayout
@@ -1267,12 +1266,7 @@ import { SQUAD } from '../data/squad';
   <div class="container game">
     <RotationBrief />
 
-    <div
-      id="rotation-app"
-      class="game__app"
-      data-bank={JSON.stringify(ROTATIONS)}
-      data-squad={JSON.stringify(SQUAD)}
-    >
+    <div id="rotation-app" class="game__app">
       <button type="button" class="btn btn--accent game__start" data-start>Start today's puzzle</button>
       <p class="game__hint" data-start-hint>The clock starts when you press it.</p>
     </div>
