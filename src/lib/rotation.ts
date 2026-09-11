@@ -105,3 +105,117 @@ export function constraintsFor(phase: Phase): Constraint[] {
   if (isFrontRow(opposite)) cs.push({ kind: 'nearNet', slot: opposite, max: OPP_NET_MAX });
   return cs;
 }
+
+export interface Violation {
+  kind: Constraint['kind'];
+  slots: Slot[];
+  message: string;
+}
+
+export type SlotLabel = (slot: Slot) => string;
+const defaultLabel: SlotLabel = slot => `P${slot}`;
+
+const dist = (a: Vec2, b: Vec2) => Math.hypot(a.x - b.x, a.y - b.y);
+const m = (v: number) => `${v.toFixed(1)}m`;
+
+/**
+ * Every ordering is `>=` / `<=`: FIVB 7.4.3.1 and 7.4.3.2 both permit a player
+ * to be "level with" the player they are judged against.
+ */
+export function validate(p: Placement, constraints: Constraint[], label: SlotLabel = defaultLabel): Violation[] {
+  const out: Violation[] = [];
+
+  for (const c of constraints) {
+    switch (c.kind) {
+      case 'depthOrder': {
+        if (p[c.back].y >= p[c.front].y) break;
+        out.push({
+          kind: c.kind, slots: [c.front, c.back],
+          message: `${label(c.back)} is ${m(p[c.front].y - p[c.back].y)} in front of ${label(c.front)}. `
+            + 'A back-row player must be level with or further from the net than their front-row partner.',
+        });
+        break;
+      }
+      case 'lateralOrder': {
+        if (p[c.left].x <= p[c.right].x) break;
+        out.push({
+          kind: c.kind, slots: [c.left, c.right],
+          message: `${label(c.left)} has crossed to the right of ${label(c.right)}. `
+            + 'Each row must stay in left-to-right order.',
+        });
+        break;
+      }
+      case 'inCourt': {
+        const out_ = ALL_SLOTS.filter(s => {
+          const { x, y } = p[s];
+          return x < 0 || x > COURT_M || y < 0 || y > COURT_M;
+        });
+        if (!out_.length) break;
+        out.push({
+          kind: c.kind, slots: out_,
+          message: `${out_.map(label).join(', ')} must be inside our own half at the service hit.`,
+        });
+        break;
+      }
+      case 'separation': {
+        for (let i = 0; i < ALL_SLOTS.length; i++) {
+          for (let j = i + 1; j < ALL_SLOTS.length; j++) {
+            const [a, b] = [ALL_SLOTS[i], ALL_SLOTS[j]];
+            if (dist(p[a], p[b]) >= c.min) continue;
+            out.push({
+              kind: c.kind, slots: [a, b],
+              message: `${label(a)} and ${label(b)} are standing on top of each other.`,
+            });
+          }
+        }
+        break;
+      }
+      case 'depthBand': {
+        for (const s of c.slots) {
+          const { y } = p[s];
+          if (y >= c.min && y <= c.max) continue;
+          out.push({
+            kind: c.kind, slots: [s],
+            message: `${label(s)} is passing from ${m(y)}. Our three passers receive between `
+              + `${m(c.min)} and ${m(c.max)} from the net.`,
+          });
+        }
+        break;
+      }
+      case 'spread': {
+        for (let i = 0; i < c.slots.length; i++) {
+          for (let j = i + 1; j < c.slots.length; j++) {
+            const [a, b] = [c.slots[i], c.slots[j]];
+            if (dist(p[a], p[b]) >= c.min) continue;
+            out.push({
+              kind: c.kind, slots: [a, b],
+              message: `${label(a)} and ${label(b)} are only ${m(dist(p[a], p[b]))} apart. `
+                + `Passers stay at least ${m(c.min)} from each other so they do not chase the same ball.`,
+            });
+          }
+        }
+        break;
+      }
+      case 'nearNet': {
+        if (p[c.slot].y <= c.max) break;
+        out.push({
+          kind: c.kind, slots: [c.slot],
+          message: `${label(c.slot)} is ${m(p[c.slot].y)} off the net and cannot attack from there. `
+            + `Stay within ${m(c.max)}.`,
+        });
+        break;
+      }
+      case 'nearPoint': {
+        const d = dist(p[c.slot], c.point);
+        if (d <= c.radius) break;
+        out.push({
+          kind: c.kind, slots: [c.slot],
+          message: `${label(c.slot)} is ${m(d)} from the release point and will not make it to set. `
+            + `Get within ${m(c.radius)}.`,
+        });
+        break;
+      }
+    }
+  }
+  return out;
+}
