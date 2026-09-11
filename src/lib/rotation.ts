@@ -73,7 +73,7 @@ export const MIN_SEPARATION = 0.7;
  * proves each value reachable with a committed witness formation.
  */
 export const SETTER_RADIUS: Record<Phase, number> = {
-  0: 5, 1: 2, 2: 3, 3: 3, 4: 2, 5: 2,
+  0: 5, 1: 1.25, 2: 1.25, 3: 1.25, 4: 1.25, 5: 1.25,
 };
 
 export type Constraint =

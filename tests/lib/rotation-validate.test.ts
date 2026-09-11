@@ -4,10 +4,10 @@ import { validate, constraintsFor, type Placement } from '../../src/lib/rotation
 /** Hand-checked legal formation for rotation phase 1. */
 const R2: Placement = {
   4: { x: 3.2, y: 5.6 },  // OH, passer
-  3: { x: 4.8, y: 1.2 },  // OPP, front row
+  3: { x: 4.8, y: 0.2 },  // OPP, front row
   2: { x: 7.6, y: 0.9 },  // MB, front row
   5: { x: 1.0, y: 7.0 },  // libero, passer
-  6: { x: 6.5, y: 2.2 },  // setter
+  6: { x: 6.5, y: 0.5 },  // setter
   1: { x: 7.0, y: 6.0 },  // OH, passer
 };
 const cs = constraintsFor(1);
