@@ -57,3 +57,51 @@ export function passerSlots(phase: Phase): Slot[] {
     return role === 'L' || role === 'OH';
   });
 }
+
+/** Team system values — our convention, not the rulebook. */
+export const PASS_BAND = { min: 5, max: 7 } as const;
+export const PASS_SPREAD = 2;
+export const MB_NET_MAX = 1.5;
+export const OPP_NET_MAX = 2;
+export const SETTER_TARGET: Vec2 = { x: 6.5, y: 0.5 };
+
+/** Physical sanity, not a rule. */
+export const MIN_SEPARATION = 0.7;
+
+/**
+ * Per-rotation setter radius. Replaced by `npm run gen:rotations`, which
+ * proves each value reachable with a committed witness formation.
+ */
+export const SETTER_RADIUS: Record<Phase, number> = {
+  0: 5, 1: 2, 2: 3, 3: 3, 4: 2, 5: 2,
+};
+
+export type Constraint =
+  | { kind: 'depthOrder'; front: Slot; back: Slot }
+  | { kind: 'lateralOrder'; left: Slot; right: Slot }
+  | { kind: 'inCourt' }
+  | { kind: 'separation'; min: number }
+  | { kind: 'depthBand'; slots: Slot[]; min: number; max: number }
+  | { kind: 'spread'; slots: Slot[]; min: number }
+  | { kind: 'nearNet'; slot: Slot; max: number }
+  | { kind: 'nearPoint'; slot: Slot; point: Vec2; radius: number };
+
+export function constraintsFor(phase: Phase): Constraint[] {
+  const passers = passerSlots(phase);
+  const opposite = oppositeSlot(phase);
+
+  const cs: Constraint[] = [
+    ...DEPTH_PAIRS.map(([front, back]): Constraint => ({ kind: 'depthOrder', front, back })),
+    ...LATERAL_ROWS.flatMap((row): Constraint[] =>
+      row.slice(0, -1).map((left, i) => ({ kind: 'lateralOrder', left, right: row[i + 1] }))),
+    { kind: 'inCourt' },
+    { kind: 'separation', min: MIN_SEPARATION },
+    { kind: 'depthBand', slots: passers, min: PASS_BAND.min, max: PASS_BAND.max },
+    { kind: 'spread', slots: passers, min: PASS_SPREAD },
+    { kind: 'nearNet', slot: middleSlot(phase), max: MB_NET_MAX },
+    { kind: 'nearPoint', slot: setterSlot(phase), point: SETTER_TARGET, radius: SETTER_RADIUS[phase] },
+  ];
+
+  if (isFrontRow(opposite)) cs.push({ kind: 'nearNet', slot: opposite, max: OPP_NET_MAX });
+  return cs;
+}

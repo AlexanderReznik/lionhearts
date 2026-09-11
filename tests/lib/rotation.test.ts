@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   LINEUP_CYCLE, BACK_ROW, isFrontRow, roleAt, liberoSlot, onCourtRole,
-  setterSlot, middleSlot, oppositeSlot, passerSlots, type Phase, type Slot,
+  setterSlot, middleSlot, oppositeSlot, passerSlots, constraintsFor, PASS_BAND, type Phase, type Slot, type Constraint,
 } from '../../src/lib/rotation';
 
 const PHASES: Phase[] = [0, 1, 2, 3, 4, 5];
@@ -64,6 +64,54 @@ describe('role slots', () => {
       expect(passers).toHaveLength(3);
       expect(passers).toContain(liberoSlot(phase));
       expect(passers.map(s => onCourtRole(s, phase)).sort()).toEqual(['L', 'OH', 'OH']);
+    }
+  });
+});
+
+const kinds = (cs: Constraint[], kind: Constraint['kind']) => cs.filter(c => c.kind === kind);
+
+describe('constraintsFor', () => {
+  it('always carries the three depth and four lateral orderings', () => {
+    for (const phase of PHASES) {
+      const cs = constraintsFor(phase);
+      expect(kinds(cs, 'depthOrder')).toHaveLength(3);
+      expect(kinds(cs, 'lateralOrder')).toHaveLength(4);
+      expect(kinds(cs, 'inCourt')).toHaveLength(1);
+      expect(kinds(cs, 'separation')).toHaveLength(1);
+    }
+  });
+
+  it('bands exactly the three passers', () => {
+    for (const phase of PHASES) {
+      const band = kinds(constraintsFor(phase), 'depthBand');
+      expect(band).toHaveLength(1);
+      const c = band[0] as Extract<Constraint, { kind: 'depthBand' }>;
+      expect(c.slots.sort()).toEqual(passerSlots(phase).sort());
+      expect([c.min, c.max]).toEqual([PASS_BAND.min, PASS_BAND.max]);
+    }
+  });
+
+  it('holds the middle to the net in every rotation', () => {
+    for (const phase of PHASES) {
+      const net = kinds(constraintsFor(phase), 'nearNet');
+      const middle = net.find(c => (c as { slot: Slot }).slot === middleSlot(phase));
+      expect(middle).toBeDefined();
+    }
+  });
+
+  it('only holds the opposite to the net when they are front row', () => {
+    for (const phase of PHASES) {
+      const net = kinds(constraintsFor(phase), 'nearNet');
+      const opp = net.find(c => (c as { slot: Slot }).slot === oppositeSlot(phase));
+      expect(Boolean(opp)).toBe(isFrontRow(oppositeSlot(phase)));
+    }
+  });
+
+  it('pins the setter to their release point', () => {
+    for (const phase of PHASES) {
+      const near = kinds(constraintsFor(phase), 'nearPoint');
+      expect(near).toHaveLength(1);
+      expect((near[0] as { slot: Slot }).slot).toBe(setterSlot(phase));
     }
   });
 });
