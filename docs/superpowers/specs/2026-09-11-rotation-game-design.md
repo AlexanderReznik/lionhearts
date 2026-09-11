@@ -320,7 +320,39 @@ Vitest, on the library only, matching the repo's existing test scope:
 Serving formations are not "out of scope" so much as nonexistent: under 2025-28
 rule 7.4 the serving team may occupy any position, so there is no puzzle there.
 
+## Visual direction
+
+**Direction A — tactics board.** Chosen from three browser mockups:
+<https://claude.ai/code/artifact/283876b8-b5bc-4f32-a571-8a8ea15fde25>
+
+- **Court** — deep navy floor (`--lh-navy-deep`), light-blue lines, an inset
+  shadow for depth. It stays dark in **both** site themes, like
+  `.section--feature`, so it carries a local `--color-accent-text: var(--lh-blue)`
+  per the dark-panel convention in CLAUDE.md.
+- **Players** — solid brand-blue discs with navy numerals in Barlow Condensed,
+  tabular figures. Passers carry a `--lh-blue-100` ring, the setter is white, a
+  faulted player turns `--lh-red`. Solid accent fill reads as interactive on this
+  site, which is correct here: the discs are the draggable objects.
+- **Zones** — passing band as a translucent blue fill with dashed edges; the
+  setter target a dashed circle with a centre dot; net limits dotted; attack line
+  at 3 m. The target circle is drawn above the band and below the markers.
+- **Labels** — slot and role beneath each marker (`P5 L`).
+
+### Marker geometry (a real constraint, not a style note)
+
+Measured at 320 px the court renders 260 px wide, so one metre is **28.9 px**. A
+30 px marker is therefore **1.04 m across — wider than the 0.7 m separation rule
+it must obey**, so two legally separated players would visibly overlap and the
+court would appear to contradict itself.
+
+Therefore:
+
+- the disc is sized in **court metres**, not pixels, at roughly `0.7 m`;
+- the tap target is a larger transparent hit area (≥ 44 px) centred on it, so hit
+  areas overlap where discs do not — picking resolves to the **nearest centre**;
+- below roughly a 26 px disc the shirt number moves from inside the disc into the
+  label beneath it, since two digits in Barlow Condensed stop being legible first.
+
 ## Open
 
-**Visual design** — the court, tiles and reveal all need browser mockups shown as
-options before implementation, per the project convention.
+Nothing. Ready for an implementation plan.
