@@ -5,7 +5,7 @@ import { COURT_M, PASS_BAND, MB_NET_MAX, OPP_NET_MAX, SETTER_TARGET } from '../l
 const pct = (metres: number) => `${(metres / COURT_M) * 100}%`;
 ---
 
-<div class="court" data-court role="application" aria-label="Our half of the court">
+<div class="court" data-court role="group" aria-label="Our half of the court">
   <div class="court__net" aria-hidden="true"></div>
   <span class="court__tag court__tag--net" aria-hidden="true">Net</span>
 

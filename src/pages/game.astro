@@ -32,9 +32,198 @@ import RotationCourt from '../components/RotationCourt.astro';
   </div>
 </BaseLayout>
 
+<script>
+  import {
+    ALL_SLOTS, COURT_M, MIN_SEPARATION, SETTER_RADIUS, constraintsFor,
+    onCourtRole, validate, type Phase, type Placement, type Slot, type Vec2,
+  } from '../lib/rotation';
+  import { ROTATIONS } from '../data/rotations';
+  import { SQUAD } from '../data/squad';
+  import { puzzleIndexFor } from '../lib/rotationState';
+
+  const app = document.getElementById('rotation-app');
+  if (app) {
+    const puzzle = ROTATIONS[puzzleIndexFor(new Date(), ROTATIONS.length)];
+    const phase = puzzle.phase as Phase;
+    const court = app.querySelector<HTMLElement>('[data-court]')!;
+    const layer = app.querySelector<HTMLElement>('[data-markers]')!;
+
+    // Astro stamps its scoped-CSS attribute onto elements written in the
+    // template at build time; a button created here via document.createElement
+    // gets none of that, so every `.marker { ... }` rule below would silently
+    // fail to match without copying the attribute across by hand.
+    const scopeAttr = [...app.attributes].find(a => a.name.startsWith('data-astro-cid-'))?.name ?? null;
+
+    /** Shirt number standing in a slot right now, libero substitution applied. */
+    const numberAt = (slot: Slot): number =>
+      onCourtRole(slot, phase) === 'L' ? puzzle.libero : puzzle.start[(slot - 1 + phase) % 6];
+
+    const label = (slot: Slot) => `#${numberAt(slot)} (${onCourtRole(slot, phase)}, P${slot})`;
+
+    const placement: Partial<Placement> = {};
+    // Starting rack: spread along the back line so there is something to pick
+    // up. Without a seed, pointerdown/nearest() have nothing to find — an
+    // empty `placement` means no marker is ever rendered, and the drag
+    // handlers below can only move an *already-placed* slot. 1.5m spacing
+    // clears MIN_SEPARATION (0.7m) on its own, so `separate()` never has to
+    // untangle the rack itself.
+    for (const [i, slot] of ALL_SLOTS.entries()) {
+      placement[slot] = { x: 0.75 + i * 1.5, y: 8.5 };
+    }
+
+    const toMetres = (ev: { clientX: number; clientY: number }): Vec2 => {
+      const r = court.getBoundingClientRect();
+      const clamp = (v: number) => Math.min(COURT_M, Math.max(0, v));
+      return {
+        x: clamp(((ev.clientX - r.left) / r.width) * COURT_M),
+        y: clamp(((ev.clientY - r.top) / r.height) * COURT_M),
+      };
+    };
+
+    /** Nudge apart anything closer than the body gap, so the court never contradicts itself. */
+    const separate = (slot: Slot, at: Vec2): Vec2 => {
+      let { x, y } = at;
+      for (const other of ALL_SLOTS) {
+        const o = placement[other];
+        if (other === slot || !o) continue;
+        const d = Math.hypot(x - o.x, y - o.y);
+        if (d >= MIN_SEPARATION) continue;
+        const push = (MIN_SEPARATION - d) || MIN_SEPARATION;
+        const ang = d === 0 ? Math.random() * Math.PI * 2 : Math.atan2(y - o.y, x - o.x);
+        x = Math.min(COURT_M, Math.max(0, x + Math.cos(ang) * push));
+        y = Math.min(COURT_M, Math.max(0, y + Math.sin(ang) * push));
+      }
+      return { x, y };
+    };
+
+    function renderMarkers(faults: Slot[] = []) {
+      layer.replaceChildren();
+      for (const slot of ALL_SLOTS) {
+        const at = placement[slot];
+        if (!at) continue;
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'marker';
+        if (scopeAttr) el.setAttribute(scopeAttr, '');
+        el.classList.toggle('marker--pass', constraintsFor(phase).some(
+          c => c.kind === 'depthBand' && c.slots.includes(slot)));
+        el.classList.toggle('marker--set', onCourtRole(slot, phase) === 'S');
+        el.classList.toggle('marker--bad', faults.includes(slot));
+        el.dataset.slot = String(slot);
+        el.style.left = `${(at.x / COURT_M) * 100}%`;
+        el.style.top = `${(at.y / COURT_M) * 100}%`;
+        const tagScope = scopeAttr ? ` ${scopeAttr}=""` : '';
+        el.innerHTML = `<span class="marker__num">${numberAt(slot)}</span>`
+          + `<span class="marker__tag"${tagScope}>P${slot} ${onCourtRole(slot, phase)}</span>`;
+        el.setAttribute('aria-label',
+          `${label(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
+        layer.append(el);
+      }
+    }
+
+    /** Picking resolves to the nearest centre, because hit areas overlap where discs do not. */
+    const nearest = (at: Vec2): Slot | null => {
+      let best: Slot | null = null;
+      let bestD = Infinity;
+      for (const slot of ALL_SLOTS) {
+        const o = placement[slot];
+        if (!o) continue;
+        const d = Math.hypot(at.x - o.x, at.y - o.y);
+        if (d < bestD) { bestD = d; best = slot; }
+      }
+      return bestD <= 1.5 ? best : null;
+    };
+
+    let dragging: Slot | null = null;
+    let pending: Slot | null = null;   // tile selected from the rack, awaiting a tap
+
+    court.addEventListener('pointerdown', ev => {
+      const at = toMetres(ev);
+      if (pending !== null) {
+        placement[pending] = separate(pending, at);
+        pending = null;
+        renderMarkers();
+        app.dispatchEvent(new CustomEvent('rotation:placed'));
+        return;
+      }
+      dragging = nearest(at);
+      if (dragging !== null) court.setPointerCapture(ev.pointerId);
+    });
+
+    court.addEventListener('pointermove', ev => {
+      if (dragging === null) return;
+      placement[dragging] = separate(dragging, toMetres(ev));
+      renderMarkers();
+    });
+
+    court.addEventListener('pointerup', () => {
+      dragging = null;
+      app.dispatchEvent(new CustomEvent('rotation:placed'));
+    });
+
+    /** Keyboard: focus a marker, nudge in 0.25m steps. */
+    const STEP = 0.25;
+    layer.addEventListener('keydown', ev => {
+      const el = ev.target as HTMLElement;
+      const slot = Number(el.dataset?.slot) as Slot;
+      const at = placement[slot];
+      if (!at) return;
+      const d: Record<string, Vec2> = {
+        ArrowLeft: { x: -STEP, y: 0 }, ArrowRight: { x: STEP, y: 0 },
+        ArrowUp: { x: 0, y: -STEP }, ArrowDown: { x: 0, y: STEP },
+      };
+      const move = d[ev.key];
+      if (!move) return;
+      ev.preventDefault();
+      placement[slot] = separate(slot, {
+        x: Math.min(COURT_M, Math.max(0, at.x + move.x)),
+        y: Math.min(COURT_M, Math.max(0, at.y + move.y)),
+      });
+      renderMarkers();
+      layer.querySelector<HTMLElement>(`[data-slot="${slot}"]`)?.focus();
+      app.dispatchEvent(new CustomEvent('rotation:placed'));
+    });
+
+    renderMarkers();
+  }
+</script>
+
 <style>
   .game { display: grid; gap: 28px; padding-block: 32px 64px; padding-inline: var(--page-px); }
   .game__app { display: grid; gap: 12px; justify-items: center; }
   .game__board { width: 100%; }
   .game__hint { color: var(--color-text-muted); font-size: var(--text-body-sm); margin: 0; }
+
+  .marker {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    /* 0.7m of a 9m court — never wider than the separation rule. */
+    width: 7.8%;
+    aspect-ratio: 1;
+    min-width: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--lh-blue);
+    color: var(--lh-navy);
+    font-weight: var(--weight-black);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(11px, 2.8vw, 15px);
+    line-height: 1;
+    cursor: grab;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+  }
+  /* Tap target, not the disc: hit areas overlap where discs must not. */
+  .marker::before { content: ''; position: absolute; inset: -50%; min-width: 44px; min-height: 44px; }
+  .marker:focus-visible { outline: 2px solid var(--lh-white); outline-offset: 3px; }
+  .marker--pass { box-shadow: 0 0 0 2.5px var(--lh-blue-100), 0 2px 0 rgba(0, 0, 0, 0.35); }
+  .marker--set { background: var(--lh-white); }
+  .marker--bad { background: var(--lh-red); color: var(--lh-white); }
+  .marker__tag {
+    position: absolute; top: calc(100% + 2px); font-size: 9px;
+    letter-spacing: 0.06em; font-weight: var(--weight-black); white-space: nowrap;
+    color: var(--lh-blue-100); opacity: 0.8; text-transform: uppercase;
+  }
 </style>
