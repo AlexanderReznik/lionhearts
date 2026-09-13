@@ -2,6 +2,7 @@
 // src/pages/game.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RotationBrief from '../components/RotationBrief.astro';
+import RotationCourt from '../components/RotationCourt.astro';
 ---
 
 <BaseLayout
@@ -21,6 +22,10 @@ import RotationBrief from '../components/RotationBrief.astro';
     <RotationBrief />
 
     <div id="rotation-app" class="game__app">
+      <div class="game__board" hidden data-board>
+        <RotationCourt />
+      </div>
+
       <button type="button" class="btn btn--accent game__start" data-start>Start today's puzzle</button>
       <p class="game__hint" data-start-hint>The clock starts when you press it.</p>
     </div>
@@ -30,5 +35,6 @@ import RotationBrief from '../components/RotationBrief.astro';
 <style>
   .game { display: grid; gap: 28px; padding-block: 32px 64px; padding-inline: var(--page-px); }
   .game__app { display: grid; gap: 12px; justify-items: center; }
+  .game__board { width: 100%; }
   .game__hint { color: var(--color-text-muted); font-size: var(--text-body-sm); margin: 0; }
 </style>
