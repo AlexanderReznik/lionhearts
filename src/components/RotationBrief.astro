@@ -1,0 +1,78 @@
+---
+// src/components/RotationBrief.astro
+import { SQUAD } from '../data/squad';
+import { LINEUP_CYCLE, type Slot } from '../lib/rotation';
+
+const slots: Slot[] = [1, 2, 3, 4, 5, 6];
+const byRole = (role: string) => SQUAD.filter(m => m.role === role);
+const roleOrder = ['S', 'OPP', 'OH', 'MB', 'L'] as const;
+const roleName: Record<string, string> = {
+  S: 'Setters', OPP: 'Opposites', OH: 'Outsides', MB: 'Middles', L: 'Liberos',
+};
+---
+
+<section class="brief" aria-labelledby="brief-heading">
+  <h2 id="brief-heading" class="eyebrow brief__eyebrow">The team sheet</h2>
+
+  <div class="brief__grid">
+    <div class="brief__block">
+      <h3 class="brief__label">Squad</h3>
+      <dl class="squad">
+        {roleOrder.map(role => (
+          <div class="squad__row">
+            <dt>{roleName[role]}</dt>
+            <dd>{byRole(role).map(m => `#${m.number}`).join('  ')}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <div class="brief__block">
+      <h3 class="brief__label">Starting line-up</h3>
+      <ol class="lineup" data-lineup>
+        {slots.map(slot => (
+          <li class="lineup__item">
+            <span class="lineup__slot">P{slot}</span>
+            <span class="lineup__num" data-lineup-slot={slot}>–</span>
+            <span class="lineup__role">{LINEUP_CYCLE[slot - 1]}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="brief__block">
+      <h3 class="brief__label">This serve</h3>
+      <p class="brief__now">
+        Libero <strong data-brief-libero>–</strong>.
+        <strong data-brief-at-one>–</strong> is now in position 1.
+      </p>
+      <p class="brief__now brief__now--muted">
+        We are receiving. Rotate the line-up yourself, work out which middle is
+        back row, and stand the libero in their slot.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .brief { display: grid; gap: 16px; }
+  .brief__eyebrow { color: var(--color-accent-text); }
+  .brief__grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .brief__block { display: grid; gap: 8px; align-content: start; }
+  .brief__label {
+    font-size: var(--text-body-sm); font-weight: var(--weight-black);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted); margin: 0;
+  }
+  .squad { margin: 0; display: grid; gap: 4px; }
+  .squad__row { display: grid; grid-template-columns: 5.5rem 1fr; gap: 8px; }
+  .squad dt { color: var(--color-text-muted); font-size: var(--text-body-sm); }
+  .squad dd { margin: 0; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+  .lineup { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+  .lineup__item { display: grid; grid-template-columns: 2.2rem 3rem 1fr; gap: 8px; align-items: baseline; }
+  .lineup__slot { color: var(--color-text-muted); font-size: var(--text-body-sm); }
+  .lineup__num { font-weight: var(--weight-black); font-variant-numeric: tabular-nums; }
+  .lineup__role { color: var(--color-text-muted); font-size: var(--text-body-sm); }
+  .brief__now { margin: 0; }
+  .brief__now--muted { color: var(--color-text-muted); font-size: var(--text-body-sm); }
+</style>
