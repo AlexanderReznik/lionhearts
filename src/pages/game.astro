@@ -48,12 +48,6 @@ import RotationCourt from '../components/RotationCourt.astro';
     const court = app.querySelector<HTMLElement>('[data-court]')!;
     const layer = app.querySelector<HTMLElement>('[data-markers]')!;
 
-    // Astro stamps its scoped-CSS attribute onto elements written in the
-    // template at build time; a button created here via document.createElement
-    // gets none of that, so every `.marker { ... }` rule below would silently
-    // fail to match without copying the attribute across by hand.
-    const scopeAttr = [...app.attributes].find(a => a.name.startsWith('data-astro-cid-'))?.name ?? null;
-
     /** Shirt number standing in a slot right now, libero substitution applied. */
     const numberAt = (slot: Slot): number =>
       onCourtRole(slot, phase) === 'L' ? puzzle.libero : puzzle.start[(slot - 1 + phase) % 6];
@@ -71,6 +65,15 @@ import RotationCourt from '../components/RotationCourt.astro';
       placement[slot] = { x: 0.75 + i * 1.5, y: 8.5 };
     }
 
+    /**
+     * The seed above places every slot, so "every slot has a placement" is
+     * true on load. "Placed" means the player actually moved it: a slot
+     * joins `touched` when a drag of that marker completes, or when it is
+     * nudged with an arrow key.
+     */
+    const touched = new Set<Slot>();
+    const isComplete = (): boolean => ALL_SLOTS.every(s => touched.has(s));
+
     const toMetres = (ev: { clientX: number; clientY: number }): Vec2 => {
       const r = court.getBoundingClientRect();
       const clamp = (v: number) => Math.min(COURT_M, Math.max(0, v));
@@ -80,20 +83,33 @@ import RotationCourt from '../components/RotationCourt.astro';
       };
     };
 
-    /** Nudge apart anything closer than the body gap, so the court never contradicts itself. */
+    /**
+     * Other markers never move and are already clear of each other, so
+     * searching for the nearest clear point keeps every pair at least
+     * MIN_SEPARATION apart.
+     */
     const separate = (slot: Slot, at: Vec2): Vec2 => {
-      let { x, y } = at;
-      for (const other of ALL_SLOTS) {
-        const o = placement[other];
-        if (other === slot || !o) continue;
-        const d = Math.hypot(x - o.x, y - o.y);
-        if (d >= MIN_SEPARATION) continue;
-        const push = (MIN_SEPARATION - d) || MIN_SEPARATION;
-        const ang = d === 0 ? Math.random() * Math.PI * 2 : Math.atan2(y - o.y, x - o.x);
-        x = Math.min(COURT_M, Math.max(0, x + Math.cos(ang) * push));
-        y = Math.min(COURT_M, Math.max(0, y + Math.sin(ang) * push));
+      const clamp = (v: number) => Math.min(COURT_M, Math.max(0, v));
+      const clear = (x: number, y: number): boolean =>
+        ALL_SLOTS.every(other => {
+          if (other === slot) return true;
+          const o = placement[other];
+          return !o || Math.hypot(x - o.x, y - o.y) >= MIN_SEPARATION;
+        });
+
+      const cx = clamp(at.x);
+      const cy = clamp(at.y);
+      if (clear(cx, cy)) return { x: cx, y: cy };
+
+      for (let radius = 0.05; radius <= COURT_M; radius += 0.05) {
+        for (let i = 0; i < 36; i++) {
+          const angle = (i / 36) * Math.PI * 2;
+          const x = clamp(cx + Math.cos(angle) * radius);
+          const y = clamp(cy + Math.sin(angle) * radius);
+          if (clear(x, y)) return { x, y };
+        }
       }
-      return { x, y };
+      return { x: cx, y: cy };
     };
 
     function renderMarkers(faults: Slot[] = []) {
@@ -104,7 +120,6 @@ import RotationCourt from '../components/RotationCourt.astro';
         const el = document.createElement('button');
         el.type = 'button';
         el.className = 'marker';
-        if (scopeAttr) el.setAttribute(scopeAttr, '');
         el.classList.toggle('marker--pass', constraintsFor(phase).some(
           c => c.kind === 'depthBand' && c.slots.includes(slot)));
         el.classList.toggle('marker--set', onCourtRole(slot, phase) === 'S');
@@ -112,9 +127,8 @@ import RotationCourt from '../components/RotationCourt.astro';
         el.dataset.slot = String(slot);
         el.style.left = `${(at.x / COURT_M) * 100}%`;
         el.style.top = `${(at.y / COURT_M) * 100}%`;
-        const tagScope = scopeAttr ? ` ${scopeAttr}=""` : '';
         el.innerHTML = `<span class="marker__num">${numberAt(slot)}</span>`
-          + `<span class="marker__tag"${tagScope}>P${slot} ${onCourtRole(slot, phase)}</span>`;
+          + `<span class="marker__tag">P${slot} ${onCourtRole(slot, phase)}</span>`;
         el.setAttribute('aria-label',
           `${label(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
         layer.append(el);
@@ -135,18 +149,9 @@ import RotationCourt from '../components/RotationCourt.astro';
     };
 
     let dragging: Slot | null = null;
-    let pending: Slot | null = null;   // tile selected from the rack, awaiting a tap
 
     court.addEventListener('pointerdown', ev => {
-      const at = toMetres(ev);
-      if (pending !== null) {
-        placement[pending] = separate(pending, at);
-        pending = null;
-        renderMarkers();
-        app.dispatchEvent(new CustomEvent('rotation:placed'));
-        return;
-      }
-      dragging = nearest(at);
+      dragging = nearest(toMetres(ev));
       if (dragging !== null) court.setPointerCapture(ev.pointerId);
     });
 
@@ -157,6 +162,7 @@ import RotationCourt from '../components/RotationCourt.astro';
     });
 
     court.addEventListener('pointerup', () => {
+      if (dragging !== null) touched.add(dragging);
       dragging = null;
       app.dispatchEvent(new CustomEvent('rotation:placed'));
     });
@@ -179,6 +185,7 @@ import RotationCourt from '../components/RotationCourt.astro';
         x: Math.min(COURT_M, Math.max(0, at.x + move.x)),
         y: Math.min(COURT_M, Math.max(0, at.y + move.y)),
       });
+      touched.add(slot);
       renderMarkers();
       layer.querySelector<HTMLElement>(`[data-slot="${slot}"]`)?.focus();
       app.dispatchEvent(new CustomEvent('rotation:placed'));
@@ -194,7 +201,14 @@ import RotationCourt from '../components/RotationCourt.astro';
   .game__board { width: 100%; }
   .game__hint { color: var(--color-text-muted); font-size: var(--text-body-sm); margin: 0; }
 
-  .marker {
+  /*
+   * Markers are created client-side via document.createElement, so they
+   * never carry Astro's scoped-CSS attribute. :global() (processed only in
+   * scoped <style> blocks like this one) anchors these rules on .game__board,
+   * an element Astro did render, instead of depending on that internal
+   * scoping mechanism.
+   */
+  .game__board :global(.marker) {
     position: absolute;
     transform: translate(-50%, -50%);
     display: grid;
@@ -216,12 +230,12 @@ import RotationCourt from '../components/RotationCourt.astro';
     box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
   }
   /* Tap target, not the disc: hit areas overlap where discs must not. */
-  .marker::before { content: ''; position: absolute; inset: -50%; min-width: 44px; min-height: 44px; }
-  .marker:focus-visible { outline: 2px solid var(--lh-white); outline-offset: 3px; }
-  .marker--pass { box-shadow: 0 0 0 2.5px var(--lh-blue-100), 0 2px 0 rgba(0, 0, 0, 0.35); }
-  .marker--set { background: var(--lh-white); }
-  .marker--bad { background: var(--lh-red); color: var(--lh-white); }
-  .marker__tag {
+  .game__board :global(.marker::before) { content: ''; position: absolute; inset: -50%; min-width: 44px; min-height: 44px; }
+  .game__board :global(.marker:focus-visible) { outline: 2px solid var(--lh-white); outline-offset: 3px; }
+  .game__board :global(.marker--pass) { box-shadow: 0 0 0 2.5px var(--lh-blue-100), 0 2px 0 rgba(0, 0, 0, 0.35); }
+  .game__board :global(.marker--set) { background: var(--lh-white); }
+  .game__board :global(.marker--bad) { background: var(--lh-red); color: var(--lh-white); }
+  .game__board :global(.marker__tag) {
     position: absolute; top: calc(100% + 2px); font-size: 9px;
     letter-spacing: 0.06em; font-weight: var(--weight-black); white-space: nowrap;
     color: var(--lh-blue-100); opacity: 0.8; text-transform: uppercase;
