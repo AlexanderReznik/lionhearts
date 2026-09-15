@@ -24,6 +24,8 @@ import RotationCourt from '../components/RotationCourt.astro';
     <div id="rotation-app" class="game__app">
       <div class="game__board" hidden data-board>
         <RotationCourt />
+        <button type="button" class="btn btn--accent game__submit" data-submit disabled>Submit line-up</button>
+        <div class="verdict" data-verdict role="status" aria-live="polite"></div>
       </div>
 
       <button type="button" class="btn btn--accent game__start" data-start>Start today's puzzle</button>
@@ -192,6 +194,65 @@ import RotationCourt from '../components/RotationCourt.astro';
     });
 
     renderMarkers();
+
+    const submit = app.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const verdict = app.querySelector<HTMLElement>('[data-verdict]')!;
+    const arrows = app.querySelector<SVGElement>('[data-arrows]')!;
+    let attempts = 0;
+    let solved = false;
+
+    function clearArrows() {
+      arrows.querySelectorAll('line').forEach(l => l.remove());
+    }
+
+    app.addEventListener('rotation:placed', () => {
+      clearArrows();
+      if (!solved) submit.disabled = !isComplete();
+    });
+
+    function drawArrows(pairs: Slot[][]) {
+      clearArrows();
+      for (const [a, b] of pairs) {
+        const from = placement[a], to = placement[b];
+        if (!from || !to) continue;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', String(from.x));
+        line.setAttribute('y1', String(from.y));
+        line.setAttribute('x2', String(to.x));
+        line.setAttribute('y2', String(to.y));
+        line.setAttribute('stroke', 'var(--lh-red)');
+        line.setAttribute('stroke-width', '0.09');
+        line.setAttribute('stroke-dasharray', '0.28 0.2');
+        line.setAttribute('marker-end', 'url(#rot-arrow)');
+        arrows.append(line);
+      }
+    }
+
+    submit.addEventListener('click', () => {
+      if (solved || !isComplete()) return;
+      attempts += 1;
+      const violations = validate(placement as Placement, constraintsFor(phase), label);
+      const faulted = [...new Set(violations.flatMap(v => v.slots))];
+      renderMarkers(faulted);
+      drawArrows(violations.filter(v => v.slots.length === 2).map(v => v.slots));
+
+      if (!violations.length) {
+        verdict.className = 'verdict verdict--ok';
+        verdict.innerHTML = `<b>Legal line-up</b><p>Solved in ${attempts} `
+          + `attempt${attempts === 1 ? '' : 's'}.</p>`;
+        solved = true;
+        submit.disabled = true;
+        app.dispatchEvent(new CustomEvent('rotation:attempted', { detail: { attempts } }));
+        app.dispatchEvent(new CustomEvent('rotation:solved', { detail: { attempts } }));
+        return;
+      }
+
+      verdict.className = 'verdict verdict--bad';
+      verdict.innerHTML = `<b>${violations.length} fault${violations.length === 1 ? '' : 's'} `
+        + `· attempt ${attempts}</b>`
+        + violations.map(v => `<p>${v.message}</p>`).join('');
+      app.dispatchEvent(new CustomEvent('rotation:attempted', { detail: { attempts } }));
+    });
   }
 </script>
 
@@ -240,4 +301,24 @@ import RotationCourt from '../components/RotationCourt.astro';
     letter-spacing: 0.06em; font-weight: var(--weight-black); white-space: nowrap;
     color: var(--lh-blue-100); opacity: 0.8; text-transform: uppercase;
   }
+
+  .game__submit { width: 100%; max-width: 460px; }
+
+  .verdict { display: grid; gap: 6px; border-radius: 8px; padding: 11px 13px; font-size: var(--text-body-sm); width: 100%; max-width: 460px; }
+  .verdict:empty { display: none; }
+  .verdict :global(b) {
+    font-size: 12px; letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; display: block;
+  }
+  .verdict :global(p) { margin: 0; }
+  .verdict--bad {
+    background: color-mix(in srgb, var(--lh-red) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--lh-red) 45%, transparent);
+  }
+  .verdict--bad :global(b) { color: var(--lh-red); }
+  .verdict--ok {
+    background: color-mix(in srgb, var(--lh-green) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--lh-green) 50%, transparent);
+  }
+  .verdict--ok :global(b) { color: light-dark(#3c7a22, var(--lh-green)); }
 </style>
