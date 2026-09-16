@@ -23,13 +23,14 @@ import RotationCourt from '../components/RotationCourt.astro';
 
     <div id="rotation-app" class="game__app">
       <div class="game__board" hidden data-board>
+        <p class="game__clock game__clock--live" data-clock-live>0:00</p>
         <RotationCourt />
         <button type="button" class="btn btn--accent game__submit" data-submit disabled>Submit line-up</button>
         <div class="verdict" data-verdict role="status" aria-live="polite"></div>
       </div>
 
       <div class="game__result" hidden data-result>
-        <p class="game__clock" data-clock>0:00</p>
+        <p class="game__clock" data-clock-result>0:00</p>
         <button type="button" class="btn btn--primary" data-share>Copy result</button>
         <a class="btn btn--ghost" data-whatsapp href="https://wa.me/" target="_blank" rel="noopener noreferrer">
           Send to the group
@@ -277,7 +278,8 @@ import RotationCourt from '../components/RotationCourt.astro';
     const startBtn = app.querySelector<HTMLButtonElement>('[data-start]')!;
     const startHint = app.querySelector<HTMLElement>('[data-start-hint]')!;
     const result = app.querySelector<HTMLElement>('[data-result]')!;
-    const clockEl = app.querySelector<HTMLElement>('[data-clock]')!;
+    const clockLiveEl = app.querySelector<HTMLElement>('[data-clock-live]')!;
+    const clockResultEl = app.querySelector<HTMLElement>('[data-clock-result]')!;
     const countdownEl = app.querySelector<HTMLElement>('[data-countdown]')!;
     const shareBtn = app.querySelector<HTMLButtonElement>('[data-share]')!;
     const whatsappLink = app.querySelector<HTMLAnchorElement>('[data-whatsapp]')!;
@@ -330,13 +332,17 @@ import RotationCourt from '../components/RotationCourt.astro';
     }
     function tick() {
       if (progress.game?.solved) return;
-      clockEl.textContent = formatClock(elapsed());
+      clockLiveEl.textContent = formatClock(elapsed());
       clockTimer = window.setTimeout(tick, 1000);
     }
 
     /** Shared by the just-solved path and the already-solved-on-load path. */
     function showResult(ms: number) {
-      clockEl.textContent = formatClock(ms);
+      const formatted = formatClock(ms);
+      // Freeze the live clock too, so a stopped-but-stale second (tick() only
+      // updates once a second) never lingers next to the frozen result time.
+      clockLiveEl.textContent = formatted;
+      clockResultEl.textContent = formatted;
       result.hidden = false;
 
       const text = shareText({ id: puzzle.id, attempts, elapsedMs: ms, streak: progress.streak });
@@ -442,6 +448,7 @@ import RotationCourt from '../components/RotationCourt.astro';
     color: var(--color-accent-text);
   }
   .game__countdown { margin: 0; color: var(--color-text-muted); font-size: var(--text-body-sm); }
+  .game__clock--live { margin: 0 0 4px; text-align: center; }
 
   /*
    * Markers are created client-side via document.createElement, so they
