@@ -419,6 +419,9 @@ import RotationCourt from '../components/RotationCourt.astro';
 
 <style>
   .game { display: grid; gap: 28px; padding-block: 32px 64px; padding-inline: var(--page-px); }
+  /* A class setting `display` (e.g. .btn, .game__result) outranks the UA
+     [hidden] rule on specificity, so hidden elements can stay visible. */
+  .game [hidden] { display: none; }
   .game__app { display: grid; gap: 12px; justify-items: center; }
   .game__board { width: 100%; }
   .game__hint { color: var(--color-text-muted); font-size: var(--text-body-sm); margin: 0; }
