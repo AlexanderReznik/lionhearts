@@ -70,6 +70,29 @@ describe('loadProgress', () => {
       expect(loadProgress(raw)).toEqual({ streak: 0, lastSolvedId: null, game: null });
     }
   });
+
+  it('drops a malformed game but keeps a valid streak', () => {
+    const base = { streak: 2, lastSolvedId: 4 };
+    const good = { id: 5, startedAt: 100, attempts: 1, solved: false, elapsedMs: null, placement: null };
+    const bad = [
+      { ...good, attempts: '3' }, // attempts must be a number
+      { ...good, startedAt: '100' }, // startedAt must be a number or null
+      { ...good, solved: 'yes' }, // solved must be a boolean
+      { ...good, elapsedMs: '90000' }, // elapsedMs must be a number or null
+      { ...good, placement: { '1': { x: 'a', y: 2 } } }, // placement values must be {x,y} numbers
+      { ...good, placement: 'nope' }, // placement must be an object or null
+      { ...good, id: '5' }, // id must be a number
+    ];
+    for (const game of bad) {
+      expect(loadProgress(JSON.stringify({ ...base, game }))).toEqual({ ...base, game: null });
+    }
+  });
+
+  it('accepts a well-formed game, including a populated placement', () => {
+    const base = { streak: 2, lastSolvedId: 4 };
+    const game = { id: 5, startedAt: 100, attempts: 2, solved: false, elapsedMs: null, placement: { '1': { x: 1, y: 2 } } };
+    expect(loadProgress(JSON.stringify({ ...base, game }))).toEqual({ ...base, game });
+  });
 });
 
 describe('forToday', () => {

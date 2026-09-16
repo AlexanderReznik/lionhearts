@@ -52,6 +52,33 @@ export function msUntilNextLondonDay(now: Date): number {
   return hi - now.getTime();
 }
 
+function isVec2(v: unknown): v is Vec2 {
+  return typeof v === 'object' && v !== null
+    && typeof (v as Vec2).x === 'number' && typeof (v as Vec2).y === 'number';
+}
+
+/**
+ * Guards the whole `SavedGame` shape, not just `id`. There's no XSS path here
+ * (storage never reaches innerHTML), but a hand-edited or partially-written
+ * entry — a string `attempts`, a string `startedAt` — renders visible
+ * breakage (`"51"`, `NaN:NaN`, `NaN%` marker positions), so malformed data
+ * drops the game rather than being trusted.
+ */
+function isValidGame(g: unknown): g is SavedGame {
+  if (typeof g !== 'object' || g === null) return false;
+  const game = g as Partial<SavedGame>;
+  if (typeof game.id !== 'number') return false;
+  if (typeof game.attempts !== 'number') return false;
+  if (typeof game.solved !== 'boolean') return false;
+  if (game.startedAt !== null && typeof game.startedAt !== 'number') return false;
+  if (game.elapsedMs !== null && typeof game.elapsedMs !== 'number') return false;
+  if (game.placement !== null) {
+    if (typeof game.placement !== 'object') return false;
+    if (!Object.values(game.placement).every(isVec2)) return false;
+  }
+  return true;
+}
+
 export function loadProgress(raw: string | null): SavedProgress {
   if (!raw) return EMPTY;
   try {
@@ -62,7 +89,7 @@ export function loadProgress(raw: string | null): SavedProgress {
     return {
       streak: p.streak,
       lastSolvedId: typeof p.lastSolvedId === 'number' ? p.lastSolvedId : null,
-      game: p.game && typeof p.game.id === 'number' ? p.game : null,
+      game: p.game && isValidGame(p.game) ? p.game : null,
     };
   } catch {
     return EMPTY;
