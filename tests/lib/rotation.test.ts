@@ -1,10 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import {
-  LINEUP_CYCLE, BACK_ROW, isFrontRow, roleAt, liberoSlot, onCourtRole,
+  LINEUP_CYCLE, BACK_ROW, DEPTH_PAIRS, isFrontRow, roleAt, liberoSlot, onCourtRole,
   setterSlot, middleSlot, oppositeSlot, passerSlots, constraintsFor, PASS_BAND, type Phase, type Slot, type Constraint,
 } from '../../src/lib/rotation';
 
 const PHASES: Phase[] = [0, 1, 2, 3, 4, 5];
+
+describe('DEPTH_PAIRS', () => {
+  it('pins the rulebook correspondence (7.4.2.1), not the diagonals', () => {
+    // Every other test exercises depth pairing only through the validator,
+    // so a wrong pairing here would still be self-consistent and pass.
+    expect(DEPTH_PAIRS).toEqual([[4, 5], [3, 6], [2, 1]]);
+  });
+});
 
 describe('lineup cycle', () => {
   it('is the club 5-1 order', () => {
