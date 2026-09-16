@@ -162,23 +162,30 @@ import RotationCourt from '../components/RotationCourt.astro';
     };
 
     let dragging: Slot | null = null;
+    // A tap (pointerdown+pointerup with no pointermove between) must not
+    // count as "placed" — only a marker that actually moved should.
+    let moved = false;
 
     court.addEventListener('pointerdown', ev => {
       dragging = nearest(toMetres(ev));
+      moved = false;
       if (dragging !== null) court.setPointerCapture(ev.pointerId);
     });
 
     court.addEventListener('pointermove', ev => {
       if (dragging === null) return;
+      moved = true;
       placement[dragging] = separate(dragging, toMetres(ev));
       renderMarkers();
     });
 
     court.addEventListener('pointerup', () => {
-      if (dragging !== null) touched.add(dragging);
+      if (dragging !== null && moved) touched.add(dragging);
       dragging = null;
       app.dispatchEvent(new CustomEvent('rotation:placed'));
     });
+
+    court.addEventListener('pointercancel', () => { dragging = null; });
 
     /** Keyboard: focus a marker, nudge in 0.25m steps. */
     const STEP = 0.25;
