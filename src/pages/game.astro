@@ -486,7 +486,9 @@ import RotationCourt from '../components/RotationCourt.astro';
     background: color-mix(in srgb, var(--lh-red) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--lh-red) 45%, transparent);
   }
-  .verdict--bad :global(b) { color: var(--lh-red); }
+  /* Flat --lh-red fails AA on this tinted card in both themes (~2.8:1 dark,
+     ~4.3:1 light) — split per theme like .verdict--ok does for green. */
+  .verdict--bad :global(b) { color: light-dark(#b23b24, #e2816f); }
   .verdict--ok {
     background: color-mix(in srgb, var(--lh-green) 14%, transparent);
     border: 1px solid color-mix(in srgb, var(--lh-green) 50%, transparent);
