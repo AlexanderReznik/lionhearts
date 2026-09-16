@@ -302,9 +302,9 @@ import RotationCourt from '../components/RotationCourt.astro';
     color: var(--lh-blue-100); opacity: 0.8; text-transform: uppercase;
   }
 
-  .game__submit { width: 100%; max-width: 460px; }
+  .game__submit { display: flex; justify-content: center; width: 100%; max-width: 460px; margin-inline: auto; }
 
-  .verdict { display: grid; gap: 6px; border-radius: 8px; padding: 11px 13px; font-size: var(--text-body-sm); width: 100%; max-width: 460px; }
+  .verdict { display: grid; gap: 6px; border-radius: 8px; padding: 11px 13px; font-size: var(--text-body-sm); width: 100%; max-width: 460px; margin-inline: auto; }
   .verdict:empty { display: none; }
   .verdict :global(b) {
     font-size: 12px; letter-spacing: var(--tracking-wide);
