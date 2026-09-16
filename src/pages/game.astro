@@ -28,6 +28,15 @@ import RotationCourt from '../components/RotationCourt.astro';
         <div class="verdict" data-verdict role="status" aria-live="polite"></div>
       </div>
 
+      <div class="game__result" hidden data-result>
+        <p class="game__clock" data-clock>0:00</p>
+        <button type="button" class="btn btn--primary" data-share>Copy result</button>
+        <a class="btn btn--ghost" data-whatsapp href="https://wa.me/" target="_blank" rel="noopener noreferrer">
+          Send to the group
+        </a>
+        <p class="game__countdown" data-countdown hidden></p>
+      </div>
+
       <button type="button" class="btn btn--accent game__start" data-start>Start today's puzzle</button>
       <p class="game__hint" data-start-hint>The clock starts when you press it.</p>
     </div>
@@ -41,7 +50,9 @@ import RotationCourt from '../components/RotationCourt.astro';
   } from '../lib/rotation';
   import { ROTATIONS } from '../data/rotations';
   import { SQUAD } from '../data/squad';
-  import { puzzleIndexFor } from '../lib/rotationState';
+  import {
+    puzzleIndexFor, loadProgress, forToday, recordSolved, shareText, msUntilNextLondonDay,
+  } from '../lib/rotationState';
 
   const app = document.getElementById('rotation-app');
   if (app) {
@@ -253,6 +264,156 @@ import RotationCourt from '../components/RotationCourt.astro';
         + violations.map(v => `<p>${v.message}</p>`).join('');
       app.dispatchEvent(new CustomEvent('rotation:attempted', { detail: { attempts } }));
     });
+
+    const KEY = 'lh-rotation';
+    const board = app.querySelector<HTMLElement>('[data-board]')!;
+    const startBtn = app.querySelector<HTMLButtonElement>('[data-start]')!;
+    const startHint = app.querySelector<HTMLElement>('[data-start-hint]')!;
+    const result = app.querySelector<HTMLElement>('[data-result]')!;
+    const clockEl = app.querySelector<HTMLElement>('[data-clock]')!;
+    const countdownEl = app.querySelector<HTMLElement>('[data-countdown]')!;
+    const shareBtn = app.querySelector<HTMLButtonElement>('[data-share]')!;
+    const whatsappLink = app.querySelector<HTMLAnchorElement>('[data-whatsapp]')!;
+
+    let progress = forToday(loadProgress(localStorage.getItem(KEY)), puzzle.id);
+    const save = () => localStorage.setItem(KEY, JSON.stringify(progress));
+    const elapsed = () => Date.now() - (progress.game?.startedAt ?? Date.now());
+    const formatClock = (ms: number) => {
+      const t = Math.max(0, Math.round(ms / 1000));
+      return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+    };
+    const formatCountdown = (ms: number) => {
+      const t = Math.max(0, Math.round(ms / 1000));
+      const h = Math.floor(t / 3600);
+      const m = Math.floor((t % 3600) / 60);
+      const s = t % 60;
+      return `Next puzzle in ${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+
+    /** Every slot the player actually moved, keyed by slot number for storage. */
+    function currentPlacement(): Record<string, Vec2> {
+      const out: Record<string, Vec2> = {};
+      for (const slot of ALL_SLOTS) {
+        const at = placement[slot];
+        if (at) out[String(slot)] = at;
+      }
+      return out;
+    }
+
+    // Fill the brief only once the clock is running: rotating the line-up is the thinking.
+    // RotationBrief is a sibling of #rotation-app, not a descendant, so these
+    // look up from `document`, not `app`.
+    function reveal() {
+      for (const slot of ALL_SLOTS) {
+        document.querySelector(`[data-lineup-slot="${slot}"]`)!.textContent = `#${puzzle.start[slot - 1]}`;
+      }
+      document.querySelector('[data-brief-libero]')!.textContent = `#${puzzle.libero}`;
+      document.querySelector('[data-brief-at-one]')!.textContent = `#${puzzle.start[phase]}`;
+      // Per-rotation setter radius, drawn to scale.
+      const target = app.querySelector<HTMLElement>('.court__target')!;
+      target.style.width = `${(SETTER_RADIUS[phase] * 2 / COURT_M) * 100}%`;
+      board.hidden = false;
+      startBtn.hidden = true;
+      startHint.hidden = true;
+    }
+
+    let clockTimer = 0;
+    function stopClock() {
+      window.clearTimeout(clockTimer);
+    }
+    function tick() {
+      if (progress.game?.solved) return;
+      clockEl.textContent = formatClock(elapsed());
+      clockTimer = window.setTimeout(tick, 1000);
+    }
+
+    /** Shared by the just-solved path and the already-solved-on-load path. */
+    function showResult(ms: number) {
+      clockEl.textContent = formatClock(ms);
+      result.hidden = false;
+
+      const text = shareText({ id: puzzle.id, attempts, elapsedMs: ms, streak: progress.streak });
+      whatsappLink.href = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      shareBtn.textContent = 'Copy result';
+      shareBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          shareBtn.textContent = 'Copied';
+        } catch {
+          // Clipboard access is refused in insecure contexts or without permission.
+          shareBtn.textContent = 'Copy failed — use Send to the group';
+        }
+      };
+    }
+
+    function startCountdown() {
+      countdownEl.hidden = false;
+      const update = () => {
+        countdownEl.textContent = formatCountdown(msUntilNextLondonDay(new Date()));
+      };
+      update();
+      window.setInterval(update, 1000);
+    }
+
+    startBtn.addEventListener('click', () => {
+      progress = {
+        ...progress,
+        game: { id: puzzle.id, startedAt: Date.now(), attempts: 0, solved: false, elapsedMs: null, placement: null },
+      };
+      save();
+      reveal();
+      tick();
+    });
+
+    app.addEventListener('rotation:placed', () => {
+      if (!progress.game || progress.game.solved) return;
+      progress = { ...progress, game: { ...progress.game, placement: currentPlacement() } };
+      save();
+    });
+
+    app.addEventListener('rotation:attempted', ev => {
+      if (!progress.game) return;
+      const n = (ev as CustomEvent<{ attempts: number }>).detail.attempts;
+      progress = { ...progress, game: { ...progress.game, attempts: n } };
+      save();
+    });
+
+    app.addEventListener('rotation:solved', ev => {
+      const ms = elapsed();
+      stopClock();
+      attempts = (ev as CustomEvent<{ attempts: number }>).detail.attempts;
+      progress = recordSolved(progress, puzzle.id, attempts, ms);
+      save();
+      showResult(ms);
+    });
+
+    // Restore state on load: an already-solved game shows the result without
+    // ever revealing the board; an in-progress game resumes the clock and
+    // the player's placement rather than sending them back to the end line.
+    if (progress.game?.solved) {
+      startBtn.hidden = true;
+      startHint.hidden = true;
+      attempts = progress.game.attempts;
+      solved = true;
+      showResult(progress.game.elapsedMs ?? 0);
+      startCountdown();
+    } else if (progress.game) {
+      reveal();
+      const saved = progress.game.placement;
+      if (saved) {
+        for (const slot of ALL_SLOTS) {
+          const at = saved[String(slot)];
+          if (at) {
+            placement[slot] = at;
+            touched.add(slot);
+          }
+        }
+        renderMarkers();
+        attempts = progress.game.attempts;
+        app.dispatchEvent(new CustomEvent('rotation:placed'));
+      }
+      tick();
+    }
   }
 </script>
 
@@ -261,6 +422,16 @@ import RotationCourt from '../components/RotationCourt.astro';
   .game__app { display: grid; gap: 12px; justify-items: center; }
   .game__board { width: 100%; }
   .game__hint { color: var(--color-text-muted); font-size: var(--text-body-sm); margin: 0; }
+
+  .game__result { display: grid; gap: 10px; justify-items: center; width: 100%; max-width: 460px; text-align: center; }
+  .game__clock {
+    margin: 0;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-black);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-accent-text);
+  }
+  .game__countdown { margin: 0; color: var(--color-text-muted); font-size: var(--text-body-sm); }
 
   /*
    * Markers are created client-side via document.createElement, so they

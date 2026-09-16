@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   EPOCH_DAY, londonDayNumber, puzzleIndexFor, loadProgress, forToday, recordSolved, shareText,
+  msUntilNextLondonDay,
 } from '../../src/lib/rotationState';
 
 describe('londonDayNumber', () => {
@@ -15,6 +16,29 @@ describe('londonDayNumber', () => {
     const before = londonDayNumber(new Date('2026-01-01T22:30:00Z'));
     const after = londonDayNumber(new Date('2026-01-01T23:30:00Z'));
     expect(after).toBe(before);
+  });
+});
+
+describe('msUntilNextLondonDay', () => {
+  const MINUTE = 60_000;
+
+  it('counts down to London midnight on a BST evening', () => {
+    const ms = msUntilNextLondonDay(new Date('2026-07-01T22:30:00Z'));
+    expect(ms).toBeGreaterThan(30 * MINUTE - 2000);
+    expect(ms).toBeLessThan(30 * MINUTE + 2000);
+  });
+
+  it('counts down to London midnight on a GMT evening', () => {
+    const ms = msUntilNextLondonDay(new Date('2026-01-01T22:30:00Z'));
+    expect(ms).toBeGreaterThan(90 * MINUTE - 2000);
+    expect(ms).toBeLessThan(90 * MINUTE + 2000);
+  });
+
+  it('reports a full day when now is exactly London midnight', () => {
+    // 2026-07-02T00:00:00 Europe/London (BST, UTC+1) is 2026-07-01T23:00:00Z.
+    const ms = msUntilNextLondonDay(new Date('2026-07-01T23:00:00Z'));
+    expect(ms).toBeGreaterThan(24 * 60 * MINUTE - 2000);
+    expect(ms).toBeLessThan(24 * 60 * MINUTE + 2000);
   });
 });
 

@@ -35,6 +35,23 @@ export function puzzleIndexFor(now: Date, bankLength: number): number {
   return ((offset % bankLength) + bankLength) % bankLength;
 }
 
+/**
+ * Milliseconds until the next London day starts. London midnight drifts
+ * relative to UTC across the BST/GMT boundary, so this brackets the answer
+ * within a day-plus-DST-margin window and binary-searches to the second
+ * rather than doing UTC arithmetic.
+ */
+export function msUntilNextLondonDay(now: Date): number {
+  const today = londonDayNumber(now);
+  let lo = now.getTime();
+  let hi = now.getTime() + 26 * 60 * 60 * 1000;
+  while (hi - lo > 1000) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (londonDayNumber(new Date(mid)) > today) hi = mid; else lo = mid;
+  }
+  return hi - now.getTime();
+}
+
 export function loadProgress(raw: string | null): SavedProgress {
   if (!raw) return EMPTY;
   try {
