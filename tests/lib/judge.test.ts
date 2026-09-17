@@ -86,16 +86,22 @@ describe('tightestMargin', () => {
     expect(margin!.metres).toBeLessThan(0);
   });
 
-  it('picks the smallest margin, not just any ordering', () => {
-    // Rotation 1, WITNESSES[0]: nudge P3 to sit 0.01m left of P2 — tighter
-    // than every other depth/lateral pair in the formation (next closest is
-    // the P2/P1 depth pair at 0.03m).
-    const p: Placement = { ...WITNESSES[0], 3: { x: WITNESSES[0][2].x - 0.01, y: WITNESSES[0][3].y } };
+  it('picks the smallest signed margin, not the smallest absolute one', () => {
+    // Rotation 1, WITNESSES[0]: P5 breaks the 4/5 depth pair by -0.6m (a
+    // genuine fault), while P3 is nudged to sit only 0.01m left of P2 (tight
+    // but still legal). The signed minimum is -0.6 (pair [4,5]); a buggy
+    // abs-min implementation would instead return the smaller-magnitude
+    // +0.01 (pair [3,2]), so this distinguishes the two.
+    const p: Placement = {
+      ...WITNESSES[0],
+      5: { x: 1.06, y: 0.2 },
+      3: { x: WITNESSES[0][2].x - 0.01, y: WITNESSES[0][3].y },
+    };
     const margin = tightestMargin(p, 0);
     expect(margin).not.toBeNull();
-    expect(margin!.kind).toBe('lateralOrder');
-    expect(samePair(margin!.pair, [3, 2])).toBe(true);
-    expect(margin!.metres).toBeCloseTo(0.01, 5);
+    expect(margin!.kind).toBe('depthOrder');
+    expect(samePair(margin!.pair, [4, 5])).toBe(true);
+    expect(margin!.metres).toBeCloseTo(-0.6, 5);
   });
 });
 
