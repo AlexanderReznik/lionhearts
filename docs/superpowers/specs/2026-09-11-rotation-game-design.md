@@ -2,7 +2,9 @@
 
 **Date:** 2026-09-11
 **Page:** `/game` (title "Rotation")
-**Status:** Designed, not implemented
+**Status:** Implemented on `feat/rotation-game`
+**Superseded in part by:** `2026-09-17-rotation-judge-design.md` — marker
+labels, the acceptance of six geometries, and the share string.
 **Rules edition:** FIVB *Official Volleyball Rules 2025-2028*, adopted by
 Volleyball England for domestic competition from 1 September 2025.
 
