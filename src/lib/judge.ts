@@ -33,6 +33,30 @@ export function faultIn(p: Placement, phase: Phase, label?: SlotLabel): Fault | 
 export const samePair = (a: FaultPair, b: FaultPair): boolean =>
   (a[0] === b[0] && a[1] === b[1]) || (a[0] === b[1] && a[1] === b[0]);
 
+export interface Margin {
+  pair: FaultPair;
+  kind: 'depthOrder' | 'lateralOrder';
+  /** Metres of daylight on the tightest ordering. 0 means exactly level. */
+  metres: number;
+}
+
+/**
+ * The ordering this formation came closest to breaking. Null only if the
+ * formation has no ordering constraints at all.
+ */
+export function tightestMargin(p: Placement, phase: Phase): Margin | null {
+  const margins: Margin[] = [];
+  for (const c of lawConstraintsFor(phase)) {
+    if (c.kind === 'depthOrder') {
+      margins.push({ pair: [c.front, c.back], kind: c.kind, metres: p[c.back].y - p[c.front].y });
+    } else if (c.kind === 'lateralOrder') {
+      margins.push({ pair: [c.left, c.right], kind: c.kind, metres: p[c.right].x - p[c.left].x });
+    }
+  }
+  if (!margins.length) return null;
+  return margins.reduce((tightest, m) => (m.metres < tightest.metres ? m : tightest));
+}
+
 export type Outcome = 'correct' | 'partial' | 'wrong';
 
 export interface Verdict {

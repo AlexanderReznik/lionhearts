@@ -26,7 +26,7 @@ describe('lawConstraintsFor', () => {
   });
 });
 
-import { faultIn, samePair } from '../../src/lib/judge';
+import { faultIn, samePair, tightestMargin } from '../../src/lib/judge';
 import { WITNESSES } from '../fixtures/rotation-witnesses';
 import type { Placement } from '../../src/lib/rotation';
 
@@ -56,6 +56,46 @@ describe('samePair', () => {
   it('ignores the order the two players were tapped in', () => {
     expect(samePair([4, 5], [5, 4])).toBe(true);
     expect(samePair([4, 5], [4, 6])).toBe(false);
+  });
+});
+
+describe('tightestMargin', () => {
+  it('is non-negative for every legal witness formation', () => {
+    for (const phase of PHASES) {
+      const margin = tightestMargin(WITNESSES[phase], phase);
+      expect(margin).not.toBeNull();
+      expect(margin!.metres).toBeGreaterThanOrEqual(0);
+    }
+  });
+
+  it('reports exactly 0 for a depth pair set exactly level', () => {
+    const p: Placement = { ...WITNESSES[0], 5: { x: 1.06, y: WITNESSES[0][4].y } };
+    const margin = tightestMargin(p, 0);
+    expect(margin).not.toBeNull();
+    expect(margin!.kind).toBe('depthOrder');
+    expect(samePair(margin!.pair, [4, 5])).toBe(true);
+    expect(margin!.metres).toBe(0);
+  });
+
+  it('reports a negative margin naming the pair for a known depth fault', () => {
+    const p: Placement = { ...WITNESSES[0], 5: { x: 1.06, y: 0.2 } };
+    const margin = tightestMargin(p, 0);
+    expect(margin).not.toBeNull();
+    expect(margin!.kind).toBe('depthOrder');
+    expect(samePair(margin!.pair, [4, 5])).toBe(true);
+    expect(margin!.metres).toBeLessThan(0);
+  });
+
+  it('picks the smallest margin, not just any ordering', () => {
+    // Rotation 1, WITNESSES[0]: nudge P3 to sit 0.01m left of P2 — tighter
+    // than every other depth/lateral pair in the formation (next closest is
+    // the P2/P1 depth pair at 0.03m).
+    const p: Placement = { ...WITNESSES[0], 3: { x: WITNESSES[0][2].x - 0.01, y: WITNESSES[0][3].y } };
+    const margin = tightestMargin(p, 0);
+    expect(margin).not.toBeNull();
+    expect(margin!.kind).toBe('lateralOrder');
+    expect(samePair(margin!.pair, [3, 2])).toBe(true);
+    expect(margin!.metres).toBeCloseTo(0.01, 5);
   });
 });
 
@@ -90,6 +130,12 @@ describe('judgeCall', () => {
 
   it('illegal called illegal with the wrong pair is partial', () => {
     const v = judgeCall({ placement: illegal, phase: 0, calledLegal: false, tapped: [2, 3] });
+    expect(v.outcome).toBe('partial');
+    expect(samePair(v.truth!.pair, [4, 5])).toBe(true);
+  });
+
+  it('illegal called illegal naming no pair is partial: confirmed illegal, credit withheld', () => {
+    const v = judgeCall({ placement: illegal, phase: 0, calledLegal: false, tapped: null });
     expect(v.outcome).toBe('partial');
     expect(samePair(v.truth!.pair, [4, 5])).toBe(true);
   });
