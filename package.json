@@ -12,7 +12,8 @@
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
-    "gen:rotations": "tsx scripts/generate-rotations.ts"
+    "gen:rotations": "tsx scripts/generate-rotations.ts",
+    "gen:judge": "tsx scripts/generate-judge.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
