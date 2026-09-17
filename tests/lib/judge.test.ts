@@ -25,3 +25,36 @@ describe('lawConstraintsFor', () => {
     expect(cs.filter(c => c.kind === 'lateralOrder')).toHaveLength(4);
   });
 });
+
+import { faultIn, samePair } from '../../src/lib/judge';
+import { WITNESSES } from '../fixtures/rotation-witnesses';
+import type { Placement } from '../../src/lib/rotation';
+
+describe('faultIn', () => {
+  it('returns null for a legal formation', () => {
+    for (const phase of PHASES) {
+      expect(faultIn(WITNESSES[phase], phase)).toBeNull();
+    }
+  });
+
+  it('names the overlapping pair when a back-row player creeps in front', () => {
+    // Rotation 1: P5 must be level with or behind P4.
+    const p: Placement = { ...WITNESSES[0], 5: { x: 1.06, y: 0.2 } };
+    const fault = faultIn(p, 0);
+    expect(fault).not.toBeNull();
+    expect(samePair(fault!.pair, [4, 5])).toBe(true);
+    expect(fault!.message).toContain('further from the net');
+  });
+
+  it('treats exactly level as legal, per 7.4.3.1', () => {
+    const p: Placement = { ...WITNESSES[0], 5: { x: 1.06, y: WITNESSES[0][4].y } };
+    expect(faultIn(p, 0)).toBeNull();
+  });
+});
+
+describe('samePair', () => {
+  it('ignores the order the two players were tapped in', () => {
+    expect(samePair([4, 5], [5, 4])).toBe(true);
+    expect(samePair([4, 5], [4, 6])).toBe(false);
+  });
+});
