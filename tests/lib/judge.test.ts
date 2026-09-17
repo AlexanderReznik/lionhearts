@@ -58,3 +58,39 @@ describe('samePair', () => {
     expect(samePair([4, 5], [4, 6])).toBe(false);
   });
 });
+
+import { judgeCall } from '../../src/lib/judge';
+
+describe('judgeCall', () => {
+  const legal = WITNESSES[0];
+  const illegal: Placement = { ...WITNESSES[0], 5: { x: 1.06, y: 0.2 } };
+
+  it('legal called legal is correct', () => {
+    const v = judgeCall({ placement: legal, phase: 0, calledLegal: true, tapped: null });
+    expect(v.outcome).toBe('correct');
+    expect(v.truth).toBeNull();
+  });
+
+  it('illegal called legal is wrong, and still names the pair so the player learns', () => {
+    const v = judgeCall({ placement: illegal, phase: 0, calledLegal: true, tapped: null });
+    expect(v.outcome).toBe('wrong');
+    expect(samePair(v.truth!.pair, [4, 5])).toBe(true);
+  });
+
+  it('legal called illegal is wrong', () => {
+    const v = judgeCall({ placement: legal, phase: 0, calledLegal: false, tapped: [4, 5] });
+    expect(v.outcome).toBe('wrong');
+    expect(v.truth).toBeNull();
+  });
+
+  it('illegal called illegal with the right pair is correct', () => {
+    const v = judgeCall({ placement: illegal, phase: 0, calledLegal: false, tapped: [5, 4] });
+    expect(v.outcome).toBe('correct');
+  });
+
+  it('illegal called illegal with the wrong pair is partial', () => {
+    const v = judgeCall({ placement: illegal, phase: 0, calledLegal: false, tapped: [2, 3] });
+    expect(v.outcome).toBe('partial');
+    expect(samePair(v.truth!.pair, [4, 5])).toBe(true);
+  });
+});

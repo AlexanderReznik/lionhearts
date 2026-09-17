@@ -32,3 +32,29 @@ export function faultIn(p: Placement, phase: Phase, label?: SlotLabel): Fault | 
 
 export const samePair = (a: FaultPair, b: FaultPair): boolean =>
   (a[0] === b[0] && a[1] === b[1]) || (a[0] === b[1] && a[1] === b[0]);
+
+export type Outcome = 'correct' | 'partial' | 'wrong';
+
+export interface Verdict {
+  outcome: Outcome;
+  /** The real fault, or null when the formation was legal. */
+  truth: Fault | null;
+}
+
+export function judgeCall(
+  { placement, phase, calledLegal, tapped, label }: {
+    placement: Placement; phase: Phase; calledLegal: boolean;
+    tapped: FaultPair | null; label?: SlotLabel;
+  },
+): Verdict {
+  const truth = faultIn(placement, phase, label);
+
+  if (calledLegal) {
+    return { outcome: truth ? 'wrong' : 'correct', truth };
+  }
+  if (!truth) return { outcome: 'wrong', truth: null };
+  if (tapped && samePair(tapped, truth.pair)) {
+    return { outcome: 'correct', truth };
+  }
+  return { outcome: 'partial', truth };
+}
