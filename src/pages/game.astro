@@ -31,6 +31,11 @@ import JudgePanel from '../components/JudgePanel.astro';
       <RotationBrief />
 
       <div id="rotation-app" class="game__app">
+        <label class="game__rookie">
+          <input type="checkbox" data-rookie />
+          <span>Rookie — show positions on the players</span>
+        </label>
+
         <div class="game__board" hidden data-board>
           <p class="game__clock game__clock--live" data-clock-live>0:00</p>
           <RotationCourt />
@@ -75,6 +80,27 @@ import JudgePanel from '../components/JudgePanel.astro';
     const phase = puzzle.phase as Phase;
     const court = app.querySelector<HTMLElement>('[data-court]')!;
     const layer = app.querySelector<HTMLElement>('[data-markers]')!;
+
+    // Declared here, above the first renderMarkers() call below, so that
+    // call never references a const still in its temporal dead zone.
+    const ROOKIE_KEY = 'lh-rotation-rookie';
+    const rookieBox = app.querySelector<HTMLInputElement>('[data-rookie]')!;
+    try { rookieBox.checked = localStorage.getItem(ROOKIE_KEY) === 'true'; } catch {}
+    // Folded in once `progress` exists, in the state section below — a
+    // pre-upgrade/earlier-today rookie save must stay sticky too.
+    let rookieUsed = rookieBox.checked;
+
+    rookieBox.addEventListener('change', () => {
+      try { localStorage.setItem(ROOKIE_KEY, String(rookieBox.checked)); } catch {}
+      if (rookieBox.checked) {
+        rookieUsed = true; // sticky for the day
+        if (progress.game && !progress.game.solved) {
+          progress = { ...progress, game: { ...progress.game, rookie: true } };
+          save();
+        }
+      }
+      renderMarkers();
+    });
 
     /** Shirt number standing in a slot right now, libero substitution applied. */
     const numberAt = (slot: Slot): number =>
@@ -155,9 +181,12 @@ import JudgePanel from '../components/JudgePanel.astro';
         el.dataset.slot = String(slot);
         el.style.left = `${(at.x / COURT_M) * 100}%`;
         el.style.top = `${(at.y / COURT_M) * 100}%`;
-        el.innerHTML = `<span class="marker__num">${numberAt(slot)}</span>`;
-        el.setAttribute('aria-label',
-          `#${numberAt(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
+        el.innerHTML = `<span class="marker__num">${numberAt(slot)}</span>`
+          + (rookieBox.checked
+            ? `<span class="marker__tag">P${slot} ${onCourtRole(slot, phase)}</span>` : '');
+        el.setAttribute('aria-label', rookieBox.checked
+          ? `${label(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`
+          : `#${numberAt(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
         layer.append(el);
       }
     }
@@ -298,6 +327,7 @@ import JudgePanel from '../components/JudgePanel.astro';
     const whatsappLink = app.querySelector<HTMLAnchorElement>('[data-whatsapp]')!;
 
     let progress = forToday(loadProgress(localStorage.getItem(KEY)), puzzle.id);
+    if (progress.game?.rookie) rookieUsed = true;
     const save = () => localStorage.setItem(KEY, JSON.stringify(progress));
     const elapsed = () => Date.now() - (progress.game?.startedAt ?? Date.now());
     const formatClock = (ms: number) => {
@@ -358,7 +388,7 @@ import JudgePanel from '../components/JudgePanel.astro';
       clockResultEl.textContent = formatted;
       result.hidden = false;
 
-      const text = shareText({ id: puzzle.id, attempts, elapsedMs: ms, streak: progress.streak });
+      const text = shareText({ id: puzzle.id, attempts, elapsedMs: ms, streak: progress.streak, rookie: rookieUsed });
       whatsappLink.href = `https://wa.me/?text=${encodeURIComponent(text)}`;
       shareBtn.textContent = 'Copy result';
       shareBtn.onclick = async () => {
@@ -384,7 +414,7 @@ import JudgePanel from '../components/JudgePanel.astro';
     startBtn.addEventListener('click', () => {
       progress = {
         ...progress,
-        game: { id: puzzle.id, startedAt: Date.now(), attempts: 0, solved: false, elapsedMs: null, placement: null },
+        game: { id: puzzle.id, startedAt: Date.now(), attempts: 0, solved: false, elapsedMs: null, placement: null, rookie: rookieUsed },
       };
       save();
       reveal();
@@ -408,7 +438,7 @@ import JudgePanel from '../components/JudgePanel.astro';
       const ms = elapsed();
       stopClock();
       attempts = (ev as CustomEvent<{ attempts: number }>).detail.attempts;
-      progress = recordSolved(progress, puzzle.id, attempts, ms);
+      progress = recordSolved(progress, puzzle.id, attempts, ms, rookieUsed);
       save();
       showResult(ms);
     });
@@ -509,6 +539,11 @@ import JudgePanel from '../components/JudgePanel.astro';
   [data-panel] { display: grid; gap: 28px; }
 
   .game__app { display: grid; gap: 12px; justify-items: center; }
+  .game__rookie {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--color-text-muted); font-size: var(--text-body-sm);
+    width: 100%; max-width: 460px; margin-inline: auto;
+  }
   .game__board { width: 100%; }
   .game__hint { color: var(--color-text-muted); font-size: var(--text-body-sm); margin: 0; }
 

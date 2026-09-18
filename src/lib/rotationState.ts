@@ -11,6 +11,8 @@ export interface SavedGame {
   solved: boolean;
   elapsedMs: number | null;
   placement: Record<string, Vec2> | null;
+  /** Sticky: true once labels have been shown, whatever the toggle says later. */
+  rookie: boolean;
 }
 
 export interface SavedProgress {
@@ -76,6 +78,9 @@ function isValidGame(g: unknown): g is SavedGame {
     if (typeof game.placement !== 'object') return false;
     if (!Object.values(game.placement).every(isVec2)) return false;
   }
+  // Missing (pre-upgrade saves) is fine — loadProgress normalises it to
+  // false. Only a wrong-typed value is malformed.
+  if (game.rookie !== undefined && typeof game.rookie !== 'boolean') return false;
   return true;
 }
 
@@ -89,7 +94,7 @@ export function loadProgress(raw: string | null): SavedProgress {
     return {
       streak: p.streak,
       lastSolvedId: typeof p.lastSolvedId === 'number' ? p.lastSolvedId : null,
-      game: p.game && isValidGame(p.game) ? p.game : null,
+      game: p.game && isValidGame(p.game) ? { ...p.game, rookie: p.game.rookie ?? false } : null,
     };
   } catch {
     return EMPTY;
@@ -102,7 +107,7 @@ export function forToday(progress: SavedProgress, id: number): SavedProgress {
 }
 
 export function recordSolved(
-  progress: SavedProgress, id: number, attempts: number, elapsedMs: number,
+  progress: SavedProgress, id: number, attempts: number, elapsedMs: number, rookie: boolean,
 ): SavedProgress {
   const streak = progress.lastSolvedId === id
     ? progress.streak
@@ -110,7 +115,7 @@ export function recordSolved(
   return {
     streak,
     lastSolvedId: id,
-    game: { id, startedAt: null, attempts, solved: true, elapsedMs, placement: null },
+    game: { id, startedAt: null, attempts, solved: true, elapsedMs, placement: null, rookie },
   };
 }
 
@@ -120,11 +125,12 @@ const clock = (ms: number) => {
 };
 
 export function shareText(
-  { id, attempts, elapsedMs, streak }: { id: number; attempts: number; elapsedMs: number; streak: number },
+  { id, attempts, elapsedMs, streak, rookie }:
+    { id: number; attempts: number; elapsedMs: number; streak: number; rookie: boolean },
 ): string {
   const tries = `${attempts} attempt${attempts === 1 ? '' : 's'} `;
   return `Lionhearts Rotation #${id}\n`
-    + `✅ ${tries}· ${clock(elapsedMs)}\n`
+    + `✅ ${tries}· ${clock(elapsedMs)}${rookie ? ' · rookie' : ''}\n`
     + `🔥 streak ${streak}\n`
     + `${SITE_URL}/game`;
 }
