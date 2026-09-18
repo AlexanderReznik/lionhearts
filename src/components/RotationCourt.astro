@@ -2,6 +2,12 @@
 // src/components/RotationCourt.astro
 import { COURT_M, PASS_BAND, MB_NET_MAX, OPP_NET_MAX, SETTER_TARGET } from '../lib/rotation';
 
+interface Props {
+  /** Club-convention guides. Off for the judge game, which validates law only. */
+  zones?: boolean;
+}
+const { zones = true } = Astro.props;
+
 const pct = (metres: number) => `${(metres / COURT_M) * 100}%`;
 ---
 
@@ -12,14 +18,16 @@ const pct = (metres: number) => `${(metres / COURT_M) * 100}%`;
   <div class="court__attack" aria-hidden="true"></div>
   <span class="court__tag court__tag--attack" aria-hidden="true">3m</span>
 
-  <div class="court__netlimit court__netlimit--mb" aria-hidden="true"></div>
-  <div class="court__netlimit court__netlimit--opp" aria-hidden="true"></div>
-
-  <div class="court__target" aria-hidden="true"><span class="court__target-dot"></span></div>
-
-  <div class="court__band" aria-hidden="true">
-    <span class="court__band-cap">Pass {PASS_BAND.min}–{PASS_BAND.max}m</span>
-  </div>
+  {zones && (
+    <>
+      <div class="court__netlimit court__netlimit--mb" aria-hidden="true"></div>
+      <div class="court__netlimit court__netlimit--opp" aria-hidden="true"></div>
+      <div class="court__target" aria-hidden="true"><span class="court__target-dot"></span></div>
+      <div class="court__band" aria-hidden="true">
+        <span class="court__band-cap">Pass {PASS_BAND.min}–{PASS_BAND.max}m</span>
+      </div>
+    </>
+  )}
 
   <svg class="court__arrows" data-arrows viewBox={`0 0 ${COURT_M} ${COURT_M}`} aria-hidden="true">
     <defs>
