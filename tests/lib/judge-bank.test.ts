@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { JUDGE } from '../../src/data/judge';
 import { faultIn, lawConstraintsFor, tightestMargin } from '../../src/lib/judge';
-import { ALL_SLOTS, COURT_M, MIN_SEPARATION, validate, type Phase } from '../../src/lib/rotation';
+import { ALL_SLOTS, COURT_M, validate, type Phase } from '../../src/lib/rotation';
 import { SQUAD } from '../../src/data/squad';
 import { ROTATIONS } from '../../src/data/rotations';
 

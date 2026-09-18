@@ -69,7 +69,6 @@ import JudgePanel from '../components/JudgePanel.astro';
     onCourtRole, validate, type Phase, type Placement, type Slot, type Vec2,
   } from '../lib/rotation';
   import { ROTATIONS } from '../data/rotations';
-  import { SQUAD } from '../data/squad';
   import {
     puzzleIndexFor, loadProgress, forToday, recordSolved, shareText, msUntilNextLondonDay,
   } from '../lib/rotationState';
@@ -408,7 +407,8 @@ import JudgePanel from '../components/JudgePanel.astro';
         countdownEl.textContent = formatCountdown(msUntilNextLondonDay(new Date()));
       };
       update();
-      window.setInterval(update, 1000);
+      const timer = window.setInterval(update, 1000);
+      window.addEventListener('pagehide', () => window.clearInterval(timer), { once: true });
     }
 
     startBtn.addEventListener('click', () => {
