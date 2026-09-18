@@ -212,6 +212,12 @@ import RotationCourt from './RotationCourt.astro';
     };
 
     document.addEventListener('judge:activate', init, { once: true });
+    // The tab script lives in a separate <script> block, so it may already have
+    // dispatched judge:activate (restoring the Judge tab on load) before this
+    // listener existed. Bundler ordering is not something to bet on: if the
+    // panel is visible by the time we get here, start now. `started` keeps
+    // either path to exactly one run.
+    if (!root.closest('[role="tabpanel"]')?.hasAttribute('hidden')) void init();
   }
 </script>
 
