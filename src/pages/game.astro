@@ -155,10 +155,9 @@ import JudgePanel from '../components/JudgePanel.astro';
         el.dataset.slot = String(slot);
         el.style.left = `${(at.x / COURT_M) * 100}%`;
         el.style.top = `${(at.y / COURT_M) * 100}%`;
-        el.innerHTML = `<span class="marker__num">${numberAt(slot)}</span>`
-          + `<span class="marker__tag">P${slot} ${onCourtRole(slot, phase)}</span>`;
+        el.innerHTML = `<span class="marker__num">${numberAt(slot)}</span>`;
         el.setAttribute('aria-label',
-          `${label(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
+          `#${numberAt(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
         layer.append(el);
       }
     }
