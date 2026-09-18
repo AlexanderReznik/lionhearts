@@ -45,7 +45,7 @@ import RotationCourt from './RotationCourt.astro';
 
 <script>
   import { ALL_SLOTS, COURT_M, onCourtRole, type Phase, type Placement, type Slot } from '../lib/rotation';
-  import { judgeCall, tightestMargin, type FaultPair, type Outcome } from '../lib/judge';
+  import { judgeCall, phaseForCall, tightestMargin, type FaultPair, type Outcome } from '../lib/judge';
   import { loadJudge, judgeForToday, recordJudgeDone, judgeShareText } from '../lib/judgeState';
   import { puzzleIndexFor } from '../lib/rotationState';
 
@@ -60,7 +60,21 @@ import RotationCourt from './RotationCourt.astro';
     const init = async (): Promise<void> => {
       if (started) return;
       started = true;
-      const { JUDGE } = await import('../data/judge');
+      let JUDGE;
+      try {
+        ({ JUDGE } = await import('../data/judge'));
+      } catch {
+        // A failed chunk fetch would otherwise leave the tab showing live
+        // Legal/Illegal buttons over an empty court, with nothing to judge.
+        const failed = root.querySelector<HTMLElement>('[data-judge-verdict]');
+        if (failed) {
+          failed.className = 'verdict verdict--bad';
+          failed.innerHTML = "<b>Could not load today's calls</b>"
+            + '<p>Check your connection and reload the page.</p>';
+        }
+        root.querySelector<HTMLElement>('[data-judge-controls]')!.hidden = true;
+        return;
+      }
       const KEY = 'lh-rotation-judge';
       const puzzle = JUDGE[puzzleIndexFor(new Date(), JUDGE.length)];
       const layer = root.querySelector<HTMLElement>('[data-markers]')!;
@@ -79,7 +93,7 @@ import RotationCourt from './RotationCourt.astro';
       let index = outcomes.length;
       let tapped: Slot[] = [];
 
-      const phaseFor = (i: number) => ((puzzle.startPhase + i) % 6) as Phase;
+      const phaseFor = (call: number) => phaseForCall(puzzle.startPhase, call);
       const numberAt = (slot: Slot, phase: Phase): number =>
         onCourtRole(slot, phase) === 'L' ? puzzle.libero : puzzle.start[(slot - 1 + phase) % 6];
 
