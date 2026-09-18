@@ -5,8 +5,11 @@ import { COURT_M, PASS_BAND, MB_NET_MAX, OPP_NET_MAX, SETTER_TARGET } from '../l
 interface Props {
   /** Club-convention guides. Off for the judge game, which validates law only. */
   zones?: boolean;
+  /** Rotation-fault arrows. Off for the judge game, which never draws them —
+   *  and whose court must not repeat the build court's `#rot-arrow` marker id. */
+  arrows?: boolean;
 }
-const { zones = true } = Astro.props;
+const { zones = true, arrows = true } = Astro.props;
 
 const pct = (metres: number) => `${(metres / COURT_M) * 100}%`;
 ---
@@ -29,13 +32,15 @@ const pct = (metres: number) => `${(metres / COURT_M) * 100}%`;
     </>
   )}
 
-  <svg class="court__arrows" data-arrows viewBox={`0 0 ${COURT_M} ${COURT_M}`} aria-hidden="true">
-    <defs>
-      <marker id="rot-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
-        <path d="M0,0 L6,3 L0,6 z" fill="var(--lh-red)"></path>
-      </marker>
-    </defs>
-  </svg>
+  {arrows && (
+    <svg class="court__arrows" data-arrows viewBox={`0 0 ${COURT_M} ${COURT_M}`} aria-hidden="true">
+      <defs>
+        <marker id="rot-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M0,0 L6,3 L0,6 z" fill="var(--lh-red)"></path>
+        </marker>
+      </defs>
+    </svg>
+  )}
 
   <div class="court__markers" data-markers></div>
 </div>

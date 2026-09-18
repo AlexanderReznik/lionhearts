@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PHASES, lawConstraintsFor } from '../../src/lib/judge';
+import { PHASES, lawConstraintsFor, phaseForCall } from '../../src/lib/judge';
 
 describe('lawConstraintsFor', () => {
   it('keeps only the positional rules a referee actually calls', () => {
@@ -49,6 +49,20 @@ describe('faultIn', () => {
   it('treats exactly level as legal, per 7.4.3.1', () => {
     const p: Placement = { ...WITNESSES[0], 5: { x: 1.06, y: WITNESSES[0][4].y } };
     expect(faultIn(p, 0)).toBeNull();
+  });
+});
+
+describe('phaseForCall', () => {
+  it('call 0 is the day\'s starting rotation', () => {
+    expect(phaseForCall(3, 0)).toBe(3);
+  });
+
+  it('advances one rotation per call, mid-round', () => {
+    expect(phaseForCall(5, 1)).toBe(0);
+  });
+
+  it('wraps back round after six calls', () => {
+    expect(phaseForCall(5, 5)).toBe(4);
   });
 });
 

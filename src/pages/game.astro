@@ -7,15 +7,15 @@ import JudgePanel from '../components/JudgePanel.astro';
 ---
 
 <BaseLayout
-  title="Rotation — the daily volleyball puzzle"
-  description="One serve receive a day. Place the six, keep the rotation legal, and post your score to the group chat."
+  title="Rotation — the daily volleyball puzzles"
+  description="Two volleyball puzzles a day. Build a legal serve receive, or judge six formations and call the overlaps. The same for everyone, and short enough for the bus."
 >
   <div class="page-hero">
     <p class="eyebrow page-hero__eyebrow">Daily puzzle</p>
     <h1 class="page-hero__title">Rotation</h1>
     <p class="page-hero__sub">
-      One serve receive a day, the same for everyone. Place the six, keep the
-      rotation legal, and see how few attempts it takes.
+      Two puzzles a day, the same for everyone. Build a legal serve receive, or
+      judge six formations and call the overlaps.
     </p>
   </div>
 
@@ -480,6 +480,7 @@ import JudgePanel from '../components/JudgePanel.astro';
       .map(el => [el.dataset.panel!, el]),
   );
   const KEY = 'lh-game-tab';
+  let judgeActivated = false;
 
   function show(name: string) {
     for (const tab of tabs) {
@@ -488,6 +489,11 @@ import JudgePanel from '../components/JudgePanel.astro';
       tab.tabIndex = on ? 0 : -1;
     }
     for (const [key, panel] of panels) panel.hidden = key !== name;
+    // The judge panel loads its bank on demand; tell it the first time it is shown.
+    if (name === 'judge' && !judgeActivated) {
+      judgeActivated = true;
+      document.dispatchEvent(new CustomEvent('judge:activate'));
+    }
     try { localStorage.setItem(KEY, name); } catch {}
   }
 

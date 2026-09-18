@@ -3,7 +3,7 @@ import {
   ALL_SLOTS, COURT_M, LINEUP_CYCLE, MIN_SEPARATION, validate,
   type Phase, type Placement, type Slot,
 } from '../src/lib/rotation.ts';
-import { PHASES, lawConstraintsFor, faultIn } from '../src/lib/judge.ts';
+import { PHASES, lawConstraintsFor, faultIn, phaseForCall } from '../src/lib/judge.ts';
 import { SQUAD } from '../src/data/squad.ts';
 
 const DAYS = 760;                 // matches the rotation bank, so both roll over together
@@ -128,7 +128,7 @@ function day(id: number): { id: number; start: number[]; libero: number; startPh
   const wants = mix();
   const formations: Placement[] = [];
   for (let i = 0; i < CALLS; i++) {
-    const phase = ((startPhase + i) % 6) as Phase;
+    const phase = phaseForCall(startPhase, i);
     // Tighten across the round: call one is obvious, call six is hard.
     const t = i / (CALLS - 1);
     const p = wants[i]

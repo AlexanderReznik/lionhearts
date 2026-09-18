@@ -7,13 +7,20 @@ import RotationCourt from './RotationCourt.astro';
   <h2 id="judge-heading" class="eyebrow judge__eyebrow">Legal or not?</h2>
 
   <div class="judge__brief">
-    <p class="judge__line">
-      Line-up <strong data-judge-lineup>–</strong>, libero <strong data-judge-libero>–</strong>.
-    </p>
+    <h3 class="judge__label">Starting line-up</h3>
+    <ol class="judge__lineup">
+      {[1, 2, 3, 4, 5, 6].map(slot => (
+        <li class="judge__lineup-item">
+          <span class="judge__slot">P{slot}</span>
+          <span class="judge__num" data-judge-slot={slot}>–</span>
+        </li>
+      ))}
+    </ol>
+    <p class="judge__line">Libero <strong data-judge-libero>–</strong>.</p>
     <p class="judge__line judge__line--muted" data-judge-progress>Call 1 of 6 · rotation 1</p>
   </div>
 
-  <RotationCourt zones={false} />
+  <RotationCourt zones={false} arrows={false} />
 
   <div class="judge__controls" data-judge-controls>
     <button type="button" class="btn btn--accent" data-judge-legal>Legal</button>
@@ -39,158 +46,172 @@ import RotationCourt from './RotationCourt.astro';
 <script>
   import { ALL_SLOTS, COURT_M, onCourtRole, type Phase, type Placement, type Slot } from '../lib/rotation';
   import { judgeCall, tightestMargin, type FaultPair, type Outcome } from '../lib/judge';
-  import { JUDGE } from '../data/judge';
   import { loadJudge, judgeForToday, recordJudgeDone, judgeShareText } from '../lib/judgeState';
   import { puzzleIndexFor } from '../lib/rotationState';
 
   const root = document.querySelector<HTMLElement>('[data-judge]');
   if (root) {
-    const KEY = 'lh-rotation-judge';
-    const puzzle = JUDGE[puzzleIndexFor(new Date(), JUDGE.length)];
-    const layer = root.querySelector<HTMLElement>('[data-markers]')!;
-    const verdictEl = root.querySelector<HTMLElement>('[data-judge-verdict]')!;
-    const controls = root.querySelector<HTMLElement>('[data-judge-controls]')!;
-    const tapHint = root.querySelector<HTMLElement>('[data-judge-tap]')!;
-    const confirmBtn = root.querySelector<HTMLButtonElement>('[data-judge-confirm]')!;
-    const progressEl = root.querySelector<HTMLElement>('[data-judge-progress]')!;
-    const resultEl = root.querySelector<HTMLElement>('[data-judge-result]')!;
-    const scoreEl = root.querySelector<HTMLElement>('[data-judge-score]')!;
-    const shareBtn = root.querySelector<HTMLButtonElement>('[data-judge-share]')!;
-    const whatsapp = root.querySelector<HTMLAnchorElement>('[data-judge-whatsapp]')!;
-
-    let progress = judgeForToday(loadJudge(localStorage.getItem(KEY)), puzzle.id);
-    const outcomes: Outcome[] = progress.game?.outcomes ? [...progress.game.outcomes] : [];
-    let index = outcomes.length;
-    let tapped: Slot[] = [];
-
-    const phaseFor = (i: number) => ((puzzle.startPhase + i) % 6) as Phase;
-    const numberAt = (slot: Slot, phase: Phase): number =>
-      onCourtRole(slot, phase) === 'L' ? puzzle.libero : puzzle.start[(slot - 1 + phase) % 6];
-
-    /**
-     * Feedback names the position as well as the number. The court shows
-     * numbers only, so a player who read the rotation wrongly was checking
-     * the wrong pairs — saying "#12 (P5)" is what tells them that, and it
-     * appears only once the call is locked in.
+    /*
+     * The bank is ~750KB of committed formations. A static import would bundle
+     * it into every /game visit, including for people who only ever play the
+     * Build tab, so it is fetched on first activation of the Judge tab instead.
      */
-    const labelFor = (phase: Phase) => (slot: Slot) => `#${numberAt(slot, phase)} (P${slot})`;
+    let started = false;
+    const init = async (): Promise<void> => {
+      if (started) return;
+      started = true;
+      const { JUDGE } = await import('../data/judge');
+      const KEY = 'lh-rotation-judge';
+      const puzzle = JUDGE[puzzleIndexFor(new Date(), JUDGE.length)];
+      const layer = root.querySelector<HTMLElement>('[data-markers]')!;
+      const verdictEl = root.querySelector<HTMLElement>('[data-judge-verdict]')!;
+      const controls = root.querySelector<HTMLElement>('[data-judge-controls]')!;
+      const tapHint = root.querySelector<HTMLElement>('[data-judge-tap]')!;
+      const confirmBtn = root.querySelector<HTMLButtonElement>('[data-judge-confirm]')!;
+      const progressEl = root.querySelector<HTMLElement>('[data-judge-progress]')!;
+      const resultEl = root.querySelector<HTMLElement>('[data-judge-result]')!;
+      const scoreEl = root.querySelector<HTMLElement>('[data-judge-score]')!;
+      const shareBtn = root.querySelector<HTMLButtonElement>('[data-judge-share]')!;
+      const whatsapp = root.querySelector<HTMLAnchorElement>('[data-judge-whatsapp]')!;
 
-    root.querySelector('[data-judge-lineup]')!.textContent = puzzle.start.map(n => `#${n}`).join(' ');
-    root.querySelector('[data-judge-libero]')!.textContent = `#${puzzle.libero}`;
+      let progress = judgeForToday(loadJudge(localStorage.getItem(KEY)), puzzle.id);
+      const outcomes: Outcome[] = progress.game?.outcomes ? [...progress.game.outcomes] : [];
+      let index = outcomes.length;
+      let tapped: Slot[] = [];
 
-    const save = () => {
-      localStorage.setItem(KEY, JSON.stringify({
-        ...progress,
-        game: { id: puzzle.id, outcomes, done: index >= 6 },
-      }));
+      const phaseFor = (i: number) => ((puzzle.startPhase + i) % 6) as Phase;
+      const numberAt = (slot: Slot, phase: Phase): number =>
+        onCourtRole(slot, phase) === 'L' ? puzzle.libero : puzzle.start[(slot - 1 + phase) % 6];
+
+      /**
+       * Feedback names the position as well as the number. The court shows
+       * numbers only, so a player who read the rotation wrongly was checking
+       * the wrong pairs — saying "#12 (P5)" is what tells them that, and it
+       * appears only once the call is locked in.
+       */
+      const labelFor = (phase: Phase) => (slot: Slot) => `#${numberAt(slot, phase)} (P${slot})`;
+
+      for (const slot of ALL_SLOTS) {
+        root.querySelector(`[data-judge-slot="${slot}"]`)!.textContent = `#${puzzle.start[slot - 1]}`;
+      }
+      root.querySelector('[data-judge-libero]')!.textContent = `#${puzzle.libero}`;
+
+      const save = () => {
+        localStorage.setItem(KEY, JSON.stringify({
+          ...progress,
+          game: { id: puzzle.id, outcomes, done: index >= 6 },
+        }));
+      };
+
+      function render() {
+        const phase = phaseFor(index);
+        const formation = puzzle.formations[index] as Placement;
+        layer.replaceChildren();
+        for (const slot of ALL_SLOTS) {
+          const at = formation[slot];
+          const el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'marker';
+          el.classList.toggle('marker--tapped', tapped.includes(slot));
+          el.dataset.slot = String(slot);
+          el.style.left = `${(at.x / COURT_M) * 100}%`;
+          el.style.top = `${(at.y / COURT_M) * 100}%`;
+          el.innerHTML = `<span class="marker__num">${numberAt(slot, phase)}</span>`;
+          el.setAttribute('aria-label',
+            `#${numberAt(slot, phase)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
+          layer.append(el);
+        }
+        progressEl.textContent = `Call ${index + 1} of 6 · rotation ${phase + 1}`;
+      }
+
+      layer.addEventListener('click', ev => {
+        const el = (ev.target as HTMLElement).closest<HTMLElement>('[data-slot]');
+        if (!el || tapHint.hidden) return;
+        const slot = Number(el.dataset.slot) as Slot;
+        tapped = tapped.includes(slot) ? tapped.filter(s => s !== slot) : [...tapped, slot].slice(-2);
+        confirmBtn.disabled = tapped.length !== 2;
+        render();
+      });
+
+      /**
+       * A legal formation called illegal is the game's best teaching moment:
+       * reporting the real margin is how a player learns that level is legal
+       * (FIVB 7.4.3.1, 7.4.3.2).
+       */
+      function legalDetail(phase: Phase, formation: Placement): string {
+        const m = tightestMargin(formation, phase);
+        if (!m) return 'That one was legal.';
+        const label = labelFor(phase);
+        const [a, b] = m.pair;
+        return m.metres === 0
+          ? `${label(a)} is exactly level with ${label(b)} — and level is legal.`
+          : `${label(a)} had ${m.metres.toFixed(2)}m on ${label(b)} — that is legal, if tight.`;
+      }
+
+      function answer(calledLegal: boolean, pair: FaultPair | null) {
+        const phase = phaseFor(index);
+        const formation = puzzle.formations[index] as Placement;
+        const v = judgeCall({ placement: formation, phase, calledLegal, tapped: pair, label: labelFor(phase) });
+        outcomes.push(v.outcome);
+
+        verdictEl.className = `verdict verdict--${v.outcome === 'wrong' ? 'bad' : 'ok'}`;
+        const head = v.outcome === 'correct' ? 'Correct'
+          : v.outcome === 'partial' ? 'Right call, wrong pair' : 'Not quite';
+        const detail = v.truth ? v.truth.message : legalDetail(phase, formation);
+        verdictEl.innerHTML = `<b>${head}</b><p>${detail}</p>`;
+
+        index += 1;
+        tapped = [];
+        tapHint.hidden = true;
+        confirmBtn.hidden = true;
+        confirmBtn.disabled = true;
+        save();
+
+        if (index >= 6) return finish();
+        controls.hidden = false;
+        render();
+      }
+
+      function finish() {
+        controls.hidden = true;
+        tapHint.hidden = true;
+        confirmBtn.hidden = true;
+        progress = recordJudgeDone(progress, puzzle.id, outcomes);
+        localStorage.setItem(KEY, JSON.stringify(progress));
+        const right = outcomes.filter(o => o !== 'wrong').length;
+        const pairs = outcomes.filter(o => o === 'correct').length;
+        scoreEl.textContent = `${right}/6 calls · ${pairs} pair${pairs === 1 ? '' : 's'} found`;
+        resultEl.hidden = false;
+        const text = judgeShareText({ id: puzzle.id, outcomes, streak: progress.streak });
+        whatsapp.href = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        shareBtn.onclick = async () => {
+          try {
+            await navigator.clipboard.writeText(text);
+            shareBtn.textContent = 'Copied';
+          } catch {
+            // Clipboard access is refused in insecure contexts or without permission.
+            shareBtn.textContent = 'Copy failed — use Send to the group';
+          }
+        };
+      }
+
+      root.querySelector('[data-judge-legal]')!.addEventListener('click', () => answer(true, null));
+      root.querySelector('[data-judge-illegal]')!.addEventListener('click', () => {
+        controls.hidden = true;
+        tapHint.hidden = false;
+        confirmBtn.hidden = false;
+        verdictEl.className = 'verdict';
+        verdictEl.innerHTML = '';
+      });
+      confirmBtn.addEventListener('click', () => {
+        if (tapped.length === 2) answer(false, [tapped[0], tapped[1]] as FaultPair);
+      });
+
+      if (progress.game?.done || index >= 6) finish();
+      else render();
     };
 
-    function render() {
-      const phase = phaseFor(index);
-      const formation = puzzle.formations[index] as Placement;
-      layer.replaceChildren();
-      for (const slot of ALL_SLOTS) {
-        const at = formation[slot];
-        const el = document.createElement('button');
-        el.type = 'button';
-        el.className = 'marker';
-        el.classList.toggle('marker--tapped', tapped.includes(slot));
-        el.dataset.slot = String(slot);
-        el.style.left = `${(at.x / COURT_M) * 100}%`;
-        el.style.top = `${(at.y / COURT_M) * 100}%`;
-        el.innerHTML = `<span class="marker__num">${numberAt(slot, phase)}</span>`;
-        el.setAttribute('aria-label',
-          `#${numberAt(slot, phase)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
-        layer.append(el);
-      }
-      progressEl.textContent = `Call ${index + 1} of 6 · rotation ${phase + 1}`;
-    }
-
-    layer.addEventListener('click', ev => {
-      const el = (ev.target as HTMLElement).closest<HTMLElement>('[data-slot]');
-      if (!el || tapHint.hidden) return;
-      const slot = Number(el.dataset.slot) as Slot;
-      tapped = tapped.includes(slot) ? tapped.filter(s => s !== slot) : [...tapped, slot].slice(-2);
-      confirmBtn.disabled = tapped.length !== 2;
-      render();
-    });
-
-    /**
-     * A legal formation called illegal is the game's best teaching moment:
-     * reporting the real margin is how a player learns that level is legal
-     * (FIVB 7.4.3.1, 7.4.3.2).
-     */
-    function legalDetail(phase: Phase, formation: Placement): string {
-      const m = tightestMargin(formation, phase);
-      if (!m) return 'That one was legal.';
-      const label = labelFor(phase);
-      const [a, b] = m.pair;
-      return m.metres === 0
-        ? `${label(a)} is exactly level with ${label(b)} — and level is legal.`
-        : `${label(a)} had ${m.metres.toFixed(2)}m on ${label(b)} — that is legal, if tight.`;
-    }
-
-    function answer(calledLegal: boolean, pair: FaultPair | null) {
-      const phase = phaseFor(index);
-      const formation = puzzle.formations[index] as Placement;
-      const v = judgeCall({ placement: formation, phase, calledLegal, tapped: pair, label: labelFor(phase) });
-      outcomes.push(v.outcome);
-
-      verdictEl.className = `verdict verdict--${v.outcome === 'wrong' ? 'bad' : 'ok'}`;
-      const head = v.outcome === 'correct' ? 'Correct'
-        : v.outcome === 'partial' ? 'Right call, wrong pair' : 'Not quite';
-      const detail = v.truth ? v.truth.message : legalDetail(phase, formation);
-      verdictEl.innerHTML = `<b>${head}</b><p>${detail}</p>`;
-
-      index += 1;
-      tapped = [];
-      tapHint.hidden = true;
-      confirmBtn.hidden = true;
-      confirmBtn.disabled = true;
-      save();
-
-      if (index >= 6) return finish();
-      controls.hidden = false;
-      render();
-    }
-
-    function finish() {
-      controls.hidden = true;
-      tapHint.hidden = true;
-      confirmBtn.hidden = true;
-      progress = recordJudgeDone(progress, puzzle.id, outcomes);
-      localStorage.setItem(KEY, JSON.stringify(progress));
-      const right = outcomes.filter(o => o !== 'wrong').length;
-      const pairs = outcomes.filter(o => o === 'correct').length;
-      scoreEl.textContent = `${right}/6 calls · ${pairs} pair${pairs === 1 ? '' : 's'} found`;
-      resultEl.hidden = false;
-      const text = judgeShareText({ id: puzzle.id, outcomes, streak: progress.streak });
-      whatsapp.href = `https://wa.me/?text=${encodeURIComponent(text)}`;
-      shareBtn.onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(text);
-          shareBtn.textContent = 'Copied';
-        } catch {
-          // Clipboard access is refused in insecure contexts or without permission.
-          shareBtn.textContent = 'Copy failed — use Send to the group';
-        }
-      };
-    }
-
-    root.querySelector('[data-judge-legal]')!.addEventListener('click', () => answer(true, null));
-    root.querySelector('[data-judge-illegal]')!.addEventListener('click', () => {
-      controls.hidden = true;
-      tapHint.hidden = false;
-      confirmBtn.hidden = false;
-      verdictEl.className = 'verdict';
-      verdictEl.innerHTML = '';
-    });
-    confirmBtn.addEventListener('click', () => {
-      if (tapped.length === 2) answer(false, [tapped[0], tapped[1]] as FaultPair);
-    });
-
-    if (progress.game?.done || index >= 6) finish();
-    else render();
+    document.addEventListener('judge:activate', init, { once: true });
   }
 </script>
 
@@ -198,7 +219,22 @@ import RotationCourt from './RotationCourt.astro';
   .judge { display: grid; gap: 12px; justify-items: center; }
   .judge [hidden] { display: none; }
   .judge__eyebrow { color: var(--color-accent-text); justify-self: start; }
-  .judge__brief { width: 100%; max-width: 460px; display: grid; gap: 2px; }
+  .judge__brief { width: 100%; max-width: 460px; display: grid; gap: 6px; }
+  .judge__label {
+    margin: 0; font-size: var(--text-body-sm); font-weight: var(--weight-black);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted);
+  }
+  .judge__lineup {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;
+  }
+  .judge__lineup-item { display: grid; gap: 1px; justify-items: center; text-align: center; }
+  .judge__slot {
+    font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--color-text-muted);
+  }
+  .judge__num { font-weight: var(--weight-black); font-variant-numeric: tabular-nums; }
   .judge__line { margin: 0; }
   .judge__line--muted { color: var(--color-text-muted); font-size: var(--text-body-sm); }
   .judge__controls { display: flex; gap: 10px; width: 100%; max-width: 460px; }

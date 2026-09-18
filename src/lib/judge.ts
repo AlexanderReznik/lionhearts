@@ -4,6 +4,11 @@ import {
 
 export const PHASES: Phase[] = [0, 1, 2, 3, 4, 5];
 
+/** The rotation for call `call` (0-based) of a day that starts at `startPhase`. */
+export function phaseForCall(startPhase: Phase, call: number): Phase {
+  return ((startPhase + call) % 6) as Phase;
+}
+
 /**
  * The positional law (FIVB 7.4) only. The passing band, passer spread and
  * setter radius in `constraintsFor` are our club's receive system — a referee
@@ -24,6 +29,9 @@ export interface Fault { pair: FaultPair; message: string; kind: 'depthOrder' | 
  * generator guarantees, so they never reach a player.
  */
 export function faultIn(p: Placement, phase: Phase, label?: SlotLabel): Fault | null {
+  // A plain boolean predicate (x => x.kind === 'depthOrder' || ...) does not
+  // narrow `v`'s type, so `v.pair`/`v.kind` below would not type-check — the
+  // type-predicate form is required, not a stylistic choice to "simplify" away.
   const v = validate(p, lawConstraintsFor(phase), label)
     .find((x): x is typeof x & { kind: 'depthOrder' | 'lateralOrder' } =>
       x.kind === 'depthOrder' || x.kind === 'lateralOrder');
