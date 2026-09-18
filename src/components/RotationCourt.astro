@@ -1,0 +1,111 @@
+---
+// src/components/RotationCourt.astro
+import { COURT_M, PASS_BAND, MB_NET_MAX, OPP_NET_MAX, SETTER_TARGET } from '../lib/rotation';
+
+interface Props {
+  /** Club-convention guides. Off for the judge game, which validates law only. */
+  zones?: boolean;
+  /** Rotation-fault arrows. Off for the judge game, which never draws them —
+   *  and whose court must not repeat the build court's `#rot-arrow` marker id. */
+  arrows?: boolean;
+}
+const { zones = true, arrows = true } = Astro.props;
+
+const pct = (metres: number) => `${(metres / COURT_M) * 100}%`;
+---
+
+<div class="court" data-court role="group" aria-label="Our half of the court">
+  <div class="court__net" aria-hidden="true"></div>
+  <span class="court__tag court__tag--net" aria-hidden="true">Net</span>
+
+  <div class="court__attack" aria-hidden="true"></div>
+  <span class="court__tag court__tag--attack" aria-hidden="true">3m</span>
+
+  {zones && (
+    <>
+      <div class="court__netlimit court__netlimit--mb" aria-hidden="true"></div>
+      <div class="court__netlimit court__netlimit--opp" aria-hidden="true"></div>
+      <div class="court__target" aria-hidden="true"><span class="court__target-dot"></span></div>
+      <div class="court__band" aria-hidden="true">
+        <span class="court__band-cap">Pass {PASS_BAND.min}–{PASS_BAND.max}m</span>
+      </div>
+    </>
+  )}
+
+  {arrows && (
+    <svg class="court__arrows" data-arrows viewBox={`0 0 ${COURT_M} ${COURT_M}`} aria-hidden="true">
+      <defs>
+        <marker id="rot-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M0,0 L6,3 L0,6 z" fill="var(--lh-red)"></path>
+        </marker>
+      </defs>
+    </svg>
+  )}
+
+  <div class="court__markers" data-markers></div>
+</div>
+
+<style define:vars={{
+  bandTop: pct(PASS_BAND.min),
+  bandHeight: pct(PASS_BAND.max - PASS_BAND.min),
+  mbLimit: pct(MB_NET_MAX),
+  oppLimit: pct(OPP_NET_MAX),
+  targetX: pct(SETTER_TARGET.x),
+  targetY: pct(SETTER_TARGET.y),
+}}>
+  /* Dark in both themes, like .section--feature, so accent text re-asserts light blue. */
+  .court {
+    --color-accent-text: var(--lh-blue);
+    --court-line: rgba(143, 197, 247, 0.45);
+    --court-ink: var(--lh-blue-100);
+    position: relative;
+    aspect-ratio: 1;
+    width: 100%;
+    max-width: 460px;
+    margin-inline: auto;
+    background: var(--lh-navy-deep);
+    border: 1.5px solid var(--court-line);
+    border-radius: 4px;
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.45);
+    overflow: hidden;
+    touch-action: none;
+  }
+  .court__net { position: absolute; inset: 0 0 auto 0; height: 5px; background: var(--court-ink); opacity: 0.9; }
+  .court__attack { position: absolute; left: 0; right: 0; top: 33.33%; border-top: 1.5px solid var(--court-line); }
+  .court__tag {
+    position: absolute; font-size: 10px; font-weight: var(--weight-black);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase;
+    color: var(--court-ink); opacity: 0.55;
+  }
+  .court__tag--net { top: 8px; left: 8px; }
+  .court__tag--attack { top: 33.33%; right: 8px; transform: translateY(3px); }
+  .court__netlimit {
+    position: absolute; left: 0; right: 0;
+    border-top: 1px dotted color-mix(in srgb, var(--lh-blue) 60%, transparent);
+  }
+  .court__netlimit--mb { top: var(--mbLimit); }
+  .court__netlimit--opp { top: var(--oppLimit); }
+  .court__band {
+    position: absolute; left: 0; right: 0; top: var(--bandTop); height: var(--bandHeight);
+    background: color-mix(in srgb, var(--lh-blue) 22%, transparent);
+    border-block: 1px dashed color-mix(in srgb, var(--lh-blue) 70%, transparent);
+  }
+  .court__band-cap {
+    position: absolute; right: 6px; top: 3px; font-size: 10px;
+    font-weight: var(--weight-black); letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; color: var(--court-ink); opacity: 0.7;
+  }
+  .court__target {
+    position: absolute; left: var(--targetX); top: var(--targetY);
+    width: 30%; aspect-ratio: 1; transform: translate(-50%, -50%);
+    border: 1.5px dashed color-mix(in srgb, var(--lh-blue) 75%, transparent);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--lh-blue) 9%, transparent);
+  }
+  .court__target-dot {
+    position: absolute; left: 50%; top: 50%; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--lh-blue); transform: translate(-50%, -50%);
+  }
+  .court__arrows { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .court__markers { position: absolute; inset: 0; }
+</style>

@@ -1,0 +1,628 @@
+---
+// src/pages/game.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RotationBrief from '../components/RotationBrief.astro';
+import RotationCourt from '../components/RotationCourt.astro';
+import JudgePanel from '../components/JudgePanel.astro';
+---
+
+<BaseLayout
+  title="Rotation — the daily volleyball puzzles"
+  description="Two volleyball puzzles a day. Build a legal serve receive, or judge six formations and call the overlaps. The same for everyone, and short enough for the bus."
+>
+  <div class="page-hero">
+    <p class="eyebrow page-hero__eyebrow">Daily puzzle</p>
+    <h1 class="page-hero__title">Rotation</h1>
+    <p class="page-hero__sub">
+      Two puzzles a day, the same for everyone. Build a legal serve receive, or
+      judge six formations and call the overlaps.
+    </p>
+  </div>
+
+  <div class="container game">
+    <div class="tabs" role="tablist" aria-label="Daily games">
+      <button type="button" class="tabs__tab" role="tab" id="tab-build"
+        aria-controls="panel-build" aria-selected="true" data-tab="build">Build</button>
+      <button type="button" class="tabs__tab" role="tab" id="tab-judge"
+        aria-controls="panel-judge" aria-selected="false" tabindex="-1" data-tab="judge">Judge</button>
+    </div>
+
+    <div id="panel-build" role="tabpanel" aria-labelledby="tab-build" data-panel="build">
+      <RotationBrief />
+
+      <div id="rotation-app" class="game__app">
+        <label class="game__rookie">
+          <input type="checkbox" data-rookie />
+          <span>Rookie — show positions on the players</span>
+        </label>
+
+        <div class="game__board" hidden data-board>
+          <p class="game__clock game__clock--live" data-clock-live>0:00</p>
+          <RotationCourt />
+          <button type="button" class="btn btn--accent game__submit" data-submit disabled>Submit line-up</button>
+          <div class="verdict" data-verdict role="status" aria-live="polite"></div>
+        </div>
+
+        <div class="game__result" hidden data-result>
+          <p class="game__clock" data-clock-result>0:00</p>
+          <button type="button" class="btn btn--primary" data-share>Copy result</button>
+          <a class="btn btn--ghost" data-whatsapp href="https://wa.me/" target="_blank" rel="noopener noreferrer">
+            Send to the group
+          </a>
+          <p class="game__countdown" data-countdown hidden></p>
+        </div>
+
+        <button type="button" class="btn btn--accent game__start" data-start>Start today's puzzle</button>
+        <p class="game__hint" data-start-hint>The clock starts when you press it.</p>
+      </div>
+    </div>
+
+    <div id="panel-judge" role="tabpanel" aria-labelledby="tab-judge" data-panel="judge" hidden>
+      <JudgePanel />
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import {
+    ALL_SLOTS, COURT_M, MIN_SEPARATION, SETTER_RADIUS, constraintsFor,
+    onCourtRole, validate, type Phase, type Placement, type Slot, type Vec2,
+  } from '../lib/rotation';
+  import { ROTATIONS } from '../data/rotations';
+  import {
+    puzzleIndexFor, loadProgress, forToday, recordSolved, shareText, msUntilNextLondonDay,
+  } from '../lib/rotationState';
+
+  const app = document.getElementById('rotation-app');
+  if (app) {
+    const puzzle = ROTATIONS[puzzleIndexFor(new Date(), ROTATIONS.length)];
+    const phase = puzzle.phase as Phase;
+    const court = app.querySelector<HTMLElement>('[data-court]')!;
+    const layer = app.querySelector<HTMLElement>('[data-markers]')!;
+
+    // Declared here, above the first renderMarkers() call below, so that
+    // call never references a const still in its temporal dead zone.
+    const ROOKIE_KEY = 'lh-rotation-rookie';
+    const rookieBox = app.querySelector<HTMLInputElement>('[data-rookie]')!;
+    try { rookieBox.checked = localStorage.getItem(ROOKIE_KEY) === 'true'; } catch {}
+    // Folded in once `progress` exists, in the state section below — a
+    // pre-upgrade/earlier-today rookie save must stay sticky too.
+    let rookieUsed = rookieBox.checked;
+
+    rookieBox.addEventListener('change', () => {
+      try { localStorage.setItem(ROOKIE_KEY, String(rookieBox.checked)); } catch {}
+      if (rookieBox.checked) {
+        rookieUsed = true; // sticky for the day
+        if (progress.game && !progress.game.solved) {
+          progress = { ...progress, game: { ...progress.game, rookie: true } };
+          save();
+        }
+      }
+      renderMarkers();
+    });
+
+    /** Shirt number standing in a slot right now, libero substitution applied. */
+    const numberAt = (slot: Slot): number =>
+      onCourtRole(slot, phase) === 'L' ? puzzle.libero : puzzle.start[(slot - 1 + phase) % 6];
+
+    const label = (slot: Slot) => `#${numberAt(slot)} (${onCourtRole(slot, phase)}, P${slot})`;
+
+    const placement: Partial<Placement> = {};
+    // Starting rack: spread along the back line so there is something to pick
+    // up. Without a seed, pointerdown/nearest() have nothing to find — an
+    // empty `placement` means no marker is ever rendered, and the drag
+    // handlers below can only move an *already-placed* slot. 1.5m spacing
+    // clears MIN_SEPARATION (0.7m) on its own, so `separate()` never has to
+    // untangle the rack itself.
+    for (const [i, slot] of ALL_SLOTS.entries()) {
+      placement[slot] = { x: 0.75 + i * 1.5, y: 8.5 };
+    }
+
+    /**
+     * The seed above places every slot, so "every slot has a placement" is
+     * true on load. "Placed" means the player actually moved it: a slot
+     * joins `touched` when a drag of that marker completes, or when it is
+     * nudged with an arrow key.
+     */
+    const touched = new Set<Slot>();
+    const isComplete = (): boolean => ALL_SLOTS.every(s => touched.has(s));
+
+    const toMetres = (ev: { clientX: number; clientY: number }): Vec2 => {
+      const r = court.getBoundingClientRect();
+      const clamp = (v: number) => Math.min(COURT_M, Math.max(0, v));
+      return {
+        x: clamp(((ev.clientX - r.left) / r.width) * COURT_M),
+        y: clamp(((ev.clientY - r.top) / r.height) * COURT_M),
+      };
+    };
+
+    /**
+     * Other markers never move and are already clear of each other, so
+     * searching for the nearest clear point keeps every pair at least
+     * MIN_SEPARATION apart.
+     */
+    const separate = (slot: Slot, at: Vec2): Vec2 => {
+      const clamp = (v: number) => Math.min(COURT_M, Math.max(0, v));
+      const clear = (x: number, y: number): boolean =>
+        ALL_SLOTS.every(other => {
+          if (other === slot) return true;
+          const o = placement[other];
+          return !o || Math.hypot(x - o.x, y - o.y) >= MIN_SEPARATION;
+        });
+
+      const cx = clamp(at.x);
+      const cy = clamp(at.y);
+      if (clear(cx, cy)) return { x: cx, y: cy };
+
+      for (let radius = 0.05; radius <= COURT_M; radius += 0.05) {
+        for (let i = 0; i < 36; i++) {
+          const angle = (i / 36) * Math.PI * 2;
+          const x = clamp(cx + Math.cos(angle) * radius);
+          const y = clamp(cy + Math.sin(angle) * radius);
+          if (clear(x, y)) return { x, y };
+        }
+      }
+      return { x: cx, y: cy };
+    };
+
+    function renderMarkers(faults: Slot[] = []) {
+      layer.replaceChildren();
+      for (const slot of ALL_SLOTS) {
+        const at = placement[slot];
+        if (!at) continue;
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'marker';
+        el.classList.toggle('marker--pass', constraintsFor(phase).some(
+          c => c.kind === 'depthBand' && c.slots.includes(slot)));
+        el.classList.toggle('marker--set', onCourtRole(slot, phase) === 'S');
+        el.classList.toggle('marker--bad', faults.includes(slot));
+        el.dataset.slot = String(slot);
+        el.style.left = `${(at.x / COURT_M) * 100}%`;
+        el.style.top = `${(at.y / COURT_M) * 100}%`;
+        el.innerHTML = `<span class="marker__num">${numberAt(slot)}</span>`
+          + (rookieBox.checked
+            ? `<span class="marker__tag">P${slot} ${onCourtRole(slot, phase)}</span>` : '');
+        el.setAttribute('aria-label', rookieBox.checked
+          ? `${label(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`
+          : `#${numberAt(slot)} at ${at.x.toFixed(1)} metres across, ${at.y.toFixed(1)} metres from the net`);
+        layer.append(el);
+      }
+    }
+
+    /** Picking resolves to the nearest centre, because hit areas overlap where discs do not. */
+    const nearest = (at: Vec2): Slot | null => {
+      let best: Slot | null = null;
+      let bestD = Infinity;
+      for (const slot of ALL_SLOTS) {
+        const o = placement[slot];
+        if (!o) continue;
+        const d = Math.hypot(at.x - o.x, at.y - o.y);
+        if (d < bestD) { bestD = d; best = slot; }
+      }
+      return bestD <= 1.5 ? best : null;
+    };
+
+    let dragging: Slot | null = null;
+    // A tap (pointerdown+pointerup with no pointermove between) must not
+    // count as "placed" — only a marker that actually moved should.
+    let moved = false;
+
+    court.addEventListener('pointerdown', ev => {
+      dragging = nearest(toMetres(ev));
+      moved = false;
+      if (dragging !== null) court.setPointerCapture(ev.pointerId);
+    });
+
+    court.addEventListener('pointermove', ev => {
+      if (dragging === null) return;
+      moved = true;
+      placement[dragging] = separate(dragging, toMetres(ev));
+      renderMarkers();
+    });
+
+    court.addEventListener('pointerup', () => {
+      if (dragging !== null && moved) touched.add(dragging);
+      dragging = null;
+      app.dispatchEvent(new CustomEvent('rotation:placed'));
+    });
+
+    court.addEventListener('pointercancel', () => { dragging = null; });
+
+    /** Keyboard: focus a marker, nudge in 0.25m steps. */
+    const STEP = 0.25;
+    layer.addEventListener('keydown', ev => {
+      const el = ev.target as HTMLElement;
+      const slot = Number(el.dataset?.slot) as Slot;
+      const at = placement[slot];
+      if (!at) return;
+      const d: Record<string, Vec2> = {
+        ArrowLeft: { x: -STEP, y: 0 }, ArrowRight: { x: STEP, y: 0 },
+        ArrowUp: { x: 0, y: -STEP }, ArrowDown: { x: 0, y: STEP },
+      };
+      const move = d[ev.key];
+      if (!move) return;
+      ev.preventDefault();
+      placement[slot] = separate(slot, {
+        x: Math.min(COURT_M, Math.max(0, at.x + move.x)),
+        y: Math.min(COURT_M, Math.max(0, at.y + move.y)),
+      });
+      touched.add(slot);
+      renderMarkers();
+      layer.querySelector<HTMLElement>(`[data-slot="${slot}"]`)?.focus();
+      app.dispatchEvent(new CustomEvent('rotation:placed'));
+    });
+
+    renderMarkers();
+
+    const submit = app.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const verdict = app.querySelector<HTMLElement>('[data-verdict]')!;
+    const arrows = app.querySelector<SVGElement>('[data-arrows]')!;
+    let attempts = 0;
+    let solved = false;
+
+    function clearArrows() {
+      arrows.querySelectorAll('line').forEach(l => l.remove());
+    }
+
+    app.addEventListener('rotation:placed', () => {
+      clearArrows();
+      if (!solved) submit.disabled = !isComplete();
+    });
+
+    function drawArrows(pairs: Slot[][]) {
+      clearArrows();
+      for (const [a, b] of pairs) {
+        const from = placement[a], to = placement[b];
+        if (!from || !to) continue;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', String(from.x));
+        line.setAttribute('y1', String(from.y));
+        line.setAttribute('x2', String(to.x));
+        line.setAttribute('y2', String(to.y));
+        line.setAttribute('stroke', 'var(--lh-red)');
+        line.setAttribute('stroke-width', '0.09');
+        line.setAttribute('stroke-dasharray', '0.28 0.2');
+        line.setAttribute('marker-end', 'url(#rot-arrow)');
+        arrows.append(line);
+      }
+    }
+
+    submit.addEventListener('click', () => {
+      if (solved || !isComplete()) return;
+      attempts += 1;
+      const violations = validate(placement as Placement, constraintsFor(phase), label);
+      const faulted = [...new Set(violations.flatMap(v => v.slots))];
+      renderMarkers(faulted);
+      drawArrows(violations.filter(v => v.slots.length === 2).map(v => v.slots));
+
+      if (!violations.length) {
+        verdict.className = 'verdict verdict--ok';
+        verdict.innerHTML = `<b>Legal line-up</b><p>Solved in ${attempts} `
+          + `attempt${attempts === 1 ? '' : 's'}.</p>`;
+        solved = true;
+        submit.disabled = true;
+        app.dispatchEvent(new CustomEvent('rotation:attempted', { detail: { attempts } }));
+        app.dispatchEvent(new CustomEvent('rotation:solved', { detail: { attempts } }));
+        return;
+      }
+
+      verdict.className = 'verdict verdict--bad';
+      verdict.innerHTML = `<b>${violations.length} fault${violations.length === 1 ? '' : 's'} `
+        + `· attempt ${attempts}</b>`
+        + violations.map(v => `<p>${v.message}</p>`).join('');
+      app.dispatchEvent(new CustomEvent('rotation:attempted', { detail: { attempts } }));
+    });
+
+    const KEY = 'lh-rotation';
+    const board = app.querySelector<HTMLElement>('[data-board]')!;
+    const startBtn = app.querySelector<HTMLButtonElement>('[data-start]')!;
+    const startHint = app.querySelector<HTMLElement>('[data-start-hint]')!;
+    const result = app.querySelector<HTMLElement>('[data-result]')!;
+    const clockLiveEl = app.querySelector<HTMLElement>('[data-clock-live]')!;
+    const clockResultEl = app.querySelector<HTMLElement>('[data-clock-result]')!;
+    const countdownEl = app.querySelector<HTMLElement>('[data-countdown]')!;
+    const shareBtn = app.querySelector<HTMLButtonElement>('[data-share]')!;
+    const whatsappLink = app.querySelector<HTMLAnchorElement>('[data-whatsapp]')!;
+
+    let progress = forToday(loadProgress(localStorage.getItem(KEY)), puzzle.id);
+    if (progress.game?.rookie) rookieUsed = true;
+    const save = () => localStorage.setItem(KEY, JSON.stringify(progress));
+    const elapsed = () => Date.now() - (progress.game?.startedAt ?? Date.now());
+    const formatClock = (ms: number) => {
+      const t = Math.max(0, Math.round(ms / 1000));
+      return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+    };
+    const formatCountdown = (ms: number) => {
+      const t = Math.max(0, Math.round(ms / 1000));
+      const h = Math.floor(t / 3600);
+      const m = Math.floor((t % 3600) / 60);
+      const s = t % 60;
+      return `Next puzzle in ${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+
+    /** Every slot the player actually moved, keyed by slot number for storage. */
+    function currentPlacement(): Record<string, Vec2> {
+      const out: Record<string, Vec2> = {};
+      for (const slot of ALL_SLOTS) {
+        const at = placement[slot];
+        if (at) out[String(slot)] = at;
+      }
+      return out;
+    }
+
+    // Fill the brief only once the clock is running: rotating the line-up is the thinking.
+    // RotationBrief is a sibling of #rotation-app, not a descendant, so these
+    // look up from `document`, not `app`.
+    function reveal() {
+      for (const slot of ALL_SLOTS) {
+        document.querySelector(`[data-lineup-slot="${slot}"]`)!.textContent = `#${puzzle.start[slot - 1]}`;
+      }
+      document.querySelector('[data-brief-libero]')!.textContent = `#${puzzle.libero}`;
+      document.querySelector('[data-brief-at-one]')!.textContent = `#${puzzle.start[phase]}`;
+      // Per-rotation setter radius, drawn to scale.
+      const target = app.querySelector<HTMLElement>('.court__target')!;
+      target.style.width = `${(SETTER_RADIUS[phase] * 2 / COURT_M) * 100}%`;
+      board.hidden = false;
+      startBtn.hidden = true;
+      startHint.hidden = true;
+    }
+
+    let clockTimer = 0;
+    function stopClock() {
+      window.clearTimeout(clockTimer);
+    }
+    function tick() {
+      if (progress.game?.solved) return;
+      clockLiveEl.textContent = formatClock(elapsed());
+      clockTimer = window.setTimeout(tick, 1000);
+    }
+
+    /** Shared by the just-solved path and the already-solved-on-load path. */
+    function showResult(ms: number) {
+      const formatted = formatClock(ms);
+      // Freeze the live clock too, so a stopped-but-stale second (tick() only
+      // updates once a second) never lingers next to the frozen result time.
+      clockLiveEl.textContent = formatted;
+      clockResultEl.textContent = formatted;
+      result.hidden = false;
+
+      const text = shareText({ id: puzzle.id, attempts, elapsedMs: ms, streak: progress.streak, rookie: rookieUsed });
+      whatsappLink.href = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      shareBtn.textContent = 'Copy result';
+      shareBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(text);
+          shareBtn.textContent = 'Copied';
+        } catch {
+          // Clipboard access is refused in insecure contexts or without permission.
+          shareBtn.textContent = 'Copy failed — use Send to the group';
+        }
+      };
+    }
+
+    function startCountdown() {
+      countdownEl.hidden = false;
+      const update = () => {
+        countdownEl.textContent = formatCountdown(msUntilNextLondonDay(new Date()));
+      };
+      update();
+      const timer = window.setInterval(update, 1000);
+      window.addEventListener('pagehide', () => window.clearInterval(timer), { once: true });
+    }
+
+    startBtn.addEventListener('click', () => {
+      progress = {
+        ...progress,
+        game: { id: puzzle.id, startedAt: Date.now(), attempts: 0, solved: false, elapsedMs: null, placement: null, rookie: rookieUsed },
+      };
+      save();
+      reveal();
+      tick();
+    });
+
+    app.addEventListener('rotation:placed', () => {
+      if (!progress.game || progress.game.solved) return;
+      progress = { ...progress, game: { ...progress.game, placement: currentPlacement() } };
+      save();
+    });
+
+    app.addEventListener('rotation:attempted', ev => {
+      if (!progress.game) return;
+      const n = (ev as CustomEvent<{ attempts: number }>).detail.attempts;
+      progress = { ...progress, game: { ...progress.game, attempts: n } };
+      save();
+    });
+
+    app.addEventListener('rotation:solved', ev => {
+      const ms = elapsed();
+      stopClock();
+      attempts = (ev as CustomEvent<{ attempts: number }>).detail.attempts;
+      progress = recordSolved(progress, puzzle.id, attempts, ms, rookieUsed);
+      save();
+      showResult(ms);
+    });
+
+    // Restore state on load: an already-solved game shows the result without
+    // ever revealing the board; an in-progress game resumes the clock and
+    // the player's placement rather than sending them back to the end line.
+    if (progress.game?.solved) {
+      startBtn.hidden = true;
+      startHint.hidden = true;
+      attempts = progress.game.attempts;
+      solved = true;
+      showResult(progress.game.elapsedMs ?? 0);
+      startCountdown();
+    } else if (progress.game) {
+      reveal();
+      const saved = progress.game.placement;
+      if (saved) {
+        for (const slot of ALL_SLOTS) {
+          const at = saved[String(slot)];
+          if (at) {
+            placement[slot] = at;
+            touched.add(slot);
+          }
+        }
+        renderMarkers();
+        attempts = progress.game.attempts;
+        app.dispatchEvent(new CustomEvent('rotation:placed'));
+      }
+      tick();
+    }
+  }
+</script>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+  const panels = new Map(
+    Array.from(document.querySelectorAll<HTMLElement>('[data-panel]'))
+      .map(el => [el.dataset.panel!, el]),
+  );
+  const KEY = 'lh-game-tab';
+  let judgeActivated = false;
+
+  function show(name: string) {
+    for (const tab of tabs) {
+      const on = tab.dataset.tab === name;
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
+    }
+    for (const [key, panel] of panels) panel.hidden = key !== name;
+    // The judge panel loads its bank on demand; tell it the first time it is shown.
+    if (name === 'judge' && !judgeActivated) {
+      judgeActivated = true;
+      document.dispatchEvent(new CustomEvent('judge:activate'));
+    }
+    try { localStorage.setItem(KEY, name); } catch {}
+  }
+
+  for (const [i, tab] of tabs.entries()) {
+    tab.addEventListener('click', () => show(tab.dataset.tab!));
+    tab.addEventListener('keydown', ev => {
+      if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(ev.key)) return;
+      ev.preventDefault();
+      const next = ev.key === 'Home' ? tabs[0]
+        : ev.key === 'End' ? tabs[tabs.length - 1]
+        : tabs[(i + (ev.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      next.focus();
+      show(next.dataset.tab!);
+    });
+  }
+
+  let stored: string | null = null;
+  try { stored = localStorage.getItem(KEY); } catch {}
+  show(stored && panels.has(stored) ? stored : 'build');
+</script>
+
+<style>
+  .game { display: grid; gap: 28px; padding-block: 32px 64px; padding-inline: var(--page-px); }
+  /* A class setting `display` (e.g. .btn, .game__result) outranks the UA
+     [hidden] rule on specificity, so hidden elements can stay visible. */
+  .game [hidden] { display: none; }
+
+  .tabs { display: flex; gap: 4px; width: 100%; max-width: 460px; margin-inline: auto; }
+  .tabs__tab {
+    flex: 1;
+    padding: 9px 12px;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: var(--text-note);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .tabs__tab[aria-selected='true'] {
+    color: var(--color-text);
+    border-bottom-color: var(--color-accent-text);
+  }
+  .tabs__tab:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+  [data-panel] { display: grid; gap: 28px; }
+
+  .game__app { display: grid; gap: 12px; justify-items: center; }
+  .game__rookie {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--color-text-muted); font-size: var(--text-body-sm);
+    width: 100%; max-width: 460px; margin-inline: auto;
+  }
+  .game__board { width: 100%; }
+  .game__hint { color: var(--color-text-muted); font-size: var(--text-body-sm); margin: 0; }
+
+  .game__result { display: grid; gap: 10px; justify-items: center; width: 100%; max-width: 460px; text-align: center; }
+  .game__clock {
+    margin: 0;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-black);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-accent-text);
+  }
+  .game__countdown { margin: 0; color: var(--color-text-muted); font-size: var(--text-body-sm); }
+  .game__clock--live { margin: 0 0 4px; text-align: center; }
+
+  /*
+   * Markers are created client-side via document.createElement, so they
+   * never carry Astro's scoped-CSS attribute. :global() (processed only in
+   * scoped <style> blocks like this one) anchors these rules on .game__board,
+   * an element Astro did render, instead of depending on that internal
+   * scoping mechanism.
+   */
+  .game__board :global(.marker) {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    /* 0.7m of a 9m court — never wider than the separation rule. */
+    width: 7.8%;
+    aspect-ratio: 1;
+    min-width: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--lh-blue);
+    color: var(--lh-navy);
+    font-weight: var(--weight-black);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(11px, 2.8vw, 15px);
+    line-height: 1;
+    cursor: grab;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+  }
+  /* Tap target, not the disc: hit areas overlap where discs must not. */
+  .game__board :global(.marker::before) { content: ''; position: absolute; inset: -50%; min-width: 44px; min-height: 44px; }
+  .game__board :global(.marker:focus-visible) { outline: 2px solid var(--lh-white); outline-offset: 3px; }
+  .game__board :global(.marker--pass) { box-shadow: 0 0 0 2.5px var(--lh-blue-100), 0 2px 0 rgba(0, 0, 0, 0.35); }
+  .game__board :global(.marker--set) { background: var(--lh-white); }
+  .game__board :global(.marker--bad) { background: var(--lh-red); color: var(--lh-white); }
+  .game__board :global(.marker__tag) {
+    position: absolute; top: calc(100% + 2px); font-size: 9px;
+    letter-spacing: 0.06em; font-weight: var(--weight-black); white-space: nowrap;
+    color: var(--lh-blue-100); opacity: 0.8; text-transform: uppercase;
+  }
+
+  .game__submit { display: flex; justify-content: center; width: 100%; max-width: 460px; margin-inline: auto; }
+
+  .verdict { display: grid; gap: 6px; border-radius: 8px; padding: 11px 13px; font-size: var(--text-body-sm); width: 100%; max-width: 460px; margin-inline: auto; }
+  .verdict:empty { display: none; }
+  .verdict :global(b) {
+    font-size: 12px; letter-spacing: var(--tracking-wide);
+    text-transform: uppercase; display: block;
+  }
+  .verdict :global(p) { margin: 0; }
+  .verdict--bad {
+    background: color-mix(in srgb, var(--lh-red) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--lh-red) 45%, transparent);
+  }
+  /* Flat --lh-red fails AA on this tinted card in both themes (~2.8:1 dark,
+     ~4.3:1 light) — split per theme like .verdict--ok does for green. */
+  .verdict--bad :global(b) { color: light-dark(#b23b24, #e2816f); }
+  .verdict--ok {
+    background: color-mix(in srgb, var(--lh-green) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--lh-green) 50%, transparent);
+  }
+  .verdict--ok :global(b) { color: light-dark(#3c7a22, var(--lh-green)); }
+</style>

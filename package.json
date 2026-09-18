@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "gen:rotations": "tsx scripts/generate-rotations.ts",
+    "gen:judge": "tsx scripts/generate-judge.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "tsx": "^4.23.13",
     "typescript": "^6.0.3",
     "vitest": "^4.1.7"
   }
