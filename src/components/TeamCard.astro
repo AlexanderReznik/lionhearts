@@ -43,8 +43,11 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
     <h2 class="team-card__name">{team.name}</h2>
     <p class="team-card__division">{team.division}</p>
     {team.badge && <span class="chip-accent">{team.badge}</span>}
-    <a class="team-card__fixtures" href={`/fixtures#${slug}`}>Fixtures &amp; Results<span class="sr-only"> for {team.name}</span> →</a>
   </div>
+  <a class="team-card__fixtures" href={`/fixtures#${slug}`}>
+    <span>Fixtures &amp; Results<span class="sr-only"> for {team.name}</span></span>
+    <span aria-hidden="true">→</span>
+  </a>
 </article>
 
 <style>
@@ -94,14 +97,11 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
     text-transform: uppercase;
   }
 
-  /* Column so the fixtures link pins to the bottom: the featured card's chip
-     would otherwise drop its link below its row-mates'. */
+  /* Grows so the fixtures strip sits on the card's bottom edge even when the
+     featured card's chip makes its info taller than its row-mates'. */
   .team-card__info {
     padding: 18px 20px;
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
   }
 
   .team-card__gender {
@@ -130,22 +130,33 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
     margin-bottom: 10px;
   }
 
+  /* Mirrors the /fixtures panel footer (bg-alt band, border-top) so the two
+     pages read as one system. */
   .team-card__fixtures {
-    margin-top: auto;
-    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 20px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-alt);
     color: var(--color-accent-text);
     font-size: var(--text-eyebrow);
     font-weight: var(--weight-extrabold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     text-decoration: none;
+    transition: background 0.15s;
   }
 
-  .team-card__fixtures:hover { text-decoration: underline; }
+  .team-card__fixtures:hover {
+    background: color-mix(in srgb, var(--lh-blue) 12%, transparent);
+  }
 
+  /* Inset: the card's overflow: hidden would clip an outer outline. */
   .team-card__fixtures:focus-visible {
     outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline-offset: -2px;
   }
 </style>
 
