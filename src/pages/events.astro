@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import FilterPills from '../components/FilterPills.astro';
 import TryoutsSection from '../components/TryoutsSection.astro';
 import SessionCard from '../components/SessionCard.astro';
 import VenueCard from '../components/VenueCard.astro';
@@ -11,8 +10,6 @@ import openSession2 from '../assets/sessions/open_session_2.jpg';
 import openSession3 from '../assets/sessions/open_session_3.jpg';
 import juniorBall from '../assets/sessions/junior_ball.jpg';
 import { getSessions, getJuniorSessions, parseSessionSchedule, nextOccurrences, tryoutOccurrence, parsePriceGBP, getUpcomingTryouts, type Session } from '../lib/sheets';
-import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
-import { fetchAllFixtures } from '../lib/volleyzone';
 import { SITE_URL } from '../data/club';
 
 // ── Google Sheets integration ──────────────────────────────────────────────
@@ -38,43 +35,6 @@ const { sessions: juniorSessions, usingFallback: juniorsFallback } =
 // Pre-season tryouts — dedicated tab (GOOGLE_TRYOUTS_GID). Empty array = nothing
 // renders (no fallback), so the section self-hides outside tryout season.
 const tryouts = await getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_TRYOUTS_GID);
-
-const fixturesMap = await fetchAllFixtures();
-const buildTimestamp = new Date().toLocaleDateString('en-GB', {
-  day: 'numeric', month: 'short', year: 'numeric',
-});
-
-// Trim match objects to only the fields the client uses before embedding as
-// JSON data islands. Full Volleyzone responses include set scores, referee
-// names, club logos, etc. — trimming cuts the page from ~1 MB to ~20 KB.
-function slimFixtures(
-  tf: { teamName: string; matches: import('../lib/volleyzone').Match[]; error: boolean },
-  volleyzoneTeamName?: string,
-) {
-  return {
-    teamName: tf.teamName,
-    volleyzoneTeamName,
-    error: tf.error,
-    matches: tf.matches
-      .filter(m =>
-        (m.fixtureStatus === 'result' || m.fixtureStatus === 'fixture') &&
-        (m.homeTeam.includes('Lionhearts') || m.awayTeam.includes('Lionhearts'))
-      )
-      .map(({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue, competitionLabel }) =>
-        ({ fixtureDate, fixtureStatus, homeTeam, awayTeam, homeScore, awayScore, homeResult, awayResult, venue, competitionLabel })
-      ),
-  };
-}
-
-// ── Volleyzone URL builder ─────────────────────────────────────────────────
-// The ?team= slug is inert — Volleyzone filters by team client-side, not by
-// URL parameter — so this resolves to the team's division page. See the note
-// in src/data/teams.ts.
-function volleyzoneUrl(slug?: string, segment?: 'lva' | 'nvl'): string {
-  const base = segment === 'nvl' ? VOLLEYZONE_BASE_NVL : VOLLEYZONE_BASE_LVA;
-  if (!slug) return base;
-  return `${base}?team=${encodeURIComponent(slug)}`;
-}
 
 // ── JSON-LD: Recurring events with Schedule type ───────────────────────────
 const VENUE = {
@@ -190,23 +150,18 @@ const eventSchemas = [
   ),
   ...tryoutSchemas,
 ];
-
-const teamSections = [
-  { label: "Women's Teams", section: 'womens', spaced: false, teams: teams.filter(t => t.gender === "Women's") },
-  { label: "Men's Teams",   section: 'mens',   spaced: true,  teams: teams.filter(t => t.gender === "Men's") },
-];
 ---
 
 <BaseLayout
-  title="Volleyball Sessions & Fixtures — Shoreditch E2"
-  description="Open volleyball sessions for adults and juniors at Mulberry Academy, Shoreditch E2. Plus league fixtures for all 9 Lionhearts teams — NVL Super League and LVA."
+  title="Volleyball Sessions — Shoreditch E2"
+  description="Open volleyball sessions for adults and juniors at Mulberry Academy, Shoreditch E2. No booking, no commitment — every level welcome, every week."
   jsonLd={eventSchemas}
 >
   <div class="page-hero">
     <Eyebrow class="page-hero__eyebrow" text="Mulberry Academy · Shoreditch E2" />
-    <h1 class="page-hero__title">Volleyball<br />Sessions & <em>Fixtures</em></h1>
+    <h1 class="page-hero__title">Volleyball<br /><em>Sessions</em></h1>
     <p class="page-hero__sub">
-      Open sessions for adults and juniors every week — no booking, no commitment. Plus league fixtures and results for all 9 Lionhearts teams.
+      Open sessions for adults and juniors every week — no booking, no commitment. Just turn up and play.
     </p>
   </div>
 
@@ -244,264 +199,9 @@ const teamSections = [
       </div>
     </section>
 
-    <hr class="section-divider" />
-
-    <header class="section-head section-head--fixtures">
-      <h2 class="section-head__title">Fixtures &amp; <em>Results</em></h2>
-      <p class="section-head__sub">Follow all 9 Lionhearts teams through the season — and come down to support them.</p>
-    </header>
-
-    <FilterPills statusId="filter-status" label="Filter by team type" />
-
-    {teamSections.map(({ label, section, spaced, teams: sectionTeams }) => (
-      <>
-        <h3 class:list={['eyebrow section-eyebrow', { 'section-eyebrow--spaced': spaced }]} data-section={section}>{label}</h3>
-        {sectionTeams.map(team => (
-          <div
-            class="team-fixture-section"
-            data-gender={section}
-            data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}
-            data-updated={buildTimestamp}
-            data-volleyzone-url={volleyzoneUrl(team.volleyzoneSlug, team.volleyzoneSegment)}
-          >
-            <div class="team-fixture-section__header">
-              <div>
-                <span class="team-fixture-section__name">{team.name}</span>
-                {team.badge && <span class="chip-accent team-fixture-section__badge">{team.badge}</span>}
-              </div>
-              <div class="team-fixture-section__right">
-                <span class="team-fixture-section__division">{team.division}</span>
-              </div>
-            </div>
-            <script
-              type="application/json"
-              data-fixtures
-              set:html={JSON.stringify(
-                slimFixtures(
-                  fixturesMap[team.name] ?? { teamName: team.name, matches: [], error: true },
-                  team.volleyzoneTeamName,
-                )
-              ).replace(/<\//g, '<\\/')}
-            />
-            <div class="team-fixtures"></div>
-          </div>
-        ))}
-      </>
-    ))}
-
   </div>
 
-  <script>
-    import { parseHomeAway, formatFixtureDate, formatFixtureTime, formatMatchResult } from '../lib/volleyzone';
-    import type { Match, TeamFixtures } from '../lib/volleyzone';
-    import locationRaw from '../assets/icons/location.svg?raw';
-
-    // The timeline is rendered client-side as HTML strings, so the <Icon>
-    // component can't be used. Inline the location glyph as a raw string
-    // (sized/coloured by the .tl-pin rule in the is:global block).
-    const PIN = locationRaw
-      .replace(/<\?xml[\s\S]*?\?>/, '')
-      .replace(/<!--[\s\S]*?-->/g, '')
-      .replace('<svg ', '<svg class="tl-pin" fill="currentColor" aria-hidden="true" ')
-      .trim();
-
-    function esc(s: string): string {
-      return s
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    }
-
-    function unavailableHtml(vzUrl: string): string {
-      return `<div class="tl-error">Fixtures unavailable — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">View on Volleyzone →</a></div>`;
-    }
-
-    function renderFixtures(section: HTMLElement): void {
-      const island = section.querySelector<HTMLScriptElement>('script[data-fixtures]');
-      const target = section.querySelector<HTMLElement>('.team-fixtures');
-      if (!island || !target) return;
-
-      const data = JSON.parse(island.textContent ?? '{}') as TeamFixtures & { volleyzoneTeamName?: string };
-      const vzName = data.volleyzoneTeamName;
-      const vzUrl = section.dataset.volleyzoneUrl ?? '#';
-      const updated = section.dataset.updated ?? '';
-
-      if (data.error && data.matches.length === 0) {
-        target.innerHTML = unavailableHtml(vzUrl);
-        return;
-      }
-
-      const today = new Date();
-      today.setUTCHours(0, 0, 0, 0);
-
-      // data.matches is already trimmed to Lionhearts result/fixture matches at
-      // build time (see slimFixtures), so here we only split results vs upcoming.
-      const matches = data.matches;
-
-      // Full lists: everything past CAP is rendered but hidden behind the
-      // per-list "show more" toggle, so expanding costs no re-render.
-      const CAP = 3;
-
-      const results = matches
-        .filter((m: Match) => m.fixtureStatus === 'result')
-        .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate);
-
-      const upcoming = matches
-        .filter((m: Match) => m.fixtureStatus === 'fixture' && m.fixtureDate * 1000 >= today.getTime())
-        .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate);
-
-      if (matches.length > 0 && results.length === 0 && upcoming.length === 0) {
-        target.innerHTML = `<div class="tl-error">Season complete — <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full Schedule on Volleyzone →</a></div>`;
-        return;
-      }
-
-      let html = '';
-
-      const slug = (data.teamName ?? 'team').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
-      const compChip = (m: Match) =>
-        m.competitionLabel ? `<span class="tl-comp">${esc(m.competitionLabel)}</span>` : '';
-
-      const resultRow = (m: Match) => {
-        const isHome = parseHomeAway(m, vzName) === 'Home';
-        const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
-        const resultLabel = isHome ? m.homeResult : m.awayResult;
-        const w = resultLabel === 'win';
-        const result = esc(formatMatchResult(m, isHome ? 'Home' : 'Away'));
-        const date = formatFixtureDate(m.fixtureDate);
-        return `
-            <div class="tl-row">
-              <span class="tl-date">${date}</span>
-              <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}${compChip(m)}</span>
-              <span class="${w ? 'badge-w' : 'badge-l'}">${result}</span>
-            </div>`;
-      };
-
-      const upcomingRow = (m: Match, i: number) => {
-        const isHome = parseHomeAway(m, vzName) === 'Home';
-        const opponent = esc(isHome ? m.awayTeam : m.homeTeam);
-        const venue = esc(m.venue ?? '');
-        const date = formatFixtureDate(m.fixtureDate);
-        const time = formatFixtureTime(m.fixtureDate);
-        const venueStr = venue ? `${PIN} ${venue}${time ? ` · ${time}` : ''}` : (time ?? '');
-        const ha = isHome ? 'Home' : 'Away';
-        const isNext = i === 0;
-        return `
-            <div class="tl-row-up${isNext ? ' tl-row-up--next' : ''}">
-              <span class="tl-date">${date}</span>
-              <div class="tl-up-meta">
-                <span class="tl-up-opp"><span class="tl-vs">vs </span>${opponent}${compChip(m)}</span>
-                ${venueStr ? `<span class="tl-up-venue">${venueStr}</span>` : ''}
-              </div>
-              <div class="tl-right">
-                ${isNext ? '<span class="next-pill">Next</span>' : ''}
-                <span class="home-away">${ha}</span>
-              </div>
-            </div>`;
-      };
-
-      // Rows past CAP go in an [hidden] wrapper the button targets by id, so
-      // aria-controls names one element and toggling is a single attribute flip.
-      const listHtml = (
-        items: Match[],
-        rowFn: (m: Match, i: number) => string,
-        key: string,
-        noun: string,
-      ) => {
-        const head = items.slice(0, CAP).map((m, i) => rowFn(m, i)).join('');
-        if (items.length <= CAP) return head;
-        const id = `tl-overflow-${slug}-${key}`;
-        const rest = items.slice(CAP).map((m, i) => rowFn(m, i + CAP)).join('');
-        const more = `Show all ${items.length} ${noun} ▾`;
-        return `${head}
-            <div class="tl-overflow" id="${id}" hidden>${rest}</div>
-            <button type="button" class="tl-more" aria-expanded="false" aria-controls="${id}"
-              data-more="${esc(more)}" data-less="Show fewer ▴">${more}</button>`;
-      };
-
-      if (results.length > 0) {
-        html += `<div class="tl-section-label">Recent Results</div>`;
-        html += listHtml(results, resultRow, 'results', 'results');
-      }
-
-      if (upcoming.length > 0) {
-        html += `<div class="tl-section-label">Upcoming Fixtures</div>`;
-        html += listHtml(upcoming, upcomingRow, 'fixtures', 'fixtures');
-      }
-
-      html += `
-        <div class="tl-footer">
-          <span class="tl-updated">${updated ? `Updated ${esc(updated)}` : ''}</span>
-          <a href="${esc(vzUrl)}" target="_blank" rel="noopener noreferrer" class="team-fixture-section__volleyzone">Full Schedule on Volleyzone →</a>
-        </div>`;
-
-      target.innerHTML = html;
-
-      target.querySelectorAll<HTMLButtonElement>('.tl-more').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const panel = document.getElementById(btn.getAttribute('aria-controls') ?? '');
-          if (!panel) return;
-          const open = btn.getAttribute('aria-expanded') === 'true';
-          panel.hidden = open;
-          btn.setAttribute('aria-expanded', String(!open));
-          btn.textContent = open ? btn.dataset.more ?? '' : btn.dataset.less ?? '';
-        });
-      });
-    }
-
-    // Isolated per section: an unexpected shape in one team's payload would
-    // otherwise abort the loop and leave every panel below it silently blank.
-    document.querySelectorAll<HTMLElement>('.team-fixture-section').forEach(section => {
-      try {
-        renderFixtures(section);
-      } catch (err) {
-        const name = section.querySelector('.team-fixture-section__name')?.textContent ?? '(unknown team)';
-        console.error(`[fixtures] render failed for ${name}:`, err);
-        const target = section.querySelector<HTMLElement>('.team-fixtures');
-        if (target) target.innerHTML = unavailableHtml(section.dataset.volleyzoneUrl ?? '#');
-      }
-    });
-  </script>
 </BaseLayout>
-
-<script>
-  const pills    = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const rows     = document.querySelectorAll<HTMLElement>('.team-fixture-section');
-  const headers  = document.querySelectorAll<HTMLElement>('[data-section]');
-  const status   = document.getElementById('filter-status')!
-
-  pills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      const filter = pill.dataset.filter!;
-
-      pills.forEach(p => {
-        p.classList.remove('filter-pill--active');
-        p.setAttribute('aria-pressed', 'false');
-      });
-      pill.classList.add('filter-pill--active');
-      pill.setAttribute('aria-pressed', 'true');
-
-      rows.forEach(row => {
-        const show = filter === 'all'
-          || filter === row.dataset.gender
-          || filter === row.dataset.league;
-        row.hidden = !show;
-      });
-
-      headers.forEach(header => {
-        const gender = header.dataset.section!;
-        const anyVisible = Array.from(rows).some(
-          r => r.dataset.gender === gender && !r.hidden
-        );
-        header.hidden = !anyVisible;
-      });
-
-      const visibleCount = Array.from(rows).filter(r => !r.hidden).length;
-      status.textContent = `Showing ${visibleCount} team${visibleCount !== 1 ? 's' : ''}`;
-    });
-  });
-</script>
 
 <style>
   /* ── Sessions box ── */
@@ -511,8 +211,6 @@ const teamSections = [
     margin-bottom: 36px;
   }
 
-  /* Section headers — promote the page's three parts (Open Sessions, Junior
-     Sessions, Fixtures & Results) above the small team-group eyebrows. */
   .section-head { margin-bottom: 20px; }
   .section-head__title {
     font-size: var(--text-xl);
@@ -530,8 +228,6 @@ const teamSections = [
     line-height: var(--leading-relaxed);
   }
 
-  /* Full-width rule that splits the attend-able sessions from the competitive
-     fixtures half of the page. */
   .section-divider {
     border: 0;
     border-top: 1px solid var(--color-border);
@@ -587,261 +283,4 @@ const teamSections = [
     .junior-cards { grid-template-columns: 1fr; }
   }
 
-  /* ── Team fixture sections ──*/
-  .team-fixture-section {
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-
-  .team-fixture-section__header {
-    background: var(--color-bg-alt);
-    /* Horizontal padding matches the rows/labels/footer (18px) so the team name
-       lines up with the dates and section labels below it. */
-    padding: 16px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--color-border);
-    gap: 16px;
-  }
-
-  .team-fixture-section__name {
-    font-size: var(--text-body);
-    font-weight: var(--weight-extrabold);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-display);
-  }
-
-  /* Chip styling comes from the shared .chip-accent utility. */
-  .team-fixture-section__badge {
-    margin-left: 10px;
-  }
-
-  .team-fixture-section__right {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .team-fixture-section__division {
-    font-size: var(--text-eyebrow);
-    color: var(--color-text-muted);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-  }
-
-  /* ── Section eyebrow headers ── */
-  .section-eyebrow { margin-bottom: 1rem; }
-
-  @media (max-width: 640px) {
-    .team-fixture-section__header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-      padding: 12px 14px;   /* match the 14px mobile padding of rows/labels/footer */
-    }
-
-    .team-fixture-section__right {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-    }
-  }
-
-</style>
-
-<style is:global>
-  /* ── Fixture timeline (is:global — injected via innerHTML, scoped attr won't match) ── */
-  /* Light theme: dark navy text on white/surface background */
-  .team-fixtures { font-size: var(--text-body); }
-
-  .tl-section-label {
-    padding: 7px 18px 5px;
-    font-size: var(--text-micro);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-text-faint);
-    background: var(--color-bg-alt);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .tl-row {
-    display: grid;
-    grid-template-columns: 62px 1fr auto;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 18px;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .tl-row-up {
-    display: grid;
-    grid-template-columns: 62px 1fr auto;
-    align-items: start;
-    gap: 12px;
-    padding: 12px 18px;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .tl-row-up--next {
-    background: linear-gradient(90deg, rgba(84,164,247,0.10) 0%, rgba(84,164,247,0.04) 100%);
-    border-left: 3px solid var(--lh-blue);
-    border-bottom-color: var(--color-border-blue);
-  }
-
-  .tl-date { color: var(--color-text-faint); font-size: var(--text-body-sm); white-space: nowrap; }
-  .tl-row-up--next .tl-date { color: var(--color-accent-text); font-weight: var(--weight-bold); }
-
-  .tl-vs { color: var(--color-text-faint); font-size: var(--text-note); margin-right: 4px; }
-
-  .tl-up-meta { display: flex; flex-direction: column; gap: 3px; }
-  .tl-up-opp { color: var(--color-text); }
-  /* light-dark(), not bare navy — navy on the dark theme's tinted next-row is
-     1.18:1, i.e. invisible. */
-  .tl-row-up--next .tl-up-opp { color: light-dark(var(--lh-navy), var(--lh-white)); font-weight: var(--weight-bold); }
-  .tl-up-venue { color: var(--color-text-faint); font-size: var(--text-note); }
-  /* Location glyph injected into the venue string (see PIN). Plain selector —
-     set:html markup carries no scoped attribute. Inherits currentColor. */
-  .tl-pin { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; }
-  .tl-row-up--next .tl-up-venue { color: var(--color-text-muted); }
-
-  .tl-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-
-  /* accent-text, not raw navy — navy on this tint disappears against the dark
-     theme's navy rows. -strong because plain --color-accent-text on this pill
-     tint over the next-row tint is only 3.67:1 at 9px. */
-  .next-pill {
-    font-size: var(--text-micro);
-    font-weight: var(--weight-extrabold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-accent-text-strong);
-    background: rgba(84,164,247,0.18);
-    border: 1px solid rgba(84,164,247,0.35);
-    border-radius: 4px;
-    padding: 2px 8px;
-    white-space: nowrap;
-  }
-
-  .home-away {
-    font-size: var(--text-micro);
-    color: var(--color-text-faint);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  .tl-row-up--next .home-away { color: var(--color-text-muted); }
-
-  /* Knockout-competition tag. Deliberately neutral rather than accent blue — a
-     cup tie is informational and must not read as the .next-pill highlight. */
-  .tl-comp {
-    display: inline-block;
-    margin-left: 6px;
-    padding: 1px 6px;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    background: light-dark(rgba(17,35,75,0.06), rgba(255,255,255,0.10));
-    /* -strong: plain --color-text-muted reaches only 4.42:1 on the blue-tinted
-       --next row a one-off cup tie usually lands on. */
-    color: var(--color-text-muted-strong);
-    font-size: var(--text-micro);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  /* Result badges — intentional brand colour chips. light-dark() pairs keep
-     them AA-legible on light rows and navy rows alike (dark arms are the
-     brighter tints). */
-  .badge-w {
-    background: light-dark(rgba(118,205,84,0.15), rgba(118,205,84,0.22));
-    color: light-dark(#3a7d1e, #8bd871);
-    border: 1px solid rgba(118,205,84,0.4);
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: var(--text-body);
-    font-weight: var(--weight-bold);
-    white-space: nowrap;
-  }
-
-  .badge-l {
-    background: light-dark(rgba(196,65,40,0.10), rgba(196,65,40,0.22));
-    /* Darkened brand red (raw --lh-red #c44128 only hits 4.41:1 on this tint);
-       mirrors the .badge-w darkened-green treatment for light-theme AA. */
-    color: light-dark(#ad3418, #e3917d);
-    border: 1px solid rgba(196,65,40,0.25);
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: var(--text-body);
-    font-weight: var(--weight-bold);
-    white-space: nowrap;
-  }
-
-  .tl-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 18px;
-    border-top: 1px solid var(--color-border);
-    background: var(--color-bg-alt);
-  }
-
-  .tl-updated {
-    font-size: var(--text-micro);
-    color: var(--color-text-faint);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-  }
-
-  .tl-error {
-    padding: 16px 18px;
-    font-size: var(--text-note);
-    color: var(--color-text-muted);
-  }
-
-  .tl-overflow[hidden] { display: none; }
-
-  /* Quiet inline control, not a solid fill — solid accent is reserved for the
-     page's primary buttons. Plain selectors: injected via innerHTML. */
-  .tl-more {
-    display: block;
-    width: 100%;
-    padding: 10px 18px;
-    border: 0;
-    border-bottom: 1px solid var(--color-border);
-    background: transparent;
-    color: var(--color-accent-text);
-    font-family: inherit;
-    font-size: var(--text-body-sm);
-    font-weight: var(--weight-bold);
-    letter-spacing: var(--tracking-wide);
-    text-align: center;
-    cursor: pointer;
-  }
-
-  .tl-more:hover { background: var(--color-bg-alt); }
-
-  .tl-more:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: -2px;
-  }
-
-  @media (max-width: 640px) {
-    .tl-row,
-    .tl-row-up {
-      grid-template-columns: 56px 1fr auto;
-      gap: 8px;
-      padding: 10px 14px;
-    }
-
-    .tl-section-label { padding: 7px 14px 5px; }
-    .tl-more { padding: 10px 14px; }
-    /* Match the header's 12px vertical padding so the tile's top and bottom
-       bands are balanced. */
-    .tl-footer { padding: 12px 14px; flex-direction: column; align-items: flex-start; gap: 6px; }
-  }
 </style>
