@@ -2,7 +2,8 @@ export interface Team {
   name: string;
   gender: "Women's" | "Men's";
   division: string;
-  badge?: string;
+  /** Top-flight team: tinted card, and its division renders as the highlighted chip. */
+  featured?: boolean;
   volleyzoneSlug?: string;
   compId?: string;
   seasonId?: string;
@@ -49,7 +50,7 @@ export const teams: Team[] = [
   // Women's
   {
     name: 'Vinarius', gender: "Women's", division: 'NVL Super League',
-    badge: 'Super League', volleyzoneSlug: 'lionhearts-vinarius',
+    featured: true, volleyzoneSlug: 'lionhearts-vinarius',
     volleyzoneTeamName: 'Lionhearts Vinarius',
     compId: '216377', seasonId: '4013', volleyzoneUserId: '279580', volleyzoneSegment: 'nvl',
   },

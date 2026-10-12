@@ -20,7 +20,7 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
 ---
 
 <article
-  class:list={['team-card', { 'team-card--featured': !!team.badge }]}
+  class:list={['team-card', { 'team-card--featured': team.featured }]}
   data-gender={team.gender === "Women's" ? 'womens' : 'mens'}
   data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}
 >
@@ -42,7 +42,7 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
     <span class="team-card__gender">{team.gender}</span>
     <h2 class="team-card__name">{team.name}</h2>
     <p class="team-card__division">
-      {team.badge ? <span class="chip-accent">{team.division}</span> : team.division}
+      {team.featured ? <span class="chip-accent">{team.division}</span> : team.division}
     </p>
   </div>
   <a class="team-card__fixtures" href={`/fixtures#${slug}`}>
