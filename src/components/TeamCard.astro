@@ -149,8 +149,10 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
     transition: background 0.15s;
   }
 
+  /* Tint mixed into bg-alt, not over transparent: on dark, a see-through
+     tint let the lighter card surface show and dropped the label to ~4.1:1. */
   .team-card__fixtures:hover {
-    background: color-mix(in srgb, var(--lh-blue) 12%, transparent);
+    background: color-mix(in srgb, var(--lh-blue) 12%, var(--color-bg-alt));
   }
 
   /* Inset: the card's overflow: hidden would clip an outer outline. */
