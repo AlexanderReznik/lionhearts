@@ -41,8 +41,9 @@ const photo = teamPhotos[`../assets/teams/${slug}.jpg`]?.default;
   <div class="team-card__info">
     <span class="team-card__gender">{team.gender}</span>
     <h2 class="team-card__name">{team.name}</h2>
-    <p class="team-card__division">{team.division}</p>
-    {team.badge && <span class="chip-accent">{team.badge}</span>}
+    <p class="team-card__division">
+      {team.badge ? <span class="chip-accent">{team.division}</span> : team.division}
+    </p>
   </div>
   <a class="team-card__fixtures" href={`/fixtures#${slug}`}>
     <span>Fixtures &amp; Results<span class="sr-only"> for {team.name}</span></span>
