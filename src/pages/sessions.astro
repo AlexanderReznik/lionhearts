@@ -21,8 +21,6 @@ import { SITE_URL } from '../data/club';
 // rebuild whenever the sheet is edited.
 // ─────────────────────────────────────────────────────────────────────────
 const { sessions, usingFallback } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
-// Tile count = sessions + the venue tile; drives the responsive grid columns.
-const tileCount = sessions.length + 1;
 
 // Session-tile backgrounds: each open-session card gets its own photo (cycled
 // by index so extra sessions still get a background); juniors share one.
@@ -32,6 +30,11 @@ const openPhotos = [openSession1, openSession2, openSession3];
 // GOOGLE_JUNIORS_GID to its gid. day + time only (no level/venue tile).
 const { sessions: juniorSessions, usingFallback: juniorsFallback } =
   await getJuniorSessions(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_JUNIORS_GID);
+
+// Both rows share one column count (the longer row's sessions + its venue
+// tile) so an open tile and a junior tile are always the same width; the
+// shorter row leaves trailing space rather than stretching its tiles.
+const gridColumns = Math.max(sessions.length, juniorSessions.length) + 1;
 
 // Pre-season tryouts — dedicated tab (GOOGLE_TRYOUTS_GID). Empty array = nothing
 // renders (no fallback), so the section self-hides outside tryout season.
@@ -178,7 +181,7 @@ const eventSchemas = [
 
       {usingFallback && <SessionsFallbackNotice schedule="weekly schedule" />}
 
-      <div class={`session-cards session-cards--${tileCount}`}>
+      <div class={`session-cards session-cards--${gridColumns}`}>
         {sessions.map((s, i) => <SessionCard session={s} photo={openPhotos[i % openPhotos.length]} />)}
         <VenueCard />
       </div>
@@ -194,7 +197,7 @@ const eventSchemas = [
 
       {juniorsFallback && <SessionsFallbackNotice schedule="junior schedule" />}
 
-      <div class="junior-cards">
+      <div class={`session-cards session-cards--${gridColumns}`}>
         {juniorSessions.map(s => <SessionCard session={s} photo={juniorBall} />)}
         <VenueCard />
       </div>
@@ -237,7 +240,7 @@ const eventSchemas = [
     margin: 16px 0 36px;
   }
 
-  /* Columns track the tile count (sessions + venue). Shrinking, even counts
+  /* Columns track gridColumns (sessions + venue). Shrinking, even counts
      fold to a balanced 2-up grid and odd counts collapse straight to a single
      column — so we never land on an orphaned row (no 3+1 / 2+1). */
   .session-cards {
@@ -266,24 +269,6 @@ const eventSchemas = [
   @media (max-width: 420px) {
     .session-cards--2,
     .session-cards--4 { grid-template-columns: 1fr; }       /* final fold to single column */
-  }
-
-  /* Junior cards — mirror the adult 4-tile grid's column structure and
-     breakpoints so a junior tile is exactly the same width as an open-session
-     tile. The juniors row carries its own venue tile (same venue), so the
-     session card stretches to match it — no hardcoded height needed. */
-  .junior-cards {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
-
-  @media (max-width: 820px) {
-    .junior-cards { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 420px) {
-    .junior-cards { grid-template-columns: 1fr; }
   }
 
 </style>
