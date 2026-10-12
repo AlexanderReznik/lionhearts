@@ -37,6 +37,11 @@ export const VOLLEYZONE_BASE_LVA =
 export const VOLLEYZONE_BASE_NVL =
   'https://competitions.volleyzone.co.uk/fixture-and-results/nvl/';
 
+/** Photo filename (src/assets/teams/<slug>.jpg) and /fixtures#<slug> anchor. */
+export function teamSlug(team: Pick<Team, 'name'>): string {
+  return team.name.toLowerCase().replace(/\s+/g, '-');
+}
+
 /** @deprecated use VOLLEYZONE_BASE_LVA */
 export const VOLLEYZONE_BASE = VOLLEYZONE_BASE_LVA;
 

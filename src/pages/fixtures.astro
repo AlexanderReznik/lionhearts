@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import PageCrossLink from '../components/PageCrossLink.astro';
-import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
+import { teams, teamSlug, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
 
 const fixturesMap = await fetchAllFixtures();
@@ -71,6 +71,7 @@ const teamSections = [
         {sectionTeams.map(team => (
           <div
             class="team-fixture-section"
+            id={teamSlug(team)}
             data-gender={section}
             data-league={team.division.startsWith('NVL') ? 'nvl' : 'lva'}
             data-updated={buildTimestamp}
@@ -324,7 +325,11 @@ const teamSections = [
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 12px;
+    scroll-margin-top: calc(var(--nav-height) + var(--space-sm));
   }
+
+  /* Landing from a /teams card deep link: mark which panel was asked for. */
+  .team-fixture-section:target { border-color: var(--color-border-blue); }
 
   .team-fixture-section__header {
     background: var(--color-bg-alt);
