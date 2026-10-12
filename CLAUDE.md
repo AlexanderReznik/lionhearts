@@ -25,8 +25,10 @@ git -C /path add src/foo.ts   # WRONG
 `type(scope): imperative subject`.
 
 - Types: `feat` `fix` `style` `refactor` `docs` `chore` `perf` `test`.
-- Scope = page/area: `copy` `seo` `a11y` `events` `community` `about` `teams` `join`
-  `sponsors` `instagram` `theme` `footer` `hero` …
+- Scope = page/area: `copy` `seo` `a11y` `sessions` `fixtures` `community` `about`
+  `teams` `join` `sponsors` `instagram` `theme` `footer` `hero` … (`events` in older
+  history is the former combined `/events` page, now split into `/sessions` and
+  `/fixtures`.)
 - Body explains the **why** and notes verification (e.g. "Verified no overflow at 320/375"),
   matching the density of recent `git log` bodies.
 - Commit only when asked; branch first if on `main`.
