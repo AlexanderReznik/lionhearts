@@ -72,6 +72,45 @@ export function formatMatchResult(match: Match, perspective: 'Home' | 'Away'): s
   }
 }
 
+export interface SetScore {
+  home: number;
+  away: number;
+}
+
+export function parseSetScores(metaData: Match['metaData'] | undefined): SetScore[] {
+  const home = metaData?.scores?.home ?? {};
+  const away = metaData?.scores?.away ?? {};
+  const sets: SetScore[] = [];
+  for (let i = 1; i <= 5; i++) {
+    const h = home[i] ?? '';
+    const a = away[i] ?? '';
+    if (h === '' && a === '') continue;
+    sets.push({ home: parseInt(h, 10) || 0, away: parseInt(a, 10) || 0 });
+  }
+  return sets;
+}
+
+/**
+ * LVA incomplete-match rule. Volleyzone's admin-entered set count already
+ * decides who won any finished or 2+-point-led set (it sometimes counts a
+ * 21–20 set the lead test would drop), but it reports every level set count as
+ * a draw. The league breaks that tie on total points, unfinished set included:
+ * 2+ ahead wins, otherwise it stays a draw.
+ */
+export function resolveMatchResult(match: Match): Match {
+  if (match.fixtureStatus !== 'result' || match.homeResult !== 'draw') return match;
+  const { home, away } = parseScore(match.homeScore, match.awayScore);
+  if (home !== away) return match;
+  const sets = parseSetScores(match.metaData);
+  const margin = sets.reduce((sum, s) => sum + s.home - s.away, 0);
+  if (Math.abs(margin) < 2) return match;
+  return {
+    ...match,
+    homeResult: margin > 0 ? 'win' : 'lose',
+    awayResult: margin > 0 ? 'lose' : 'win',
+  };
+}
+
 export async function fetchTeamFixtures(
   compId: string,
   seasonId: string,
@@ -128,7 +167,7 @@ export async function fetchTeamFixtures(
   if (!Array.isArray(fixtures)) {
     throw new Error('Volleyzone response missing `data.fixtures` array');
   }
-  return fixtures;
+  return lastSegment === 'lva' ? fixtures.map(resolveMatchResult) : fixtures;
 }
 
 // Knockout comps are fetched whole and their matches claimed by exact team

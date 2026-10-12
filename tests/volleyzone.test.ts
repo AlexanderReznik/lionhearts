@@ -5,6 +5,9 @@ import {
   formatFixtureDate,
   formatFixtureTime,
   formatMatchResult,
+  parseSetScores,
+  resolveMatchResult,
+  fetchTeamFixtures,
 } from '../src/lib/volleyzone';
 import type { Match } from '../src/lib/volleyzone';
 
@@ -450,5 +453,128 @@ describe('parseHomeAway — exact team identity', () => {
   it('falls back to the substring guess when no team name is supplied', () => {
     const m = { ...BASE_MATCH, homeTeam: 'Lionhearts Fury', awayTeam: 'Phoenix Nova' };
     expect(parseHomeAway(m)).toBe('Home');
+  });
+});
+
+const sets = (...pairs: [string, string][]): Match['metaData'] => {
+  const home: Record<string, string> = { goals: '' };
+  const away: Record<string, string> = { goals: '' };
+  for (let i = 1; i <= 5; i++) {
+    home[i] = pairs[i - 1]?.[0] ?? '';
+    away[i] = pairs[i - 1]?.[1] ?? '';
+  }
+  return { scores: { home, away } };
+};
+
+const incomplete = (homeScore: string, awayScore: string, ...pairs: [string, string][]): Match => ({
+  ...BASE_MATCH,
+  homeScore,
+  awayScore,
+  homeResult: '',
+  awayResult: '',
+  metaData: sets(...pairs),
+});
+
+describe('parseSetScores', () => {
+  it('reads played sets and skips blank or missing ones', () => {
+    const m = { ...BASE_MATCH, metaData: sets(['21', '16'], ['19', '21']) };
+    delete m.metaData.scores.home['5'];
+    expect(parseSetScores(m.metaData)).toEqual([
+      { home: 21, away: 16 },
+      { home: 19, away: 21 },
+    ]);
+  });
+
+  it('returns [] when metaData carries no scores', () => {
+    expect(parseSetScores(undefined)).toEqual([]);
+  });
+});
+
+describe('resolveMatchResult (LVA incomplete-match rule)', () => {
+  const tied = (...pairs: [string, string][]): Match => ({
+    ...incomplete('2;', '2;', ...pairs), homeResult: 'draw', awayResult: 'draw',
+  });
+
+  it('leaves a decided match exactly as Volleyzone reported it', () => {
+    const m = { ...BASE_MATCH, metaData: sets(['21', '16'], ['19', '21'], ['21', '19'], ['21', '16']) };
+    expect(resolveMatchResult(m)).toBe(m);
+  });
+
+  it('trusts Volleyzone on an incomplete match with an unequal set count', () => {
+    const m = { ...incomplete('2;', '1;', ['21', '18'], ['21', '18'], ['19', '21'], ['3', '20']), homeResult: 'win' as const, awayResult: 'lose' as const };
+    expect(resolveMatchResult(m)).toBe(m);
+  });
+
+  it('leaves upcoming fixtures untouched', () => {
+    const m = { ...incomplete('', ''), fixtureStatus: 'fixture' as const };
+    expect(resolveMatchResult(m)).toBe(m);
+  });
+
+  it('never overrides a level set count Volleyzone already decided (e.g. a concession)', () => {
+    const m = { ...incomplete('2;', '2;', ['21', '10'], ['19', '21']), homeResult: 'lose' as const, awayResult: 'win' as const };
+    expect(resolveMatchResult(m)).toBe(m);
+  });
+
+  it('keeps a level set count with no set scores as a draw', () => {
+    const m = tied();
+    expect(resolveMatchResult(m)).toBe(m);
+  });
+
+  it('breaks a sets tie for the side 2+ ahead on total points', () => {
+    // Londinium Bellatrix v Onyx Women, LVA W1B 2025-26: 81–77 on points, a win in the official table
+    const r = resolveMatchResult(tied(['21', '14'], ['19', '21'], ['21', '20'], ['20', '22']));
+    expect(r).toMatchObject({ homeScore: '2;', awayScore: '2;', homeResult: 'win', awayResult: 'lose' });
+  });
+
+  it('gives the tiebreak to the away side when it leads on points', () => {
+    const r = resolveMatchResult(tied(['21', '19'], ['18', '21'], ['21', '19'], ['15', '21']));
+    expect(formatMatchResult(r, 'Away')).toBe('W 2–2');
+    expect(formatMatchResult(r, 'Home')).toBe('L 2–2');
+  });
+
+  it('counts points from the unfinished set', () => {
+    // 82–82 over four sets; the unfinished 5th (5–3) is the only difference
+    const r = resolveMatchResult(tied(['21', '19'], ['19', '21'], ['21', '19'], ['21', '23'], ['5', '3']));
+    expect(r.homeResult).toBe('win');
+  });
+
+  it('stays a draw when the points margin is exactly 1', () => {
+    const m = tied(['21', '19'], ['19', '21'], ['21', '19'], ['18', '20'], ['13', '12']);
+    expect(formatMatchResult(resolveMatchResult(m), 'Home')).toBe('D 2–2');
+  });
+
+  it('stays a draw when points are level', () => {
+    const m = tied(['21', '19'], ['19', '21'], ['21', '19'], ['19', '21']);
+    expect(resolveMatchResult(m)).toBe(m);
+  });
+});
+
+describe('fetchTeamFixtures — LVA incomplete-match rule', () => {
+  const realFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  const pointsDraw: Match = {
+    ...BASE_MATCH, homeScore: '2;', awayScore: '2;', homeResult: 'draw', awayResult: 'draw',
+    metaData: sets(['21', '14'], ['19', '21'], ['21', '20'], ['20', '22']),
+  };
+  const respond = () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ debug: JSON.stringify({ data: { fixtures: [pointsDraw] } }) }),
+    } as Response);
+  };
+
+  it('resolves points-decided draws for LVA competitions', async () => {
+    respond();
+    const [m] = await fetchTeamFixtures('209503', '3881', '298568', 'lva');
+    expect(m.homeResult).toBe('win');
+  });
+
+  it('leaves NVL competitions as Volleyzone reported them', async () => {
+    respond();
+    const [m] = await fetchTeamFixtures('216377', '4013', '279580', 'nvl');
+    expect(m.homeResult).toBe('draw');
   });
 });
