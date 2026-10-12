@@ -1,5 +1,8 @@
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* The UA's [hidden] rule loses to any author `display`, so a filtered-out
+   flex/grid element (team cards, eyebrows) would stay visible without this. */
+[hidden] { display: none !important; }
 img, video { max-width: 100%; display: block; }
 button { cursor: pointer; font-family: inherit; }
 a { color: inherit; }
