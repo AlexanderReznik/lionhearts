@@ -34,7 +34,7 @@ A simple design in Canva using the club colours works well here.
 
 ## 5. Verify Volleyzone team links
 
-The Events page has a "View on Volleyzone →" link for each team. The URLs need to be confirmed.
+The Fixtures page (`/fixtures`) has a "View on Volleyzone →" link for each team. The URLs need to be confirmed.
 
 1. Go to [volleyzone.co.uk](https://volleyzone.co.uk)
 2. Search for each Lionhearts team and open their page
@@ -62,7 +62,7 @@ There is a note in the code to double-check the division listed for each team. O
 
 ## 8. Live session schedule via Google Sheets (recommended)
 
-Both `/events` and the homepage "open sessions" strip read from a single Google Sheet. Edits to the sheet auto-trigger a site rebuild via a webhook, so updates appear within ~1 minute without a developer.
+Both `/sessions` and the homepage "open sessions" strip read from a single Google Sheet. Edits to the sheet auto-trigger a site rebuild via a webhook, so updates appear within ~1 minute without a developer.
 
 ### 8a. Create the sheet
 
@@ -96,7 +96,7 @@ Both `/events` and the homepage "open sessions" strip read from a single Google 
    ```
    GOOGLE_SHEET_ID=<paste-id-here>
    ```
-   Then `npm run dev` and check `/events` and the homepage strip both reflect the sheet.
+   Then `npm run dev` and check `/sessions` and the homepage strip both reflect the sheet.
 2. In Netlify/Vercel: project settings → **Environment Variables** → add `GOOGLE_SHEET_ID` with the same value.
 3. Trigger a redeploy. From now on every build pulls live data.
 
@@ -244,7 +244,7 @@ A single placeholder file at `src/assets/hero/placeholder.jpg` (a subtle blue gr
 
 ## 12. Junior sessions tab (Google Sheet)
 
-The **Junior Sessions** block on `/events` reads from its own tab on the same
+The **Junior Sessions** block on `/sessions` reads from its own tab on the same
 Google Sheet from item 8. Skip this and the section shows a single hardcoded
 fallback (Saturday 1:30–3:30pm) — fine for launch, easy to add later.
 
@@ -284,7 +284,7 @@ any tab in the sheet.
 
 ## 13. Tryouts tab (Google Sheet)
 
-The **Pre-season Tryouts** section on `/events`, plus the alert bar and accent
+The **Pre-season Tryouts** section on `/sessions`, plus the alert bar and accent
 band on the homepage, read from their own tab on the same Google Sheet from
 item 8. Unlike sessions there is **no fallback**: if the tab is missing, empty,
 or has no upcoming visible rows, none of these elements render — the feature is
@@ -397,7 +397,7 @@ own IDs and not ours to rename.
 
 When the IDs are moved over to the new season, check this team specifically:
 
-1. Open `/events` and find the **London Lionhearts** section under Men's teams.
+1. Open `/fixtures` and find the **London Lionhearts** section under Men's teams.
 2. Confirm real fixtures and results load — not the "Fixtures unavailable" row.
 3. If it's empty, the team's slug or `compId`/`seasonId` on Volleyzone has
    probably changed with the rename. Re-check them per item 5 and update
