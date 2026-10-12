@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FilterPills from '../components/FilterPills.astro';
 import Eyebrow from '../components/Eyebrow.astro';
+import PageCrossLink from '../components/PageCrossLink.astro';
 import { teams, VOLLEYZONE_BASE_LVA, VOLLEYZONE_BASE_NVL } from '../data/teams';
 import { fetchAllFixtures } from '../lib/volleyzone';
 
@@ -99,6 +100,8 @@ const teamSections = [
         ))}
       </>
     ))}
+
+    <PageCrossLink text="Fancy playing yourself? Open sessions run every week — no booking needed." label="See Sessions" href="/sessions" />
 
   </div>
 

@@ -4,6 +4,7 @@ import TeamCard from '../components/TeamCard.astro';
 import FilterPills from '../components/FilterPills.astro';
 import { teams } from '../data/teams';
 import Eyebrow from '../components/Eyebrow.astro';
+import PageCrossLink from '../components/PageCrossLink.astro';
 
 // All 9 teams, women's first then men's (per club convention).
 const sortedTeams = [
@@ -31,6 +32,8 @@ const sortedTeams = [
     <div class="teams-grid">
       {sortedTeams.map(team => <TeamCard team={team} />)}
     </div>
+
+    <PageCrossLink text="See how every squad is getting on this season." label="Fixtures & Results" href="/fixtures" />
 
     <!-- TODO before launch: confirm team divisions with club -->
 

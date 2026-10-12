@@ -5,6 +5,7 @@ import SessionCard from '../components/SessionCard.astro';
 import VenueCard from '../components/VenueCard.astro';
 import SessionsFallbackNotice from '../components/SessionsFallbackNotice.astro';
 import Eyebrow from '../components/Eyebrow.astro';
+import PageCrossLink from '../components/PageCrossLink.astro';
 import openSession1 from '../assets/sessions/open_session_1.jpg';
 import openSession2 from '../assets/sessions/open_session_2.jpg';
 import openSession3 from '../assets/sessions/open_session_3.jpg';
@@ -198,6 +199,8 @@ const eventSchemas = [
         <VenueCard />
       </div>
     </section>
+
+    <PageCrossLink text="Prefer to watch? Come down and cheer on our 9 league teams." label="Fixtures & Results" href="/fixtures" />
 
   </div>
 

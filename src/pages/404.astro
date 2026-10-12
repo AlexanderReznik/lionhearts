@@ -43,6 +43,7 @@ import Session from '../assets/icons/session.svg';
       <div class="oob__actions">
         <a href="/" class="btn btn--primary">Back to Home</a>
         <a href="/sessions" class="btn btn--ghost">Sessions</a>
+        <a href="/fixtures" class="btn btn--ghost">Fixtures</a>
         <a href="/join" class="btn btn--ghost">Join Us</a>
       </div>
     </div>
@@ -130,6 +131,19 @@ import Session from '../assets/icons/session.svg';
     margin-top: 1.5rem;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  /* Four buttons can't share a phone-width row evenly, so stack them rather
+     than wrap into a ragged 1/1/2. */
+  @media (max-width: 480px) {
+    .oob__actions {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+      max-width: 320px;
+      margin-inline: auto;
+    }
+    .oob__actions .btn { justify-content: center; }
   }
 
   /* ── Landing sequence (motion users only) ── */
