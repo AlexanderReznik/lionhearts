@@ -179,7 +179,7 @@ export function abbreviateTime(time: string): { range: string; meridiem: string 
 }
 
 // ── schema.org Event schedule derivation ───────────────────────────────────
-// Lets /events build its JSON-LD from the live session data instead of a
+// Lets /sessions build its JSON-LD from the live session data instead of a
 // hardcoded block, so structured data can never drift from what's displayed.
 
 const DAY_SCHEMA_URL: Record<string, string> = {
@@ -443,7 +443,7 @@ export function formatTryoutDate(d: Date): string {
 
 /**
  * Convert a Tryout (a one-off dated event) into a schema.org Occurrence with a
- * concrete startDate/endDate, so /events can emit it as an Event alongside the
+ * concrete startDate/endDate, so /sessions can emit it as an Event alongside the
  * recurring sessions. Returns null when the tryout's time range can't be parsed
  * (the date itself is already validated at parse time). Uses the tryout's local
  * calendar date — parseUKDate builds it at local midnight — plus its time.

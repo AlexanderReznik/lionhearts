@@ -5,7 +5,7 @@ import { INSTAGRAM_URL, SITE_URL } from '../data/club';
 import { getSessions } from '../lib/sheets';
 
 // Session count for the meta description comes from the live sheet (same
-// source as /events and the homepage strip), so it can't drift from the
+// source as /sessions and the homepage strip), so it can't drift from the
 // schedule shown on the site.
 const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 ---
@@ -36,7 +36,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
           The easiest way in — just show up and play. Sessions are beginner-friendly: no booking,
           no commitment, no experience needed. Meet the community and see if it's for you.
         </p>
-        <a href="/events" class="btn pathway__cta">See Full Schedule</a>
+        <a href="/sessions" class="btn pathway__cta">See Full Schedule</a>
       </div>
 
       <div class="pathway">

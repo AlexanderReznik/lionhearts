@@ -25,7 +25,7 @@ import catsCelebration from '../assets/hero/cats_celebration.jpg';
 // Homepage build-time data. Three independent sheet reads, fetched in parallel:
 //   • tryouts  — pre-season tryouts shared by the promo card (empty = nothing).
 //   • sessions — adult schedule; its count also feeds the meta description, so
-//     it can't drift from what /join, /events and the promo card show.
+//     it can't drift from what /join, /sessions and the promo card show.
 //   • juniors  — junior schedule (its own sheet tab) for the third promo card.
 const [tryouts, { sessions }, { sessions: juniors }] = await Promise.all([
   getUpcomingTryouts(import.meta.env.GOOGLE_SHEET_ID, import.meta.env.GOOGLE_TRYOUTS_GID),

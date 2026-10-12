@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import Eyebrow from './Eyebrow.astro';
 import { getSessions } from '../lib/sheets';
 
-// Session count from the live sheet (same source as the strip and /events),
+// Session count from the live sheet (same source as the strip and /sessions),
 // so the promise here can't drift from the schedule shown on the site.
 const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
 ---
@@ -27,7 +27,7 @@ const { sessions } = await getSessions(import.meta.env.GOOGLE_SHEET_ID);
     </div>
     <div class="join-cta__actions">
       <a href="/join" class="btn btn--primary">Join the Club</a>
-      <a href="/events" class="join-cta__secondary">Or Just Turn Up to an Open Session →</a>
+      <a href="/sessions" class="join-cta__secondary">Or Just Turn Up to an Open Session →</a>
     </div>
   </div>
 </section>

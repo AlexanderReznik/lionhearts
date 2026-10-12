@@ -138,7 +138,7 @@ inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
   blue accent boxes (`.contact-card__icon`, `.about-intro__pin`) →
   `var(--btn-accent-text)` (navy-on-blue, matching `.btn--accent`);
   `.section--community` blue surface → inherits navy; photo cards → white.
-- **`set:html` exception:** the `/events` fixture timeline renders client-side as
+- **`set:html` exception:** the `/fixtures` timeline renders client-side as
   HTML strings, so `<Icon>` can't be used — the pin is imported as a raw string
   (`location.svg?raw`) inside the client `<script>` and sized by a plain `.tl-pin`
   rule in the page's `is:global` block.
@@ -151,7 +151,7 @@ inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
 Astro's `:global(...)` directive is only processed inside **scoped** `<style>`
 blocks. In a `<style is:global>` block it is emitted **verbatim as an invalid
 selector** and silently ignored. Likewise, markup injected via `set:html`
-(e.g. the fixtures/result badges in `events.astro`) carries **no Astro scope
+(e.g. the fixtures/result badges in `fixtures.astro`) carries **no Astro scope
 attribute**, so scoped selectors don't match it. Colour overrides here should
 still be a `light-dark()` value (the badges do this) — but if you ever need a
 `data-theme` **selector** in such a block, use a **plain** one —

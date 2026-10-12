@@ -17,7 +17,8 @@ Website for [London Lionhearts VBC](https://lionheartslondon.com) — East Londo
 |---|---|
 | `/` | Home — hero carousel, stats, about intro, community, sponsors, Instagram feed, join CTA |
 | `/about` | Club history, founders, values |
-| `/events` | Open sessions (live Google Sheet or fallback), Volleyzone fixture links per team |
+| `/sessions` | Pre-season tryouts, open + junior sessions (live Google Sheet or fallback) |
+| `/fixtures` | Fixtures & results for all 9 teams (Volleyzone, fetched at build time) |
 | `/teams` | 9-team grid — NVL: Vinarius (W), London Lionhearts (M) · LVA: Alpha, Fury (Premier), Cats, Beats, Predators (Div 1), Pride (Div 2), Roar (Div 3) |
 | `/sponsorship` | Sponsors, partnership CTA, sponsorship perks |
 | `/join` | 3 join pathways + Web3Forms sign-up form |
@@ -52,7 +53,7 @@ npm run dev
 
 Opens at `http://localhost:4321`. Hot module replacement is enabled by default.
 
-The `/` and `/events` pages fetch fixtures and the Instagram feed at build time.
+The `/fixtures` and `/` pages fetch fixtures and the Instagram feed at build time.
 When you aren't working on those sections, skip the slow network calls with the
 literal `true` (a `1` will **not** skip):
 

@@ -55,7 +55,7 @@ a { color: inherit; }
   --color-border:       light-dark(rgba(17, 35, 75, 0.12), rgba(255, 255, 255, 0.10));
   --color-border-blue:  light-dark(rgba(84, 164, 247, 0.35), rgba(84, 164, 247, 0.30));
   /* Tinted brand-blue panel — the shared "where we play" location surface
-     (home .about-intro card + the /events venue tile). Theme-independent:
+     (home .about-intro card + the /sessions venue tile). Theme-independent:
      a translucent wash that reads over both page backgrounds. */
   --color-surface-blue: linear-gradient(
                           135deg,
@@ -369,7 +369,7 @@ body {
 
 /* ── Accent chip ──
    Small non-interactive label (the "Super League" badge on /teams and
-   /events). Tinted, never a solid fill, so it can't be read as a button. */
+   /sessions). Tinted, never a solid fill, so it can't be read as a button. */
 .chip-accent {
   display: inline-flex;
   align-items: center;
@@ -385,7 +385,7 @@ body {
 }
 
 /* ── Session cards ──
-   Shared surface primitives for the SessionCard/VenueCard tiles on /events
+   Shared surface primitives for the SessionCard/VenueCard tiles on /sessions
    (the responsive grid that lays them out stays page-local). */
 .session-card {
   border: 1px solid rgba(17,35,75,0.18);

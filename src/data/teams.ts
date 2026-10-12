@@ -101,5 +101,5 @@ export const teams: Team[] = [
 
 // NOTE: volleyzoneSlug is inert. Verified against the 2026-27 pages: Volleyzone's
 // team filter is a client-side <select>, not a URL parameter, so the `?team=<slug>`
-// link built in events.astro is ignored and the link just lands on the division
+// link built in fixtures.astro is ignored and the link just lands on the division
 // page. Kept only so removing it stays a deliberate decision.

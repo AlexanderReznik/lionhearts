@@ -3,7 +3,7 @@
 // Homepage "get involved" block: three tall portrait promo cards that replaced
 // the earlier thin tryouts band + sessions strip. Implements the designer's comp
 // (Lionhearts_Website_Assets/image.png) 1:1 —
-//   • Try Out (deep-navy card)     — soonest pre-season tryout, links to /events
+//   • Try Out (deep-navy card)     — soonest pre-season tryout, links to /sessions
 //   • Open Session (blue card)     — the weekly adult schedule
 //   • Junior Sessions (green card) — the weekly junior schedule
 //
@@ -28,9 +28,9 @@ const { tryouts, sessions, juniors } = Astro.props;
 const next = tryouts[0];
 const moreCount = tryouts.length - 1;
 
-// Off-season the tryouts anchor on /events doesn't render, so the fallback CTA
+// Off-season the tryouts anchor on /sessions doesn't render, so the fallback CTA
 // points at the sessions instead — matching the "come to an open session" copy.
-const tryoutHref = next ? '/events#tryouts' : '/events';
+const tryoutHref = next ? '/sessions#tryouts' : '/sessions';
 const tryoutCta = next ? 'See dates →' : 'See sessions →';
 
 // Abbreviate day + time for the compact schedule rows (same helpers the strip
@@ -49,7 +49,7 @@ const juniorMore = juniorRows.length - juniorVisible.length;
 
 // The Open and Junior cards are the same schedule card with different data, so
 // they render from one template below. (Try Out differs structurally and stays
-// inline.) href is /events for both — the full schedule / junior info live there.
+// inline.) href is /sessions for both — the full schedule / junior info live there.
 const scheduleCards = [
   { modifier: 'open',   eyebrow: `${sessions.length} weekly`, title: ['Open', 'session'],    rows: adultVisible,  more: adultMore,  cta: 'Full schedule →', photo: liannaPhoto, widths: [220, 330, 440, 660], sizes: '230px' },
   { modifier: 'junior', eyebrow: 'Grow together',             title: ['Junior', 'sessions'], rows: juniorVisible, more: juniorMore, cta: 'Junior info →',   photo: nathanPhoto, widths: [200, 300, 400, 600], sizes: '210px' },
@@ -72,7 +72,7 @@ const scheduleCards = [
           {next ? (
             <p class="promo-card__lead promo-card__next">
               <span class="promo-card__next-team">Next: <strong>{next.team}</strong></span>
-              <span class="promo-card__next-meta"><span class="nowrap">{formatTryoutDate(next.dateObj)}</span> <span class="nowrap">· {next.time}</span>{moreCount > 0 && <> <span class="nowrap">· <a class="promo-card__more" href="/events#tryouts">+{moreCount} more</a></span></>}</span>
+              <span class="promo-card__next-meta"><span class="nowrap">{formatTryoutDate(next.dateObj)}</span> <span class="nowrap">· {next.time}</span>{moreCount > 0 && <> <span class="nowrap">· <a class="promo-card__more" href="/sessions#tryouts">+{moreCount} more</a></span></>}</span>
             </p>
           ) : (
             <p class="promo-card__lead">No trials scheduled right now. To join a team, come to an open session and tell a coach you'd like to play competitively.</p>
@@ -104,9 +104,9 @@ const scheduleCards = [
                 </li>
               ))}
             </ul>
-            {card.more > 0 && <a class="promo-card__schedule-more" href="/events">+{card.more} more</a>}
+            {card.more > 0 && <a class="promo-card__schedule-more" href="/sessions">+{card.more} more</a>}
           </div>
-          <a class="btn btn--white promo-card__cta" href="/events">{card.cta}</a>
+          <a class="btn btn--white promo-card__cta" href="/sessions">{card.cta}</a>
           <div class="promo-card__photo" aria-hidden="true">
             <Image src={card.photo} alt="" widths={card.widths} sizes={card.sizes} loading="lazy" />
           </div>
