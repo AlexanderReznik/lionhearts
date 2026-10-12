@@ -144,9 +144,11 @@ inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
   HTML strings, so `<Icon>` can't be used — the pin is imported as a raw string
   (`location.svg?raw`) inside the client `<script>` and sized by a plain `.tl-pin`
   rule in the page's `is:global` block.
-- No icon exists for the `⚡` Super League badge (`teams.ts`) or the `⚠️`
-  fallback notice, so those stay. Arrows (→ ← ↗ ↓) and nav `☰`/`✕` are UI glyphs,
-  not emoji — leave them.
+- No icon exists for the `⚠️` fallback notice (`SessionsFallbackNotice`), so it
+  stays. Arrows (→ ← ↗ ↓) and nav `☰`/`✕` are UI glyphs, not emoji — leave them.
+- **Featured team:** `featured: true` in `teams.ts` (currently Vinarius) tints its
+  `/teams` card and renders its division as the `.chip-accent` tile on `/teams` and
+  `/fixtures` — the division name is the highlight; there is no separate badge.
 
 ### GOTCHA — dark overrides in `is:global` / `set:html` blocks
 
