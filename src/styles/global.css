@@ -378,7 +378,8 @@ body {
   align-items: center;
   gap: 5px;
   background: color-mix(in srgb, var(--lh-blue) 15%, transparent);
-  color: var(--color-accent-text);
+  /* -strong: plain accent-text on this tint over a dark card is ~4.1:1. */
+  color: var(--color-accent-text-strong);
   border-radius: 3px;
   padding: 3px 10px;
   font-size: var(--text-eyebrow);
