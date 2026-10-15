@@ -1,8 +1,7 @@
 import { teams, CUP_COMPETITIONS } from '../data/teams';
 import type { Team, CupCompetition } from '../data/teams';
 
-const ENDPOINT =
-  'https://competitions.volleyzone.co.uk/wp-admin/admin-ajax.php?action=fetch_fixture_by_competition';
+const ENDPOINT = 'https://competitions.volleyzone.co.uk/wp-admin/admin-ajax.php';
 
 export interface Match {
   fixtureId: string;
@@ -111,33 +110,125 @@ export function resolveMatchResult(match: Match): Match {
   };
 }
 
-export async function fetchTeamFixtures(
-  compId: string,
-  seasonId: string,
-  userId: string,
-  lastSegment: string,
-): Promise<Match[]> {
-  const body = new URLSearchParams({
-    seasonidgrp: seasonId,
-    fix_compID: compId,
-    pageTitle: 'Fixture and Results',
-    userId,
-    lastSegment,
-  });
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+  'August', 'September', 'October', 'November', 'December'];
 
+const ENTITIES: Record<string, string> = {
+  amp: '&', quot: '"', apos: "'", lt: '<', gt: '>', nbsp: ' ',
+  lsquo: '\u2018', rsquo: '\u2019', ldquo: '\u201c', rdquo: '\u201d', ndash: '\u2013', mdash: '\u2014',
+  aacute: '\u00e1', eacute: '\u00e9', iacute: '\u00ed', oacute: '\u00f3', uacute: '\u00fa',
+  auml: '\u00e4', euml: '\u00eb', ouml: '\u00f6', uuml: '\u00fc', ccedil: '\u00e7', ntilde: '\u00f1',
+};
+
+function decodeEntities(text: string): string {
+  return text.replace(/&(#x[\da-f]+|#\d+|\w+);/gi, (whole, code: string) => {
+    if (code[0] !== '#') return ENTITIES[code] ?? whole;
+    const hex = code[1] === 'x' || code[1] === 'X';
+    return String.fromCodePoint(parseInt(code.slice(hex ? 2 : 1), hex ? 16 : 10));
+  });
+}
+
+function londonToUnix(year: number, month: number, day: number, hour: number, minute: number): number {
+  const asUtc = Date.UTC(year, month, day, hour, minute);
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London', hourCycle: 'h23',
+      year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric',
+    }).formatToParts(asUtc).map(p => [p.type, Number(p.value)]),
+  );
+  const londonAsUtc = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute);
+  return (asUtc - (londonAsUtc - asUtc)) / 1000;
+}
+
+/**
+ * Volleyzone's fixtures/results AJAX responses are server-rendered HTML, one
+ * `col-12 mb-4` block per match. Volleyzone renders "time TBD" as 00:00 and some
+ * results carry no time at all; both map to the midnight-UTC sentinel that
+ * formatFixtureTime() reads as TBD. The HTML has no W/L/D, so it is derived from
+ * the set count (resolveMatchResult() then applies the LVA points tiebreak).
+ */
+export function parseMatchesHtml(html: string, status: 'fixture' | 'result'): Match[] {
+  const blocks = html.split(/<div class="col-12 mb-4 /).slice(1);
+  const matches: Match[] = [];
+  // A block that can't be read is warned and dropped; if none can, the markup
+  // has changed and the team must show its "unavailable" state, not an empty season.
+  const skip = (block: string, reason: string) => {
+    const label = block.match(/data-TeamName="([^"]*)"/)?.[1] ?? block.slice(0, 80);
+    console.warn(`[volleyzone] Skipped ${status} block (${reason}): ${decodeEntities(label)}`);
+  };
+
+  for (const block of blocks) {
+    const attr = (name: string) => block.match(new RegExp(`${name}="([^"]*)"`))?.[1];
+    const homeTeam = attr('data-home-team');
+    const awayTeam = attr('data-away-team');
+    const date = attr('data-Date')?.match(/(\d{1,2})(?:st|nd|rd|th)\s+(\w+)\s+(\d{4})/);
+    const fixtureId = block.match(/fixture_id=(\d+)/)?.[1] ?? attr('data-fid');
+    if (!homeTeam || !awayTeam || !date || !fixtureId || !MONTHS.includes(date[2])) {
+      skip(block, 'unreadable');
+      continue;
+    }
+
+    const middle = block.match(/<li class="text-center">[^]*?<\/li>\s*<li class="text-center">([^]*?)<\/li>/)?.[1] ?? '';
+    const [, hh, mm] = middle.match(/(\d{1,2}):(\d{2})/) ?? [];
+    const [day, month, year] = [Number(date[1]), MONTHS.indexOf(date[2]), Number(date[3])];
+    const fixtureDate = hh && !(hh === '00' && mm === '00')
+      ? londonToUnix(year, month, day, Number(hh), Number(mm))
+      : Date.UTC(year, month, day) / 1000;
+
+    const match: Match = {
+      fixtureId,
+      fixtureDate,
+      fixtureStatus: status,
+      homeTeam: decodeEntities(homeTeam),
+      awayTeam: decodeEntities(awayTeam),
+      homeScore: null,
+      awayScore: null,
+      homeResult: '',
+      awayResult: '',
+      venue: decodeEntities(block.match(/<span>Venue:\s*([^<]*?)\s*<\/span>/)?.[1] ?? ''),
+      metaData: { scores: { home: {}, away: {} } },
+    };
+
+    if (status === 'result') {
+      const score = middle.match(/<span>(\d+)<\/span>\s*<span>(\d+)<\/span>/);
+      if (!score) {
+        skip(block, 'no score');
+        continue;
+      }
+      const [home, away] = [Number(score[1]), Number(score[2])];
+      match.homeScore = score[1];
+      match.awayScore = score[2];
+      match.homeResult = home > away ? 'win' : home < away ? 'lose' : 'draw';
+      match.awayResult = home > away ? 'lose' : home < away ? 'win' : 'draw';
+      const setList = block.match(/<ul class="list-centered_bottom">([^]*?)<\/ul>/)?.[1] ?? '';
+      [...setList.matchAll(/<span>(\d+)<\/span>\s*<span>(\d+)<\/span>/g)].forEach(([, h, a], i) => {
+        match.metaData.scores.home[i + 1] = h;
+        match.metaData.scores.away[i + 1] = a;
+      });
+    }
+    matches.push(match);
+  }
+
+  if (blocks.length > 0 && matches.length === 0) {
+    throw new Error(`Volleyzone markup changed: none of ${blocks.length} match blocks could be parsed`);
+  }
+  return matches;
+}
+
+async function postVolleyzone(action: string, params: Record<string, string>): Promise<Record<string, unknown>> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30_000);
 
   let res: Response;
   try {
-    res = await fetch(ENDPOINT, {
+    res = await fetch(`${ENDPOINT}?action=${action}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'X-Requested-With': 'XMLHttpRequest',
         Origin: 'https://competitions.volleyzone.co.uk',
       },
-      body,
+      body: new URLSearchParams({ ...params, pageTitle: 'Fixture and Results' }),
       signal: controller.signal,
     });
   } finally {
@@ -145,29 +236,49 @@ export async function fetchTeamFixtures(
   }
 
   if (!res.ok) throw new Error(`Volleyzone HTTP ${res.status}`);
+  return (await res.json()) ?? {};
+}
 
-  // The endpoint double-encodes its payload: the outer JSON carries a `debug`
-  // string that is itself JSON of shape { data: { fixtures: [...] } }. This is
-  // undocumented and brittle, so validate each step and throw a descriptive
-  // error — fetchAllFixtures() catches it per-team and degrades to an error
-  // state rather than failing the whole build.
-  const outer = await res.json();
-  if (!outer || typeof outer.debug !== 'string') {
-    throw new Error('Volleyzone response missing expected `debug` payload');
+// Undocumented endpoints scraped as HTML: each step is validated and throws a
+// descriptive error, which fetchAllFixtures() catches per team and degrades to
+// an error state rather than failing the whole build.
+function htmlField(payload: Record<string, unknown>, key: string): string {
+  const html = payload[key];
+  if (typeof html !== 'string') throw new Error(`Volleyzone response missing \`${key}\` HTML`);
+  if (html.includes('Please Select From the Fields Above')) {
+    throw new Error('Volleyzone rejected the request parameters');
   }
+  return html;
+}
 
-  let inner: { data?: { fixtures?: Match[] } };
+export async function fetchTeamFixtures(
+  compId: string,
+  seasonId: string,
+  userId: string,
+  lastSegment: string,
+): Promise<Match[]> {
+  // The two actions name the same competition/season parameters differently.
+  const [upcoming, played] = await Promise.allSettled([
+    postVolleyzone('fetch_fixture_by_competition', { fix_compID: compId, seasonidgrp: seasonId, userId, lastSegment }),
+    postVolleyzone('fetch_results_by_competition', { res_compID: compId, seasonID: seasonId, userId, lastSegment }),
+  ]);
+
+  // The fixtures list decides whether the team is "available"; a results
+  // failure only costs the results, so it is warned rather than propagated.
+  if (upcoming.status === 'rejected') throw upcoming.reason;
+  const fixtures = parseMatchesHtml(htmlField(upcoming.value, 'fixtures'), 'fixture');
+
+  let results: Match[] = [];
   try {
-    inner = JSON.parse(outer.debug);
-  } catch {
-    throw new Error('Volleyzone `debug` payload was not valid JSON');
+    if (played.status === 'rejected') throw played.reason;
+    results = parseMatchesHtml(htmlField(played.value, 'Compresults'), 'result');
+  } catch (err) {
+    console.warn(`[volleyzone] Failed to fetch results for competition ${compId}:`, err);
   }
+  const resultIds = new Set(results.map(m => m.fixtureId));
 
-  const fixtures = inner?.data?.fixtures;
-  if (!Array.isArray(fixtures)) {
-    throw new Error('Volleyzone response missing `data.fixtures` array');
-  }
-  return lastSegment === 'lva' ? fixtures.map(resolveMatchResult) : fixtures;
+  const matches = fixtures.filter(m => !resultIds.has(m.fixtureId)).concat(results);
+  return lastSegment === 'lva' ? matches.map(resolveMatchResult) : matches;
 }
 
 // Knockout comps are fetched whole and their matches claimed by exact team
