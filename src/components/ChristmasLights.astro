@@ -14,7 +14,7 @@ const colours = ['blue', 'red', 'green', 'white'];
 const bulbs = Array.from({ length: Math.ceil(WIDTH / s) }, (_, i) => ({
   x: s / 2 + i * s - bulbW / 2,
   colour: colours[i % 4],
-  delay: (i + 2) % 4,
+  delay: (i + Math.floor(i / 4)) % 4,
 }));
 ---
 
