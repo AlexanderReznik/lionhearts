@@ -159,9 +159,11 @@ const teamSections = [
       // per-list "show more" toggle, so expanding costs no re-render.
       const CAP = 3;
 
+      // Oldest → newest, so the latest result sits directly above the next
+      // fixture and the whole tile reads as one timeline.
       const results = matches
         .filter((m: Match) => m.fixtureStatus === 'result')
-        .sort((a: Match, b: Match) => b.fixtureDate - a.fixtureDate);
+        .sort((a: Match, b: Match) => a.fixtureDate - b.fixtureDate);
 
       const upcoming = matches
         .filter((m: Match) => m.fixtureStatus === 'fixture' && m.fixtureDate * 1000 >= today.getTime())
@@ -219,6 +221,10 @@ const teamSections = [
 
       // Rows past CAP go in an [hidden] wrapper the button targets by id, so
       // aria-controls names one element and toggling is a single attribute flip.
+      const toggleHtml = (id: string, more: string, less: string) =>
+        `<button type="button" class="tl-more" aria-expanded="false" aria-controls="${id}"
+              data-more="${esc(more)}" data-less="${esc(less)}">${more}</button>`;
+
       const listHtml = (
         items: Match[],
         rowFn: (m: Match, i: number) => string,
@@ -229,16 +235,28 @@ const teamSections = [
         if (items.length <= CAP) return head;
         const id = `tl-overflow-${slug}-${key}`;
         const rest = items.slice(CAP).map((m, i) => rowFn(m, i + CAP)).join('');
-        const more = `Show all ${items.length} ${noun} ▾`;
         return `${head}
             <div class="tl-overflow" id="${id}" hidden>${rest}</div>
-            <button type="button" class="tl-more" aria-expanded="false" aria-controls="${id}"
-              data-more="${esc(more)}" data-less="Show fewer ▴">${more}</button>`;
+            ${toggleHtml(id, `Show all ${items.length} ${noun} ▾`, 'Show fewer ▴')}`;
+      };
+
+      // Results keep the newest CAP visible at the bottom (next to the
+      // fixtures); earlier ones expand above them from a toggle at the top.
+      const earlierHtml = (items: Match[], rowFn: (m: Match) => string, key: string) => {
+        const split = Math.max(0, items.length - CAP);
+        const tail = items.slice(split).map(m => rowFn(m)).join('');
+        if (split === 0) return tail;
+        const id = `tl-overflow-${slug}-${key}`;
+        const rest = items.slice(0, split).map(m => rowFn(m)).join('');
+        const noun = split === 1 ? 'result' : 'results';
+        return `${toggleHtml(id, `Show ${split} earlier ${noun} ▾`, `Hide earlier ${noun} ▴`)}
+            <div class="tl-overflow" id="${id}" hidden>${rest}</div>
+            ${tail}`;
       };
 
       if (results.length > 0) {
-        html += `<div class="tl-section-label">Recent Results</div>`;
-        html += listHtml(results, resultRow, 'results', 'results');
+        html += `<div class="tl-section-label">Results</div>`;
+        html += earlierHtml(results, resultRow, 'results');
       }
 
       if (upcoming.length > 0) {
