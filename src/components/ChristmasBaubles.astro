@@ -1,0 +1,102 @@
+---
+import Icon from './Icon.astro';
+
+const baubles = [
+  { colour: 'blue', length: 'a', delay: 'a' },
+  { colour: 'white', length: 'b', delay: 'b' },
+  { colour: 'red', length: 'c', delay: 'c' },
+];
+---
+
+<div class="christmas-baubles" aria-hidden="true">
+  {baubles.map((b) => (
+    <div class={`christmas-bauble christmas-bauble--${b.colour} christmas-bauble--len-${b.length} christmas-bauble--d-${b.delay}`}>
+      <span class="christmas-bauble__cap"></span>
+      <span class="christmas-bauble__ball"><Icon name="session" /></span>
+    </div>
+  ))}
+</div>
+
+<style is:inline>
+  .christmas-baubles {
+    --christmas-ball: 34px;
+    --christmas-edge: max(var(--page-px), calc((100% - var(--max-width)) / 2 + var(--page-px)));
+    height: 38px;
+    pointer-events: none;
+  }
+  .christmas-bauble {
+    position: absolute;
+    top: 0;
+    width: var(--christmas-ball);
+    right: calc(var(--christmas-edge) - var(--christmas-ball) / 2);
+    transform-origin: 50% 0;
+    animation: christmas-sway 3.6s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .christmas-bauble::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: var(--christmas-string);
+    margin: 0 auto;
+    background: light-dark(rgb(17 35 75 / 0.4), rgb(255 255 255 / 0.6));
+  }
+  .christmas-bauble__cap {
+    display: block;
+    width: 6px;
+    height: 4px;
+    margin: 0 auto;
+    border-radius: 1px;
+    background: var(--lh-grey-400);
+  }
+  .christmas-bauble__ball {
+    display: block;
+    width: var(--christmas-ball);
+    height: var(--christmas-ball);
+    font-size: var(--christmas-ball);
+    line-height: 0;
+    border-radius: 50%;
+    background: var(--christmas-seam);
+    color: var(--christmas-panel);
+  }
+  .christmas-bauble--blue {
+    --christmas-panel: var(--lh-blue);
+    --christmas-seam: var(--lh-white);
+    right: calc(var(--christmas-edge) - var(--christmas-ball) / 2 + 96px);
+  }
+  .christmas-bauble--white {
+    --christmas-panel: var(--lh-white);
+    --christmas-seam: var(--lh-navy);
+    right: calc(var(--christmas-edge) - var(--christmas-ball) / 2 + 48px);
+  }
+  .christmas-bauble--red {
+    --christmas-panel: var(--lh-red);
+    --christmas-seam: var(--lh-white);
+  }
+  .christmas-bauble--len-a { --christmas-string: 16px; }
+  .christmas-bauble--len-b { --christmas-string: 40px; }
+  .christmas-bauble--len-c { --christmas-string: 26px; }
+  .christmas-bauble--d-a { animation-delay: -0.6s; }
+  .christmas-bauble--d-b { animation-delay: -1.8s; }
+  .christmas-bauble--d-c { animation-delay: -3s; }
+  @keyframes christmas-sway {
+    from { transform: rotate(-5deg); }
+    to { transform: rotate(5deg); }
+  }
+  @media (max-width: 768px) {
+    .christmas-baubles {
+      --christmas-ball: 30px;
+      height: 22px;
+    }
+    .christmas-bauble--len-a { --christmas-string: 10px; }
+    .christmas-bauble--len-b { --christmas-string: 28px; }
+    .christmas-bauble--len-c { --christmas-string: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .christmas-bauble { animation: none; }
+  }
+  @media print {
+    .christmas-baubles { display: none; }
+  }
+</style>
