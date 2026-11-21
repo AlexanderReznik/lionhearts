@@ -51,7 +51,7 @@ export const teams: Team[] = [
   {
     name: 'Vinarius', gender: "Women's", division: 'NVL Super League',
     featured: true, volleyzoneSlug: 'lionhearts-vinarius',
-    volleyzoneTeamName: 'Lionhearts Vinarius',
+    volleyzoneTeamName: 'Lionhearts Vinarius (London)',
     compId: '216377', seasonId: '4013', volleyzoneUserId: '279580', volleyzoneSegment: 'nvl',
   },
   {

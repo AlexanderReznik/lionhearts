@@ -13,6 +13,8 @@ import {
 import type { Match } from '../src/lib/volleyzone';
 import fixturesSample from '../src/lib/__fixtures__/volleyzone-fixtures.json';
 import resultsSample from '../src/lib/__fixtures__/volleyzone-results.json';
+import vinariusSample from '../src/lib/__fixtures__/volleyzone-vinarius-fixtures.json';
+import { teams } from '../src/data/teams';
 
 const BASE_MATCH: Match = {
   fixtureId: '1',
@@ -88,6 +90,26 @@ describe('parseHomeAway', () => {
   it('returns Away when awayTeam includes Lionhearts', () => {
     const m = { ...BASE_MATCH, homeTeam: 'Worcester Wolves', awayTeam: 'Lionhearts Alpha' };
     expect(parseHomeAway(m)).toBe('Away');
+  });
+});
+
+// The exact-name match fails silently: a configured name that drifts from
+// Volleyzone's makes every game read as Away, so home games list us as the opponent.
+describe('volleyzoneTeamName matches Volleyzone — real Vinarius league response', () => {
+  const vinarius = teams.find(t => t.name === 'Vinarius')!;
+  const matches = parseMatchesHtml(vinariusSample.fixtures, 'fixture');
+
+  it('names Vinarius on one side of every league match it plays', () => {
+    const ours = matches.filter(m => /Vinarius/.test(m.homeTeam + m.awayTeam));
+    expect(ours.length).toBeGreaterThan(0);
+    for (const m of ours) {
+      expect([m.homeTeam, m.awayTeam]).toContain(vinarius.volleyzoneTeamName);
+    }
+  });
+
+  it('reads a home game as Home, with the visitors as the opponent', () => {
+    const home = matches.find(m => m.homeTeam.includes('Vinarius') && m.awayTeam === 'Durham Palatinates')!;
+    expect(parseHomeAway(home, vinarius.volleyzoneTeamName)).toBe('Home');
   });
 });
 
