@@ -1,6 +1,11 @@
 ---
 import BrandLogo from './BrandLogo.astro';
 import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  christmas?: boolean;
+}
+
 const navLinks = [
   { label: 'Home',      href: '/' },
   { label: 'About',     href: '/about' },

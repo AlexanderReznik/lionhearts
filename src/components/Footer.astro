@@ -1,6 +1,11 @@
 ---
 import BrandLogo from './BrandLogo.astro';
 import Icon from './Icon.astro';
+
+interface Props {
+  christmas?: boolean;
+}
+
 const year = new Date().getFullYear();
 
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE, FACEBOOK_URL, WHATSAPP_URL, CONTACT_EMAIL } from '../data/club';
