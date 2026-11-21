@@ -243,7 +243,9 @@ out.
 - Safe to merge any time. It stays invisible until the 01:00 UTC build on
   1 December (today is 21 Nov 2026, so first live on 1 Dec 2026).
 - Preview on Vercel by setting `CHRISTMAS_THEME=on` for Preview deployments.
-- Turn it off early by setting `CHRISTMAS_THEME=off` in Production and redeploying.
+- Turn it off early by setting `CHRISTMAS_THEME=off` in Production and redeploying. Remove the
+  variable once the season is over: while set it overrides every future season. Likewise `on` in
+  Preview shows the decorations all year there.
 
 ## Who decided what
 

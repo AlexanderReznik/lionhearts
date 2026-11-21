@@ -154,7 +154,7 @@ inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
 
 - Decoration-only, **build-time** gated to 1 Dec – 5 Jan by `isChristmasSeason()` in
   `src/lib/season.ts` (via `BaseLayout`); the nightly rebuild flips it on and off.
-- `CHRISTMAS_THEME=on|off` forces it for previews or an early switch-off.
+- `CHRISTMAS_THEME=on|off` forces it for previews or an early switch-off; unset it once the season is over (while set it overrides every future season, and `on` in Preview shows decorations all year).
 - Four components — `ChristmasSnow`, `ChristmasLights`, `ChristmasHat`, `ChristmasBaubles`
   — use `<style is:inline>` and `christmas-` class prefixes, so no CSS ships out of season
   (`grep -rl "christmas-" dist` must be empty with `CHRISTMAS_THEME=off`).
