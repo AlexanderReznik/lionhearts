@@ -1,28 +1,24 @@
 ---
+import { fairyLights } from '../lib/fairyLights';
+
 const WIDTH = 3000;
-const s = 26;
-const sag = s / 2;
 const bulbW = 10;
 const bulbH = 15;
-const hangY = 0.625 + 0.375 * (1 + sag);
-const height = Math.ceil(hangY + bulbH + 2);
-
-let wire = `M0 1 Q ${s} ${1 + sag} ${2 * s} 1`;
-for (let x = 4 * s; x <= WIDTH + 2 * s; x += 2 * s) wire += ` T ${x} 1`;
-
-const colours = ['blue', 'red', 'green', 'white'];
-const bulbs = Array.from({ length: Math.ceil(WIDTH / s) }, (_, i) => ({
-  x: s / 2 + i * s - bulbW / 2,
-  colour: colours[i % 4],
-  delay: (i + Math.floor(i / 4)) % 4,
-}));
+const { wire, hangY, height, bulbs } = fairyLights(WIDTH, 26, bulbH);
 ---
 
 <style is:inline>
   .christmas-lights {
+    --christmas-lights-scale: 1;
     position: relative;
     height: 0;
     z-index: 5;
+  }
+  @media (min-width: 768px) {
+    .christmas-lights { --christmas-lights-scale: 1.25; }
+  }
+  @media (min-width: 1280px) {
+    .christmas-lights { --christmas-lights-scale: 1.5; }
   }
   .christmas-lights__strip {
     position: absolute;
@@ -35,6 +31,8 @@ const bulbs = Array.from({ length: Math.ceil(WIDTH / s) }, (_, i) => ({
   .christmas-lights__strip svg {
     display: block;
     max-width: none;
+    width: calc(3000px * var(--christmas-lights-scale));
+    height: auto;
   }
   .christmas-lights__wire {
     fill: none;
@@ -89,7 +87,7 @@ const bulbs = Array.from({ length: Math.ceil(WIDTH / s) }, (_, i) => ({
       {bulbs.map((b) => (
         <use
           href="#christmas-bulb"
-          x={b.x}
+          x={b.cx - bulbW / 2}
           y={hangY - 1.5}
           width={bulbW}
           height={bulbH}

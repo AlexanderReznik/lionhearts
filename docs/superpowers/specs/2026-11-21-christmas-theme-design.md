@@ -151,9 +151,10 @@ is on GMT, so London and UTC dates agree at build time.
   absolutely positioned page content). Render the lights as `<main>`'s first child
   inside a zero-height `position: relative` wrapper, with the strip absolutely
   positioned inside it.
-- A scalloped wire with bulbs at the quarter points of each scallop. Bulbs are
-  about 10×15px, about 26px apart at every width, so phones get fewer bulbs, not
-  smaller ones. Colours cycle blue / red / green / white from the brand tokens.
+- A scalloped wire (every scallop sags downward) with bulbs at the quarter points
+  of each scallop. On phones, bulbs are about 10×15px and about 26px apart. The
+  whole strip scales up 1.25× from 768px and 1.5× from 1280px, so bigger screens
+  get bigger lights. Colours cycle blue / red / green / white from the brand tokens.
   In the light theme the white bulb gets a faint outline via `light-dark()` so
   it shows on pale surfaces. The wire uses a dark neutral brand token.
 - Twinkle: each bulb fades between about 50% and 100% opacity over about 1.6s,
