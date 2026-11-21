@@ -2,25 +2,18 @@
 import Icon from './Icon.astro';
 
 const baubles = [
-  { colour: 'blue', length: 'a', delay: 'a' },
-  { colour: 'white', length: 'b', delay: 'b' },
-  { colour: 'red', length: 'c', delay: 'c' },
+  { colour: 'blue', delay: 'a' },
+  { colour: 'white', delay: 'b' },
+  { colour: 'red', delay: 'c' },
 ];
 ---
-
-<div class="christmas-baubles" aria-hidden="true">
-  {baubles.map((b) => (
-    <div class={`christmas-bauble christmas-bauble--${b.colour} christmas-bauble--len-${b.length} christmas-bauble--d-${b.delay}`}>
-      <span class="christmas-bauble__cap"></span>
-      <span class="christmas-bauble__ball"><Icon name="session" /></span>
-    </div>
-  ))}
-</div>
 
 <style is:inline>
   .christmas-baubles {
     --christmas-ball: 34px;
+    --christmas-inset: 0px;
     --christmas-edge: max(var(--page-px), calc((100% - var(--max-width)) / 2 + var(--page-px)));
+    /* longest string + cap + ball + 12px clearance, minus Footer's 52px top padding */
     height: 38px;
     pointer-events: none;
   }
@@ -28,7 +21,7 @@ const baubles = [
     position: absolute;
     top: 0;
     width: var(--christmas-ball);
-    right: calc(var(--christmas-edge) - var(--christmas-ball) / 2);
+    right: calc(var(--christmas-edge) - var(--christmas-ball) / 2 + var(--christmas-inset) + var(--christmas-i) * 48px);
     transform-origin: 50% 0;
     animation: christmas-sway 3.6s ease-in-out infinite alternate;
     pointer-events: none;
@@ -61,22 +54,23 @@ const baubles = [
     color: var(--christmas-panel);
   }
   .christmas-bauble--blue {
+    --christmas-i: 0;
+    --christmas-string: 16px;
     --christmas-panel: var(--lh-blue);
     --christmas-seam: var(--lh-white);
-    right: calc(var(--christmas-edge) - var(--christmas-ball) / 2 + 96px);
   }
   .christmas-bauble--white {
+    --christmas-i: 1;
+    --christmas-string: 40px;
     --christmas-panel: var(--lh-white);
     --christmas-seam: var(--lh-navy);
-    right: calc(var(--christmas-edge) - var(--christmas-ball) / 2 + 48px);
   }
   .christmas-bauble--red {
+    --christmas-i: 2;
+    --christmas-string: 26px;
     --christmas-panel: var(--lh-red);
     --christmas-seam: var(--lh-white);
   }
-  .christmas-bauble--len-a { --christmas-string: 16px; }
-  .christmas-bauble--len-b { --christmas-string: 40px; }
-  .christmas-bauble--len-c { --christmas-string: 26px; }
   .christmas-bauble--d-a { animation-delay: -0.6s; }
   .christmas-bauble--d-b { animation-delay: -1.8s; }
   .christmas-bauble--d-c { animation-delay: -3s; }
@@ -87,11 +81,12 @@ const baubles = [
   @media (max-width: 768px) {
     .christmas-baubles {
       --christmas-ball: 30px;
+      --christmas-inset: 4px;
       height: 22px;
     }
-    .christmas-bauble--len-a { --christmas-string: 10px; }
-    .christmas-bauble--len-b { --christmas-string: 28px; }
-    .christmas-bauble--len-c { --christmas-string: 18px; }
+    .christmas-bauble--blue { --christmas-string: 10px; }
+    .christmas-bauble--white { --christmas-string: 28px; }
+    .christmas-bauble--red { --christmas-string: 18px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .christmas-bauble { animation: none; }
@@ -100,3 +95,12 @@ const baubles = [
     .christmas-baubles { display: none; }
   }
 </style>
+
+<div class="christmas-baubles" aria-hidden="true">
+  {baubles.map((b) => (
+    <div class={`christmas-bauble christmas-bauble--${b.colour} christmas-bauble--d-${b.delay}`}>
+      <span class="christmas-bauble__cap"></span>
+      <span class="christmas-bauble__ball"><Icon name="session" /></span>
+    </div>
+  ))}
+</div>
