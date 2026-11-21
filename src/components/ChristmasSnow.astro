@@ -1,0 +1,66 @@
+<style is:inline>
+  .christmas-snow {
+    --christmas-flake-edge: light-dark(var(--lh-slate-400), rgb(255 255 255 / 0.55));
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .christmas-snow__near,
+  .christmas-snow__far {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    will-change: transform;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  .christmas-snow__near {
+    top: -240px;
+    background-size: 260px 240px;
+    background-image:
+      radial-gradient(circle at 15px 25px, var(--lh-white) 1.5px, var(--christmas-flake-edge) 2px, transparent 2.6px),
+      radial-gradient(circle at 85px 70px, var(--lh-white) 1.2px, var(--christmas-flake-edge) 1.7px, transparent 2.2px),
+      radial-gradient(circle at 140px 15px, var(--lh-white) 1.8px, var(--christmas-flake-edge) 2.3px, transparent 2.9px),
+      radial-gradient(circle at 55px 130px, var(--lh-white) 1.1px, var(--christmas-flake-edge) 1.6px, transparent 2.1px),
+      radial-gradient(circle at 170px 150px, var(--lh-white) 1.6px, var(--christmas-flake-edge) 2.1px, transparent 2.7px),
+      radial-gradient(circle at 110px 100px, var(--lh-white) 1.3px, var(--christmas-flake-edge) 1.8px, transparent 2.3px);
+    animation-name: christmas-fall-near;
+    animation-duration: 14s;
+  }
+  .christmas-snow__far {
+    top: -120px;
+    opacity: 0.6;
+    background-size: 140px 120px;
+    background-image:
+      radial-gradient(circle at 30px 10px, var(--lh-white) 0.9px, var(--christmas-flake-edge) 1.3px, transparent 1.8px),
+      radial-gradient(circle at 75px 55px, var(--lh-white) 0.8px, var(--christmas-flake-edge) 1.2px, transparent 1.7px),
+      radial-gradient(circle at 120px 95px, var(--lh-white) 1px, var(--christmas-flake-edge) 1.4px, transparent 1.9px),
+      radial-gradient(circle at 10px 100px, var(--lh-white) 0.8px, var(--christmas-flake-edge) 1.2px, transparent 1.7px);
+    animation-name: christmas-fall-far;
+    animation-duration: 16s;
+  }
+  @keyframes christmas-fall-near {
+    to { transform: translateY(240px); }
+  }
+  @keyframes christmas-fall-far {
+    to { transform: translateY(120px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .christmas-snow__near,
+    .christmas-snow__far {
+      animation: none;
+      will-change: auto;
+    }
+  }
+  @media print {
+    .christmas-snow { display: none; }
+  }
+</style>
+
+<div class="christmas-snow" aria-hidden="true">
+  <div class="christmas-snow__far"></div>
+  <div class="christmas-snow__near"></div>
+</div>

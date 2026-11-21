@@ -1,6 +1,13 @@
 ---
 import BrandLogo from './BrandLogo.astro';
 import Icon from './Icon.astro';
+import ChristmasBaubles from './ChristmasBaubles.astro';
+
+interface Props {
+  christmas?: boolean;
+}
+
+const { christmas = false } = Astro.props;
 const year = new Date().getFullYear();
 
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE, FACEBOOK_URL, WHATSAPP_URL, CONTACT_EMAIL } from '../data/club';
@@ -24,6 +31,7 @@ const contactLinks = [
 ---
 
 <footer class="footer">
+  {christmas && <ChristmasBaubles />}
   <div class="footer__inner">
     <div class="footer__brand">
       <div class="footer__crest">
@@ -97,6 +105,7 @@ const contactLinks = [
     background: var(--color-bg-alt);
     border-top: 1px solid var(--color-border);
     padding: 52px 0 28px;
+    position: relative;
   }
 
   .footer__inner {

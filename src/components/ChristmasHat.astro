@@ -1,0 +1,19 @@
+---
+import SantaHat from '../assets/decor/santa-hat.svg';
+---
+
+<style is:inline>
+  .christmas-hat {
+    position: absolute;
+    width: 27px;
+    top: -9px;
+    left: 12px;
+    transform: rotate(12deg);
+    pointer-events: none;
+  }
+  @media print {
+    .christmas-hat { display: none; }
+  }
+</style>
+
+<SantaHat class="christmas-hat" aria-hidden="true" />

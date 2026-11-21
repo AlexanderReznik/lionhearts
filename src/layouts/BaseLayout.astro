@@ -2,7 +2,10 @@
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import ChristmasSnow from '../components/ChristmasSnow.astro';
+import ChristmasLights from '../components/ChristmasLights.astro';
 import Analytics from '@vercel/analytics/astro';
+import { isChristmasSeason } from '../lib/season';
 
 interface Props {
   title: string;
@@ -10,9 +13,11 @@ interface Props {
   ogImage?: string;
   jsonLd?: object | object[];
   noindex?: boolean;
+  festive?: boolean;
 }
 
-const { title, description, ogImage, jsonLd, noindex } = Astro.props;
+const { title, description, ogImage, jsonLd, noindex, festive = true } = Astro.props;
+const christmas = festive && isChristmasSeason(new Date(), import.meta.env.CHRISTMAS_THEME);
 ---
 
 <!DOCTYPE html>
@@ -28,11 +33,13 @@ const { title, description, ogImage, jsonLd, noindex } = Astro.props;
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
-    <Nav />
+    <Nav christmas={christmas} />
     <main id="main">
+      {christmas && <ChristmasLights />}
       <slot />
     </main>
-    <Footer />
+    <Footer christmas={christmas} />
+    {christmas && <ChristmasSnow />}
     <Analytics />
   </body>
 </html>

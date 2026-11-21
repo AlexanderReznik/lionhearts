@@ -252,7 +252,7 @@ const DAY_INDEX: Record<string, number> = Object.fromEntries(
 );
 
 /** Wall-clock date/time in Europe/London for a given instant. */
-function londonParts(instant: Date): { y: number; m: number; d: number; time: string; dow: number } {
+export function londonParts(instant: Date): { y: number; m: number; d: number; time: string; dow: number } {
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/London',
     year: 'numeric', month: '2-digit', day: '2-digit',

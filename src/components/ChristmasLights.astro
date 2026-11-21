@@ -1,0 +1,99 @@
+---
+import { fairyLights } from '../lib/fairyLights';
+
+const WIDTH = 3000;
+const bulbW = 10;
+const bulbH = 15;
+const { wire, hangY, height, bulbs } = fairyLights(WIDTH, 26, bulbH);
+---
+
+<style is:inline>
+  .christmas-lights {
+    --christmas-lights-scale: 1;
+    position: relative;
+    height: 0;
+    z-index: 5;
+  }
+  @media (min-width: 768px) {
+    .christmas-lights { --christmas-lights-scale: 1.25; }
+  }
+  @media (min-width: 1280px) {
+    .christmas-lights { --christmas-lights-scale: 1.5; }
+  }
+  .christmas-lights__strip {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .christmas-lights__strip svg {
+    display: block;
+    max-width: none;
+    width: calc(3000px * var(--christmas-lights-scale));
+    height: auto;
+  }
+  .christmas-lights__wire {
+    fill: none;
+    stroke: var(--lh-slate);
+    stroke-width: 1.1;
+  }
+  .christmas-bulb__cap {
+    fill: var(--lh-grey-400);
+  }
+  .christmas-bulb__glass {
+    stroke: var(--christmas-bulb-stroke, none);
+    stroke-width: 0.8;
+  }
+  .christmas-bulb {
+    animation: christmas-twinkle 1.6s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 2px currentColor);
+  }
+  .christmas-bulb--blue { color: var(--lh-blue); }
+  .christmas-bulb--red { color: var(--lh-red); }
+  .christmas-bulb--green { color: var(--lh-green); }
+  .christmas-bulb--white {
+    color: var(--lh-white);
+    --christmas-bulb-stroke: rgb(17 35 75 / 0.3);
+  }
+  .christmas-bulb--d0 { animation-delay: 0s; }
+  .christmas-bulb--d1 { animation-delay: -0.4s; }
+  .christmas-bulb--d2 { animation-delay: -0.8s; }
+  .christmas-bulb--d3 { animation-delay: -1.2s; }
+  @keyframes christmas-twinkle {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .christmas-bulb {
+      animation: none;
+      opacity: 1;
+    }
+  }
+  @media print {
+    .christmas-lights { display: none; }
+  }
+</style>
+
+<div class="christmas-lights" aria-hidden="true">
+  <div class="christmas-lights__strip">
+    <svg width={WIDTH} height={height} viewBox={`0 0 ${WIDTH} ${height}`} focusable="false">
+      <symbol id="christmas-bulb" viewBox="-5 0 10 15">
+        <rect class="christmas-bulb__cap" x="-1.8" y="0" width="3.6" height="3" rx=".7"></rect>
+        <ellipse class="christmas-bulb__glass" cx="0" cy="8.6" rx="3.5" ry="5.6" fill="currentColor"></ellipse>
+      </symbol>
+      <path class="christmas-lights__wire" d={wire}></path>
+      {bulbs.map((b) => (
+        <use
+          href="#christmas-bulb"
+          x={b.cx - bulbW / 2}
+          y={hangY - 1.5}
+          width={bulbW}
+          height={bulbH}
+          class={`christmas-bulb christmas-bulb--${b.colour} christmas-bulb--d${b.delay}`}
+        ></use>
+      ))}
+    </svg>
+  </div>
+</div>
