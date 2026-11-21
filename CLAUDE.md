@@ -150,6 +150,16 @@ inheriting `color` from a semantic `--color-*` token. Base size is `1em` (global
   `/teams` card and renders its division as the `.chip-accent` tile on `/teams` and
   `/fixtures` — the division name is the highlight; there is no separate badge.
 
+### Christmas theme
+
+- Decoration-only, **build-time** gated to 1 Dec – 5 Jan by `isChristmasSeason()` in
+  `src/lib/season.ts` (via `BaseLayout`); the nightly rebuild flips it on and off.
+- `CHRISTMAS_THEME=on|off` forces it for previews or an early switch-off.
+- Four components — `ChristmasSnow`, `ChristmasLights`, `ChristmasHat`, `ChristmasBaubles`
+  — use `<style is:inline>` and `christmas-` class prefixes, so no CSS ships out of season
+  (`grep -rl "christmas-" dist` must be empty with `CHRISTMAS_THEME=off`).
+- Unlisted `/sponsors/vinarius` opts out with `festive={false}`.
+
 ### GOTCHA — dark overrides in `is:global` / `set:html` blocks
 
 Astro's `:global(...)` directive is only processed inside **scoped** `<style>`
